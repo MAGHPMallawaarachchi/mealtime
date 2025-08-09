@@ -30,10 +30,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   });
                 },
                 itemCount: _onboardingData.length,
-                itemBuilder: (context, index) => _buildPage(
-                  context,
-                  _onboardingData[index],
-                ),
+                itemBuilder: (context, index) =>
+                    _buildPage(context, _onboardingData[index]),
               ),
             ),
             _buildBottomControls(),
@@ -46,22 +44,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   static const List<OnboardingData> _onboardingData = [
     OnboardingData(
       title: "Welcome to Mealtime.",
-      body: "Plan delicious meals using ingredients you already have. Reduce food waste while enjoying authentic Sri Lankan cuisine.",
+      body:
+          "Plan delicious meals using ingredients you already have. Reduce food waste while enjoying authentic Sri Lankan cuisine.",
       imagePath: 'assets/images/onboarding/onboarding-1.svg',
     ),
     OnboardingData(
       title: "Smart Pantry Management.",
-      body: "Keep track of your ingredients, get expiry notifications, and discover delicious recipes based on what's available in your kitchen.",
+      body:
+          "Keep track of your ingredients, get expiry notifications, and discover delicious recipes based on what's available in your kitchen.",
       imagePath: 'assets/images/onboarding/onboarding-2.svg',
     ),
     OnboardingData(
       title: "Transform Leftovers.",
-      body: "Turn yesterday's meals into today's delicious creations with safe, creative leftover transformation recipes and cooking tips.",
+      body:
+          "Turn yesterday's meals into today's delicious creations with safe, creative leftover transformation recipes and cooking tips.",
       imagePath: 'assets/images/onboarding/onboarding-3.svg',
     ),
     OnboardingData(
       title: "Seasonal & Local.",
-      body: "Get recipe recommendations based on seasonal ingredients and authentic local Sri Lankan food traditions.",
+      body:
+          "Get recipe recommendations based on seasonal ingredients and authentic local Sri Lankan food traditions.",
       imagePath: 'assets/images/onboarding/onboarding-4.svg',
     ),
   ];
@@ -71,7 +73,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 32.0),
       child: Column(
         children: [
-          const SizedBox(height: 80),
+          const SizedBox(height: 120),
           // Illustration
           Expanded(
             flex: 3,
@@ -83,7 +85,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 0),
           // Title
           Text(
             data.title,
@@ -106,7 +108,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 60),
+          const SizedBox(height: 100),
         ],
       ),
     );
@@ -156,7 +158,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 GestureDetector(
                   onTap: () => _onDone(context),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFFF58700),
                       borderRadius: BorderRadius.circular(25),
@@ -189,8 +194,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           height: 8,
           width: _currentPage == index ? 20 : 8,
           decoration: BoxDecoration(
-            color: _currentPage == index 
-                ? const Color(0xFFF58700) 
+            color: _currentPage == index
+                ? const Color(0xFFF58700)
                 : Colors.grey.shade300,
             borderRadius: BorderRadius.circular(4),
           ),
@@ -211,7 +216,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> _onDone(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('has_seen_onboarding', true);
-    
+
     if (context.mounted) {
       context.go('/home');
     }
