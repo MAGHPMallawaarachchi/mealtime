@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/services/auth_service.dart';
+import '../widgets/auth_header.dart';
 import '../widgets/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -102,51 +102,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildHeader() {
-    return Column(
-      children: [
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: SvgPicture.asset(
-            'assets/images/general/image-logo.svg',
-            width: 80,
-            height: 80,
-            fit: BoxFit.contain,
-          ),
-        ),
-        const SizedBox(height: 32),
-        const Text(
-          'Welcome Back!',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-            letterSpacing: -0.5,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Sign in to continue managing your meals',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey[600],
-            fontWeight: FontWeight.w400,
-            height: 1.4,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
+    return const AuthHeader(
+      title: 'Welcome Back!',
+      subtitle: 'Sign in to continue managing your meals',
     );
   }
 
@@ -154,8 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: 24.0,
-          vertical: MediaQuery.of(context).viewInsets.bottom > 0 ? 16.0 : 0,
+          horizontal: 32.0,
+          vertical: MediaQuery.of(context).viewInsets.bottom > 0 ? 24.0 : 16.0,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
