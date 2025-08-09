@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/services/auth_service.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -10,7 +9,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final authService = AuthService();
     final user = authService.currentUser;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('MealTime'),
@@ -69,10 +68,7 @@ class HomeScreen extends StatelessWidget {
                           },
                         ),
                       )
-                    : const Icon(
-                        Icons.person,
-                        color: Color(0xFFF58700),
-                      ),
+                    : const Icon(Icons.person, color: Color(0xFFF58700)),
               ),
             ),
           ),
@@ -90,18 +86,12 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'Welcome ${user?.displayName?.split(' ').first ?? 'back'}!',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             const Text(
               'Your smart meal planning journey begins here.',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 48),
@@ -118,7 +108,9 @@ class HomeScreen extends StatelessWidget {
                   subtitle: 'Manage ingredients',
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Pantry feature coming soon!')),
+                      const SnackBar(
+                        content: Text('Pantry feature coming soon!'),
+                      ),
                     );
                   },
                 ),
@@ -128,7 +120,9 @@ class HomeScreen extends StatelessWidget {
                   subtitle: 'Discover meals',
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Recipes feature coming soon!')),
+                      const SnackBar(
+                        content: Text('Recipes feature coming soon!'),
+                      ),
                     );
                   },
                 ),
@@ -138,7 +132,9 @@ class HomeScreen extends StatelessWidget {
                   subtitle: 'Plan your week',
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Meal Planner feature coming soon!')),
+                      const SnackBar(
+                        content: Text('Meal Planner feature coming soon!'),
+                      ),
                     );
                   },
                 ),
@@ -148,7 +144,9 @@ class HomeScreen extends StatelessWidget {
                   subtitle: 'Never forget items',
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Shopping List feature coming soon!')),
+                      const SnackBar(
+                        content: Text('Shopping List feature coming soon!'),
+                      ),
                     );
                   },
                 ),
@@ -176,11 +174,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 48,
-                color: const Color(0xFFF58700),
-              ),
+              Icon(icon, size: 48, color: const Color(0xFFF58700)),
               const SizedBox(height: 12),
               Text(
                 title,
@@ -192,10 +186,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 subtitle,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
                 textAlign: TextAlign.center,
               ),
             ],
