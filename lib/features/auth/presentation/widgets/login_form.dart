@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'custom_text_field.dart';
+import 'loading_banner.dart';
 import 'primary_button.dart';
 import 'social_login_button.dart';
 
@@ -28,6 +29,7 @@ class LoginFormState extends State<LoginForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  String _loadingMessage = '';
 
   @override
   void dispose() {
@@ -43,13 +45,29 @@ class LoginFormState extends State<LoginForm> {
 
   void _handleEmailLogin() {
     if (isFormValid) {
+      setState(() {
+        _loadingMessage = 'Signing in...';
+      });
       widget.onEmailLogin();
     }
+  }
+
+  void _handleGoogleLogin() {
+    setState(() {
+      _loadingMessage = 'Authenticating with Google...';
+    });
+    widget.onGoogleLogin();
   }
 
   void _togglePasswordVisibility() {
     setState(() {
       _obscurePassword = !_obscurePassword;
+    });
+  }
+
+  void clearLoading() {
+    setState(() {
+      _loadingMessage = '';
     });
   }
 
@@ -169,6 +187,10 @@ class LoginFormState extends State<LoginForm> {
       key: _formKey,
       child: Column(
         children: [
+          LoadingBanner(
+            message: _loadingMessage,
+            isVisible: widget.isLoading,
+          ),
           CustomTextField(
             label: 'Email',
             controller: _emailController,
@@ -212,7 +234,7 @@ class LoginFormState extends State<LoginForm> {
           const SizedBox(height: 32),
           PrimaryButton(
             text: 'Log In',
-            onPressed: _handleEmailLogin,
+            onPressed: widget.isLoading ? null : _handleEmailLogin,
             isLoading: widget.isLoading,
           ),
           const SizedBox(height: 20),
@@ -221,7 +243,7 @@ class LoginFormState extends State<LoginForm> {
           SocialLoginButton(
             text: 'Continue with Google',
             icon: _buildGoogleIcon(),
-            onPressed: widget.onGoogleLogin,
+            onPressed: widget.isLoading ? null : _handleGoogleLogin,
             isLoading: widget.isLoading,
           ),
           const SizedBox(height: 32),

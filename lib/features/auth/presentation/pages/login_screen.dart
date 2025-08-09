@@ -38,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
+        _formKey.currentState?.clearLoading();
       }
     }
   }
@@ -58,6 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
+        _formKey.currentState?.clearLoading();
       }
     }
   }
