@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/services/auth_service.dart';
 
@@ -11,71 +10,7 @@ class HomeScreen extends StatelessWidget {
     final authService = AuthService();
     final user = authService.currentUser;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('MealTime'),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              switch (value) {
-                case 'profile':
-                  context.push('/profile');
-                  break;
-                case 'logout':
-                  _showSignOutDialog(context, authService);
-                  break;
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'profile',
-                child: Row(
-                  children: [
-                    PhosphorIcon(PhosphorIcons.user()),
-                    const SizedBox(width: 8),
-                    const Text('Profile'),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'logout',
-                child: Row(
-                  children: [
-                    PhosphorIcon(PhosphorIcons.signOut(), color: Colors.red),
-                    const SizedBox(width: 8),
-                    const Text('Sign Out', style: TextStyle(color: Colors.red)),
-                  ],
-                ),
-              ),
-            ],
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: user?.photoURL != null
-                    ? ClipOval(
-                        child: Image.network(
-                          user!.photoURL!,
-                          width: 32,
-                          height: 32,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return PhosphorIcon(
-                              PhosphorIcons.user(),
-                              color: const Color(0xFFF58700),
-                            );
-                          },
-                        ),
-                      )
-                    : PhosphorIcon(PhosphorIcons.user(), color: const Color(0xFFF58700)),
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: Center(
+    return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -155,8 +90,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildFeatureCard({
@@ -197,34 +131,4 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _showSignOutDialog(BuildContext context, AuthService authService) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Sign Out'),
-          content: const Text('Are you sure you want to sign out?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop();
-                await authService.signOut();
-                if (context.mounted) {
-                  context.go('/login');
-                }
-              },
-              child: const Text(
-                'Sign Out',
-                style: TextStyle(color: Colors.red),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 }

@@ -3,12 +3,16 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../features/onboarding/presentation/pages/splash_screen.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
-import '../../features/home/presentation/pages/home_screen.dart';
 import '../../features/auth/presentation/pages/login_screen.dart';
 import '../../features/auth/presentation/pages/register_screen.dart';
+import '../../features/home/presentation/pages/home_screen.dart';
+import '../../features/explore/presentation/pages/explore_screen.dart';
+import '../../features/meal_planner/presentation/pages/meal_planner_screen.dart';
+import '../../features/pantry/presentation/pages/pantry_screen.dart';
 import '../../features/auth/presentation/pages/profile_screen.dart';
 import '../guards/auth_guard.dart';
 import '../services/auth_service.dart';
+import 'main_scaffold.dart';
 
 class AppRouter {
   static final _authService = AuthService();
@@ -21,6 +25,8 @@ class AppRouter {
       
       final authRoutes = ['/login', '/register'];
       final isAuthRoute = authRoutes.contains(state.uri.toString());
+      final mainAppRoutes = ['/home', '/explore', '/meal-planner', '/pantry', '/profile'];
+      final isMainAppRoute = mainAppRoutes.contains(state.uri.toString());
       
       if (!isLoggedIn && !isAuthRoute && state.uri.toString() != '/' && state.uri.toString() != '/onboarding') {
         return '/login';
@@ -53,19 +59,37 @@ class AppRouter {
         name: 'register',
         builder: (context, state) => const RegisterScreen(),
       ),
-      GoRoute(
-        path: '/home',
-        name: 'home',
-        builder: (context, state) => AuthGuard(
-          child: const HomeScreen(),
+      ShellRoute(
+        builder: (context, state, child) => AuthGuard(
+          child: MainScaffold(child: child),
         ),
-      ),
-      GoRoute(
-        path: '/profile',
-        name: 'profile',
-        builder: (context, state) => AuthGuard(
-          child: const ProfileScreen(),
-        ),
+        routes: [
+          GoRoute(
+            path: '/home',
+            name: 'home',
+            builder: (context, state) => const HomeScreen(),
+          ),
+          GoRoute(
+            path: '/explore',
+            name: 'explore',
+            builder: (context, state) => const ExploreScreen(),
+          ),
+          GoRoute(
+            path: '/meal-planner',
+            name: 'meal-planner',
+            builder: (context, state) => const MealPlannerScreen(),
+          ),
+          GoRoute(
+            path: '/pantry',
+            name: 'pantry',
+            builder: (context, state) => const PantryScreen(),
+          ),
+          GoRoute(
+            path: '/profile',
+            name: 'profile',
+            builder: (context, state) => const ProfileScreen(),
+          ),
+        ],
       ),
     ],
     errorBuilder: (context, state) =>
