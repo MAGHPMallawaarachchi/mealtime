@@ -137,6 +137,7 @@ class _MainScaffoldState extends State<MainScaffold> with TickerProviderStateMix
           children: _screens,
         ),
       ),
+      extendBody: true, // Allow body to extend behind floating button
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
