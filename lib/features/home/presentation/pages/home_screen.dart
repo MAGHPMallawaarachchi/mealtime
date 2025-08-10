@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/services/auth_service.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -28,23 +29,23 @@ class HomeScreen extends StatelessWidget {
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'profile',
                 child: Row(
                   children: [
-                    Icon(Icons.person),
-                    SizedBox(width: 8),
-                    Text('Profile'),
+                    PhosphorIcon(PhosphorIcons.user()),
+                    const SizedBox(width: 8),
+                    const Text('Profile'),
                   ],
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'logout',
                 child: Row(
                   children: [
-                    Icon(Icons.logout, color: Colors.red),
-                    SizedBox(width: 8),
-                    Text('Sign Out', style: TextStyle(color: Colors.red)),
+                    PhosphorIcon(PhosphorIcons.signOut(), color: Colors.red),
+                    const SizedBox(width: 8),
+                    const Text('Sign Out', style: TextStyle(color: Colors.red)),
                   ],
                 ),
               ),
@@ -61,14 +62,14 @@ class HomeScreen extends StatelessWidget {
                           height: 32,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
-                            return const Icon(
-                              Icons.person,
-                              color: Color(0xFFF58700),
+                            return PhosphorIcon(
+                              PhosphorIcons.user(),
+                              color: const Color(0xFFF58700),
                             );
                           },
                         ),
                       )
-                    : const Icon(Icons.person, color: Color(0xFFF58700)),
+                    : PhosphorIcon(PhosphorIcons.user(), color: const Color(0xFFF58700)),
               ),
             ),
           ),
@@ -78,10 +79,10 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.restaurant_menu,
+            PhosphorIcon(
+              PhosphorIcons.forkKnife(),
               size: 80,
-              color: Color(0xFFF58700),
+              color: const Color(0xFFF58700),
             ),
             const SizedBox(height: 16),
             Text(
@@ -103,7 +104,7 @@ class HomeScreen extends StatelessWidget {
               mainAxisSpacing: 16,
               children: [
                 _buildFeatureCard(
-                  icon: Icons.kitchen,
+                  icon: PhosphorIcons.cookingPot(),
                   title: 'Pantry',
                   subtitle: 'Manage ingredients',
                   onTap: () {
@@ -115,7 +116,7 @@ class HomeScreen extends StatelessWidget {
                   },
                 ),
                 _buildFeatureCard(
-                  icon: Icons.menu_book,
+                  icon: PhosphorIcons.book(),
                   title: 'Recipes',
                   subtitle: 'Discover meals',
                   onTap: () {
@@ -127,7 +128,7 @@ class HomeScreen extends StatelessWidget {
                   },
                 ),
                 _buildFeatureCard(
-                  icon: Icons.calendar_today,
+                  icon: PhosphorIcons.calendar(),
                   title: 'Meal Planner',
                   subtitle: 'Plan your week',
                   onTap: () {
@@ -139,7 +140,7 @@ class HomeScreen extends StatelessWidget {
                   },
                 ),
                 _buildFeatureCard(
-                  icon: Icons.shopping_cart,
+                  icon: PhosphorIcons.shoppingCart(),
                   title: 'Shopping List',
                   subtitle: 'Never forget items',
                   onTap: () {
@@ -174,7 +175,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 48, color: const Color(0xFFF58700)),
+              PhosphorIcon(icon, size: 48, color: const Color(0xFFF58700)),
               const SizedBox(height: 12),
               Text(
                 title,

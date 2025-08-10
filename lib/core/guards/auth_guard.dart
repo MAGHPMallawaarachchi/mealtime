@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../services/auth_service.dart';
 
 class AuthGuard extends StatelessWidget {
@@ -47,8 +48,8 @@ class AuthRequiredScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.lock,
+              PhosphorIcon(
+                PhosphorIcons.lock(),
                 size: 64,
                 color: Colors.grey,
               ),

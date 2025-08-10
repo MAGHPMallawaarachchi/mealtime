@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'custom_text_field.dart';
 import 'loading_banner.dart';
 import 'primary_button.dart';
@@ -141,8 +142,8 @@ class RegisterFormState extends State<RegisterForm> {
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(2),
             ),
-            child: const Icon(
-              Icons.g_mobiledata,
+            child: PhosphorIcon(
+              PhosphorIcons.googleLogo(),
               size: 16,
               color: Colors.grey,
             ),
@@ -245,10 +246,10 @@ class RegisterFormState extends State<RegisterForm> {
             enabled: !widget.isLoading,
             suffixIcon: IconButton(
               onPressed: _togglePasswordVisibility,
-              icon: Icon(
+              icon: PhosphorIcon(
                 _obscurePassword
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined,
+                    ? PhosphorIcons.eye()
+                    : PhosphorIcons.eyeSlash(),
                 color: Colors.grey[600],
                 size: 20,
               ),
@@ -263,10 +264,10 @@ class RegisterFormState extends State<RegisterForm> {
             enabled: !widget.isLoading,
             suffixIcon: IconButton(
               onPressed: _toggleConfirmPasswordVisibility,
-              icon: Icon(
+              icon: PhosphorIcon(
                 _obscureConfirmPassword
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined,
+                    ? PhosphorIcons.eye()
+                    : PhosphorIcons.eyeSlash(),
                 color: Colors.grey[600],
                 size: 20,
               ),

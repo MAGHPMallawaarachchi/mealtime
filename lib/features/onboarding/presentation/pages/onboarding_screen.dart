@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -147,8 +148,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       color: Color(0xFFF58700),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
-                      Icons.arrow_forward,
+                    child: PhosphorIcon(
+                      PhosphorIcons.arrowRight(),
                       color: Colors.white,
                       size: 24,
                     ),

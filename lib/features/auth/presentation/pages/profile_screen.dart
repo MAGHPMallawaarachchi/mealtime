@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/services/auth_service.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -95,10 +96,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ? NetworkImage(_user!.photoURL!)
                         : null,
                     child: _user?.photoURL == null
-                        ? const Icon(
-                            Icons.person,
+                        ? PhosphorIcon(
+                            PhosphorIcons.user(),
                             size: 60,
-                            color: Color(0xFFF58700),
+                            color: const Color(0xFFF58700),
                           )
                         : null,
                   ),
@@ -123,9 +124,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Column(
                       children: [
                         ListTile(
-                          leading: const Icon(Icons.person_outline),
+                          leading: PhosphorIcon(PhosphorIcons.user()),
                           title: const Text('Edit Profile'),
-                          trailing: const Icon(Icons.arrow_forward_ios),
+                          trailing: PhosphorIcon(PhosphorIcons.caretRight()),
                           onTap: () {
                             // TODO: Navigate to edit profile screen
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -137,9 +138,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const Divider(height: 1),
                         ListTile(
-                          leading: const Icon(Icons.home_outlined),
+                          leading: PhosphorIcon(PhosphorIcons.house()),
                           title: const Text('Household'),
-                          trailing: const Icon(Icons.arrow_forward_ios),
+                          trailing: PhosphorIcon(PhosphorIcons.caretRight()),
                           onTap: () {
                             // TODO: Navigate to household management screen
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -151,9 +152,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const Divider(height: 1),
                         ListTile(
-                          leading: const Icon(Icons.notifications_outlined),
+                          leading: PhosphorIcon(PhosphorIcons.bell()),
                           title: const Text('Notifications'),
-                          trailing: const Icon(Icons.arrow_forward_ios),
+                          trailing: PhosphorIcon(PhosphorIcons.caretRight()),
                           onTap: () {
                             // TODO: Navigate to notifications settings
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -165,9 +166,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const Divider(height: 1),
                         ListTile(
-                          leading: const Icon(Icons.language_outlined),
+                          leading: PhosphorIcon(PhosphorIcons.translate()),
                           title: const Text('Language'),
-                          trailing: const Icon(Icons.arrow_forward_ios),
+                          trailing: PhosphorIcon(PhosphorIcons.caretRight()),
                           onTap: () {
                             // TODO: Navigate to language settings
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -185,9 +186,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Column(
                       children: [
                         ListTile(
-                          leading: const Icon(Icons.help_outline),
+                          leading: PhosphorIcon(PhosphorIcons.questionMark()),
                           title: const Text('Help & Support'),
-                          trailing: const Icon(Icons.arrow_forward_ios),
+                          trailing: PhosphorIcon(PhosphorIcons.caretRight()),
                           onTap: () {
                             // TODO: Navigate to help screen
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -199,9 +200,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const Divider(height: 1),
                         ListTile(
-                          leading: const Icon(Icons.info_outline),
+                          leading: PhosphorIcon(PhosphorIcons.info()),
                           title: const Text('About'),
-                          trailing: const Icon(Icons.arrow_forward_ios),
+                          trailing: PhosphorIcon(PhosphorIcons.caretRight()),
                           onTap: () {
                             // TODO: Navigate to about screen
                             ScaffoldMessenger.of(context).showSnackBar(
