@@ -233,33 +233,33 @@ class _BottomNavBarClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     final path = Path();
     final double cornerRadius = 25; // Rounded corners
-    final double notchRadius = 35; // Radius for smooth notch curves
-    final double notchDepth = 32; // Deeper notch
-    final double notchWidth = 90; // Wider notch for smooth curves
+    final double notchRadius = 65; // Larger radius for smoother curves
+    final double notchDepth = 35; // Slightly shallower for gentler curve
+    final double notchWidth = 120; // Wider for more gradual transition
     final double centerX = size.width / 2;
 
     // Start from top-left with rounded corner
     path.moveTo(0, cornerRadius);
     path.quadraticBezierTo(0, 0, cornerRadius, 0);
 
-    // Draw to the start of the notch
+    // Draw to the start of the notch with more gradual approach
     path.lineTo(centerX - notchWidth / 2, 0);
 
-    // Create smooth curved notch using cubic bezier for better smoothness
+    // Create ultra-smooth curved notch with gentler control points
     path.cubicTo(
-      centerX - notchRadius,
-      0, // First control point
-      centerX - notchRadius,
-      notchDepth, // Second control point
+      centerX - notchRadius * 0.5, // Less aggressive first control point
+      0,
+      centerX - notchRadius * 0.6, // Gentler approach to depth
+      notchDepth * 0.9, // Slightly less depth for smoothness
       centerX,
       notchDepth, // End point (center of notch)
     );
 
     path.cubicTo(
-      centerX + notchRadius,
-      notchDepth, // First control point
-      centerX + notchRadius,
-      0, // Second control point
+      centerX + notchRadius * 0.6, // Mirror the approach
+      notchDepth * 0.9,
+      centerX + notchRadius * 0.5, // Less aggressive exit
+      0,
       centerX + notchWidth / 2,
       0, // End point
     );
