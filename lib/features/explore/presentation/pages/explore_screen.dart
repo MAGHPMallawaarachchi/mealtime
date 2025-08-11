@@ -19,18 +19,12 @@ class ExploreScreen extends StatelessWidget {
           const SizedBox(height: 16),
           const Text(
             'Explore',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           const Text(
             'Discover new recipes and cooking ideas!',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
@@ -42,6 +36,7 @@ class ExploreScreen extends StatelessWidget {
               color: Color(0xFFF58700),
             ),
           ),
+          const SizedBox(height: 90),
         ],
       ),
     );

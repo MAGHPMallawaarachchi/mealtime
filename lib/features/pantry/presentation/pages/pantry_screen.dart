@@ -11,26 +11,16 @@ class PantryScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          PhosphorIcon(
-            PhosphorIcons.jar(),
-            size: 80,
-            color: AppColors.primary,
-          ),
+          PhosphorIcon(PhosphorIcons.jar(), size: 80, color: AppColors.primary),
           const SizedBox(height: 16),
           const Text(
             'Pantry',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           const Text(
             'Track your ingredients and manage your inventory!',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
@@ -42,6 +32,7 @@ class PantryScreen extends StatelessWidget {
               color: Color(0xFFF58700),
             ),
           ),
+          const SizedBox(height: 90),
         ],
       ),
     );

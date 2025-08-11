@@ -19,18 +19,12 @@ class MealPlannerScreen extends StatelessWidget {
           const SizedBox(height: 16),
           const Text(
             'Meal Planner',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           const Text(
             'Plan your weekly meals and reduce food waste!',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
@@ -42,6 +36,7 @@ class MealPlannerScreen extends StatelessWidget {
               color: Color(0xFFF58700),
             ),
           ),
+          const SizedBox(height: 90),
         ],
       ),
     );
