@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/services/auth_service.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/login_form.dart';
 
@@ -91,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: const Color(0xFFF58700),
+        backgroundColor: AppColors.primary,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 3),
         shape: RoundedRectangleBorder(

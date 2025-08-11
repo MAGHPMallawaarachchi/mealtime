@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../../../core/constants/app_colors.dart';
 
 class MealPlannerScreen extends StatelessWidget {
   const MealPlannerScreen({super.key});
@@ -13,7 +14,7 @@ class MealPlannerScreen extends StatelessWidget {
           PhosphorIcon(
             PhosphorIcons.chefHat(),
             size: 80,
-            color: const Color(0xFFF58700),
+            color: AppColors.primary,
           ),
           const SizedBox(height: 16),
           const Text(
@@ -28,7 +29,7 @@ class MealPlannerScreen extends StatelessWidget {
             'Plan your weekly meals and reduce food waste!',
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey,
+              color: AppColors.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),

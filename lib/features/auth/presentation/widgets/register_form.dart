@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../../../core/constants/app_colors.dart';
 import 'custom_text_field.dart';
 import 'loading_banner.dart';
 import 'primary_button.dart';
@@ -202,7 +203,7 @@ class RegisterFormState extends State<RegisterForm> {
           child: const Text(
             'Login',
             style: TextStyle(
-              color: Color(0xFFF58700),
+              color: AppColors.primary,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),

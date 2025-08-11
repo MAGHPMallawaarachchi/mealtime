@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../../../core/constants/app_colors.dart';
 import 'custom_text_field.dart';
 import 'loading_banner.dart';
 import 'primary_button.dart';
@@ -172,7 +173,7 @@ class LoginFormState extends State<LoginForm> {
           child: const Text(
             'Sign Up',
             style: TextStyle(
-              color: Color(0xFFF58700),
+              color: AppColors.primary,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
@@ -225,7 +226,7 @@ class LoginFormState extends State<LoginForm> {
               child: const Text(
                 'Forgot Password ?',
                 style: TextStyle(
-                  color: Color(0xFFF58700),
+                  color: AppColors.primary,
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
                 ),

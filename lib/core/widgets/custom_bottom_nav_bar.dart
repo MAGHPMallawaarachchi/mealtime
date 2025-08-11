@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../constants/app_colors.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   final int currentIndex;
@@ -44,8 +45,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
         )
         .toList();
 
-    const primaryColor = Color(0xFFF58700);
-    const inactiveColor = Colors.grey;
+    const primaryColor = AppColors.primary;
+    const inactiveColor = AppColors.textSecondary;
 
     _colorAnimations = _controllers
         .map(
@@ -89,7 +90,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFFF58700);
+    const primaryColor = AppColors.primary;
 
     return Container(
       height: 70,
@@ -120,7 +121,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
             clipper: _BottomNavBarClipper(),
             child: Container(
               height: 70,
-              decoration: const BoxDecoration(color: Colors.white),
+              decoration: const BoxDecoration(color: AppColors.background),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -216,7 +217,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                 child: PhosphorIcon(
                   PhosphorIcons.chefHat(),
                   size: 32,
-                  color: Colors.white,
+                  color: AppColors.background,
                 ),
               ),
             ),

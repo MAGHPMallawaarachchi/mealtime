@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/services/auth_service.dart';
+import '../../../../core/constants/app_colors.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,21 +12,21 @@ class HomeScreen extends StatelessWidget {
     final user = authService.currentUser;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                  left: 16,
+                  left: 15,
                   right: 8,
                   top: 20,
                   bottom: 8,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Column(
@@ -36,26 +37,25 @@ class HomeScreen extends StatelessWidget {
                               PhosphorIcon(
                                 _getGreetingIcon(),
                                 size: 20,
-                                color: const Color(0xFFF58700),
+                                color: AppColors.primary,
                               ),
                               const SizedBox(width: 8),
                               Text(
                                 _getGreeting(),
                                 style: const TextStyle(
                                   fontSize: 16,
-                                  color: Colors.grey,
+                                  color: AppColors.textSecondary,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 2),
                           Text(
                             user?.displayName ?? 'Guest User',
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                              color: AppColors.textPrimary,
                             ),
                           ),
                         ],
@@ -72,7 +72,7 @@ class HomeScreen extends StatelessWidget {
                       icon: PhosphorIcon(
                         PhosphorIcons.bell(),
                         size: 24,
-                        color: Colors.black,
+                        color: AppColors.primary,
                       ),
                     ),
                   ],
@@ -85,12 +85,12 @@ class HomeScreen extends StatelessWidget {
                     PhosphorIcon(
                       PhosphorIcons.forkKnife(),
                       size: 80,
-                      color: const Color(0xFFF58700),
+                      color: AppColors.primary,
                     ),
                     const SizedBox(height: 16),
                     const Text(
                       'Your smart meal planning journey begins here.',
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                      style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 48),
@@ -203,7 +203,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              PhosphorIcon(icon, size: 48, color: const Color(0xFFF58700)),
+              PhosphorIcon(icon, size: 48, color: AppColors.primary),
               const SizedBox(height: 12),
               Text(
                 title,
@@ -215,7 +215,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 subtitle,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
             ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_colors.dart';
 
 class LoadingBanner extends StatelessWidget {
   final String message;
@@ -21,10 +22,10 @@ class LoadingBanner extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF58700).withOpacity(0.1),
+        color: AppColors.primary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: const Color(0xFFF58700).withOpacity(0.3),
+          color: AppColors.primary.withOpacity(0.3),
           width: 1,
         ),
       ),
@@ -36,7 +37,7 @@ class LoadingBanner extends StatelessWidget {
             child: CircularProgressIndicator(
               strokeWidth: 2.0,
               valueColor: const AlwaysStoppedAnimation<Color>(
-                Color(0xFFF58700),
+                AppColors.primary,
               ),
             ),
           ),
@@ -47,7 +48,7 @@ class LoadingBanner extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Color(0xFFF58700),
+                color: AppColors.primary,
               ),
             ),
           ),

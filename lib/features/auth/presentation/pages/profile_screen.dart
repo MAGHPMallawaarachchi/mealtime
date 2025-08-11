@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/services/auth_service.dart';
+import '../../../../core/constants/app_colors.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -88,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 24),
                   CircleAvatar(
                     radius: 60,
-                    backgroundColor: const Color(0xFFF58700).withOpacity(0.2),
+                    backgroundColor: AppColors.primary.withOpacity(0.2),
                     backgroundImage: _user?.photoURL != null
                         ? NetworkImage(_user!.photoURL!)
                         : null,
@@ -96,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ? PhosphorIcon(
                             PhosphorIcons.user(),
                             size: 60,
-                            color: const Color(0xFFF58700),
+                            color: AppColors.primary,
                           )
                         : null,
                   ),

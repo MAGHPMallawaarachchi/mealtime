@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../services/auth_service.dart';
+import '../constants/app_colors.dart';
 
 class AuthGuard extends StatelessWidget {
   final Widget child;
@@ -55,7 +56,7 @@ class AuthRequiredScreen extends StatelessWidget {
               PhosphorIcon(
                 PhosphorIcons.lock(),
                 size: 64,
-                color: Colors.grey,
+                color: AppColors.textSecondary,
               ),
               const SizedBox(height: 24),
               const Text(
@@ -71,7 +72,7 @@ class AuthRequiredScreen extends StatelessWidget {
                 'Please sign in to access this feature.',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey,
+                  color: AppColors.textSecondary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -81,7 +82,7 @@ class AuthRequiredScreen extends StatelessWidget {
                   // Navigate to login will be handled by router redirect
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF58700),
+                  backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,

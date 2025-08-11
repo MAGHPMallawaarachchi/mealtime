@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../../../core/constants/app_colors.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -18,7 +19,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -94,7 +95,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF2D2D2D),
+              color: AppColors.textDark,
               height: 1.2,
             ),
           ),
@@ -105,7 +106,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey.shade600,
+              color: AppColors.textSecondary,
               height: 1.5,
             ),
           ),
@@ -133,7 +134,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
-                      color: Colors.grey.shade600,
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 )
@@ -145,7 +146,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(12),
                     decoration: const BoxDecoration(
-                      color: Color(0xFFF58700),
+                      color: AppColors.primary,
                       shape: BoxShape.circle,
                     ),
                     child: PhosphorIcon(
@@ -164,7 +165,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       vertical: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF58700),
+                      color: AppColors.primary,
                       borderRadius: BorderRadius.circular(25),
                     ),
                     child: const Text(
@@ -196,8 +197,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           width: _currentPage == index ? 20 : 8,
           decoration: BoxDecoration(
             color: _currentPage == index
-                ? const Color(0xFFF58700)
-                : Colors.grey.shade300,
+                ? AppColors.primary
+                : AppColors.textSecondary.withOpacity(0.3),
             borderRadius: BorderRadius.circular(4),
           ),
         ),

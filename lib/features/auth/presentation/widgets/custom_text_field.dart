@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_colors.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
@@ -29,37 +30,37 @@ class CustomTextField extends StatelessWidget {
       enabled: enabled,
       style: TextStyle(
         fontSize: 16,
-        color: enabled ? Colors.black87 : Colors.grey[600],
+        color: enabled ? AppColors.textPrimary : AppColors.textSecondary,
         letterSpacing: obscureText ? 1.5 : null,
       ),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
-          color: Colors.grey[600],
+          color: AppColors.textSecondary,
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
         floatingLabelStyle: TextStyle(
-          color: Colors.grey[600],
+          color: AppColors.textSecondary,
           fontSize: 14,
           fontWeight: FontWeight.w400,
         ),
         suffixIcon: suffixIcon,
         border: const UnderlineInputBorder(
           borderSide: BorderSide(
-            color: Color(0xFFE0E0E0),
+            color: AppColors.border,
             width: 1.0,
           ),
         ),
         enabledBorder: const UnderlineInputBorder(
           borderSide: BorderSide(
-            color: Color(0xFFE0E0E0),
+            color: AppColors.border,
             width: 1.0,
           ),
         ),
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(
-            color: Color(0xFFF58700),
+            color: AppColors.primary,
             width: 2.0,
           ),
         ),
