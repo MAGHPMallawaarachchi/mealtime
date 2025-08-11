@@ -19,11 +19,7 @@ class MainScaffold extends StatefulWidget {
   State<MainScaffold> createState() => _MainScaffoldState();
 }
 
-class _MainScaffoldState extends State<MainScaffold> with TickerProviderStateMixin {
-  int _currentIndex = 0;
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-
+class _MainScaffoldState extends State<MainScaffold> {
   // Pre-create all screens to eliminate any build flickering
   final List<Widget> _screens = const [
     HomeScreen(),
@@ -33,96 +29,40 @@ class _MainScaffoldState extends State<MainScaffold> with TickerProviderStateMix
     ProfileScreen(),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    
-    // Initialize animation controller for smooth transitions
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-    
-    // Start with the animation completed
-    _animationController.forward();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Initialize from current route after dependencies are available
-    _initializeFromCurrentRoute();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void _initializeFromCurrentRoute() {
+  int _getCurrentIndex() {
     try {
       final location = GoRouterState.of(context).uri.toString();
-      int newIndex;
-      
       switch (location) {
         case '/home':
-          newIndex = 0;
-          break;
+          return 0;
         case '/explore':
-          newIndex = 1;
-          break;
+          return 1;
         case '/meal-planner':
-          newIndex = 2;
-          break;
+          return 2;
         case '/pantry':
-          newIndex = 3;
-          break;
+          return 3;
         case '/profile':
-          newIndex = 4;
-          break;
+          return 4;
         default:
-          newIndex = 0;
-      }
-      
-      if (_currentIndex != newIndex) {
-        setState(() {
-          _currentIndex = newIndex;
-        });
+          return 0; // Fallback to home
       }
     } catch (e) {
-      // Fallback to home if route context is not available
-      if (_currentIndex != 0) {
-        setState(() {
-          _currentIndex = 0;
-        });
-      }
+      // Fallback to home if route context is unavailable
+      return 0;
     }
   }
 
   void _onTabTapped(int index) {
-    if (_currentIndex != index) {
-      // Smooth transition with subtle animation
-      _animationController.reset();
-      
-      setState(() {
-        _currentIndex = index;
-      });
-      
-      _animationController.forward();
+    final routes = ['/home', '/explore', '/meal-planner', '/pantry', '/profile'];
+    if (index >= 0 && index < routes.length) {
+      context.go(routes[index]);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentIndex = _getCurrentIndex();
+    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -130,16 +70,13 @@ class _MainScaffoldState extends State<MainScaffold> with TickerProviderStateMix
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: IndexedStack(
-          index: _currentIndex,
-          children: _screens,
-        ),
+      body: IndexedStack(
+        index: currentIndex,
+        children: _screens,
       ),
       extendBody: true, // Allow body to extend behind floating button
       bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex,
+        currentIndex: currentIndex,
         onTap: _onTabTapped,
       ),
     );

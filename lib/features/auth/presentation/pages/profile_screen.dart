@@ -22,10 +22,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _user = _authService.currentUser;
   }
 
-  Future<void> _signOut() async {
-    setState(() => _isLoading = true);
+  Future<void> _showLogoutConfirmation() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: PhosphorIcon(
+          PhosphorIcons.signOut(),
+          size: 24,
+          color: Colors.red,
+        ),
+        title: const Text('Sign Out'),
+        content: const Text('Are you sure you want to sign out?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Sign Out'),
+          ),
+        ],
+      ),
+    );
 
+    if (confirmed == true) {
+      _signOut();
+    }
+  }
+
+  Future<void> _signOut() async {
     try {
+      setState(() => _isLoading = true);
       await _authService.signOut();
       // Navigation will be handled automatically by router redirect
     } catch (e) {
@@ -44,33 +76,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  void _showSignOutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Sign Out'),
-          content: const Text('Are you sure you want to sign out?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _signOut();
-              },
-              child: const Text(
-                'Sign Out',
-                style: TextStyle(color: Colors.red),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +216,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: _showSignOutDialog,
+                      onPressed: _showLogoutConfirmation,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         foregroundColor: Colors.white,
