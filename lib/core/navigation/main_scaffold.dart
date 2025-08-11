@@ -10,10 +10,7 @@ import '../../features/auth/presentation/pages/profile_screen.dart';
 class MainScaffold extends StatefulWidget {
   final Widget child;
 
-  const MainScaffold({
-    super.key,
-    required this.child,
-  });
+  const MainScaffold({super.key, required this.child});
 
   @override
   State<MainScaffold> createState() => _MainScaffoldState();
@@ -53,7 +50,13 @@ class _MainScaffoldState extends State<MainScaffold> {
   }
 
   void _onTabTapped(int index) {
-    final routes = ['/home', '/explore', '/meal-planner', '/pantry', '/profile'];
+    final routes = [
+      '/home',
+      '/explore',
+      '/meal-planner',
+      '/pantry',
+      '/profile',
+    ];
     if (index >= 0 && index < routes.length) {
       context.go(routes[index]);
     }
@@ -62,7 +65,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   @override
   Widget build(BuildContext context) {
     final currentIndex = _getCurrentIndex();
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -70,9 +73,9 @@ class _MainScaffoldState extends State<MainScaffold> {
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
-      body: IndexedStack(
-        index: currentIndex,
-        children: _screens,
+      body: Padding(
+        padding: const EdgeInsets.only(top: 5, bottom: 70, left: 5, right: 5),
+        child: IndexedStack(index: currentIndex, children: _screens),
       ),
       extendBody: true, // Allow body to extend behind floating button
       bottomNavigationBar: CustomBottomNavBar(
@@ -82,4 +85,3 @@ class _MainScaffoldState extends State<MainScaffold> {
     );
   }
 }
-
