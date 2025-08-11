@@ -35,6 +35,9 @@ class MealTimeApp extends StatelessWidget {
         appBarTheme: const AppBarTheme(
           centerTitle: true,
           elevation: 0,
+          toolbarHeight: 0,
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
         ),
       ),
       routerConfig: AppRouter.router,
