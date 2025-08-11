@@ -14,11 +14,23 @@ import '../guards/auth_guard.dart';
 import '../services/auth_service.dart';
 import 'main_scaffold.dart';
 
+class AuthNotifier extends ChangeNotifier {
+  final AuthService _authService;
+  
+  AuthNotifier(this._authService) {
+    _authService.authStateChanges.listen((_) {
+      notifyListeners();
+    });
+  }
+}
+
 class AppRouter {
   static final _authService = AuthService();
+  static final _authNotifier = AuthNotifier(_authService);
 
   static final GoRouter router = GoRouter(
     initialLocation: '/',
+    refreshListenable: _authNotifier,
     redirect: (context, state) {
       final user = _authService.currentUser;
       final isLoggedIn = user != null;

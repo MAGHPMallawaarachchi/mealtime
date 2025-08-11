@@ -30,7 +30,11 @@ class AuthGuard extends StatelessWidget {
           return child;
         }
         
-        return fallback ?? const AuthRequiredScreen();
+        return fallback ?? const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
       },
     );
   }

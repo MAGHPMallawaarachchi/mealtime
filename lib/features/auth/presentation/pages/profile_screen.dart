@@ -27,9 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     try {
       await _authService.signOut();
-      if (mounted) {
-        context.go('/login');
-      }
+      // Navigation will be handled automatically by router redirect
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
