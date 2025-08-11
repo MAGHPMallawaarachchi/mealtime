@@ -19,9 +19,9 @@ class HomeScreen extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                  left: 15,
-                  right: 8,
-                  top: 20,
+                  left: 10,
+                  right: 10,
+                  top: 10,
                   bottom: 8,
                 ),
                 child: Row(
@@ -79,7 +79,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [
                     PhosphorIcon(
@@ -90,7 +90,10 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     const Text(
                       'Your smart meal planning journey begins here.',
-                      style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.textSecondary,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 48),
@@ -215,7 +218,10 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 subtitle,
-                style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textSecondary,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],

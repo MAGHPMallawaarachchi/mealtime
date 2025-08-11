@@ -73,10 +73,7 @@ class _MainScaffoldState extends State<MainScaffold> {
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 5, bottom: 70, left: 5, right: 5),
-        child: IndexedStack(index: currentIndex, children: _screens),
-      ),
+      body: IndexedStack(index: currentIndex, children: _screens),
       extendBody: true, // Allow body to extend behind floating button
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: currentIndex,
