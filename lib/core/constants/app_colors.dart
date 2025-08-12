@@ -14,8 +14,8 @@ class AppColors {
   static const Color grey = Colors.grey;
 
   // Text colors
-  static const Color textPrimary = Colors.black;
-  static const Color textSecondary = Colors.grey;
+  static const Color textPrimary = Color(0xFF2D2B2E);
+  static const Color textSecondary = Color(0xFF727272);
   static const Color textDark = Color(0xFF2D2D2D);
 
   // Background colors
@@ -31,7 +31,8 @@ class AppColors {
   static const Color info = Color(0xFF2196F3);
 
   // With opacity helpers
-  static Color primaryWithOpacity(double opacity) => primary.withOpacity(opacity);
+  static Color primaryWithOpacity(double opacity) =>
+      primary.withOpacity(opacity);
   static Color blackWithOpacity(double opacity) => black.withOpacity(opacity);
   static Color whiteWithOpacity(double opacity) => white.withOpacity(opacity);
 }

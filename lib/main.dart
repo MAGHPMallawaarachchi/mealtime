@@ -33,6 +33,7 @@ class MealTimeApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
         useMaterial3: true,
+        fontFamily: 'Inter',
         appBarTheme: const AppBarTheme(
           centerTitle: true,
           elevation: 0,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../widgets/todays_meal_plan_section.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -18,12 +19,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(
-                  left: 10,
-                  right: 10,
-                  top: 10,
-                  bottom: 8,
-                ),
+                padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,8 +39,8 @@ class HomeScreen extends StatelessWidget {
                               Text(
                                 _getGreeting(),
                                 style: const TextStyle(
-                                  fontSize: 16,
-                                  color: AppColors.textSecondary,
+                                  fontSize: 14,
+                                  color: AppColors.textPrimary,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
@@ -78,90 +74,9 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    PhosphorIcon(
-                      PhosphorIcons.forkKnife(),
-                      size: 80,
-                      color: AppColors.primary,
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Your smart meal planning journey begins here.',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.textSecondary,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 48),
-                    GridView.count(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      children: [
-                        _buildFeatureCard(
-                          icon: PhosphorIcons.cookingPot(),
-                          title: 'Pantry',
-                          subtitle: 'Manage ingredients',
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Pantry feature coming soon!'),
-                              ),
-                            );
-                          },
-                        ),
-                        _buildFeatureCard(
-                          icon: PhosphorIcons.book(),
-                          title: 'Recipes',
-                          subtitle: 'Discover meals',
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Recipes feature coming soon!'),
-                              ),
-                            );
-                          },
-                        ),
-                        _buildFeatureCard(
-                          icon: PhosphorIcons.calendar(),
-                          title: 'Meal Planner',
-                          subtitle: 'Plan your week',
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Meal Planner feature coming soon!',
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        _buildFeatureCard(
-                          icon: PhosphorIcons.shoppingCart(),
-                          title: 'Shopping List',
-                          subtitle: 'Never forget items',
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Shopping List feature coming soon!',
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 90),
+              const SizedBox(height: 20),
+              const TodaysMealPlanSection(),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -189,46 +104,5 @@ class HomeScreen extends StatelessWidget {
     } else {
       return PhosphorIcons.moon();
     }
-  }
-
-  Widget _buildFeatureCard({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-  }) {
-    return Card(
-      elevation: 2,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              PhosphorIcon(icon, size: 48, color: AppColors.primary),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

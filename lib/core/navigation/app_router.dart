@@ -10,6 +10,7 @@ import '../../features/explore/presentation/pages/explore_screen.dart';
 import '../../features/meal_planner/presentation/pages/meal_planner_screen.dart';
 import '../../features/pantry/presentation/pages/pantry_screen.dart';
 import '../../features/auth/presentation/pages/profile_screen.dart';
+import '../../features/recipes/presentation/pages/recipe_detail_screen.dart';
 import '../guards/auth_guard.dart';
 import '../services/auth_service.dart';
 import 'main_scaffold.dart';
@@ -102,6 +103,14 @@ class AppRouter {
             builder: (context, state) => const ProfileScreen(),
           ),
         ],
+      ),
+      GoRoute(
+        path: '/recipe/:recipeId',
+        name: 'recipe-detail',
+        builder: (context, state) {
+          final recipeId = state.pathParameters['recipeId']!;
+          return RecipeDetailScreen(recipeId: recipeId);
+        },
       ),
     ],
     errorBuilder: (context, state) =>
