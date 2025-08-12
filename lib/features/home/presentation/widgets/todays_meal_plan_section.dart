@@ -36,7 +36,7 @@ class TodaysMealPlanSection extends StatelessWidget {
                       color: AppColors.textPrimary,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 0),
                   Text(
                     todayDate,
                     style: const TextStyle(

@@ -3,6 +3,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../widgets/todays_meal_plan_section.dart';
+import '../widgets/category_section.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -76,6 +77,8 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               const TodaysMealPlanSection(),
+              const SizedBox(height: 20),
+              const CategorySection(),
               const SizedBox(height: 20),
             ],
           ),
