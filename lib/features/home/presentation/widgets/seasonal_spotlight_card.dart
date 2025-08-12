@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../domain/models/seasonal_ingredient.dart';
 
@@ -15,7 +16,7 @@ class SeasonalSpotlightCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         image: DecorationImage(
-          image: NetworkImage(ingredient.imageUrl),
+          image: CachedNetworkImageProvider(ingredient.imageUrl),
           fit: BoxFit.cover,
         ),
       ),

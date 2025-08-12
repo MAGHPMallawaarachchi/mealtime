@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../domain/models/meal_plan_item.dart';
 
@@ -48,44 +49,32 @@ class MealPlanCard extends StatelessWidget {
                       height: 140,
                       width: 140,
                       color: AppColors.background,
-                      child: Image.network(
-                        mealPlan.imageUrl,
+                      child: CachedNetworkImage(
+                        imageUrl: mealPlan.imageUrl,
                         fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Container(
-                            color: AppColors.background,
-                            child: Center(
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColors.primary,
-                                  value:
-                                      loadingProgress.expectedTotalBytes != null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                            (loadingProgress
-                                                    .expectedTotalBytes ??
-                                                1)
-                                      : null,
-                                ),
+                        placeholder: (context, url) => Container(
+                          color: AppColors.background,
+                          child: Center(
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.primary,
                               ),
                             ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: AppColors.background,
-                            child: Center(
-                              child: PhosphorIcon(
-                                PhosphorIcons.image(),
-                                color: AppColors.textSecondary,
-                                size: 32,
-                              ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: AppColors.background,
+                          child: Center(
+                            child: PhosphorIcon(
+                              PhosphorIcons.image(),
+                              color: AppColors.textSecondary,
+                              size: 32,
                             ),
-                          );
-                        },
+                          ),
+                        ),
                       ),
                     ),
                   ),
