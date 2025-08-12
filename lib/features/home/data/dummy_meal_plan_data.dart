@@ -8,25 +8,29 @@ class DummyMealPlanData {
         id: 'recipe_1',
         title: 'Kiribath and Lunu Miris',
         time: '8:30 am',
-        imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop',
+        imageUrl:
+            'https://whirlpool.com.au/cdn/shop/articles/kiribath.jpg?v=1713936421?w=800&h=600&fit=crop',
       ),
       const MealPlanItem(
         id: 'recipe_2',
         title: 'Rice and Curry',
         time: '12:30 pm',
-        imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800&h=600&fit=crop',
+        imageUrl:
+            'https://i0.wp.com/kalapu.lk/wp-content/uploads/2021/08/DSC9297-2LowRes.jpg?fit=1437%2C993&ssl=1?w=800&h=600&fit=crop',
       ),
       const MealPlanItem(
         id: 'recipe_3',
         title: 'Kottu Roti',
         time: '7:00 pm',
-        imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&h=600&fit=crop',
+        imageUrl:
+            'https://www.maggi.lk/sites/default/files/styles/home_stage_944_531/public/srh_recipes/de0a5945fe8e322a4d7711389c7a4830.jpg?h=4f5b30f1&itok=mCvylZbE?w=800&h=600&fit=crop',
       ),
       const MealPlanItem(
         id: 'recipe_4',
         title: 'String Hoppers & Curry',
         time: '8:00 am',
-        imageUrl: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=600&fit=crop',
+        imageUrl:
+            'https://harischandramills.com/wp-content/uploads/2018/06/3-2.jpg?w=800&h=600&fit=crop',
       ),
     ];
   }
@@ -37,8 +41,10 @@ class DummyMealPlanData {
         id: 'recipe_1',
         title: 'Kiribath and Lunu Miris',
         time: '45 min',
-        imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop',
-        description: 'Traditional Sri Lankan milk rice served with spicy onion relish',
+        imageUrl:
+            'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop',
+        description:
+            'Traditional Sri Lankan milk rice served with spicy onion relish',
         ingredients: [
           '2 cups basmati rice',
           '1 can coconut milk (400ml)',
@@ -70,8 +76,10 @@ class DummyMealPlanData {
         id: 'recipe_2',
         title: 'Rice and Curry',
         time: '1 hour 30 min',
-        imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800&h=600&fit=crop',
-        description: 'Classic Sri Lankan rice and curry with dhal, vegetable curries, and sambola',
+        imageUrl:
+            'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800&h=600&fit=crop',
+        description:
+            'Classic Sri Lankan rice and curry with dhal, vegetable curries, and sambola',
         ingredients: [
           '2 cups basmati rice',
           '1 cup red lentils',
@@ -111,8 +119,10 @@ class DummyMealPlanData {
         id: 'recipe_3',
         title: 'Kottu Roti',
         time: '30 min',
-        imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&h=600&fit=crop',
-        description: 'Popular Sri Lankan street food made with chopped roti, vegetables, and spices',
+        imageUrl:
+            'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&h=600&fit=crop',
+        description:
+            'Popular Sri Lankan street food made with chopped roti, vegetables, and spices',
         ingredients: [
           '4 plain roti (or leftover roti)',
           '200g chicken (cut into strips)',
@@ -152,8 +162,10 @@ class DummyMealPlanData {
         id: 'recipe_4',
         title: 'String Hoppers & Curry',
         time: '1 hour',
-        imageUrl: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=600&fit=crop',
-        description: 'Delicate rice noodle nests served with aromatic coconut curry',
+        imageUrl:
+            'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=600&fit=crop',
+        description:
+            'Delicate rice noodle nests served with aromatic coconut curry',
         ingredients: [
           '2 cups red rice flour',
           '2 cups water',
