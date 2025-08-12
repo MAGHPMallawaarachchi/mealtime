@@ -4,6 +4,7 @@ import '../../../../core/services/auth_service.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../widgets/todays_meal_plan_section.dart';
 import '../widgets/category_section.dart';
+import '../widgets/seasonal_spotlight_section.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -75,6 +76,8 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: 10),
+              const SeasonalSpotlightSection(),
               const SizedBox(height: 20),
               const TodaysMealPlanSection(),
               const SizedBox(height: 20),
