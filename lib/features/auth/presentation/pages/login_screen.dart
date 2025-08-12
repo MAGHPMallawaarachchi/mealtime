@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/services/auth_service.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/login_form.dart';
 
@@ -80,9 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 4),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
@@ -91,12 +90,10 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: const Color(0xFFF58700),
+        backgroundColor: AppColors.primary,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 3),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
@@ -113,14 +110,12 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: 32.0,
-          vertical: MediaQuery.of(context).viewInsets.bottom > 0 ? 24.0 : 16.0,
+          vertical: MediaQuery.of(context).viewInsets.bottom > 0 ? 0.0 : 0.0,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.1,
-            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.1),
             _buildHeader(),
             const SizedBox(height: 48),
             LoginForm(
@@ -131,9 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
               onSignUp: _handleSignUp,
               isLoading: _isLoading,
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.05,
-            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
           ],
         ),
       ),
@@ -145,9 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: _buildContent(),
-      ),
+      body: SafeArea(child: _buildContent()),
     );
   }
 }

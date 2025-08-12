@@ -16,7 +16,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<RegisterFormState>();
   bool _isLoading = false;
 
-
   Future<void> _handleEmailRegister() async {
     final form = _formKey.currentState;
     if (form == null) return;
@@ -34,7 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         await userCredential!.user!.updateDisplayName(form.nameValue);
         await userCredential.user!.reload();
       }
-      
+
       if (mounted) {
         context.go('/home');
       }
@@ -55,7 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       await _authService.signInWithGoogle();
-      
+
       if (mounted) {
         context.go('/home');
       }
@@ -82,9 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 4),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
@@ -100,12 +97,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return SingleChildScrollView(
       child: Container(
         constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top,
+          minHeight:
+              MediaQuery.of(context).size.height -
+              MediaQuery.of(context).padding.top,
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: 32.0,
-            vertical: MediaQuery.of(context).viewInsets.bottom > 0 ? 24.0 : 16.0,
+            vertical: MediaQuery.of(context).viewInsets.bottom > 0 ? 0.0 : 0.0,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -137,9 +136,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: _buildContent(),
-      ),
+      body: SafeArea(child: _buildContent()),
     );
   }
 }
