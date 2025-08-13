@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../domain/models/meal_plan_item.dart';
 
 class MealPlanCard extends StatelessWidget {
@@ -45,36 +45,13 @@ class MealPlanCard extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Container(
+                    child: SizedBox(
+                      width: double.infinity,
                       height: 140,
-                      width: 140,
-                      color: AppColors.background,
-                      child: CachedNetworkImage(
+                      child: OptimizedCachedImage(
                         imageUrl: mealPlan.imageUrl,
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          color: AppColors.background,
-                          child: Center(
-                            child: SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          color: AppColors.background,
-                          child: Center(
-                            child: PhosphorIcon(
-                              PhosphorIcons.image(),
-                              color: AppColors.textSecondary,
-                              size: 32,
-                            ),
-                          ),
-                        ),
+                        preload: true,
                       ),
                     ),
                   ),

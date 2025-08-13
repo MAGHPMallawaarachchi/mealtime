@@ -94,7 +94,7 @@ class RecipesGridSection extends StatelessWidget {
                 crossAxisCount: 2,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
-                childAspectRatio: 0.9,
+                childAspectRatio: 0.89,
               ),
               itemCount: displayedRecipes.length,
               itemBuilder: (context, index) {

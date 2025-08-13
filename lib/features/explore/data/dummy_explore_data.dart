@@ -8,7 +8,7 @@ class DummyExploreData {
         title: 'Sri Lankan Fish Curry',
         time: '45 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400&h=300&fit=crop',
+            'https://www.loveandotherspices.com/wp-content/uploads/2015/10/sri-lankan-fish-curry-spicy-featured.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 420,
@@ -21,7 +21,7 @@ class DummyExploreData {
         title: 'Leftover Rice Stir Fry',
         time: '15 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&h=300&fit=crop',
+            'https://www.simplyrecipes.com/thmb/5XV_wV6gRcTxC50oGLtvm9JOePk=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2018__07__Veggie-Fried-Rice-LEAD-HORIZONTAL-5f6ac64a24b44f9ebd4b3ef854747f4a.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 320,
@@ -31,10 +31,10 @@ class DummyExploreData {
       ),
       Recipe(
         id: 'feat_3',
-        title: 'Hoppers with Coconut Sambol',
+        title: 'String Hoppers',
         time: '30 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1574653803731-0f6c2d816e8f?w=400&h=300&fit=crop',
+            'https://i.pinimg.com/736x/86/bd/4e/86bd4e7abe5c4f59ded4b6802418e2d8.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 280,
@@ -47,7 +47,7 @@ class DummyExploreData {
         title: 'Chicken Kottu Roti',
         time: '25 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&h=300&fit=crop',
+            'https://www.theflavorbender.com/wp-content/uploads/2018/03/Chicken-Kottu-Roti-The-Flavor-Bender-Featured-Image-SQ-8.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 480,
@@ -57,10 +57,10 @@ class DummyExploreData {
       ),
       Recipe(
         id: 'feat_5',
-        title: 'Pol Sambol with String Hoppers',
+        title: 'Pol Sambol',
         time: '20 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=400&h=300&fit=crop',
+            'https://media-cdn2.greatbritishchefs.com/media/etbpfsnk/img86979.whqc_768x512q90.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 250,
@@ -80,7 +80,7 @@ class DummyExploreData {
         title: 'Rice and Curry',
         time: '60 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1596797038530-2c107229654b?w=400&h=300&fit=crop',
+            'https://i0.wp.com/kalapu.lk/wp-content/uploads/2021/08/DSC9297-2LowRes.jpg?fit=1437%2C993&ssl=1?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 520,
@@ -93,7 +93,7 @@ class DummyExploreData {
         title: 'Dhal Curry',
         time: '35 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1574653817022-0a16ac2a8c5d?w=400&h=300&fit=crop',
+            'https://saltedmint.com/wp-content/uploads/2024/01/red-lentil-curry-dhal-6.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 280,
@@ -106,7 +106,7 @@ class DummyExploreData {
         title: 'Ambulthiyal (Fish Curry)',
         time: '40 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400&h=300&fit=crop',
+            'https://i0.wp.com/theperfectcurry.com/wp-content/uploads/2022/10/PXL_20221004_141950841.PORTRAIT.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 350,
@@ -118,46 +118,21 @@ class DummyExploreData {
         title: 'Gotu Kola Sambol',
         time: '10 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop',
+            'https://images.slurrp.com/prod/recipe_images/transcribe/salad/Gotukola-Sambol.webp?impolicy=slurrp-20210601&width=1200&height=900&q=75?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 120,
         macros: const RecipeMacros(protein: 4, carbs: 8, fats: 8, fiber: 4),
         description: 'Fresh pennywort salad with coconut and lime.',
       ),
-      Recipe(
-        id: 'sri_5',
-        title: 'Parippu (Dhal)',
-        time: '25 min',
-        imageUrl:
-            'https://images.unsplash.com/photo-1574653803731-0f6c2d816e8f?w=400&h=300&fit=crop',
-        ingredients: _getBasicIngredients(),
-        instructionSections: _getBasicInstructions(),
-        calories: 240,
-        macros: const RecipeMacros(protein: 16, carbs: 32, fats: 6, fiber: 10),
-        description: 'Simple Sri Lankan lentil curry perfect with rice.',
-      ),
 
       // Leftover Magic Recipes
-      Recipe(
-        id: 'left_1',
-        title: 'Leftover Curry Fried Rice',
-        time: '20 min',
-        imageUrl:
-            'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&h=300&fit=crop',
-        ingredients: _getBasicIngredients(),
-        instructionSections: _getBasicInstructions(),
-        calories: 380,
-        macros: const RecipeMacros(protein: 15, carbs: 52, fats: 12, fiber: 4),
-        description:
-            'Transform yesterday\'s rice and curry into a delicious fried rice.',
-      ),
       Recipe(
         id: 'left_2',
         title: 'Bread Pudding from Stale Bread',
         time: '45 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1571197119282-7c4e15040d6a?w=400&h=300&fit=crop',
+            'https://www.allrecipes.com/thmb/NDzgJ1x6qWxJ_M-VYWULFzM-jl8=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/658615_Bread-Pudding-II-4x3-bc7dce39c1984a12bd1a38fe3c3ea42d.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 320,
@@ -169,7 +144,7 @@ class DummyExploreData {
         title: 'Vegetable Soup from Scraps',
         time: '30 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop',
+            'https://livingkitchenwellness.com/wp-content/uploads/2020/04/scrappy-vegetable-soup-or-vegetable-scrap-soup-scaled.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 180,
@@ -182,7 +157,7 @@ class DummyExploreData {
         title: 'Roti Pizza',
         time: '15 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop',
+            'https://troovyfoods.com/cdn/shop/articles/3_8cbed97b-3671-4af8-8826-1c12663db79a.png?v=1689925564?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 290,
@@ -196,7 +171,7 @@ class DummyExploreData {
         title: 'Egg Hoppers',
         time: '20 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1582169296194-1ffc98106e56?w=400&h=300&fit=crop',
+            'https://i0.wp.com/www.lavenderandlovage.com/wp-content/uploads/2016/05/Sri-Lankan-Egg-Hoppers-for-Breakfast.jpg?fit=1200%2C901&ssl=1?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 220,
@@ -208,7 +183,7 @@ class DummyExploreData {
         title: 'Chicken Fried Rice',
         time: '25 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1516684732162-798a0062be99?w=400&h=300&fit=crop',
+            'https://iamhomesteader.com/wp-content/uploads/2025/05/Bang-Bang-Chicken-Fried-Rice-2.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 420,
@@ -220,7 +195,7 @@ class DummyExploreData {
         title: 'Vegetable Noodles',
         time: '18 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1555126634-323283e090fa?w=400&h=300&fit=crop',
+            'https://www.ohmyveg.co.uk/wp-content/uploads/2024/08/hakka-noodles.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 350,
@@ -234,7 +209,7 @@ class DummyExploreData {
         title: 'Jackfruit Curry',
         time: '40 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=400&h=300&fit=crop',
+            'https://images.immediate.co.uk/production/volatile/sites/2/2019/12/Vegan-jackfruit-massaman-curry-V2-29c66ff-scaled.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 280,
@@ -246,7 +221,7 @@ class DummyExploreData {
         title: 'Potato Curry',
         time: '30 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1574653803731-0f6c2d816e8f?w=400&h=300&fit=crop',
+            'https://www.sneakyveg.com/wp-content/uploads/2015/05/easy-potato-curry-vegan-sneaky-veg-FEAT-scaled.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 260,
@@ -258,7 +233,7 @@ class DummyExploreData {
         title: 'Green Bean Curry',
         time: '25 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop',
+            'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/sri-lankan-runner-bean-curry-15-08-2016-july-2013-c126a3d.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 180,
@@ -272,7 +247,7 @@ class DummyExploreData {
         title: 'Coconut Pancakes',
         time: '25 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=300&fit=crop',
+            'https://www.vegkit.com/wp-content/uploads/sites/2/2022/12/FPST3_Ep17_Sweet_Sri_Lankan_Coconut_Pancakes_details.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 310,
@@ -284,7 +259,7 @@ class DummyExploreData {
         title: 'Spiced Tea (Ceylon Tea)',
         time: '10 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400&h=300&fit=crop',
+            'https://www.thecookierookie.com/wp-content/uploads/2018/11/bourbon-chai-tea-latte-recipe-9-of-10.jpg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 45,
@@ -296,7 +271,7 @@ class DummyExploreData {
         title: 'Isso Vadai (Prawn Fritters)',
         time: '30 min',
         imageUrl:
-            'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&h=300&fit=crop',
+            'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDm40nZTi53jyhS2Dvkz9wKb3110mlPPe5n5Xgthlhh9ZPw5HmYwD1z1OuFa67Yol9obY_DuLUcQbtaycW9lKAka9KIAGHogZGuhE699YewFEldGo1QlgDV_gqtM00cCGbR56JSJNv18SKvI7qThrioN2GtRCV3X8NwiCpu2_yT7s7s5NuBvKcNhb-Nl8k/s1440/36EC5893-7F99-4CFF-8327-04B8D11A02C3.jpeg?w=400&h=300&fit=crop',
         ingredients: _getBasicIngredients(),
         instructionSections: _getBasicInstructions(),
         calories: 250,

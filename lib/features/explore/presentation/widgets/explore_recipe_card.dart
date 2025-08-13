@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mealtime/features/recipes/domain/models/recipe.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/optimized_cached_image.dart';
 
 class ExploreRecipeCard extends StatefulWidget {
   final Recipe recipe;
@@ -97,36 +97,13 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Container(
+                    child: SizedBox(
                       height: 140,
                       width: double.infinity,
-                      color: AppColors.background,
-                      child: CachedNetworkImage(
+                      child: OptimizedCachedImage(
                         imageUrl: widget.recipe.imageUrl,
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          color: AppColors.background,
-                          child: Center(
-                            child: SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          color: AppColors.background,
-                          child: Center(
-                            child: PhosphorIcon(
-                              PhosphorIcons.image(),
-                              color: AppColors.textSecondary,
-                              size: 32,
-                            ),
-                          ),
-                        ),
+                        preload: true,
                       ),
                     ),
                   ),
