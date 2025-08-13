@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../home/data/dummy_meal_plan_data.dart';
 import '../../../explore/data/dummy_explore_data.dart';
+import '../../../auth/presentation/widgets/primary_button.dart';
 import '../../domain/models/recipe.dart';
 
 enum RecipeTab { ingredients, instructions }
@@ -237,7 +238,13 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   ] else ...[
                     _buildInstructions(recipe),
                   ],
-                  const SizedBox(height: 90),
+                  const SizedBox(height: 32),
+                  PrimaryButton(
+                    text: 'Add to Meal Plan',
+                    onPressed: () => _addToMealPlan(recipe),
+                    height: 56,
+                  ),
+                  const SizedBox(height: 32),
                 ],
               ),
             ),
@@ -874,6 +881,39 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: instructionWidgets,
+      ),
+    );
+  }
+
+  void _addToMealPlan(Recipe recipe) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            PhosphorIcon(
+              PhosphorIcons.calendar(),
+              size: 20,
+              color: Colors.white,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                '${recipe.title} added to meal plan!',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.primary,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        margin: const EdgeInsets.all(16),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
