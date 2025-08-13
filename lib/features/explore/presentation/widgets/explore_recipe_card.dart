@@ -98,7 +98,7 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Container(
-                      height: 120,
+                      height: 140,
                       width: double.infinity,
                       color: AppColors.background,
                       child: CachedNetworkImage(
@@ -156,7 +156,7 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
                             : PhosphorIcons.heart(),
                         size: 18,
                         color: _isFavorite
-                            ? AppColors.error
+                            ? AppColors.primary
                             : AppColors.textSecondary,
                       ),
                     ),
@@ -166,7 +166,7 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -203,7 +203,7 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     Expanded(
                       child: Text(
                         widget.recipe.title,
@@ -217,7 +217,7 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [

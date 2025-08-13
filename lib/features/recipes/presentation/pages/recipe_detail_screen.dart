@@ -3,6 +3,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../home/data/dummy_meal_plan_data.dart';
+import '../../../explore/data/dummy_explore_data.dart';
 import '../../domain/models/recipe.dart';
 
 enum RecipeTab { ingredients, instructions }
@@ -27,15 +28,31 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   @override
   void initState() {
     super.initState();
-    final recipe = DummyMealPlanData.getRecipeById(widget.recipeId);
+    final recipe = _getRecipeById(widget.recipeId);
     if (recipe != null) {
       currentServings = recipe.defaultServings;
     }
   }
 
+  Recipe? _getRecipeById(String recipeId) {
+    // First try to get recipe from meal plan data
+    Recipe? recipe = DummyMealPlanData.getRecipeById(recipeId);
+    if (recipe != null) {
+      return recipe;
+    }
+    
+    // If not found, try to get from explore data
+    final allExploreRecipes = DummyExploreData.getAllRecipes();
+    try {
+      return allExploreRecipes.firstWhere((recipe) => recipe.id == recipeId);
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Recipe? recipe = DummyMealPlanData.getRecipeById(widget.recipeId);
+    final Recipe? recipe = _getRecipeById(widget.recipeId);
 
     if (recipe == null) {
       return Scaffold(
