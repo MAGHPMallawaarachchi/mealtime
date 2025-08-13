@@ -3,12 +3,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'core/navigation/app_router.dart';
 import 'core/constants/app_colors.dart';
+import 'core/services/cache_manager_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  
+  // Initialize cache manager service
+  CacheManagerService().initialize();
   
   // Uncomment these lines if using Firebase emulators for development
   // if (kDebugMode) {
