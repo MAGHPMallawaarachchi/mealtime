@@ -5,17 +5,37 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../home/data/dummy_meal_plan_data.dart';
 import '../../domain/models/recipe.dart';
 
-class RecipeDetailScreen extends StatelessWidget {
+enum RecipeTab { ingredients, instructions }
+
+class RecipeDetailScreen extends StatefulWidget {
   final String recipeId;
 
-  const RecipeDetailScreen({
-    super.key,
-    required this.recipeId,
-  });
+  const RecipeDetailScreen({super.key, required this.recipeId});
+
+  @override
+  State<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
+}
+
+class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
+  bool isFavorited = false;
+  int currentServings = 4;
+  UnitSystem selectedUnitSystem = UnitSystem.cups;
+  Set<String> checkedIngredients = {};
+  RecipeTab selectedTab = RecipeTab.ingredients;
+  bool isDescriptionExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final recipe = DummyMealPlanData.getRecipeById(widget.recipeId);
+    if (recipe != null) {
+      currentServings = recipe.defaultServings;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Recipe? recipe = DummyMealPlanData.getRecipeById(recipeId);
+    final Recipe? recipe = DummyMealPlanData.getRecipeById(widget.recipeId);
 
     if (recipe == null) {
       return Scaffold(
@@ -52,10 +72,7 @@ class RecipeDetailScreen extends StatelessWidget {
               const SizedBox(height: 8),
               const Text(
                 'The recipe you are looking for does not exist.',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
-                ),
+                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -73,6 +90,8 @@ class RecipeDetailScreen extends StatelessWidget {
             pinned: true,
             backgroundColor: AppColors.background,
             leading: Container(
+              height: 40,
+              width: 40,
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.9),
@@ -86,6 +105,32 @@ class RecipeDetailScreen extends StatelessWidget {
                 onPressed: () => context.pop(),
               ),
             ),
+            actions: [
+              Container(
+                height: 40,
+                width: 40,
+                margin: const EdgeInsets.only(right: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: IconButton(
+                  icon: PhosphorIcon(
+                    size: 22,
+                    PhosphorIcons.heart(),
+                    color: isFavorited
+                        ? AppColors.primary
+                        : AppColors.textPrimary,
+                    fill: isFavorited ? 1.0 : 0.0,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isFavorited = !isFavorited;
+                    });
+                  },
+                ),
+              ),
+            ],
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 color: AppColors.background,
@@ -101,7 +146,7 @@ class RecipeDetailScreen extends StatelessWidget {
                           color: AppColors.primary,
                           value: loadingProgress.expectedTotalBytes != null
                               ? loadingProgress.cumulativeBytesLoaded /
-                                  (loadingProgress.expectedTotalBytes ?? 1)
+                                    (loadingProgress.expectedTotalBytes ?? 1)
                               : null,
                         ),
                       ),
@@ -127,32 +172,52 @@ class RecipeDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    recipe.title,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  if (recipe.description != null)
-                    Text(
-                      recipe.description!,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: AppColors.textSecondary,
-                        height: 1.4,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        recipe.title,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          PhosphorIcon(
+                            PhosphorIcons.clock(),
+                            size: 16,
+                            color: AppColors.textSecondary,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            recipe.time,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 16),
-                  _buildRecipeMetrics(recipe),
+                  if (recipe.description != null)
+                    _buildDescription(recipe.description!),
                   const SizedBox(height: 24),
                   _buildNutritionInfo(recipe),
                   const SizedBox(height: 24),
-                  _buildIngredients(recipe.ingredients),
-                  const SizedBox(height: 24),
-                  _buildInstructions(recipe.instructions),
+                  _buildTabNavigation(),
+                  const SizedBox(height: 16),
+                  if (selectedTab == RecipeTab.ingredients) ...[
+                    _buildServingsControl(),
+                    const SizedBox(height: 16),
+                    _buildIngredients(recipe),
+                  ] else ...[
+                    _buildInstructions(recipe),
+                  ],
                   const SizedBox(height: 90),
                 ],
               ),
@@ -163,9 +228,290 @@ class RecipeDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRecipeMetrics(Recipe recipe) {
+  Widget _buildDescription(String description) {
+    const maxLines = 3;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          description,
+          style: const TextStyle(
+            fontSize: 14,
+            color: AppColors.textSecondary,
+            height: 1.4,
+          ),
+          maxLines: isDescriptionExpanded ? null : maxLines,
+          overflow: isDescriptionExpanded
+              ? TextOverflow.visible
+              : TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: 8),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              isDescriptionExpanded = !isDescriptionExpanded;
+            });
+          },
+          child: Text(
+            isDescriptionExpanded ? 'View Less' : 'View More',
+            style: const TextStyle(
+              fontSize: 14,
+              color: AppColors.primary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTabNavigation() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      height: 48,
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F5F5),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedTab = RecipeTab.ingredients;
+                });
+              },
+              child: Container(
+                height: 40,
+                margin: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: selectedTab == RecipeTab.ingredients
+                      ? AppColors.textPrimary
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child: Text(
+                    'Ingredients',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: selectedTab == RecipeTab.ingredients
+                          ? Colors.white
+                          : AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedTab = RecipeTab.instructions;
+                });
+              },
+              child: Container(
+                height: 40,
+                margin: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: selectedTab == RecipeTab.instructions
+                      ? AppColors.textPrimary
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child: Text(
+                    'Instructions',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: selectedTab == RecipeTab.instructions
+                          ? Colors.white
+                          : AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildServingsControl() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          'Servings',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        Row(
+          children: [
+            Container(
+              height: 24,
+              width: 24,
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.primary),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: IconButton(
+                onPressed: currentServings > 1
+                    ? () {
+                        setState(() {
+                          currentServings--;
+                        });
+                      }
+                    : null,
+                icon: PhosphorIcon(
+                  PhosphorIcons.minus(),
+                  size: 16,
+                  color: currentServings > 1
+                      ? AppColors.primary
+                      : AppColors.textSecondary,
+                ),
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                padding: EdgeInsets.zero,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Center(
+                child: Text(
+                  '$currentServings',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              height: 24,
+              width: 24,
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.primary),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: IconButton(
+                onPressed: currentServings < 20
+                    ? () {
+                        setState(() {
+                          currentServings++;
+                        });
+                      }
+                    : null,
+                icon: PhosphorIcon(
+                  PhosphorIcons.plus(),
+                  size: 16,
+                  color: currentServings < 20
+                      ? AppColors.primary
+                      : AppColors.textSecondary,
+                ),
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                padding: EdgeInsets.zero,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUnitToggle() {
+    return Container(
+      height: 40,
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F5F5),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedUnitSystem = UnitSystem.cups;
+              });
+            },
+            child: Container(
+              height: 32,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              margin: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: selectedUnitSystem == UnitSystem.cups
+                    ? AppColors.primary
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Center(
+                child: Text(
+                  'Cups',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: selectedUnitSystem == UnitSystem.cups
+                        ? Colors.white
+                        : AppColors.textSecondary,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedUnitSystem = UnitSystem.metric;
+              });
+            },
+            child: Container(
+              height: 32,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              margin: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: selectedUnitSystem == UnitSystem.metric
+                    ? AppColors.primary
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Center(
+                child: Text(
+                  'Metric',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: selectedUnitSystem == UnitSystem.metric
+                        ? Colors.white
+                        : AppColors.textSecondary,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNutritionInfo(Recipe recipe) {
+    // Per serving nutrition values (no scaling needed)
+    final caloriesPerServing = (recipe.calories / recipe.defaultServings)
+        .round();
+    final proteinPerServing = recipe.macros.protein / recipe.defaultServings;
+    final carbsPerServing = recipe.macros.carbs / recipe.defaultServings;
+    final fatsPerServing = recipe.macros.fats / recipe.defaultServings;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -180,239 +526,336 @@ class RecipeDetailScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildMetric(PhosphorIcons.clock(), recipe.time, 'Cook Time'),
-          _buildMetric(PhosphorIcons.flame(), '${recipe.calories}', 'Calories'),
-          _buildMetric(PhosphorIcons.users(), '4', 'Servings'),
+          _buildNutritionCard(
+            PhosphorIcons.fire(),
+            '$caloriesPerServing',
+            'Calories',
+          ),
+          _buildNutritionCard(
+            PhosphorIcons.shrimp(),
+            '${proteinPerServing.toStringAsFixed(0)} g',
+            'Protein',
+          ),
+          _buildNutritionCard(
+            PhosphorIcons.grains(),
+            '${carbsPerServing.toStringAsFixed(0)} g',
+            'Carbs',
+          ),
+          _buildNutritionCard(
+            PhosphorIcons.avocado(),
+            '${fatsPerServing.toStringAsFixed(1)} g',
+            'Fat',
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildMetric(IconData icon, String value, String label) {
+  Widget _buildNutritionCard(IconData icon, String value, String label) {
     return Column(
       children: [
-        PhosphorIcon(
-          icon,
-          size: 24,
-          color: AppColors.primary,
-        ),
+        PhosphorIcon(icon, size: 30, color: AppColors.primary),
         const SizedBox(height: 8),
         Text(
           value,
           style: const TextStyle(
-            fontSize: 16,
+            fontSize: 17,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 0),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: AppColors.textSecondary,
-          ),
+          style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
         ),
       ],
     );
   }
 
-  Widget _buildNutritionInfo(Recipe recipe) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Nutrition (per serving)',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              _buildNutritionRow('Protein', '${recipe.macros.protein.toStringAsFixed(1)}g'),
-              _buildNutritionRow('Carbs', '${recipe.macros.carbs.toStringAsFixed(1)}g'),
-              _buildNutritionRow('Fats', '${recipe.macros.fats.toStringAsFixed(1)}g'),
-              _buildNutritionRow('Fiber', '${recipe.macros.fiber.toStringAsFixed(1)}g'),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+  Widget _buildIngredients(Recipe recipe) {
+    // Handle both new and legacy ingredients
+    List<Widget> ingredientWidgets = [];
 
-  Widget _buildNutritionRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    if (recipe.ingredients.isNotEmpty) {
+      // New format with RecipeIngredient objects
+      for (final ingredient in recipe.ingredients) {
+        final scaledIngredient = ingredient.scaledForServings(
+          currentServings,
+          recipe.defaultServings,
+        );
+        final isChecked = checkedIngredients.contains(ingredient.id);
+
+        ingredientWidgets.add(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (isChecked) {
+                        checkedIngredients.remove(ingredient.id);
+                      } else {
+                        checkedIngredients.add(ingredient.id);
+                      }
+                    });
+                  },
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    margin: const EdgeInsets.only(right: 12, top: 2),
+                    decoration: BoxDecoration(
+                      color: isChecked ? AppColors.primary : Colors.transparent,
+                      border: Border.all(
+                        color: isChecked ? AppColors.primary : AppColors.border,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: isChecked
+                        ? const Icon(Icons.check, color: Colors.white, size: 12)
+                        : null,
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    scaledIngredient.getDisplayText(selectedUnitSystem),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isChecked
+                          ? AppColors.textSecondary
+                          : AppColors.textPrimary,
+                      height: 1.4,
+                      decoration: isChecked
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    } else if (recipe.legacyIngredients.isNotEmpty) {
+      // Legacy format with strings
+      for (int i = 0; i < recipe.legacyIngredients.length; i++) {
+        final ingredient = recipe.legacyIngredients[i];
+        final ingredientId = 'legacy_$i';
+        final isChecked = checkedIngredients.contains(ingredientId);
+
+        ingredientWidgets.add(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (isChecked) {
+                        checkedIngredients.remove(ingredientId);
+                      } else {
+                        checkedIngredients.add(ingredientId);
+                      }
+                    });
+                  },
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    margin: const EdgeInsets.only(right: 12, top: 2),
+                    decoration: BoxDecoration(
+                      color: isChecked ? AppColors.primary : Colors.transparent,
+                      border: Border.all(
+                        color: isChecked ? AppColors.primary : AppColors.border,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: isChecked
+                        ? const Icon(Icons.check, color: Colors.white, size: 12)
+                        : null,
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    ingredient,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isChecked
+                          ? AppColors.textSecondary
+                          : AppColors.textPrimary,
+                      height: 1.4,
+                      decoration: isChecked
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-            ),
-          ),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-          ),
+          _buildUnitToggle(),
+          SizedBox(height: 16),
+          Column(children: ingredientWidgets),
         ],
       ),
     );
   }
 
-  Widget _buildIngredients(List<String> ingredients) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Ingredients',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            children: ingredients.asMap().entries.map((entry) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      margin: const EdgeInsets.only(top: 6, right: 12),
-                      decoration: const BoxDecoration(
-                        color: AppColors.primary,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        entry.value,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textPrimary,
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    );
-  }
+  Widget _buildInstructions(Recipe recipe) {
+    List<Widget> instructionWidgets = [];
 
-  Widget _buildInstructions(List<String> instructions) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Instructions',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+    if (recipe.instructionSections.isNotEmpty) {
+      // New format with InstructionSection objects
+      for (final section in recipe.instructionSections) {
+        // Add section header
+        instructionWidgets.add(
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Text(
+              section.title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
               ),
-            ],
+            ),
           ),
-          child: Column(
-            children: instructions.asMap().entries.map((entry) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 24,
-                      height: 24,
-                      margin: const EdgeInsets.only(right: 12),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${entry.key + 1}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+        );
+
+        // Add section steps
+        for (int i = 0; i < section.steps.length; i++) {
+          instructionWidgets.add(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 24,
+                    height: 24,
+                    margin: const EdgeInsets.only(right: 12),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    Expanded(
+                    child: Center(
                       child: Text(
-                        entry.value,
+                        '${i + 1}',
                         style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textPrimary,
-                          height: 1.4,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
                     ),
-                  ],
+                  ),
+                  Expanded(
+                    child: Text(
+                      section.steps[i],
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textPrimary,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // Add spacing between sections
+        if (section != recipe.instructionSections.last) {
+          instructionWidgets.add(const SizedBox(height: 24));
+        }
+      }
+    } else if (recipe.legacyInstructions.isNotEmpty) {
+      // Legacy format with strings
+      for (int i = 0; i < recipe.legacyInstructions.length; i++) {
+        instructionWidgets.add(
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${i + 1}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
-              );
-            }).toList(),
+                Expanded(
+                  child: Text(
+                    recipe.legacyInstructions[i],
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textPrimary,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        );
+      }
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: instructionWidgets,
+      ),
     );
   }
 }

@@ -39,36 +39,74 @@ class DummyMealPlanData {
     return [
       Recipe(
         id: 'recipe_1',
-        title: 'Kiribath and Lunu Miris',
-        time: '45 min',
+        title: 'Kiribath',
+        time: '30 Min',
         imageUrl:
-            'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop',
+            'https://whirlpool.com.au/cdn/shop/articles/kiribath.jpg?v=1713936421?w=800&h=600&fit=crop',
         description:
-            'Traditional Sri Lankan milk rice served with spicy onion relish',
+            'Kiribath aka Sri Lankan milk rice is Sri Lanka\'s national dish that we make for every celebration in Sri Lanka. Kiribath is essentially cooked rice cooked in thick coconut milk. It is often served at breakfast with lunu miris (chili onion paste) and jaggery. It is also served during special occasions like New Year and weddings.',
+        defaultServings: 4,
         ingredients: [
-          '2 cups basmati rice',
-          '1 can coconut milk (400ml)',
-          '1 tsp salt',
-          '2 cups water',
-          '4 red onions (for lunu miris)',
-          '10 dried red chilies',
-          '1 tsp salt',
-          '1 tbsp lime juice',
-          '1 tbsp Maldive fish flakes',
+          const RecipeIngredient(
+            id: 'rice',
+            name: '"Kekulu" Rice',
+            quantity: 2,
+            unit: IngredientUnit.cups,
+            metricQuantity: 400,
+            metricUnit: IngredientUnit.grams,
+          ),
+          const RecipeIngredient(
+            id: 'water',
+            name: 'water',
+            quantity: 3.75,
+            unit: IngredientUnit.cups,
+            metricQuantity: 900,
+            metricUnit: IngredientUnit.milliliters,
+          ),
+          const RecipeIngredient(
+            id: 'coconut_milk',
+            name: 'Thick coconut milk',
+            quantity: 1.75,
+            unit: IngredientUnit.cups,
+            metricQuantity: 420,
+            metricUnit: IngredientUnit.milliliters,
+          ),
+          const RecipeIngredient(
+            id: 'salt',
+            name: 'salt',
+            quantity: 2,
+            unit: IngredientUnit.teaspoons,
+            metricQuantity: 10,
+            metricUnit: IngredientUnit.grams,
+          ),
         ],
-        instructions: [
-          'Wash and cook rice with water until tender',
-          'Add coconut milk and salt, simmer until thick',
-          'Let it set in a flat dish to cool',
-          'For lunu miris: blend onions, chilies, salt, and Maldive fish',
-          'Add lime juice and mix well',
-          'Cut kiribath into diamond shapes and serve with lunu miris',
+        instructionSections: [
+          const InstructionSection(
+            id: 'making_kiribath',
+            title: 'Making Kiribath',
+            steps: [
+              'Wash your rice first, then drain water and put it into the rice cooker or any pot you cook your rice usually.',
+              'Add water and 1 tsp salt (keep rest of the salt for after). Cook your rice using your usual method. If you\'re using a rice cooker, turn on the cook switch. If you\'re using an instant pot, press the rice button at the top. All you do here is cook rice the normal way but with just a little bit of water than you\'d normally use.',
+              'Add the coconut milk to the cooked rice as soon as the rice is done cooking. Do NOT wait until the rice cools down.',
+              'Mix your rice and coconut milk very well using a spoon until the rice grains breakdown and everything sticks together. You can transfer the rice to a banana leaf if you have. If not at this point and shape it. But if you still get the raw coconut milk smell, turn on heat and cook for about 2- 3 more minutes on the stove or in the rice cooker. If you\'re using an instant pot, press the "Keep warm" option and leave it covered for about 5 - 8 mins',
+            ],
+          ),
+          const InstructionSection(
+            id: 'shaping_cutting',
+            title: 'Shaping and cutting Kiribath',
+            steps: [
+              'Transfer the rice to a cleaned banana leaf. Make sure to do it while Kiribath/milk rice is still hot. It starts to become hardened as it cools down. Which makes it hard to smother and cut into squares.',
+              'Shape the Kiribath using another piece of banana leaf/ a baking paper/ spatula into a flat round or a square or to any other shape of your liking. Press it down so the broken rice sticks to each other.',
+              'Get a knife and wrap the knife with a plastic wrap. And apply a little bit of coconut milk/milk or water so the knife doesn\'t stick to the rice.',
+              'Cut your shaped Kiribath into squares or diamond shapes. Let it cool down a bit. It\'s easier to separate squares when Kiribath has cooled down.',
+            ],
+          ),
         ],
-        calories: 320,
+        calories: 490,
         macros: const RecipeMacros(
-          protein: 8.5,
-          carbs: 58.2,
-          fats: 12.8,
+          protein: 8,
+          carbs: 68,
+          fats: 20.5,
           fiber: 2.1,
         ),
       ),
@@ -80,7 +118,10 @@ class DummyMealPlanData {
             'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800&h=600&fit=crop',
         description:
             'Classic Sri Lankan rice and curry with dhal, vegetable curries, and sambola',
-        ingredients: [
+        defaultServings: 4,
+        ingredients: [],
+        instructionSections: [],
+        legacyIngredients: [
           '2 cups basmati rice',
           '1 cup red lentils',
           '1 large eggplant',
@@ -96,7 +137,7 @@ class DummyMealPlanData {
           '1 tsp turmeric powder',
           'Salt to taste',
         ],
-        instructions: [
+        legacyInstructions: [
           'Cook rice separately and keep warm',
           'Cook red lentils with turmeric, salt, and water until soft',
           'Cut eggplant and green beans into pieces',
@@ -123,7 +164,10 @@ class DummyMealPlanData {
             'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&h=600&fit=crop',
         description:
             'Popular Sri Lankan street food made with chopped roti, vegetables, and spices',
-        ingredients: [
+        defaultServings: 4,
+        ingredients: [],
+        instructionSections: [],
+        legacyIngredients: [
           '4 plain roti (or leftover roti)',
           '200g chicken (cut into strips)',
           '2 eggs',
@@ -138,7 +182,7 @@ class DummyMealPlanData {
           '1 leek (chopped)',
           'Salt and pepper to taste',
         ],
-        instructions: [
+        legacyInstructions: [
           'Cut roti into small strips',
           'Heat oil in a large pan or wok',
           'Cook chicken strips until done, remove and set aside',
@@ -166,7 +210,10 @@ class DummyMealPlanData {
             'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=600&fit=crop',
         description:
             'Delicate rice noodle nests served with aromatic coconut curry',
-        ingredients: [
+        defaultServings: 4,
+        ingredients: [],
+        instructionSections: [],
+        legacyIngredients: [
           '2 cups red rice flour',
           '2 cups water',
           '1 tsp salt',
@@ -182,7 +229,7 @@ class DummyMealPlanData {
           '2 pandan leaves',
           '2 tbsp tomato paste',
         ],
-        instructions: [
+        legacyInstructions: [
           'Boil water with salt, gradually add rice flour stirring continuously',
           'Cook until mixture forms a dough, let it cool slightly',
           'Use string hopper maker to create nests, steam for 10 minutes',
