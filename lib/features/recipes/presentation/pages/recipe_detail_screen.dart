@@ -117,7 +117,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 child: IconButton(
                   icon: PhosphorIcon(
                     size: 22,
-                    PhosphorIcons.heart(),
+                    isFavorited
+                        ? PhosphorIconsFill.heart
+                        : PhosphorIcons.heart(),
                     color: isFavorited
                         ? AppColors.primary
                         : AppColors.textPrimary,
