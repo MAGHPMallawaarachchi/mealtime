@@ -203,7 +203,7 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 6),
                     Expanded(
                       child: Text(
                         widget.recipe.title,
@@ -216,27 +216,6 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        GestureDetector(
-                          onTap: _addToMealPlan,
-                          child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
-                              shape: BoxShape.circle,
-                            ),
-                            child: PhosphorIcon(
-                              PhosphorIcons.plus(),
-                              size: 16,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
