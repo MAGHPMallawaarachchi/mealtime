@@ -886,35 +886,122 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   }
 
   void _addToMealPlan(Recipe recipe) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            PhosphorIcon(
-              PhosphorIcons.calendar(),
-              size: 20,
-              color: Colors.white,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                '${recipe.title} added to meal plan!',
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+            Row(
+              children: [
+                PhosphorIcon(
+                  PhosphorIcons.calendar(),
+                  color: AppColors.primary,
                 ),
-              ),
+                const SizedBox(width: 8),
+                Text(
+                  'Add "${recipe.title}" to Meal Plan',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: PhosphorIcon(PhosphorIcons.calendar()),
+              title: const Text('Go to Meal Planner'),
+              subtitle: const Text('Choose specific day and meal time'),
+              onTap: () {
+                Navigator.pop(context);
+                context.go('/meal-planner');
+              },
+            ),
+            ListTile(
+              leading: PhosphorIcon(PhosphorIcons.clockCounterClockwise()),
+              title: const Text('Add to Today'),
+              subtitle: const Text('Quick add to next available meal today'),
+              onTap: () {
+                Navigator.pop(context);
+                _addToTodaysMeals(recipe);
+              },
             ),
           ],
         ),
-        backgroundColor: AppColors.primary,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        margin: const EdgeInsets.all(16),
-        duration: const Duration(seconds: 3),
       ),
+    );
+  }
+
+  void _addToTodaysMeals(Recipe recipe) {
+    // Show a selection dialog for today's meal slots
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add to Today'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Which meal would you like to add "${recipe.title}" to?'),
+            const SizedBox(height: 16),
+            _buildMealTimeOption('Breakfast', '8:30 AM'),
+            _buildMealTimeOption('Lunch', '12:30 PM'),
+            _buildMealTimeOption('Dinner', '7:00 PM'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMealTimeOption(String mealType, String time) {
+    return ListTile(
+      title: Text(mealType),
+      subtitle: Text(time),
+      onTap: () {
+        Navigator.pop(context);
+        
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                PhosphorIcon(
+                  PhosphorIcons.checkCircle(),
+                  size: 20,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Added to today\'s $mealType!',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.all(16),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      },
     );
   }
 }
