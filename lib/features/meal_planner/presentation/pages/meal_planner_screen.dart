@@ -27,6 +27,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen>
     _tabController.addListener(_handleTabChange);
   }
 
+  // Expose the add meal functionality to parent widgets
+  void showAddMealOptions() {
+    _showAddMealOptions();
+  }
+
   @override
   void dispose() {
     _tabController.removeListener(_handleTabChange);
@@ -63,11 +68,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen>
                 ],
               ),
             ),
-            SizedBox(height: 0),
           ],
         ),
       ),
-      floatingActionButton: _buildFloatingActionButton(),
     );
   }
 
@@ -170,13 +173,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen>
     );
   }
 
-  Widget _buildFloatingActionButton() {
-    return FloatingActionButton(
-      onPressed: _showAddMealOptions,
-      backgroundColor: AppColors.primary,
-      child: PhosphorIcon(PhosphorIcons.plus(), color: Colors.white, size: 24),
-    );
-  }
 
   String _getCurrentTabSubtitle() {
     switch (_currentTab) {
