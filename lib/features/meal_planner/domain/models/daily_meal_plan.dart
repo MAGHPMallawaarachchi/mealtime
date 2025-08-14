@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'meal_slot.dart';
 
 class DailyMealPlan {
@@ -13,11 +14,31 @@ class DailyMealPlan {
     this.isCompleted = false,
   });
 
-  // Get specific meal slots by type
-  MealSlot? get breakfast => meals.where((m) => m.type == MealType.breakfast).firstOrNull;
-  MealSlot? get lunch => meals.where((m) => m.type == MealType.lunch).firstOrNull;
-  MealSlot? get dinner => meals.where((m) => m.type == MealType.dinner).firstOrNull;
-  List<MealSlot> get snacks => meals.where((m) => m.type == MealType.snack).toList();
+  // Get meals sorted by scheduled time
+  List<MealSlot> get mealsByTime => [...meals]..sort((a, b) => a.scheduledTime.compareTo(b.scheduledTime));
+  
+  // Get meals by category
+  List<MealSlot> getMealsByCategory(String category) => meals.where((m) => m.category == category).toList();
+  
+  // Get first meal of specific category
+  MealSlot? getFirstMealByCategory(String category) => meals.where((m) => m.category == category).firstOrNull;
+  
+  // Get meals in time range
+  List<MealSlot> getMealsInTimeRange(TimeOfDay start, TimeOfDay end) {
+    return meals.where((meal) {
+      final mealTime = TimeOfDay.fromDateTime(meal.scheduledTime);
+      final startMinutes = start.hour * 60 + start.minute;
+      final endMinutes = end.hour * 60 + end.minute;
+      final mealMinutes = mealTime.hour * 60 + mealTime.minute;
+      
+      if (endMinutes > startMinutes) {
+        return mealMinutes >= startMinutes && mealMinutes <= endMinutes;
+      } else {
+        // Handle overnight range (e.g., 10 PM to 6 AM)
+        return mealMinutes >= startMinutes || mealMinutes <= endMinutes;
+      }
+    }).toList();
+  }
 
   // Get all non-empty meals
   List<MealSlot> get scheduledMeals => meals.where((m) => !m.isEmpty).toList();
@@ -58,6 +79,12 @@ class DailyMealPlan {
 
     return copyWith(meals: updatedMeals);
   }
+  
+  // Add new meal slot
+  DailyMealPlan addMealSlot(MealSlot newSlot) {
+    final updatedMeals = [...meals, newSlot];
+    return copyWith(meals: updatedMeals);
+  }
 
   DailyMealPlan removeMealSlot(String mealSlotId) {
     final meal = meals.where((m) => m.id == mealSlotId).firstOrNull;
@@ -67,26 +94,37 @@ class DailyMealPlan {
     return this;
   }
 
-  // Create default meal slots for a day
+  // Create default meal slots for a day with common meal categories
   static DailyMealPlan createDefault(DateTime date) {
     final dateStr = date.toIso8601String().split('T')[0];
     
     return DailyMealPlan(
       date: date,
       meals: [
-        MealSlot(
+        MealSlot.createDefault(
           id: '${dateStr}_breakfast',
-          type: MealType.breakfast,
+          category: MealCategory.breakfast,
+          date: date,
         ),
-        MealSlot(
+        MealSlot.createDefault(
           id: '${dateStr}_lunch',
-          type: MealType.lunch,
+          category: MealCategory.lunch,
+          date: date,
         ),
-        MealSlot(
+        MealSlot.createDefault(
           id: '${dateStr}_dinner',
-          type: MealType.dinner,
+          category: MealCategory.dinner,
+          date: date,
         ),
       ],
+    );
+  }
+  
+  // Create empty day plan
+  static DailyMealPlan createEmpty(DateTime date) {
+    return DailyMealPlan(
+      date: date,
+      meals: [],
     );
   }
 

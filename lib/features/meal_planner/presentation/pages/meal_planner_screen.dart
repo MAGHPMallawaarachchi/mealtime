@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../domain/models/meal_slot.dart';
-import '../widgets/weekly_calendar_view.dart';
-import '../widgets/todays_prep_view.dart';
-import '../widgets/add_meal_modal.dart';
-
-enum MealPlannerTab { calendar, today }
+import '../../domain/models/daily_meal_plan.dart';
+import '../../domain/models/weekly_meal_plan.dart';
+import '../../data/dummy_meal_plan_service.dart';
+import '../widgets/day_timeline_view.dart';
+import '../widgets/week_navigation_header.dart';
+import '../widgets/meal_detail_expanded_view.dart';
+import '../widgets/time_picker_modal.dart';
 
 class MealPlannerScreen extends StatefulWidget {
   const MealPlannerScreen({super.key});
@@ -15,35 +17,67 @@ class MealPlannerScreen extends StatefulWidget {
   State<MealPlannerScreen> createState() => _MealPlannerScreenState();
 }
 
-class _MealPlannerScreenState extends State<MealPlannerScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  MealPlannerTab _currentTab = MealPlannerTab.calendar;
+class _MealPlannerScreenState extends State<MealPlannerScreen> {
+  late PageController _pageController;
+  late DateTime currentWeekStart;
+  late WeeklyMealPlan currentWeekPlan;
+  late DateTime selectedDate;
+  late DateTime _todayNormalized; // Cached normalized today reference
+  bool _isUserSwipe = true; // Track if page change is from user swipe or programmatic
+  
+  static const int _initialPage = 1000; // For infinite scroll
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(_handleTabChange);
-  }
-
-  // Expose the add meal functionality to parent widgets
-  void showAddMealOptions() {
-    _showAddMealOptions();
+    _pageController = PageController(initialPage: _initialPage);
+    final today = DateTime.now();
+    _todayNormalized = _normalizeDate(today);
+    currentWeekStart = _getWeekStart(_todayNormalized);
+    selectedDate = _todayNormalized;
+    _loadWeekPlan();
   }
 
   @override
   void dispose() {
-    _tabController.removeListener(_handleTabChange);
-    _tabController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
-
-  void _handleTabChange() {
+  
+  /// Normalizes a DateTime to midnight (00:00:00) for consistent date calculations
+  DateTime _normalizeDate(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
+  
+  /// Checks if two dates represent the same calendar day
+  bool _isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+  
+  DateTime _getWeekStart(DateTime date) {
+    final normalized = _normalizeDate(date);
+    return normalized.subtract(Duration(days: normalized.weekday - 1));
+  }
+  
+  void _loadWeekPlan() {
     setState(() {
-      _currentTab = _tabController.index == 0
-          ? MealPlannerTab.calendar
-          : MealPlannerTab.today;
+      currentWeekPlan = DummyMealPlanService.getWeekPlan(currentWeekStart);
+    });
+  }
+
+  void _navigateToWeek(int direction) {
+    setState(() {
+      currentWeekStart = currentWeekStart.add(Duration(days: 7 * direction));
+      // Ensure selected date is within the new week
+      final weekEnd = currentWeekStart.add(const Duration(days: 6));
+      if (direction < 0 && selectedDate.isAfter(weekEnd)) {
+        selectedDate = weekEnd;
+      } else if (direction > 0 && selectedDate.isBefore(currentWeekStart)) {
+        selectedDate = currentWeekStart;
+      }
+      _loadWeekPlan();
     });
   }
 
@@ -55,17 +89,29 @@ class _MealPlannerScreenState extends State<MealPlannerScreen>
         child: Column(
           children: [
             _buildHeader(),
-            _buildTabBar(),
+            WeekNavigationHeader(
+              weekPlan: currentWeekPlan,
+              selectedDate: selectedDate,
+              onDaySelected: _onDaySelected,
+              onPreviousWeek: () => _navigateToWeek(-1),
+              onNextWeek: () => _navigateToWeek(1),
+            ),
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  WeeklyCalendarView(
-                    onMealSlotTap: _handleMealSlotTap,
-                    onMealSlotLongPress: _handleMealSlotLongPress,
-                  ),
-                  TodaysPrepView(onMealTap: _handleMealTap),
-                ],
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: _onPageChanged,
+                itemBuilder: (context, index) {
+                  final dayOffset = index - _initialPage;
+                  final dayDate = _todayNormalized.add(Duration(days: dayOffset));
+                  final dayPlan = _getDayPlan(dayDate);
+                  
+                  return DayTimelineView(
+                    dayPlan: dayPlan,
+                    onMealTap: (meal) => _handleMealTap(meal, dayDate),
+                    onMealLongPress: (meal) => _handleMealLongPress(meal, dayDate),
+                    onAddMeal: () => _showAddMealOptions(dayDate),
+                  );
+                },
               ),
             ),
           ],
@@ -80,10 +126,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
+          const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Meal Planner',
                 style: TextStyle(
                   fontSize: 24,
@@ -92,8 +138,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen>
                 ),
               ),
               Text(
-                _getCurrentTabSubtitle(),
-                style: const TextStyle(
+                'Plan your meals with flexibility',
+                style: TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
                 ),
@@ -125,114 +171,179 @@ class _MealPlannerScreenState extends State<MealPlannerScreen>
     );
   }
 
-  Widget _buildTabBar() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: TabBar(
-        controller: _tabController,
-        indicator: BoxDecoration(
-          color: AppColors.textPrimary,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        indicatorSize: TabBarIndicatorSize.tab,
-        dividerColor: Colors.transparent,
-        labelColor: Colors.white,
-        unselectedLabelColor: AppColors.textSecondary,
-        labelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-        unselectedLabelStyle: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
-        tabs: [
-          Tab(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                PhosphorIcon(PhosphorIcons.calendar(), size: 18),
-                const SizedBox(width: 8),
-                const Text('Weekly'),
-              ],
-            ),
-          ),
-          Tab(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                PhosphorIcon(PhosphorIcons.clock(), size: 18),
-                const SizedBox(width: 8),
-                const Text('Today'),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  String _getCurrentTabSubtitle() {
-    switch (_currentTab) {
-      case MealPlannerTab.calendar:
-        return 'Plan your weekly meals';
-      case MealPlannerTab.today:
-        return 'Today\'s cooking schedule';
+  void _onDaySelected(DateTime date) {
+    final normalizedDate = _normalizeDate(date);
+    
+    // Only update if the date has actually changed
+    if (!_isSameDay(selectedDate, normalizedDate)) {
+      setState(() {
+        selectedDate = normalizedDate;
+      });
     }
+    
+    // Calculate the offset from today to the selected date using normalized dates
+    final difference = normalizedDate.difference(_todayNormalized).inDays;
+    final targetPage = _initialPage + difference;
+    
+    // Flag this as programmatic navigation to prevent circular updates
+    _isUserSwipe = false;
+    
+    _pageController.animateToPage(
+      targetPage,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    ).then((_) {
+      // Reset the flag after animation completes
+      _isUserSwipe = true;
+    });
+  }
+  
+  void _onPageChanged(int index) {
+    // Only update selectedDate for user swipes, not programmatic navigation
+    if (!_isUserSwipe) return;
+    
+    final dayOffset = index - _initialPage;
+    final newDate = _normalizeDate(_todayNormalized.add(Duration(days: dayOffset)));
+    
+    setState(() {
+      selectedDate = newDate;
+      
+      // Update week if we've moved to a different week
+      final newWeekStart = _getWeekStart(newDate);
+      if (!_isSameDay(newWeekStart, currentWeekStart)) {
+        currentWeekStart = newWeekStart;
+        _loadWeekPlan();
+      }
+    });
+  }
+  
+  DailyMealPlan _getDayPlan(DateTime date) {
+    final normalizedDate = _normalizeDate(date);
+    final weekStart = _getWeekStart(normalizedDate);
+    final weekPlan = _isSameDay(weekStart, currentWeekStart)
+        ? currentWeekPlan 
+        : DummyMealPlanService.getWeekPlan(weekStart);
+    
+    return weekPlan.getDayPlan(normalizedDate) ?? DailyMealPlan.createDefault(normalizedDate);
   }
 
-  void _handleMealSlotTap(MealSlot mealSlot, DateTime date) {
+  void _handleMealTap(MealSlot mealSlot, DateTime date) {
     if (mealSlot.isEmpty) {
       _showAddMealModal(mealSlot, date);
     } else {
-      _showMealDetailModal(mealSlot, date);
+      showMealDetailExpandedView(
+        context: context,
+        mealSlot: mealSlot,
+        date: date,
+        onMealUpdated: (updatedMeal) => _updateMeal(updatedMeal, date),
+        onMealDeleted: (meal) => _deleteMeal(meal, date),
+        onViewRecipe: () => _viewRecipe(mealSlot),
+      );
     }
   }
 
-  void _handleMealSlotLongPress(MealSlot mealSlot, DateTime date) {
+  void _handleMealLongPress(MealSlot mealSlot, DateTime date) {
     _showMealContextMenu(mealSlot, date);
   }
 
-  void _handleMealTap(MealSlot mealSlot) {
-    _showMealDetailModal(mealSlot, DateTime.now());
-  }
-
   void _showAddMealModal(MealSlot mealSlot, DateTime date) {
+    _showQuickAddMealDialog(date);
+  }
+  
+  void _showQuickAddMealDialog(DateTime date) {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => AddMealModal(
-        mealSlot: mealSlot,
-        date: date,
-        onMealSelected: (updatedSlot) {
-          // TODO: Update the meal plan data
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                '${updatedSlot.type.displayName} added successfully!',
-              ),
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              backgroundColor: AppColors.success,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Add Meal',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-          );
-        },
+            const SizedBox(height: 16),
+            ...MealCategory.predefined.map((category) => 
+              ListTile(
+                leading: PhosphorIcon(_getCategoryIcon(category)),
+                title: Text(category),
+                onTap: () {
+                  Navigator.pop(context);
+                  _addQuickMeal(date, category);
+                },
+              ),
+            ),
+            ListTile(
+              leading: PhosphorIcon(PhosphorIcons.plus()),
+              title: const Text('Custom Meal'),
+              onTap: () {
+                Navigator.pop(context);
+                _showCustomMealDialog(date);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  void _showMealDetailModal(MealSlot mealSlot, DateTime date) {
-    // TODO: Implement meal detail modal
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('View meal details'),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  void _addQuickMeal(DateTime date, String category) {
+    showTimePickerModal(
+      context: context,
+      initialTime: MealCategory.defaultTimes[category] ?? const TimeOfDay(hour: 12, minute: 0),
+      mealCategory: category,
+      onTimeSelected: (time) {
+        final mealSlot = MealSlot(
+          id: '${date.toIso8601String().split('T')[0]}_${DateTime.now().millisecondsSinceEpoch}',
+          category: category,
+          scheduledTime: DateTime(
+            date.year,
+            date.month,
+            date.day,
+            time.hour,
+            time.minute,
+          ),
+          customMealName: category,
+        );
+        
+        _addMeal(mealSlot, date);
+      },
+    );
+  }
+  
+  void _showCustomMealDialog(DateTime date) {
+    String mealName = '';
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add Custom Meal'),
+        content: TextField(
+          onChanged: (value) => mealName = value,
+          decoration: const InputDecoration(
+            labelText: 'Meal Name',
+            hintText: 'Enter meal name',
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (mealName.isNotEmpty) {
+                Navigator.pop(context);
+                _addQuickMeal(date, mealName);
+              }
+            },
+            child: const Text('Add'),
+          ),
+        ],
       ),
     );
   }
@@ -253,7 +364,14 @@ class _MealPlannerScreenState extends State<MealPlannerScreen>
               title: const Text('Edit Meal'),
               onTap: () {
                 Navigator.pop(context);
-                _showMealDetailModal(mealSlot, date);
+                showMealDetailExpandedView(
+                  context: context,
+                  mealSlot: mealSlot,
+                  date: date,
+                  onMealUpdated: (updatedMeal) => _updateMeal(updatedMeal, date),
+                  onMealDeleted: (meal) => _deleteMeal(meal, date),
+                  onViewRecipe: () => _viewRecipe(mealSlot),
+                );
               },
             ),
             if (!mealSlot.isLocked)
@@ -290,50 +408,79 @@ class _MealPlannerScreenState extends State<MealPlannerScreen>
     );
   }
 
-  void _showAddMealOptions() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Add Meal',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              leading: PhosphorIcon(PhosphorIcons.magnifyingGlass()),
-              title: const Text('Browse Recipes'),
-              onTap: () {
-                Navigator.pop(context);
-                // TODO: Navigate to recipe browser
-              },
-            ),
-            ListTile(
-              leading: PhosphorIcon(PhosphorIcons.recycle()),
-              title: const Text('Use Leftovers'),
-              onTap: () {
-                Navigator.pop(context);
-                // TODO: Show leftover options
-              },
-            ),
-            ListTile(
-              leading: PhosphorIcon(PhosphorIcons.plus()),
-              title: const Text('Custom Meal'),
-              onTap: () {
-                Navigator.pop(context);
-                // TODO: Show custom meal dialog
-              },
-            ),
-          ],
+  void _showAddMealOptions(DateTime date) {
+    _showQuickAddMealDialog(date);
+  }
+  
+  void _addMeal(MealSlot mealSlot, DateTime date) {
+    // TODO: Implement actual data persistence
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${mealSlot.category} added successfully!'),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
+        backgroundColor: AppColors.success,
       ),
     );
+  }
+  
+  void _updateMeal(MealSlot updatedMeal, DateTime date) {
+    // TODO: Implement actual data persistence
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Meal updated successfully!'),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        backgroundColor: AppColors.success,
+      ),
+    );
+  }
+  
+  void _deleteMeal(MealSlot meal, DateTime date) {
+    // TODO: Implement actual data persistence
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Meal deleted'),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        backgroundColor: AppColors.error,
+      ),
+    );
+  }
+  
+  void _viewRecipe(MealSlot mealSlot) {
+    // TODO: Navigate to recipe detail
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Recipe view coming soon!'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+  
+  IconData _getCategoryIcon(String category) {
+    switch (category) {
+      case MealCategory.breakfast:
+        return PhosphorIcons.coffee();
+      case MealCategory.lunch:
+        return PhosphorIcons.forkKnife();
+      case MealCategory.dinner:
+        return PhosphorIcons.cookingPot();
+      case MealCategory.snack:
+        return PhosphorIcons.cookie();
+      case MealCategory.brunch:
+        return PhosphorIcons.wine();
+      case MealCategory.lateNight:
+        return PhosphorIcons.moon();
+      default:
+        return PhosphorIcons.forkKnife();
+    }
   }
 
   void _showAutoFillDialog() {

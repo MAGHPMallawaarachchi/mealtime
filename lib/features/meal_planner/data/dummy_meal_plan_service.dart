@@ -65,19 +65,24 @@ class DummyMealPlanService {
   }
 
   static List<MealSlot> _generateDayMeals(String dateStr, int dayIndex, bool isNextWeek) {
+    final date = DateTime.parse('${dateStr}T00:00:00');
+    
     // Return empty meal slots to demonstrate the UI
     return [
-      MealSlot(
+      MealSlot.createDefault(
         id: '${dateStr}_breakfast',
-        type: MealType.breakfast,
+        category: MealCategory.breakfast,
+        date: date,
       ),
-      MealSlot(
+      MealSlot.createDefault(
         id: '${dateStr}_lunch',
-        type: MealType.lunch,
+        category: MealCategory.lunch,
+        date: date,
       ),
-      MealSlot(
+      MealSlot.createDefault(
         id: '${dateStr}_dinner',
-        type: MealType.dinner,
+        category: MealCategory.dinner,
+        date: date,
       ),
     ];
   }

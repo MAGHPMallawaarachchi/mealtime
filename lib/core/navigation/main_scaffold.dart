@@ -17,9 +17,6 @@ class MainScaffold extends StatefulWidget {
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
-  // Create a GlobalKey for the meal planner screen to access its methods
-  final GlobalKey<State<MealPlannerScreen>> _mealPlannerKey = GlobalKey<State<MealPlannerScreen>>();
-  
   // Pre-create all screens to eliminate any build flickering
   late final List<Widget> _screens;
 
@@ -29,7 +26,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     _screens = [
       const HomeScreen(),
       const ExploreScreen(),
-      MealPlannerScreen(key: _mealPlannerKey),
+      const MealPlannerScreen(),
       const PantryScreen(),
       const ProfileScreen(),
     ];
@@ -72,12 +69,8 @@ class _MainScaffoldState extends State<MainScaffold> {
   }
 
   void _onMealPlannerAddMeal() {
-    // Access the meal planner screen's add meal functionality
-    final mealPlannerState = _mealPlannerKey.currentState;
-    if (mealPlannerState != null && mealPlannerState is State<MealPlannerScreen>) {
-      // We need to cast and call the showAddMealOptions method
-      (mealPlannerState as dynamic).showAddMealOptions();
-    }
+    // The add meal functionality is now handled within the MealPlannerScreen itself
+    // via the floating action button in the day timeline view
   }
 
   @override

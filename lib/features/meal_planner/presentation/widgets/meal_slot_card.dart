@@ -66,7 +66,7 @@ class MealSlotCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              mealSlot.type.displayName,
+              mealSlot.category,
               style: TextStyle(
                 fontSize: isCompact ? 12 : 14,
                 color: AppColors.textSecondary,
@@ -180,7 +180,7 @@ class MealSlotCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          mealSlot.type.displayName,
+                          mealSlot.category,
                           style: TextStyle(
                             fontSize: isCompact ? 10 : 12,
                             color: AppColors.textSecondary,

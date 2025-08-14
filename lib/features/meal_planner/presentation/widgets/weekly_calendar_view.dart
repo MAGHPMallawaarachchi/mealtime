@@ -226,9 +226,10 @@ class _WeeklyCalendarViewState extends State<WeeklyCalendarView> {
           // Breakfast
           Expanded(
             child: () {
-              final mealSlot = dayPlan.breakfast ?? MealSlot(
+              final mealSlot = dayPlan.getFirstMealByCategory(MealCategory.breakfast) ?? MealSlot.createDefault(
                 id: '${date.toIso8601String().split('T')[0]}_breakfast',
-                type: MealType.breakfast,
+                category: MealCategory.breakfast,
+                date: date,
               );
               return MealSlotCard(
                 mealSlot: mealSlot,
@@ -242,9 +243,10 @@ class _WeeklyCalendarViewState extends State<WeeklyCalendarView> {
           // Lunch
           Expanded(
             child: () {
-              final mealSlot = dayPlan.lunch ?? MealSlot(
+              final mealSlot = dayPlan.getFirstMealByCategory(MealCategory.lunch) ?? MealSlot.createDefault(
                 id: '${date.toIso8601String().split('T')[0]}_lunch',
-                type: MealType.lunch,
+                category: MealCategory.lunch,
+                date: date,
               );
               return MealSlotCard(
                 mealSlot: mealSlot,
@@ -258,9 +260,10 @@ class _WeeklyCalendarViewState extends State<WeeklyCalendarView> {
           // Dinner
           Expanded(
             child: () {
-              final mealSlot = dayPlan.dinner ?? MealSlot(
+              final mealSlot = dayPlan.getFirstMealByCategory(MealCategory.dinner) ?? MealSlot.createDefault(
                 id: '${date.toIso8601String().split('T')[0]}_dinner',
-                type: MealType.dinner,
+                category: MealCategory.dinner,
+                date: date,
               );
               return MealSlotCard(
                 mealSlot: mealSlot,

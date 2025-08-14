@@ -56,11 +56,11 @@ class _AddMealModalState extends State<AddMealModal>
       ...DummyMealPlanData.getRecipes(),
       ...DummyExploreData.getAllRecipes(),
     ];
-    _filteredRecipes = _getRecipesForMealType();
-    _suggestions = _getSuggestionsForMealType();
+    _filteredRecipes = _getRecipesForMealCategory();
+    _suggestions = _getSuggestionsForMealCategory();
   }
 
-  List<Recipe> _getRecipesForMealType() {
+  List<Recipe> _getRecipesForMealCategory() {
     // Filter recipes by meal type and search query
     var recipes = _allRecipes.where((recipe) {
       if (_searchQuery.isNotEmpty) {
@@ -75,23 +75,25 @@ class _AddMealModalState extends State<AddMealModal>
     return recipes;
   }
 
-  List<String> _getSuggestionsForMealType() {
-    switch (widget.mealSlot.type) {
-      case MealType.breakfast:
+  List<String> _getSuggestionsForMealCategory() {
+    switch (widget.mealSlot.category) {
+      case MealCategory.breakfast:
         return DummyMealPlanService.getBreakfastSuggestions();
-      case MealType.lunch:
+      case MealCategory.lunch:
         return DummyMealPlanService.getLunchSuggestions();
-      case MealType.dinner:
+      case MealCategory.dinner:
         return DummyMealPlanService.getDinnerSuggestions();
-      case MealType.snack:
+      case MealCategory.snack:
         return ['Quick Snacks', 'Fruits', 'Tea & Biscuits', 'Short Eats'];
+      default:
+        return ['Custom Meals', 'Quick Options'];
     }
   }
 
   void _onSearchChanged(String query) {
     setState(() {
       _searchQuery = query;
-      _filteredRecipes = _getRecipesForMealType();
+      _filteredRecipes = _getRecipesForMealCategory();
     });
   }
 
@@ -134,7 +136,7 @@ class _AddMealModalState extends State<AddMealModal>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Add ${widget.mealSlot.type.displayName}',
+                'Add ${widget.mealSlot.category}',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

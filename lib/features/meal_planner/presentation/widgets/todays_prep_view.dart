@@ -291,7 +291,7 @@ class _TodaysPrepViewState extends State<TodaysPrepView> {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        '• ${meal.type.displayName}',
+                        '• ${meal.category}',
                         style: const TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,
@@ -400,16 +400,18 @@ class _TodaysPrepViewState extends State<TodaysPrepView> {
       }
     }
     
-    // Default cooking times based on meal type
-    switch (meal.type) {
-      case MealType.breakfast:
+    // Default cooking times based on meal category
+    switch (meal.category) {
+      case MealCategory.breakfast:
         return 15;
-      case MealType.lunch:
+      case MealCategory.lunch:
         return 45;
-      case MealType.dinner:
+      case MealCategory.dinner:
         return 60;
-      case MealType.snack:
+      case MealCategory.snack:
         return 10;
+      default:
+        return 30; // Default cooking time for custom categories
     }
   }
 
@@ -427,7 +429,7 @@ class _TodaysPrepViewState extends State<TodaysPrepView> {
       return 'Leftover Meal';
     }
     
-    return meal.type.displayName;
+    return meal.category;
   }
 
   String? _getMealImageUrl(MealSlot meal) {
