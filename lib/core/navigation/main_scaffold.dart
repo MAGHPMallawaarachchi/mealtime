@@ -19,6 +19,7 @@ class MainScaffold extends StatefulWidget {
 class _MainScaffoldState extends State<MainScaffold> {
   // Pre-create all screens to eliminate any build flickering
   late final List<Widget> _screens;
+  VoidCallback? _mealPlannerAddMealCallback;
 
   @override
   void initState() {
@@ -26,7 +27,11 @@ class _MainScaffoldState extends State<MainScaffold> {
     _screens = [
       const HomeScreen(),
       const ExploreScreen(),
-      const MealPlannerScreen(),
+      MealPlannerScreen(
+        onRegisterAddMealCallback: (callback) {
+          _mealPlannerAddMealCallback = callback;
+        },
+      ),
       const PantryScreen(),
       const ProfileScreen(),
     ];
@@ -69,8 +74,8 @@ class _MainScaffoldState extends State<MainScaffold> {
   }
 
   void _onMealPlannerAddMeal() {
-    // The add meal functionality is now handled within the MealPlannerScreen itself
-    // via the floating action button in the day timeline view
+    // Trigger add meal functionality through callback
+    _mealPlannerAddMealCallback?.call();
   }
 
   @override

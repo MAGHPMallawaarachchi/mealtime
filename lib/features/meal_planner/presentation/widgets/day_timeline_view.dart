@@ -9,14 +9,12 @@ class DayTimelineView extends StatelessWidget {
   final DailyMealPlan dayPlan;
   final Function(MealSlot)? onMealTap;
   final Function(MealSlot)? onMealLongPress;
-  final VoidCallback? onAddMeal;
 
   const DayTimelineView({
     super.key,
     required this.dayPlan,
     this.onMealTap,
     this.onMealLongPress,
-    this.onAddMeal,
   });
 
   @override
@@ -43,7 +41,6 @@ class DayTimelineView extends StatelessWidget {
             ),
           ),
         ],
-        _buildAddMealButton(),
       ],
     );
   }
@@ -171,7 +168,7 @@ class DayTimelineView extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Tap the + button to add your first meal',
+              'Tap the + button in navigation to add your first meal',
               style: TextStyle(
                 fontSize: 14,
                 color: AppColors.textSecondary,
@@ -227,24 +224,6 @@ class DayTimelineView extends StatelessWidget {
     );
   }
 
-  Widget _buildAddMealButton() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: ElevatedButton.icon(
-        onPressed: onAddMeal,
-        icon: Icon(PhosphorIcons.plus()),
-        label: const Text('Add Meal'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-    );
-  }
 
   String _getDayName(int weekday) {
     switch (weekday) {

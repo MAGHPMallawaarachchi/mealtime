@@ -14,7 +14,9 @@ import '../widgets/meal_confirmation_modal.dart';
 import '../../../recipes/domain/models/recipe.dart';
 
 class MealPlannerScreen extends StatefulWidget {
-  const MealPlannerScreen({super.key});
+  final Function(VoidCallback)? onRegisterAddMealCallback;
+
+  const MealPlannerScreen({super.key, this.onRegisterAddMealCallback});
 
   @override
   State<MealPlannerScreen> createState() => _MealPlannerScreenState();
@@ -39,6 +41,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     currentWeekStart = _getWeekStart(_todayNormalized);
     selectedDate = _todayNormalized;
     _loadWeekPlan();
+    
+    // Register our add meal callback with the parent
+    widget.onRegisterAddMealCallback?.call(triggerAddMeal);
   }
 
   @override
@@ -62,6 +67,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   DateTime _getWeekStart(DateTime date) {
     final normalized = _normalizeDate(date);
     return normalized.subtract(Duration(days: normalized.weekday - 1));
+  }
+
+  /// Public method to trigger add meal functionality from external sources (like navbar)
+  void triggerAddMeal() {
+    _showAddMealOptions(selectedDate);
   }
   
   void _loadWeekPlan() {
@@ -112,7 +122,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     dayPlan: dayPlan,
                     onMealTap: (meal) => _handleMealTap(meal, dayDate),
                     onMealLongPress: (meal) => _handleMealLongPress(meal, dayDate),
-                    onAddMeal: () => _showAddMealOptions(dayDate),
                   );
                 },
               ),
