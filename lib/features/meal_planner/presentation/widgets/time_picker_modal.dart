@@ -7,12 +7,14 @@ class TimePickerModal extends StatefulWidget {
   final TimeOfDay initialTime;
   final String mealCategory;
   final Function(TimeOfDay) onTimeSelected;
+  final bool isEditMode;
 
   const TimePickerModal({
     super.key,
     required this.initialTime,
     required this.mealCategory,
     required this.onTimeSelected,
+    this.isEditMode = false,
   });
 
   @override
@@ -63,13 +65,11 @@ class _TimePickerModalState extends State<TimePickerModal> {
         top: 20,
         left: 20,
         right: 20,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 40,
       ),
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -118,7 +118,9 @@ class _TimePickerModalState extends State<TimePickerModal> {
                 ),
               ),
               Text(
-                'Choose time for ${widget.mealCategory.toLowerCase()}',
+                widget.isEditMode 
+                    ? 'Select new time for your meal'
+                    : 'Choose time for ${widget.mealCategory.toLowerCase()}',
                 style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
@@ -148,10 +150,7 @@ class _TimePickerModalState extends State<TimePickerModal> {
       decoration: BoxDecoration(
         color: AppColors.primary.withOpacity(0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.primary.withOpacity(0.2),
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.primary.withOpacity(0.2), width: 1),
       ),
       child: Column(
         children: [
@@ -237,9 +236,7 @@ class _TimePickerModalState extends State<TimePickerModal> {
       label: const Text('Custom Time'),
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         side: BorderSide(color: AppColors.primary),
         foregroundColor: AppColors.primary,
       ),
@@ -258,7 +255,7 @@ class _TimePickerModalState extends State<TimePickerModal> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text('Cancel'),
+            child: Text(widget.isEditMode ? 'Cancel' : 'Cancel'),
           ),
         ),
         const SizedBox(width: 12),
@@ -274,9 +271,9 @@ class _TimePickerModalState extends State<TimePickerModal> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text(
-              'Confirm',
-              style: TextStyle(fontWeight: FontWeight.w600),
+            child: Text(
+              widget.isEditMode ? 'Confirm' : 'Next',
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
         ),
@@ -342,6 +339,7 @@ void showTimePickerModal({
   required TimeOfDay initialTime,
   required String mealCategory,
   required Function(TimeOfDay) onTimeSelected,
+  bool isEditMode = false,
 }) {
   showModalBottomSheet(
     context: context,
@@ -351,6 +349,7 @@ void showTimePickerModal({
       initialTime: initialTime,
       mealCategory: mealCategory,
       onTimeSelected: onTimeSelected,
+      isEditMode: isEditMode,
     ),
   );
 }

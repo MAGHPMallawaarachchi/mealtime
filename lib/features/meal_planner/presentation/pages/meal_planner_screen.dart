@@ -9,6 +9,9 @@ import '../widgets/day_timeline_view.dart';
 import '../widgets/week_navigation_header.dart';
 import '../widgets/meal_detail_expanded_view.dart';
 import '../widgets/time_picker_modal.dart';
+import '../widgets/recipe_selection_modal.dart';
+import '../widgets/meal_confirmation_modal.dart';
+import '../../../recipes/domain/models/recipe.dart';
 
 class MealPlannerScreen extends StatefulWidget {
   const MealPlannerScreen({super.key});
@@ -409,14 +412,85 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   void _showAddMealOptions(DateTime date) {
-    _showQuickAddMealDialog(date);
+    _showTimeSelectionForNewMeal(date);
+  }
+
+  void _showTimeSelectionForNewMeal(DateTime date) {
+    showTimePickerModal(
+      context: context,
+      initialTime: const TimeOfDay(hour: 12, minute: 0),
+      mealCategory: 'Custom', // This won't be used in the new flow
+      onTimeSelected: (time) {
+        _showRecipeSelectionModal(date, time);
+      },
+    );
+  }
+
+  void _showRecipeSelectionModal(DateTime date, TimeOfDay selectedTime) {
+    // Add a small delay to ensure the time picker modal is fully closed
+    Future.delayed(const Duration(milliseconds: 100), () {
+      showRecipeSelectionModal(
+        context: context,
+        onRecipeSelected: (recipe) {
+          Navigator.of(context).pop(); // Close recipe modal
+          _showMealConfirmationModal(date, selectedTime, recipe);
+        },
+        onBack: () {
+          Navigator.of(context).pop(); // Close recipe modal
+          _showTimeSelectionForNewMeal(date); // Go back to time selection
+        },
+      );
+    });
+  }
+
+  void _showMealConfirmationModal(DateTime date, TimeOfDay selectedTime, Recipe recipe) {
+    showMealConfirmationModal(
+      context: context,
+      recipe: recipe,
+      selectedTime: selectedTime,
+      date: date,
+      onConfirm: (mealSlot) {
+        Navigator.of(context).pop(); // Close confirmation modal
+        _addMeal(mealSlot, date);
+      },
+      onBackToRecipes: () {
+        Navigator.of(context).pop(); // Close confirmation modal
+        _showRecipeSelectionModal(date, selectedTime); // Go back to recipe selection
+      },
+      onBackToTime: () {
+        Navigator.of(context).pop(); // Close confirmation modal
+        _showTimeSelectionForNewMeal(date); // Go back to time selection
+      },
+      onTimeChangeRequest: (currentTime, onTimeChanged) {
+        _showTimePickerForEdit(date, currentTime, selectedTime, recipe, onTimeChanged);
+      },
+      defaultServings: 4, // TODO: Get from user profile
+    );
+  }
+
+  void _showTimePickerForEdit(
+    DateTime date,
+    TimeOfDay currentTime,
+    TimeOfDay originalTime,
+    Recipe recipe,
+    Function(TimeOfDay) onTimeChanged,
+  ) {
+    showTimePickerModal(
+      context: context,
+      initialTime: currentTime,
+      mealCategory: 'Edit', // Special mode for editing
+      isEditMode: true,
+      onTimeSelected: (newTime) {
+        onTimeChanged(newTime); // Update the confirmation modal's time
+      },
+    );
   }
   
   void _addMeal(MealSlot mealSlot, DateTime date) {
     // TODO: Implement actual data persistence
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${mealSlot.category} added successfully!'),
+        content: Text('${mealSlot.displayName} added successfully!'),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
