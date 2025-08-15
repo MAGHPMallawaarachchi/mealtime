@@ -237,7 +237,7 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 0.75,
+        childAspectRatio: 0.95,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
       ),
@@ -350,7 +350,7 @@ class _RecipeCard extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 2,
+              flex: 1,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                 child: Column(
