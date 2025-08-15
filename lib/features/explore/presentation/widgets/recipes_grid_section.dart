@@ -117,11 +117,11 @@ class RecipesGridSection extends StatelessWidget {
     String subMessage;
 
     if (selectedCategory != null) {
-      message = 'No ${selectedCategory!.toLowerCase()} recipes found';
-      subMessage = 'Try selecting a different category';
+      message = 'No ${selectedCategory!.toLowerCase()} recipes yet';
+      subMessage = 'Check back later for new recipes';
     } else {
-      message = 'No recipes found';
-      subMessage = 'Try adjusting your search or filters';
+      message = 'No recipes available yet';
+      subMessage = 'Check back later for delicious recipes';
     }
 
     return Container(

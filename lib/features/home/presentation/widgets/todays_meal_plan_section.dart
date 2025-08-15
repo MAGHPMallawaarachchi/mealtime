@@ -137,7 +137,7 @@ class TodaysMealPlanSection extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           const Text(
-            'No meals planned for today',
+            'No meals planned yet',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.textSecondary,
@@ -146,7 +146,7 @@ class TodaysMealPlanSection extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           const Text(
-            'Tap "View All" to plan your meals',
+            'Tap "See All" to start planning your meals',
             style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
           ),
         ],
