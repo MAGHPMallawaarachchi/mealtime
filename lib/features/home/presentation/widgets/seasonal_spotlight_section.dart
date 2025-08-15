@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../data/dummy_seasonal_data.dart';
 import '../../domain/models/seasonal_ingredient.dart';
+import '../../domain/usecases/get_seasonal_ingredients_usecase.dart';
 import 'seasonal_spotlight_card.dart';
 
 class SeasonalSpotlightSection extends StatefulWidget {
@@ -15,23 +16,71 @@ class SeasonalSpotlightSection extends StatefulWidget {
 
 class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
   late PageController _pageController;
-  late Timer _autoPlayTimer;
+  Timer? _autoPlayTimer;
   int _currentPageIndex = 0;
-  final List<SeasonalIngredient> _seasonalIngredients =
-      DummySeasonalData.getSeasonalIngredients();
+  List<SeasonalIngredient> _seasonalIngredients = [];
+  bool _isLoading = true;
+  String? _errorMessage;
+  final GetSeasonalIngredientsUseCase _getSeasonalIngredientsUseCase = 
+      GetSeasonalIngredientsUseCase();
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
-    _startAutoPlay();
+    _loadSeasonalIngredients();
   }
 
   @override
   void dispose() {
-    _autoPlayTimer.cancel();
+    _autoPlayTimer?.cancel();
     _pageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadSeasonalIngredients() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+
+      final ingredients = await _getSeasonalIngredientsUseCase.call();
+      
+      if (mounted) {
+        setState(() {
+          _seasonalIngredients = ingredients;
+          _isLoading = false;
+        });
+
+        if (_seasonalIngredients.isNotEmpty) {
+          _startAutoPlay();
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Failed to load seasonal ingredients. Please try again.';
+        });
+      }
+    }
+  }
+
+  Future<void> _refreshData() async {
+    try {
+      await _getSeasonalIngredientsUseCase.refresh();
+      await _loadSeasonalIngredients();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to refresh: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   void _startAutoPlay() {
@@ -60,8 +109,16 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return _buildLoadingState();
+    }
+
+    if (_errorMessage != null) {
+      return _buildErrorState();
+    }
+
     if (_seasonalIngredients.isEmpty) {
-      return const SizedBox.shrink();
+      return _buildEmptyState();
     }
 
     return Column(
@@ -102,6 +159,131 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
             color: _currentPageIndex == index
                 ? AppColors.primary
                 : AppColors.textSecondary.withOpacity(0.3),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return Container(
+      height: 280,
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.textSecondary.withOpacity(0.1)),
+      ),
+      child: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+              color: AppColors.primary,
+              strokeWidth: 2,
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Loading seasonal ingredients...',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Container(
+      height: 280,
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.textSecondary.withOpacity(0.1)),
+      ),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              PhosphorIcon(
+                PhosphorIcons.warningCircle(),
+                size: 48,
+                color: AppColors.textSecondary,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                _errorMessage!,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: _loadSeasonalIngredients,
+                child: const Text(
+                  'Try Again',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Container(
+      height: 280,
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.textSecondary.withOpacity(0.1)),
+      ),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              PhosphorIcon(
+                PhosphorIcons.plant(),
+                size: 48,
+                color: AppColors.textSecondary,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'No seasonal ingredients available at the moment.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: _refreshData,
+                child: const Text(
+                  'Refresh',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
