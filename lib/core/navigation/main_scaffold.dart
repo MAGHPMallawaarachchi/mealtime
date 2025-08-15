@@ -18,13 +18,24 @@ class MainScaffold extends StatefulWidget {
 
 class _MainScaffoldState extends State<MainScaffold> {
   // Pre-create all screens to eliminate any build flickering
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    ExploreScreen(),
-    MealPlannerScreen(),
-    PantryScreen(),
-    ProfileScreen(),
-  ];
+  late final List<Widget> _screens;
+  VoidCallback? _mealPlannerAddMealCallback;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      const HomeScreen(),
+      const ExploreScreen(),
+      MealPlannerScreen(
+        onRegisterAddMealCallback: (callback) {
+          _mealPlannerAddMealCallback = callback;
+        },
+      ),
+      const PantryScreen(),
+      const ProfileScreen(),
+    ];
+  }
 
   int _getCurrentIndex() {
     try {
@@ -62,6 +73,11 @@ class _MainScaffoldState extends State<MainScaffold> {
     }
   }
 
+  void _onMealPlannerAddMeal() {
+    // Trigger add meal functionality through callback
+    _mealPlannerAddMealCallback?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentIndex = _getCurrentIndex();
@@ -78,6 +94,7 @@ class _MainScaffoldState extends State<MainScaffold> {
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: currentIndex,
         onTap: _onTabTapped,
+        onCenterButtonTap: currentIndex == 2 ? _onMealPlannerAddMeal : null,
       ),
     );
   }

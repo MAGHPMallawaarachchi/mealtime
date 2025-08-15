@@ -5,11 +5,13 @@ import '../constants/app_colors.dart';
 class CustomBottomNavBar extends StatefulWidget {
   final int currentIndex;
   final Function(int) onTap;
+  final VoidCallback? onCenterButtonTap; // Custom callback for center button when on meal planner
 
   const CustomBottomNavBar({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    this.onCenterButtonTap,
   });
 
   @override
@@ -190,8 +192,19 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
   }
 
   Widget _buildFloatingCenterButton(Color primaryColor) {
+    final bool isOnMealPlanner = widget.currentIndex == 2;
+    final IconData iconData = isOnMealPlanner ? PhosphorIcons.plus() : PhosphorIcons.chefHat();
+    
     return GestureDetector(
-      onTap: () => widget.onTap(2),
+      onTap: () {
+        if (isOnMealPlanner && widget.onCenterButtonTap != null) {
+          // If on meal planner and custom callback is provided, use it
+          widget.onCenterButtonTap!();
+        } else {
+          // Otherwise use normal navigation
+          widget.onTap(2);
+        }
+      },
       child: AnimatedBuilder(
         animation: _controllers[2],
         builder: (context, child) {
@@ -214,10 +227,17 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                 ],
               ),
               child: Center(
-                child: PhosphorIcon(
-                  PhosphorIcons.chefHat(),
-                  size: 32,
-                  color: AppColors.background,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (child, animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
+                  child: PhosphorIcon(
+                    iconData,
+                    key: ValueKey(iconData.codePoint),
+                    size: 32,
+                    color: AppColors.background,
+                  ),
                 ),
               ),
             ),

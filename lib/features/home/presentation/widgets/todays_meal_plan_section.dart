@@ -6,14 +6,17 @@ import '../../../../core/constants/app_colors.dart';
 import '../../data/dummy_meal_plan_data.dart';
 import '../../domain/models/meal_plan_item.dart';
 import 'meal_plan_card.dart';
+import '../../../meal_planner/data/dummy_meal_plan_service.dart';
+import '../../../meal_planner/domain/models/meal_slot.dart';
 
 class TodaysMealPlanSection extends StatelessWidget {
   const TodaysMealPlanSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<MealPlanItem> todaysMeals =
-        DummyMealPlanData.getTodaysMealPlan();
+    final weekPlan = DummyMealPlanService.getCurrentWeekPlan();
+    final todaysPlan = weekPlan.todaysPlan;
+    final List<MealSlot> todaysMeals = todaysPlan?.scheduledMeals ?? [];
     final String todayDate = DateFormat('EEEE, MMMM d').format(DateTime.now());
 
     return Column(
@@ -80,12 +83,36 @@ class TodaysMealPlanSection extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 12),
                   itemCount: todaysMeals.length,
                   itemBuilder: (context, index) {
-                    return MealPlanCard(mealPlan: todaysMeals[index]);
+                    final mealSlot = todaysMeals[index];
+                    final mealPlanItem = _convertMealSlotToMealPlanItem(mealSlot);
+                    return MealPlanCard(mealPlan: mealPlanItem);
                   },
                 )
               : _buildEmptyState(),
         ),
       ],
+    );
+  }
+
+  MealPlanItem _convertMealSlotToMealPlanItem(MealSlot mealSlot) {
+    String title = 'Unknown Meal';
+    String imageUrl = 'https://images.unsplash.com/photo-1547573854-74d2a71d0826?w=800&h=600&fit=crop';
+
+    if (mealSlot.customMealName != null) {
+      title = mealSlot.customMealName!;
+    } else if (mealSlot.recipeId != null) {
+      final recipe = DummyMealPlanData.getRecipeById(mealSlot.recipeId!);
+      if (recipe != null) {
+        title = recipe.title;
+        imageUrl = recipe.imageUrl;
+      }
+    }
+
+    return MealPlanItem(
+      id: mealSlot.id,
+      title: title,
+      time: mealSlot.displayTime,
+      imageUrl: imageUrl,
     );
   }
 
