@@ -10,6 +10,7 @@ class RecipesGridSection extends StatelessWidget {
   final String? selectedCategory;
   final Function(Recipe)? onFavoriteToggle;
   final Function(Recipe)? onAddToMealPlan;
+  final Set<String>? favoriteRecipes;
 
   const RecipesGridSection({
     super.key,
@@ -17,6 +18,7 @@ class RecipesGridSection extends StatelessWidget {
     this.selectedCategory,
     this.onFavoriteToggle,
     this.onAddToMealPlan,
+    this.favoriteRecipes,
   });
 
   @override
@@ -98,8 +100,10 @@ class RecipesGridSection extends StatelessWidget {
               ),
               itemCount: displayedRecipes.length,
               itemBuilder: (context, index) {
+                final recipe = displayedRecipes[index];
                 return ExploreRecipeCard(
-                  recipe: displayedRecipes[index],
+                  recipe: recipe,
+                  isFavorite: favoriteRecipes?.contains(recipe.id) ?? false,
                   onFavoriteToggle: onFavoriteToggle,
                   onAddToMealPlan: onAddToMealPlan,
                 );

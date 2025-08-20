@@ -32,10 +32,20 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
     _isFavorite = widget.isFavorite;
   }
 
+  @override
+  void didUpdateWidget(ExploreRecipeCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isFavorite != widget.isFavorite) {
+      _isFavorite = widget.isFavorite;
+    }
+  }
+
   void _toggleFavorite() {
     setState(() {
       _isFavorite = !_isFavorite;
     });
+    
+    // Only call the callback if provided (UI-only toggle)
     widget.onFavoriteToggle?.call(widget.recipe);
 
     // Show feedback to user
