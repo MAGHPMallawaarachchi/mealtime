@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../home/data/dummy_meal_plan_data.dart';
-import '../../../explore/data/dummy_explore_data.dart';
 import '../../../auth/presentation/widgets/primary_button.dart';
 import '../../domain/models/recipe.dart';
+import '../../domain/usecases/get_recipe_by_id_usecase.dart';
+import '../../data/repositories/recipes_repository_impl.dart';
 
 enum RecipeTab { ingredients, instructions }
 
@@ -25,38 +25,67 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   Set<String> checkedIngredients = {};
   RecipeTab selectedTab = RecipeTab.ingredients;
   bool isDescriptionExpanded = false;
+  Recipe? _recipe;
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  // Dependencies
+  late final RecipesRepositoryImpl _recipesRepository;
+  late final GetRecipeByIdUseCase _getRecipeByIdUseCase;
 
   @override
   void initState() {
     super.initState();
-    final recipe = _getRecipeById(widget.recipeId);
-    if (recipe != null) {
-      currentServings = recipe.defaultServings;
+    _initializeDependencies();
+    _loadRecipe();
+  }
+
+  void _initializeDependencies() {
+    _recipesRepository = RecipesRepositoryImpl();
+    _getRecipeByIdUseCase = GetRecipeByIdUseCase(_recipesRepository);
+  }
+
+  Future<void> _loadRecipe() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+
+      final recipe = await _getRecipeByIdUseCase.execute(widget.recipeId);
+
+      if (mounted) {
+        setState(() {
+          _recipe = recipe;
+          _isLoading = false;
+          if (recipe != null) {
+            currentServings = recipe.defaultServings;
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.toString();
+        });
+      }
     }
   }
 
-  Recipe? _getRecipeById(String recipeId) {
-    // First try to get recipe from meal plan data
-    Recipe? recipe = DummyMealPlanData.getRecipeById(recipeId);
-    if (recipe != null) {
-      return recipe;
-    }
-    
-    // If not found, try to get from explore data
-    final allExploreRecipes = DummyExploreData.getAllRecipes();
-    try {
-      return allExploreRecipes.firstWhere((recipe) => recipe.id == recipeId);
-    } catch (e) {
-      return null;
-    }
+  Future<void> _refreshRecipe() async {
+    await _loadRecipe();
   }
 
   @override
   Widget build(BuildContext context) {
-    final Recipe? recipe = _getRecipeById(widget.recipeId);
+    return RefreshIndicator(onRefresh: _refreshRecipe, child: _buildContent());
+  }
 
-    if (recipe == null) {
+  Widget _buildContent() {
+    if (_isLoading) {
       return Scaffold(
+        backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: AppColors.background,
           elevation: 0,
@@ -68,19 +97,93 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
             onPressed: () => context.pop(),
           ),
         ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_errorMessage != null) {
+      return _buildErrorState();
+    }
+
+    if (_recipe == null) {
+      return _buildNotFoundState();
+    }
+
+    return _buildRecipeContent(_recipe!);
+  }
+
+  Widget _buildNotFoundState() {
+    return Scaffold(
+      appBar: AppBar(
         backgroundColor: AppColors.background,
-        body: Center(
+        elevation: 0,
+        leading: IconButton(
+          icon: PhosphorIcon(
+            PhosphorIcons.arrowLeft(),
+            color: AppColors.textPrimary,
+          ),
+          onPressed: () => context.pop(),
+        ),
+      ),
+      backgroundColor: AppColors.background,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            PhosphorIcon(
+              PhosphorIcons.cookingPot(),
+              size: 64,
+              color: AppColors.textSecondary,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Recipe not found',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'The recipe you are looking for does not exist.',
+              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        leading: IconButton(
+          icon: PhosphorIcon(
+            PhosphorIcons.arrowLeft(),
+            color: AppColors.textPrimary,
+          ),
+          onPressed: () => context.pop(),
+        ),
+      ),
+      backgroundColor: AppColors.background,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               PhosphorIcon(
-                PhosphorIcons.cookingPot(),
+                PhosphorIcons.warning(),
                 size: 64,
                 color: AppColors.textSecondary,
               ),
               const SizedBox(height: 16),
               const Text(
-                'Recipe not found',
+                'Something went wrong',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -88,17 +191,31 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'The recipe you are looking for does not exist.',
-                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              Text(
+                _errorMessage ?? 'Unknown error occurred',
                 textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: _refreshRecipe,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.white,
+                ),
+                child: const Text('Try Again'),
               ),
             ],
           ),
         ),
-      );
-    }
+      ),
+    );
+  }
 
+  Widget _buildRecipeContent(Recipe recipe) {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: CustomScrollView(
@@ -195,15 +312,17 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        recipe.title,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                      Expanded(
+                        child: Text(
+                          recipe.title,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(width: 16),
                       Row(
                         children: [
                           PhosphorIcon(
@@ -253,6 +372,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       ),
     );
   }
+
 
   Widget _buildDescription(String description) {
     const maxLines = 3;
@@ -969,7 +1089,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       subtitle: Text(time),
       onTap: () {
         Navigator.pop(context);
-        
+
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
