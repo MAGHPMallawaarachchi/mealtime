@@ -3,9 +3,11 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../domain/models/meal_slot.dart';
-import '../../../home/data/dummy_meal_plan_data.dart';
+import '../../../recipes/domain/models/recipe.dart';
+import '../../../recipes/domain/repositories/recipes_repository.dart';
+import '../../../recipes/data/repositories/recipes_repository_impl.dart';
 
-class CompactMealCard extends StatelessWidget {
+class CompactMealCard extends StatefulWidget {
   final MealSlot mealSlot;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
@@ -20,8 +22,50 @@ class CompactMealCard extends StatelessWidget {
   });
 
   @override
+  State<CompactMealCard> createState() => _CompactMealCardState();
+}
+
+class _CompactMealCardState extends State<CompactMealCard> {
+  Recipe? _recipe;
+  bool _isLoadingRecipe = false;
+  late final RecipesRepository _recipesRepository;
+
+  @override
+  void initState() {
+    super.initState();
+    _recipesRepository = RecipesRepositoryImpl();
+    if (widget.mealSlot.recipeId != null) {
+      _loadRecipe();
+    }
+  }
+
+  Future<void> _loadRecipe() async {
+    if (widget.mealSlot.recipeId == null) return;
+
+    setState(() {
+      _isLoadingRecipe = true;
+    });
+
+    try {
+      final recipe = await _recipesRepository.getRecipe(widget.mealSlot.recipeId!);
+      if (mounted) {
+        setState(() {
+          _recipe = recipe;
+          _isLoadingRecipe = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoadingRecipe = false;
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (mealSlot.isEmpty) {
+    if (widget.mealSlot.isEmpty) {
       return _buildEmptyCard();
     }
 
@@ -30,7 +74,7 @@ class CompactMealCard extends StatelessWidget {
 
   Widget _buildEmptyCard() {
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Container(
         height: 80,
         decoration: BoxDecoration(
@@ -73,17 +117,17 @@ class CompactMealCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Add ${mealSlot.category}',
+                      'Add ${widget.mealSlot.category}',
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: AppColors.textSecondary,
                       ),
                     ),
-                    if (showTime) ...[
+                    if (widget.showTime) ...[
                       const SizedBox(height: 2),
                       Text(
-                        mealSlot.displayTime,
+                        widget.mealSlot.displayTime,
                         style: const TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,
@@ -105,8 +149,8 @@ class CompactMealCard extends StatelessWidget {
     final imageUrl = _getMealImageUrl();
 
     return GestureDetector(
-      onTap: onTap,
-      onLongPress: onLongPress,
+      onTap: widget.onTap,
+      onLongPress: widget.onLongPress,
       child: Container(
         height: 80,
         decoration: BoxDecoration(
@@ -176,7 +220,7 @@ class CompactMealCard extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                mealSlot.category,
+                                widget.mealSlot.category,
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: AppColors.textSecondary,
@@ -184,7 +228,7 @@ class CompactMealCard extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            if (mealSlot.servingSize > 1) ...[
+                            if (widget.mealSlot.servingSize > 1) ...[
                               const SizedBox(width: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -193,7 +237,7 @@ class CompactMealCard extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
-                                  '${mealSlot.servingSize}x',
+                                  '${widget.mealSlot.servingSize}x',
                                   style: TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w500,
@@ -204,10 +248,10 @@ class CompactMealCard extends StatelessWidget {
                             ],
                           ],
                         ),
-                        if (showTime) ...[
+                        if (widget.showTime) ...[
                           const SizedBox(height: 2),
                           Text(
-                            mealSlot.displayTime,
+                            widget.mealSlot.displayTime,
                             style: const TextStyle(
                               fontSize: 11,
                               color: AppColors.textSecondary,
@@ -230,7 +274,7 @@ class CompactMealCard extends StatelessWidget {
               ],
             ),
             // Lock indicator
-            if (mealSlot.isLocked)
+            if (widget.mealSlot.isLocked)
               Positioned(
                 top: 8,
                 right: 8,
@@ -254,26 +298,27 @@ class CompactMealCard extends StatelessWidget {
   }
 
   String _getMealDisplayName() {
-    if (mealSlot.customMealName != null && mealSlot.customMealName!.isNotEmpty) {
-      return mealSlot.customMealName!;
+    if (widget.mealSlot.customMealName != null && widget.mealSlot.customMealName!.isNotEmpty) {
+      return widget.mealSlot.customMealName!;
     }
 
-    if (mealSlot.recipeId != null) {
-      final recipe = DummyMealPlanData.getRecipeById(mealSlot.recipeId!);
-      return recipe?.title ?? 'Unknown Recipe';
+    if (widget.mealSlot.recipeId != null) {
+      if (_isLoadingRecipe) {
+        return 'Loading...';
+      }
+      return _recipe?.title ?? 'Unknown Recipe';
     }
 
-    if (mealSlot.leftoverId != null) {
+    if (widget.mealSlot.leftoverId != null) {
       return 'Leftover Meal'; // Would fetch actual leftover data
     }
 
-    return mealSlot.category;
+    return widget.mealSlot.category;
   }
 
   String? _getMealImageUrl() {
-    if (mealSlot.recipeId != null) {
-      final recipe = DummyMealPlanData.getRecipeById(mealSlot.recipeId!);
-      return recipe?.imageUrl;
+    if (widget.mealSlot.recipeId != null) {
+      return _recipe?.imageUrl;
     }
 
     // Could add leftover images or category-based default images

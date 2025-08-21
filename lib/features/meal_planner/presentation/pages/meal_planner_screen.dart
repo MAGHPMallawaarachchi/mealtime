@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/services/auth_service.dart';
 import '../../domain/models/meal_slot.dart';
 import '../../domain/models/daily_meal_plan.dart';
 import '../../domain/models/weekly_meal_plan.dart';
-import '../../data/dummy_meal_plan_service.dart';
+import '../../domain/usecases/get_weekly_meal_plan_usecase.dart';
+import '../../domain/usecases/save_meal_slot_usecase.dart';
+import '../../domain/usecases/delete_meal_slot_usecase.dart';
+import '../../data/repositories/meal_planner_repository_impl.dart';
 import '../widgets/day_timeline_view.dart';
 import '../widgets/week_navigation_header.dart';
 import '../widgets/meal_detail_expanded_view.dart';
@@ -25,16 +30,26 @@ class MealPlannerScreen extends StatefulWidget {
 class _MealPlannerScreenState extends State<MealPlannerScreen> {
   late PageController _pageController;
   late DateTime currentWeekStart;
-  late WeeklyMealPlan currentWeekPlan;
+  WeeklyMealPlan? currentWeekPlan;
   late DateTime selectedDate;
   late DateTime _todayNormalized; // Cached normalized today reference
   bool _isUserSwipe = true; // Track if page change is from user swipe or programmatic
+  bool _isLoading = false;
+  String? _errorMessage;
   
   static const int _initialPage = 1000; // For infinite scroll
+
+  // Dependencies
+  late final AuthService _authService;
+  late final MealPlannerRepositoryImpl _mealPlannerRepository;
+  late final GetWeeklyMealPlanUseCase _getWeeklyMealPlanUseCase;
+  late final SaveMealSlotUseCase _saveMealSlotUseCase;
+  late final DeleteMealSlotUseCase _deleteMealSlotUseCase;
 
   @override
   void initState() {
     super.initState();
+    _initializeDependencies();
     _pageController = PageController(initialPage: _initialPage);
     final today = DateTime.now();
     _todayNormalized = _normalizeDate(today);
@@ -44,6 +59,14 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     
     // Register our add meal callback with the parent
     widget.onRegisterAddMealCallback?.call(triggerAddMeal);
+  }
+
+  void _initializeDependencies() {
+    _authService = AuthService();
+    _mealPlannerRepository = MealPlannerRepositoryImpl();
+    _getWeeklyMealPlanUseCase = GetWeeklyMealPlanUseCase(_mealPlannerRepository);
+    _saveMealSlotUseCase = SaveMealSlotUseCase(_mealPlannerRepository);
+    _deleteMealSlotUseCase = DeleteMealSlotUseCase(_mealPlannerRepository);
   }
 
   @override
@@ -74,10 +97,33 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     _showAddMealOptions(selectedDate);
   }
   
-  void _loadWeekPlan() {
+  Future<void> _loadWeekPlan() async {
+    final user = _authService.currentUser;
+    if (user == null) {
+      setState(() {
+        _errorMessage = 'Please login to view your meal plans';
+        _isLoading = false;
+      });
+      return;
+    }
+
     setState(() {
-      currentWeekPlan = DummyMealPlanService.getWeekPlan(currentWeekStart);
+      _isLoading = true;
+      _errorMessage = null;
     });
+
+    try {
+      final weekPlan = await _getWeeklyMealPlanUseCase.execute(user.uid, currentWeekStart);
+      setState(() {
+        currentWeekPlan = weekPlan;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to load meal plan: ${e.toString()}';
+        _isLoading = false;
+      });
+    }
   }
 
   void _navigateToWeek(int direction) {
@@ -103,32 +149,71 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           children: [
             _buildHeader(),
             WeekNavigationHeader(
-              weekPlan: currentWeekPlan,
+              weekPlan: currentWeekPlan ?? WeeklyMealPlan.createForWeek(currentWeekStart),
               selectedDate: selectedDate,
               onDaySelected: _onDaySelected,
               onPreviousWeek: () => _navigateToWeek(-1),
               onNextWeek: () => _navigateToWeek(1),
             ),
             Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: _onPageChanged,
-                itemBuilder: (context, index) {
-                  final dayOffset = index - _initialPage;
-                  final dayDate = _todayNormalized.add(Duration(days: dayOffset));
-                  final dayPlan = _getDayPlan(dayDate);
-                  
-                  return DayTimelineView(
-                    dayPlan: dayPlan,
-                    onMealTap: (meal) => _handleMealTap(meal, dayDate),
-                    onMealLongPress: (meal) => _handleMealLongPress(meal, dayDate),
-                  );
-                },
-              ),
+              child: _buildContent(),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildContent() {
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (_errorMessage != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              PhosphorIcons.warningCircle(),
+              size: 64,
+              color: AppColors.error,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _errorMessage!,
+              style: const TextStyle(
+                fontSize: 16,
+                color: AppColors.error,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _loadWeekPlan,
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return PageView.builder(
+      controller: _pageController,
+      onPageChanged: _onPageChanged,
+      itemBuilder: (context, index) {
+        final dayOffset = index - _initialPage;
+        final dayDate = _todayNormalized.add(Duration(days: dayOffset));
+        final dayPlan = _getDayPlan(dayDate);
+        
+        return DayTimelineView(
+          dayPlan: dayPlan,
+          onMealTap: (meal) => _handleMealTap(meal, dayDate),
+          onMealLongPress: (meal) => _handleMealLongPress(meal, dayDate),
+        );
+      },
     );
   }
 
@@ -232,11 +317,14 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   DailyMealPlan _getDayPlan(DateTime date) {
     final normalizedDate = _normalizeDate(date);
     final weekStart = _getWeekStart(normalizedDate);
-    final weekPlan = _isSameDay(weekStart, currentWeekStart)
-        ? currentWeekPlan 
-        : DummyMealPlanService.getWeekPlan(weekStart);
     
-    return weekPlan.getDayPlan(normalizedDate) ?? DailyMealPlan.createDefault(normalizedDate);
+    // If this is the current loaded week, use the cached plan
+    if (_isSameDay(weekStart, currentWeekStart) && currentWeekPlan != null) {
+      return currentWeekPlan!.getDayPlan(normalizedDate) ?? DailyMealPlan.createDefault(normalizedDate);
+    }
+    
+    // For other weeks, return empty plan (could be enhanced to load other weeks)
+    return DailyMealPlan.createDefault(normalizedDate);
   }
 
   void _handleMealTap(MealSlot mealSlot, DateTime date) {
@@ -495,56 +583,131 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     );
   }
   
-  void _addMeal(MealSlot mealSlot, DateTime date) {
-    // TODO: Implement actual data persistence
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${mealSlot.displayName} added successfully!'),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+  Future<void> _addMeal(MealSlot mealSlot, DateTime date) async {
+    final user = _authService.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please login to add meals'),
+          backgroundColor: AppColors.error,
         ),
-        backgroundColor: AppColors.success,
-      ),
-    );
+      );
+      return;
+    }
+
+    try {
+      await _saveMealSlotUseCase.execute(user.uid, date, mealSlot);
+      
+      // Refresh the current week plan
+      await _loadWeekPlan();
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${mealSlot.displayName} added successfully!'),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          backgroundColor: AppColors.success,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to add meal: ${e.toString()}'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
   
-  void _updateMeal(MealSlot updatedMeal, DateTime date) {
-    // TODO: Implement actual data persistence
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Meal updated successfully!'),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+  Future<void> _updateMeal(MealSlot updatedMeal, DateTime date) async {
+    final user = _authService.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please login to update meals'),
+          backgroundColor: AppColors.error,
         ),
-        backgroundColor: AppColors.success,
-      ),
-    );
+      );
+      return;
+    }
+
+    try {
+      await _saveMealSlotUseCase.execute(user.uid, date, updatedMeal);
+      
+      // Refresh the current week plan
+      await _loadWeekPlan();
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Meal updated successfully!'),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          backgroundColor: AppColors.success,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to update meal: ${e.toString()}'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
   
-  void _deleteMeal(MealSlot meal, DateTime date) {
-    // TODO: Implement actual data persistence
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Meal deleted'),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+  Future<void> _deleteMeal(MealSlot meal, DateTime date) async {
+    final user = _authService.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please login to delete meals'),
+          backgroundColor: AppColors.error,
         ),
-        backgroundColor: AppColors.error,
-      ),
-    );
+      );
+      return;
+    }
+
+    try {
+      await _deleteMealSlotUseCase.execute(user.uid, date, meal.id);
+      
+      // Refresh the current week plan
+      await _loadWeekPlan();
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Meal deleted'),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete meal: ${e.toString()}'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
   
   void _viewRecipe(MealSlot mealSlot) {
-    // TODO: Navigate to recipe detail
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Recipe view coming soon!'),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    if (mealSlot.recipeId != null) {
+      context.push('/recipe/${mealSlot.recipeId}');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No recipe associated with this meal'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
   
   IconData _getCategoryIcon(String category) {

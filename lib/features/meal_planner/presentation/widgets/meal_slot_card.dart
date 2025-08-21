@@ -3,7 +3,6 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../domain/models/meal_slot.dart';
-import '../../data/dummy_meal_plan_service.dart';
 import '../../../home/data/dummy_meal_plan_data.dart';
 
 class MealSlotCard extends StatelessWidget {

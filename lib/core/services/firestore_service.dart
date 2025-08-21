@@ -116,6 +116,37 @@ class FirestoreService {
     }
   }
 
+  Future<void> setDocument(String collectionPath, String documentId, Map<String, dynamic> data) async {
+    try {
+      await _firestore.collection(collectionPath).doc(documentId).set({
+        ...data,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } on FirebaseException catch (e) {
+      throw FirestoreException._fromFirebaseException(e);
+    } catch (e) {
+      throw FirestoreException('Unknown error occurred: ${e.toString()}');
+    }
+  }
+
+  Stream<Map<String, dynamic>?> getDocumentStream(String collectionPath, String documentId) {
+    try {
+      return _firestore.collection(collectionPath).doc(documentId).snapshots().map((docSnapshot) {
+        if (docSnapshot.exists) {
+          return {
+            'id': docSnapshot.id,
+            ...docSnapshot.data()!,
+          };
+        }
+        return null;
+      });
+    } on FirebaseException catch (e) {
+      throw FirestoreException._fromFirebaseException(e);
+    } catch (e) {
+      throw FirestoreException('Unknown error occurred: ${e.toString()}');
+    }
+  }
+
   Future<void> deleteDocument(String collectionPath, String documentId) async {
     try {
       await _firestore.collection(collectionPath).doc(documentId).delete();
