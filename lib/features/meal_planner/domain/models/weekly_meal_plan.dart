@@ -92,9 +92,18 @@ class WeeklyMealPlan {
   }
 
   WeeklyMealPlan updateDayPlan(DailyMealPlan updatedDay) {
-    final updatedPlans = dailyPlans.map((day) {
-      return isSameDay(day.date, updatedDay.date) ? updatedDay : day;
-    }).toList();
+    final existingDayIndex = dailyPlans.indexWhere((day) => isSameDay(day.date, updatedDay.date));
+    
+    List<DailyMealPlan> updatedPlans;
+    if (existingDayIndex != -1) {
+      // Update existing day
+      updatedPlans = dailyPlans.map((day) {
+        return isSameDay(day.date, updatedDay.date) ? updatedDay : day;
+      }).toList();
+    } else {
+      // Add new day plan
+      updatedPlans = [...dailyPlans, updatedDay]..sort((a, b) => a.date.compareTo(b.date));
+    }
 
     return copyWith(
       dailyPlans: updatedPlans,

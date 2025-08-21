@@ -114,15 +114,28 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
     try {
       final weekPlan = await _getWeeklyMealPlanUseCase.execute(user.uid, currentWeekStart);
-      setState(() {
-        currentWeekPlan = weekPlan;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          currentWeekPlan = weekPlan;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _errorMessage = 'Failed to load meal plan: ${e.toString()}';
-        _isLoading = false;
-      });
+      if (mounted) {
+        String errorMessage = 'Failed to load meal plan';
+        if (e.toString().contains('permission-denied')) {
+          errorMessage = 'You do not have permission to access meal plans';
+        } else if (e.toString().contains('network')) {
+          errorMessage = 'Network error. Please check your connection';
+        } else if (e.toString().contains('unavailable')) {
+          errorMessage = 'Service is currently unavailable';
+        }
+        
+        setState(() {
+          _errorMessage = errorMessage;
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -595,27 +608,110 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       return;
     }
 
+    // Validate meal slot data
+    if (mealSlot.category.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Meal category is required'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    // Show loading state
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+            const SizedBox(width: 16),
+            const Text('Adding meal...'),
+          ],
+        ),
+        duration: const Duration(seconds: 10), // Will be dismissed when operation completes
+        backgroundColor: AppColors.primary,
+      ),
+    );
+
     try {
       await _saveMealSlotUseCase.execute(user.uid, date, mealSlot);
+      
+      // Dismiss loading snackbar
+      ScaffoldMessenger.of(context).clearSnackBars();
       
       // Refresh the current week plan
       await _loadWeekPlan();
       
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${mealSlot.displayName} added successfully!'),
+          content: Row(
+            children: [
+              PhosphorIcon(
+                PhosphorIcons.checkCircle(),
+                color: Colors.white,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text('${mealSlot.displayName} added successfully!'),
+              ),
+            ],
+          ),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
           backgroundColor: AppColors.success,
+          duration: const Duration(seconds: 3),
         ),
       );
     } catch (e) {
+      // Dismiss loading snackbar
+      ScaffoldMessenger.of(context).clearSnackBars();
+      
+      String errorMessage = 'Failed to add meal';
+      if (e.toString().contains('permission-denied')) {
+        errorMessage = 'You do not have permission to add meals';
+      } else if (e.toString().contains('network')) {
+        errorMessage = 'Network error. Please check your connection and try again';
+      } else if (e.toString().contains('unavailable')) {
+        errorMessage = 'Service is currently unavailable. Please try again later';
+      }
+      
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to add meal: ${e.toString()}'),
+          content: Row(
+            children: [
+              PhosphorIcon(
+                PhosphorIcons.warning(),
+                color: Colors.white,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(errorMessage),
+              ),
+            ],
+          ),
           backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          duration: const Duration(seconds: 5),
+          action: SnackBarAction(
+            label: 'Retry',
+            textColor: Colors.white,
+            onPressed: () => _addMeal(mealSlot, date),
+          ),
         ),
       );
     }

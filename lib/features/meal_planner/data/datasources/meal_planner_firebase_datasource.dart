@@ -6,7 +6,8 @@ import '../../domain/models/meal_slot.dart';
 import 'meal_planner_datasource.dart';
 
 class MealPlannerFirebaseDataSource implements MealPlannerDataSource {
-  static const String _collectionPath = 'meal_plans';
+  static const String _usersCollection = 'users';
+  static const String _mealPlansSubcollection = 'meal_plans';
   
   final FirestoreService _firestoreService;
 
@@ -18,8 +19,9 @@ class MealPlannerFirebaseDataSource implements MealPlannerDataSource {
   Future<WeeklyMealPlan?> getWeeklyMealPlan(String userId, DateTime weekStartDate) async {
     try {
       final weekId = _generateWeekId(weekStartDate);
+      final docPath = _buildDocumentPath(userId, weekId);
       
-      final data = await _firestoreService.getDocument('meal_plans', '$userId/weeks/$weekId');
+      final data = await _firestoreService.getDocument(_usersCollection, docPath);
       
       if (data == null) {
         return null;
@@ -37,8 +39,9 @@ class MealPlannerFirebaseDataSource implements MealPlannerDataSource {
   Stream<WeeklyMealPlan?> getWeeklyMealPlanStream(String userId, DateTime weekStartDate) {
     try {
       final weekId = _generateWeekId(weekStartDate);
+      final docPath = _buildDocumentPath(userId, weekId);
       
-      return _firestoreService.getDocumentStream('meal_plans', '$userId/weeks/$weekId')
+      return _firestoreService.getDocumentStream(_usersCollection, docPath)
           .map((data) => data != null ? WeeklyMealPlan.fromJson(data) : null)
           .handleError((error) {
         debugPrint('MealPlannerFirebaseDataSource: Stream error: $error');
@@ -61,9 +64,9 @@ class MealPlannerFirebaseDataSource implements MealPlannerDataSource {
       }
 
       final weekId = weekPlan.weekId;
-      final docPath = '${weekPlan.userId}/weeks/$weekId';
+      final docPath = _buildDocumentPath(weekPlan.userId!, weekId);
       
-      await _firestoreService.setDocument('meal_plans', docPath, weekPlan.toJson());
+      await _firestoreService.setDocument(_usersCollection, docPath, weekPlan.toJson());
     } catch (e) {
       throw MealPlannerDataSourceException(
         'Failed to save weekly meal plan: ${e.toString()}',
@@ -75,7 +78,6 @@ class MealPlannerFirebaseDataSource implements MealPlannerDataSource {
   Future<void> saveMealSlot(String userId, DateTime date, MealSlot mealSlot) async {
     try {
       final weekStart = _getWeekStart(date);
-      final weekId = _generateWeekId(weekStart);
       
       // First, get the current week plan
       var weekPlan = await getWeeklyMealPlan(userId, weekStart);
@@ -91,8 +93,18 @@ class MealPlannerFirebaseDataSource implements MealPlannerDataSource {
         dayPlan = DailyMealPlan.createEmpty(date);
       }
       
-      // Update the meal slot
-      final updatedDayPlan = dayPlan.updateMealSlot(mealSlot);
+      // Check if this is a new meal slot or updating an existing one
+      final existingMeal = dayPlan.meals.where((meal) => meal.id == mealSlot.id).firstOrNull;
+      
+      DailyMealPlan updatedDayPlan;
+      if (existingMeal != null) {
+        // Update existing meal slot
+        updatedDayPlan = dayPlan.updateMealSlot(mealSlot);
+      } else {
+        // Add new meal slot
+        updatedDayPlan = dayPlan.addMealSlot(mealSlot);
+      }
+      
       final updatedWeekPlan = weekPlan.updateDayPlan(updatedDayPlan);
       
       await saveWeeklyMealPlan(updatedWeekPlan);
@@ -196,14 +208,19 @@ class MealPlannerFirebaseDataSource implements MealPlannerDataSource {
   Future<void> deleteWeeklyMealPlan(String userId, DateTime weekStartDate) async {
     try {
       final weekId = _generateWeekId(weekStartDate);
-      final docPath = '$userId/weeks/$weekId';
+      final docPath = _buildDocumentPath(userId, weekId);
       
-      await _firestoreService.deleteDocument('meal_plans', docPath);
+      await _firestoreService.deleteDocument(_usersCollection, docPath);
     } catch (e) {
       throw MealPlannerDataSourceException(
         'Failed to delete weekly meal plan: ${e.toString()}',
       );
     }
+  }
+
+  /// Helper method to build the document path for meal plans
+  String _buildDocumentPath(String userId, String weekId) {
+    return '$userId/$_mealPlansSubcollection/$weekId';
   }
 
   /// Helper method to get the start of the week (Monday) for a given date
@@ -218,5 +235,16 @@ class MealPlannerFirebaseDataSource implements MealPlannerDataSource {
     final dayOfYear = weekStart.difference(DateTime(year, 1, 1)).inDays + 1;
     final weekNumber = ((dayOfYear - weekStart.weekday + 10) / 7).floor();
     return '$year${weekNumber.toString().padLeft(2, '0')}';
+  }
+}
+
+// Extension to help with null safety
+extension _MealSlotFirstWhereOrNull on Iterable<MealSlot> {
+  MealSlot? get firstOrNull {
+    final iterator = this.iterator;
+    if (iterator.moveNext()) {
+      return iterator.current;
+    }
+    return null;
   }
 }
