@@ -718,69 +718,120 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     );
   }
 
+  Widget _buildIngredientItem({
+    required String ingredientId,
+    required String displayText,
+  }) {
+    final isChecked = checkedIngredients.contains(ingredientId);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                if (isChecked) {
+                  checkedIngredients.remove(ingredientId);
+                } else {
+                  checkedIngredients.add(ingredientId);
+                }
+              });
+            },
+            child: Container(
+              width: 20,
+              height: 20,
+              margin: const EdgeInsets.only(right: 12, top: 2),
+              decoration: BoxDecoration(
+                color: isChecked ? AppColors.primary : Colors.transparent,
+                border: Border.all(
+                  color: isChecked ? AppColors.primary : AppColors.border,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: isChecked
+                  ? const Icon(Icons.check, color: Colors.white, size: 12)
+                  : null,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              displayText,
+              style: TextStyle(
+                fontSize: 14,
+                color: isChecked
+                    ? AppColors.textSecondary
+                    : AppColors.textPrimary,
+                height: 1.4,
+                decoration: isChecked
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildIngredients(Recipe recipe) {
-    // Handle both new and legacy ingredients
     List<Widget> ingredientWidgets = [];
 
-    if (recipe.ingredients.isNotEmpty) {
-      // New format with RecipeIngredient objects
+    // Handle sectioned ingredients (preferred format)
+    if (recipe.ingredientSections.isNotEmpty) {
+      for (final section in recipe.ingredientSections) {
+        // Add section header
+        ingredientWidgets.add(
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                section.title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        // Add section ingredients
+        for (final ingredient in section.ingredients) {
+          final scaledIngredient = ingredient.scaledForServings(
+            currentServings,
+            recipe.defaultServings,
+          );
+
+          ingredientWidgets.add(
+            _buildIngredientItem(
+              ingredientId: ingredient.id,
+              displayText: scaledIngredient.getDisplayText(selectedUnitSystem),
+            ),
+          );
+        }
+
+        // Add spacing between sections
+        if (section != recipe.ingredientSections.last) {
+          ingredientWidgets.add(const SizedBox(height: 24));
+        }
+      }
+    } else if (recipe.ingredients.isNotEmpty) {
+      // Flat ingredients format (new format with RecipeIngredient objects)
       for (final ingredient in recipe.ingredients) {
         final scaledIngredient = ingredient.scaledForServings(
           currentServings,
           recipe.defaultServings,
         );
-        final isChecked = checkedIngredients.contains(ingredient.id);
 
         ingredientWidgets.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (isChecked) {
-                        checkedIngredients.remove(ingredient.id);
-                      } else {
-                        checkedIngredients.add(ingredient.id);
-                      }
-                    });
-                  },
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    margin: const EdgeInsets.only(right: 12, top: 2),
-                    decoration: BoxDecoration(
-                      color: isChecked ? AppColors.primary : Colors.transparent,
-                      border: Border.all(
-                        color: isChecked ? AppColors.primary : AppColors.border,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: isChecked
-                        ? const Icon(Icons.check, color: Colors.white, size: 12)
-                        : null,
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    scaledIngredient.getDisplayText(selectedUnitSystem),
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isChecked
-                          ? AppColors.textSecondary
-                          : AppColors.textPrimary,
-                      height: 1.4,
-                      decoration: isChecked
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          _buildIngredientItem(
+            ingredientId: ingredient.id,
+            displayText: scaledIngredient.getDisplayText(selectedUnitSystem),
           ),
         );
       }
@@ -789,58 +840,11 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       for (int i = 0; i < recipe.legacyIngredients.length; i++) {
         final ingredient = recipe.legacyIngredients[i];
         final ingredientId = 'legacy_$i';
-        final isChecked = checkedIngredients.contains(ingredientId);
 
         ingredientWidgets.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (isChecked) {
-                        checkedIngredients.remove(ingredientId);
-                      } else {
-                        checkedIngredients.add(ingredientId);
-                      }
-                    });
-                  },
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    margin: const EdgeInsets.only(right: 12, top: 2),
-                    decoration: BoxDecoration(
-                      color: isChecked ? AppColors.primary : Colors.transparent,
-                      border: Border.all(
-                        color: isChecked ? AppColors.primary : AppColors.border,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: isChecked
-                        ? const Icon(Icons.check, color: Colors.white, size: 12)
-                        : null,
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    ingredient,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isChecked
-                          ? AppColors.textSecondary
-                          : AppColors.textPrimary,
-                      height: 1.4,
-                      decoration: isChecked
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          _buildIngredientItem(
+            ingredientId: ingredientId,
+            displayText: ingredient,
           ),
         );
       }

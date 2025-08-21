@@ -217,6 +217,60 @@ class RecipeIngredient {
   int get hashCode => id.hashCode;
 }
 
+class IngredientSection {
+  final String id;
+  final String title;
+  final List<RecipeIngredient> ingredients;
+
+  const IngredientSection({
+    required this.id,
+    required this.title,
+    required this.ingredients,
+  });
+
+  IngredientSection copyWith({
+    String? id,
+    String? title,
+    List<RecipeIngredient>? ingredients,
+  }) {
+    return IngredientSection(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      ingredients: ingredients ?? this.ingredients,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'ingredients': ingredients.map((e) => e.toJson()).toList(),
+    };
+  }
+
+  factory IngredientSection.fromJson(Map<String, dynamic> json) {
+    return IngredientSection(
+      id: json['id'] as String? ?? '',
+      title: json['title'] as String? ?? 'Ingredients',
+      ingredients: json['ingredients'] != null
+          ? (json['ingredients'] as List)
+              .where((e) => e is Map<String, dynamic>)
+              .map((e) => RecipeIngredient.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : [],
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is IngredientSection && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+}
+
 class InstructionSection {
   final String id;
   final String title;
@@ -271,6 +325,7 @@ class Recipe {
   final String imageUrl;
   final List<RecipeIngredient> ingredients;
   final List<String> legacyIngredients; // For backward compatibility
+  final List<IngredientSection> ingredientSections;
   final List<InstructionSection> instructionSections;
   final List<String> legacyInstructions; // For backward compatibility
   final int calories;
@@ -291,6 +346,7 @@ class Recipe {
     required this.macros,
     this.description,
     this.defaultServings = 4,
+    this.ingredientSections = const [],
     this.legacyIngredients = const [],
     this.legacyInstructions = const [],
     this.tags = const [],
@@ -303,6 +359,7 @@ class Recipe {
     String? time,
     String? imageUrl,
     List<RecipeIngredient>? ingredients,
+    List<IngredientSection>? ingredientSections,
     List<InstructionSection>? instructionSections,
     int? calories,
     RecipeMacros? macros,
@@ -319,6 +376,7 @@ class Recipe {
       time: time ?? this.time,
       imageUrl: imageUrl ?? this.imageUrl,
       ingredients: ingredients ?? this.ingredients,
+      ingredientSections: ingredientSections ?? this.ingredientSections,
       instructionSections: instructionSections ?? this.instructionSections,
       calories: calories ?? this.calories,
       macros: macros ?? this.macros,
@@ -338,6 +396,9 @@ class Recipe {
       'time': time,
       'imageUrl': imageUrl,
       'ingredients': ingredients.map((e) => e.toJson()).toList(),
+      'ingredientSections': ingredientSections
+          .map((e) => e.toJson())
+          .toList(),
       'instructionSections': instructionSections
           .map((e) => e.toJson())
           .toList(),
@@ -355,12 +416,28 @@ class Recipe {
   factory Recipe.fromJson(Map<String, dynamic> json) {
     // Handle both new and legacy formats for backward compatibility
     final ingredientsList = json['ingredients'] as List?;
+    final ingredientSectionsList = json['ingredientSections'] as List?;
     final instructionsList = json['instructions'] as List?;
     final instructionSectionsList = json['instructionSections'] as List?;
 
     List<RecipeIngredient> ingredients = [];
     List<String> legacyIngredients = [];
+    List<IngredientSection> ingredientSections = [];
 
+    // Parse ingredient sections first (preferred format)
+    if (ingredientSectionsList != null && ingredientSectionsList.isNotEmpty) {
+      try {
+        ingredientSections = ingredientSectionsList
+            .where((e) => e is Map<String, dynamic>)
+            .map((e) => IngredientSection.fromJson(e as Map<String, dynamic>))
+            .toList();
+      } catch (e) {
+        debugPrint('Recipe.fromJson: Error parsing ingredient sections: $e');
+        ingredientSections = [];
+      }
+    }
+
+    // Parse flat ingredients list for backward compatibility
     if (ingredientsList != null && ingredientsList.isNotEmpty) {
       try {
         if (ingredientsList.first is Map) {
@@ -409,6 +486,7 @@ class Recipe {
       time: json['time'] as String? ?? '30 min',
       imageUrl: json['imageUrl'] as String? ?? '',
       ingredients: ingredients,
+      ingredientSections: ingredientSections,
       instructionSections: instructionSections,
       calories: (json['calories'] as num?)?.toInt() ?? 0,
       macros: json['macros'] != null
