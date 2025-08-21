@@ -7,12 +7,14 @@ import 'compact_meal_card.dart';
 
 class DayTimelineView extends StatelessWidget {
   final DailyMealPlan dayPlan;
+  final DateTime? selectedDate;
   final Function(MealSlot)? onMealTap;
   final Function(MealSlot)? onMealLongPress;
 
   const DayTimelineView({
     super.key,
     required this.dayPlan,
+    this.selectedDate,
     this.onMealTap,
     this.onMealLongPress,
   });
@@ -47,12 +49,14 @@ class DayTimelineView extends StatelessWidget {
 
   Widget _buildDayHeader() {
     final today = DateTime.now();
-    final isToday = dayPlan.date.year == today.year &&
-        dayPlan.date.month == today.month &&
-        dayPlan.date.day == today.day;
+    final displayDate = selectedDate ?? dayPlan.date;
+    final isToday =
+        displayDate.year == today.year &&
+        displayDate.month == today.month &&
+        displayDate.day == today.day;
 
-    final dayName = _getDayName(dayPlan.date.weekday);
-    final dateStr = '${dayPlan.date.day}/${dayPlan.date.month}';
+    final dayName = _getDayName(displayDate.weekday);
+    final dateStr = '${displayDate.day}/${displayDate.month}';
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -74,7 +78,10 @@ class DayTimelineView extends StatelessWidget {
                   if (isToday) ...[
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(12),
@@ -129,10 +136,7 @@ class DayTimelineView extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           '$totalServings servings',
-          style: const TextStyle(
-            fontSize: 12,
-            color: AppColors.textSecondary,
-          ),
+          style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
         ),
       ],
     );
@@ -169,10 +173,7 @@ class DayTimelineView extends StatelessWidget {
             const SizedBox(height: 8),
             const Text(
               'Tap the + button in navigation to add your first meal',
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.textSecondary,
-              ),
+              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
           ],
@@ -223,7 +224,6 @@ class DayTimelineView extends StatelessWidget {
       ],
     );
   }
-
 
   String _getDayName(int weekday) {
     switch (weekday) {

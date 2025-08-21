@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../domain/models/meal_slot.dart';
 
 class TimePickerModal extends StatefulWidget {
   final TimeOfDay initialTime;
@@ -118,7 +117,7 @@ class _TimePickerModalState extends State<TimePickerModal> {
                 ),
               ),
               Text(
-                widget.isEditMode 
+                widget.isEditMode
                     ? 'Select new time for your meal'
                     : 'Choose time for ${widget.mealCategory.toLowerCase()}',
                 style: const TextStyle(

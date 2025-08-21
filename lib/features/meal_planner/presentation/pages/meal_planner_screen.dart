@@ -92,6 +92,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     return normalized.subtract(Duration(days: normalized.weekday - 1));
   }
 
+  /// Checks if a given week start date represents the current week
+  bool _isCurrentWeek(DateTime weekStart) {
+    final todayWeekStart = _getWeekStart(_todayNormalized);
+    return _isSameDay(weekStart, todayWeekStart);
+  }
+
   /// Public method to trigger add meal functionality from external sources (like navbar)
   void triggerAddMeal() {
     _showAddMealOptions(selectedDate);
@@ -142,14 +148,39 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   void _navigateToWeek(int direction) {
     setState(() {
       currentWeekStart = currentWeekStart.add(Duration(days: 7 * direction));
-      // Ensure selected date is within the new week
-      final weekEnd = currentWeekStart.add(const Duration(days: 6));
-      if (direction < 0 && selectedDate.isAfter(weekEnd)) {
-        selectedDate = weekEnd;
-      } else if (direction > 0 && selectedDate.isBefore(currentWeekStart)) {
-        selectedDate = currentWeekStart;
+      // If navigating to current week, select today; otherwise select Monday
+      if (_isCurrentWeek(currentWeekStart)) {
+        selectedDate = _todayNormalized;
+      } else {
+        selectedDate = currentWeekStart; // Monday
       }
-      _loadWeekPlan();
+    });
+    
+    // Navigate PageView to show the selected date (Monday)
+    _navigatePageViewToSelectedDate();
+    
+    // Load the week plan data
+    _loadWeekPlan();
+  }
+
+  /// Navigate PageView to show the currently selected date
+  void _navigatePageViewToSelectedDate() {
+    final normalizedDate = _normalizeDate(selectedDate);
+    
+    // Calculate the offset from today to the selected date
+    final difference = normalizedDate.difference(_todayNormalized).inDays;
+    final targetPage = _initialPage + difference;
+    
+    // Flag this as programmatic navigation to prevent circular updates
+    _isUserSwipe = false;
+    
+    _pageController.animateToPage(
+      targetPage,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    ).then((_) {
+      // Reset the flag after animation completes
+      _isUserSwipe = true;
     });
   }
 
@@ -223,6 +254,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         
         return DayTimelineView(
           dayPlan: dayPlan,
+          selectedDate: selectedDate,
           onMealTap: (meal) => _handleMealTap(meal, dayDate),
           onMealLongPress: (meal) => _handleMealLongPress(meal, dayDate),
         );
@@ -316,13 +348,19 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final newDate = _normalizeDate(_todayNormalized.add(Duration(days: dayOffset)));
     
     setState(() {
-      selectedDate = newDate;
-      
       // Update week if we've moved to a different week
       final newWeekStart = _getWeekStart(newDate);
       if (!_isSameDay(newWeekStart, currentWeekStart)) {
         currentWeekStart = newWeekStart;
+        // If entering current week via swipe, auto-select today
+        if (_isCurrentWeek(newWeekStart)) {
+          selectedDate = _todayNormalized;
+        } else {
+          selectedDate = newDate;
+        }
         _loadWeekPlan();
+      } else {
+        selectedDate = newDate;
       }
     });
   }
