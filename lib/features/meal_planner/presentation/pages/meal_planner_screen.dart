@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -28,17 +29,13 @@ class MealPlannerScreen extends StatefulWidget {
 }
 
 class _MealPlannerScreenState extends State<MealPlannerScreen> {
-  late PageController _pageController;
   late DateTime currentWeekStart;
   WeeklyMealPlan? currentWeekPlan;
   late DateTime selectedDate;
   late DateTime _todayNormalized; // Cached normalized today reference
-  bool _isUserSwipe =
-      true; // Track if page change is from user swipe or programmatic
   bool _isLoading = false;
   String? _errorMessage;
-
-  static const int _initialPage = 1000; // For infinite scroll
+  int _loadRequestId = 0; // Track loading requests to prevent race conditions
 
   // Dependencies
   late final AuthService _authService;
@@ -51,7 +48,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   void initState() {
     super.initState();
     _initializeDependencies();
-    _pageController = PageController(initialPage: _initialPage);
     final today = DateTime.now();
     _todayNormalized = _normalizeDate(today);
     currentWeekStart = _getWeekStart(_todayNormalized);
@@ -74,7 +70,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   @override
   void dispose() {
-    _pageController.dispose();
     super.dispose();
   }
 
@@ -116,8 +111,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       return;
     }
 
-    // <-- ADD: capture which week we’re loading
+    // Capture request context for race condition prevention
     final requestedWeekStart = currentWeekStart;
+    final currentRequestId = ++_loadRequestId;
 
     setState(() {
       _isLoading = true;
@@ -132,8 +128,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
       if (!mounted) return;
 
-      // <-- ADD: ignore stale responses (user may have navigated again)
-      if (!_isSameDay(requestedWeekStart, currentWeekStart)) {
+      // Ignore stale responses (user may have navigated again or newer request started)
+      if (currentRequestId != _loadRequestId ||
+          !_isSameDay(requestedWeekStart, currentWeekStart)) {
         return; // drop outdated result
       }
 
@@ -143,6 +140,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       });
     } catch (e) {
       if (!mounted) return;
+
+      // Ignore stale errors from outdated requests
+      if (currentRequestId != _loadRequestId ||
+          !_isSameDay(requestedWeekStart, currentWeekStart))
+        return;
+
       String errorMessage = 'Failed to load meal plan';
       if (e.toString().contains('permission-denied')) {
         errorMessage = 'You do not have permission to access meal plans';
@@ -151,9 +154,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       } else if (e.toString().contains('unavailable')) {
         errorMessage = 'Service is currently unavailable';
       }
-
-      // <-- ADD: also ensure we’re still on the same week before showing errors for it
-      if (!_isSameDay(requestedWeekStart, currentWeekStart)) return;
 
       setState(() {
         _errorMessage = errorMessage;
@@ -166,43 +166,26 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     setState(() {
       currentWeekStart = currentWeekStart.add(Duration(days: 7 * direction));
       // If navigating to current week, select today; otherwise select Monday
-      if (_isCurrentWeek(currentWeekStart)) {
+      // But preserve selected day within the week if user was already on a specific day
+      final currentDayOfWeek = selectedDate.weekday;
+      final newSelectedDate = currentWeekStart.add(
+        Duration(days: currentDayOfWeek - 1),
+      );
+
+      if (_isCurrentWeek(currentWeekStart) &&
+          currentDayOfWeek == DateTime.now().weekday) {
+        // Only auto-select today if user was already on today's weekday
         selectedDate = _todayNormalized;
       } else {
-        selectedDate = currentWeekStart; // Monday
+        // Preserve the same day of week in the new week
+        selectedDate = _normalizeDate(newSelectedDate);
       }
       currentWeekPlan =
-          null; // <-- ADD: ensure header uses the new week's skeleton immediately
+          null; // ensure header uses the new week's skeleton immediately
     });
-
-    // Navigate PageView to show the selected date (Monday)
-    _navigatePageViewToSelectedDate();
 
     // Load the week plan data
     _loadWeekPlan();
-  }
-
-  /// Navigate PageView to show the currently selected date
-  void _navigatePageViewToSelectedDate() {
-    final normalizedDate = _normalizeDate(selectedDate);
-
-    // Calculate the offset from today to the selected date
-    final difference = normalizedDate.difference(_todayNormalized).inDays;
-    final targetPage = _initialPage + difference;
-
-    // Flag this as programmatic navigation to prevent circular updates
-    _isUserSwipe = false;
-
-    _pageController
-        .animateToPage(
-          targetPage,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        )
-        .then((_) {
-          // Reset the flag after animation completes
-          _isUserSwipe = true;
-        });
   }
 
   @override
@@ -261,21 +244,13 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       );
     }
 
-    return PageView.builder(
-      controller: _pageController,
-      onPageChanged: _onPageChanged,
-      itemBuilder: (context, index) {
-        final dayOffset = index - _initialPage;
-        final dayDate = _todayNormalized.add(Duration(days: dayOffset));
-        final dayPlan = _getDayPlan(dayDate);
+    final dayPlan = _getDayPlan(selectedDate);
 
-        return DayTimelineView(
-          dayPlan: dayPlan,
-          selectedDate: selectedDate,
-          onMealTap: (meal) => _handleMealTap(meal, dayDate),
-          onMealLongPress: (meal) => _handleMealLongPress(meal, dayDate),
-        );
-      },
+    return DayTimelineView(
+      dayPlan: dayPlan,
+      selectedDate: selectedDate,
+      onMealTap: (meal) => _handleMealTap(meal, selectedDate),
+      onMealLongPress: (meal) => _handleMealLongPress(meal, selectedDate),
     );
   }
 
@@ -336,69 +311,33 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         selectedDate = normalizedDate;
       });
     }
-
-    // Calculate the offset from today to the selected date using normalized dates
-    final difference = normalizedDate.difference(_todayNormalized).inDays;
-    final targetPage = _initialPage + difference;
-
-    // Flag this as programmatic navigation to prevent circular updates
-    _isUserSwipe = false;
-
-    _pageController
-        .animateToPage(
-          targetPage,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        )
-        .then((_) {
-          // Reset the flag after animation completes
-          _isUserSwipe = true;
-        });
-  }
-
-  void _onPageChanged(int index) {
-    if (!_isUserSwipe) return;
-
-    final dayOffset = index - _initialPage;
-    final newDate = _normalizeDate(
-      _todayNormalized.add(Duration(days: dayOffset)),
-    );
-
-    setState(() {
-      final newWeekStart = _getWeekStart(newDate);
-      if (!_isSameDay(newWeekStart, currentWeekStart)) {
-        currentWeekStart = newWeekStart;
-        currentWeekPlan = null; // <-- ADD: drop the old week's data immediately
-        // If entering current week via swipe, auto-select today
-        if (_isCurrentWeek(newWeekStart)) {
-          selectedDate = _todayNormalized;
-        } else {
-          selectedDate = newDate;
-        }
-      } else {
-        selectedDate = newDate;
-      }
-    });
-
-    // Ensure load happens after state reflects the new week
-    if (!_isSameDay(_getWeekStart(newDate), currentWeekStart) == false) {
-      // no-op
-    } else {
-      _loadWeekPlan();
-    }
   }
 
   DailyMealPlan _getDayPlan(DateTime date) {
     final normalizedDate = _normalizeDate(date);
     final weekStart = _getWeekStart(normalizedDate);
 
-    // If this is the current loaded week, use the cached plan
-    if (_isSameDay(weekStart, currentWeekStart) && currentWeekPlan != null) {
-      return currentWeekPlan!.getDayPlan(normalizedDate) ??
-          DailyMealPlan.createDefault(normalizedDate);
+    // Always try to get data from the current week plan if it's loaded
+    if (currentWeekPlan != null) {
+      // First check: exact week match
+      if (_isSameDay(weekStart, currentWeekStart)) {
+        return currentWeekPlan!.getDayPlan(normalizedDate) ??
+            DailyMealPlan.createDefault(normalizedDate);
+      }
+
+      // Second check: the requested date might be in the loaded week's date range
+      // This handles edge cases where week calculations might have slight differences
+      final weekEndDate = currentWeekStart.add(const Duration(days: 6));
+      if (normalizedDate.isAtSameMomentAs(currentWeekStart) ||
+          normalizedDate.isAtSameMomentAs(weekEndDate) ||
+          (normalizedDate.isAfter(currentWeekStart) &&
+              normalizedDate.isBefore(weekEndDate))) {
+        return currentWeekPlan!.getDayPlan(normalizedDate) ??
+            DailyMealPlan.createDefault(normalizedDate);
+      }
     }
 
-    // For other weeks, return empty plan (could be enhanced to load other weeks)
+    // For other weeks or when no plan is loaded, return empty plan
     return DailyMealPlan.createDefault(normalizedDate);
   }
 

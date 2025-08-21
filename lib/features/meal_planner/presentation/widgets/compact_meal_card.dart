@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
@@ -39,25 +40,62 @@ class _CompactMealCardState extends State<CompactMealCard> {
     }
   }
 
+  @override
+  void didUpdateWidget(CompactMealCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Check if the meal slot changed
+    if (oldWidget.mealSlot.id != widget.mealSlot.id ||
+        oldWidget.mealSlot.recipeId != widget.mealSlot.recipeId) {
+      debugPrint(
+        'CompactMealCard: Meal slot changed from ${oldWidget.mealSlot.id} (recipe: ${oldWidget.mealSlot.recipeId}) to ${widget.mealSlot.id} (recipe: ${widget.mealSlot.recipeId})',
+      );
+
+      // Reset recipe state
+      _recipe = null;
+      _isLoadingRecipe = false;
+
+      // Load new recipe if needed
+      if (widget.mealSlot.recipeId != null) {
+        _loadRecipe();
+      }
+    }
+  }
+
   Future<void> _loadRecipe() async {
-    if (widget.mealSlot.recipeId == null) return;
+    final recipeId = widget.mealSlot.recipeId;
+    if (recipeId == null) return;
+
+    debugPrint(
+      'CompactMealCard: Loading recipe $recipeId for meal slot ${widget.mealSlot.id}',
+    );
 
     setState(() {
       _isLoadingRecipe = true;
     });
 
     try {
-      final recipe = await _recipesRepository.getRecipe(
-        widget.mealSlot.recipeId!,
-      );
-      if (mounted) {
+      final recipe = await _recipesRepository.getRecipe(recipeId);
+
+      // Only update state if the widget still needs this recipe
+      // This prevents stale updates when the widget changes during loading
+      if (mounted && widget.mealSlot.recipeId == recipeId) {
+        debugPrint(
+          'CompactMealCard: Successfully loaded recipe ${recipe?.title} for meal slot ${widget.mealSlot.id}',
+        );
         setState(() {
           _recipe = recipe;
           _isLoadingRecipe = false;
         });
+      } else {
+        debugPrint(
+          'CompactMealCard: Discarding stale recipe load for $recipeId',
+        );
       }
     } catch (e) {
-      if (mounted) {
+      debugPrint('CompactMealCard: Error loading recipe $recipeId: $e');
+      // Only update error state if still relevant
+      if (mounted && widget.mealSlot.recipeId == recipeId) {
         setState(() {
           _isLoadingRecipe = false;
         });
@@ -179,6 +217,7 @@ class _CompactMealCardState extends State<CompactMealCard> {
                     borderRadius: BorderRadius.circular(8),
                     child: imageUrl != null
                         ? OptimizedCachedImage(
+                            key: ValueKey('${widget.mealSlot.id}_$imageUrl'),
                             imageUrl: imageUrl,
                             fit: BoxFit.cover,
                             preload: true,
