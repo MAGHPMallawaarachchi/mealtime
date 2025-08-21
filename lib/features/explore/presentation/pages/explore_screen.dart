@@ -21,6 +21,7 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final GlobalKey<State<FeaturedRecipesSection>> _featuredRecipesKey = GlobalKey<State<FeaturedRecipesSection>>();
   String? _selectedCategory;
   String _searchQuery = '';
   List<Recipe> _filteredRecipes = [];
@@ -158,7 +159,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   Future<void> _refreshData() async {
-    await _loadRecipes();
+    // Force refresh from database to get latest data
+    await _recipesRepository.refreshRecipes();
+    
+    // Refresh both the main recipes and featured recipes
+    await Future.wait([
+      _loadRecipes(),
+      (_featuredRecipesKey.currentState as FeaturedRecipesSectionController?)?.refreshFeaturedRecipes() ?? Future.value(),
+    ]);
   }
 
   @override
@@ -196,7 +204,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
             hintText: 'Search recipes, ingredients...',
           ),
           const SizedBox(height: 20),
-          const FeaturedRecipesSection(),
+          FeaturedRecipesSection(key: _featuredRecipesKey),
           const SizedBox(height: 24),
           ExploreCategoriesSection(
             selectedCategory: _selectedCategory,

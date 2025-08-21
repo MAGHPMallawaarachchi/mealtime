@@ -16,7 +16,11 @@ class FeaturedRecipesSection extends StatefulWidget {
   State<FeaturedRecipesSection> createState() => _FeaturedRecipesSectionState();
 }
 
-class _FeaturedRecipesSectionState extends State<FeaturedRecipesSection> {
+abstract class FeaturedRecipesSectionController {
+  Future<void> refreshFeaturedRecipes();
+}
+
+class _FeaturedRecipesSectionState extends State<FeaturedRecipesSection> implements FeaturedRecipesSectionController {
   late PageController _pageController;
   late Timer _autoPlayTimer;
   int _currentPageIndex = 0;
@@ -41,12 +45,17 @@ class _FeaturedRecipesSectionState extends State<FeaturedRecipesSection> {
     _getRecipesUseCase = GetRecipesUseCase(_recipesRepository);
   }
 
-  Future<void> _loadFeaturedRecipes() async {
+  Future<void> _loadFeaturedRecipes({bool forceRefresh = false}) async {
     try {
       setState(() {
         _isLoading = true;
         _hasError = false;
       });
+
+      if (forceRefresh) {
+        // Force refresh from database to get latest data
+        await _recipesRepository.refreshRecipes();
+      }
 
       // Get all recipes and take the first 5 as featured
       // In the future, this could be replaced with a featured flag or algorithm
@@ -71,6 +80,10 @@ class _FeaturedRecipesSectionState extends State<FeaturedRecipesSection> {
         });
       }
     }
+  }
+
+  Future<void> refreshFeaturedRecipes() async {
+    await _loadFeaturedRecipes(forceRefresh: true);
   }
 
   @override
