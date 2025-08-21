@@ -9,17 +9,20 @@ enum IngredientUnit {
   tablespoons,
   milliliters,
   liters,
-  
+
   // Weight units
   grams,
   kilograms,
   ounces,
   pounds,
-  
+
   // Count units
   pieces,
   whole,
-  
+
+  // Length units
+  centimeter,
+
   // Other
   pinch,
   dash,
@@ -30,7 +33,7 @@ class RecipeIngredient {
   final String id;
   final String name;
   final double quantity;
-  final IngredientUnit unit;
+  final IngredientUnit? unit;
   final double? metricQuantity;
   final IngredientUnit? metricUnit;
 
@@ -38,7 +41,7 @@ class RecipeIngredient {
     required this.id,
     required this.name,
     required this.quantity,
-    required this.unit,
+    this.unit,
     this.metricQuantity,
     this.metricUnit,
   });
@@ -81,12 +84,13 @@ class RecipeIngredient {
         }
       }
     }
-    return '${_formatQuantity(quantity)} ${_getUnitText(unit)} $name';
+    return '${_formatQuantity(quantity)}${unit != null ? ' ${_getUnitText(unit!)}' : ''} $name';
   }
 
   // Convert common US measurements to metric
   (double, IngredientUnit)? _convertToMetric() {
-    switch (unit) {
+    if (unit == null) return null;
+    switch (unit!) {
       case IngredientUnit.cups:
         return (quantity * 240, IngredientUnit.milliliters); // 1 cup = 240ml
       case IngredientUnit.teaspoons:
@@ -143,6 +147,8 @@ class RecipeIngredient {
         return 'oz';
       case IngredientUnit.pounds:
         return 'lbs';
+      case IngredientUnit.centimeter:
+        return 'cm';
       case IngredientUnit.pieces:
         return 'pieces';
       case IngredientUnit.whole:
@@ -161,7 +167,7 @@ class RecipeIngredient {
       'id': id,
       'name': name,
       'quantity': quantity,
-      'unit': unit.name,
+      'unit': unit?.name,
       'metricQuantity': metricQuantity,
       'metricUnit': metricUnit?.name,
     };
@@ -173,22 +179,31 @@ class RecipeIngredient {
       name: json['name'] as String? ?? 'Unknown ingredient',
       quantity: (json['quantity'] as num?)?.toDouble() ?? 1.0,
       unit: _parseIngredientUnit(json['unit']),
-      metricQuantity: json['metricQuantity'] != null ? (json['metricQuantity'] as num).toDouble() : null,
-      metricUnit: json['metricUnit'] != null 
+      metricQuantity: json['metricQuantity'] != null
+          ? (json['metricQuantity'] as num).toDouble()
+          : null,
+      metricUnit: json['metricUnit'] != null
           ? _parseIngredientUnit(json['metricUnit'])
           : null,
     );
   }
 
-  static IngredientUnit _parseIngredientUnit(dynamic unitValue) {
-    if (unitValue == null) return IngredientUnit.pieces;
-    
-    final unitString = unitValue.toString();
+  static IngredientUnit? _parseIngredientUnit(dynamic unitValue) {
+    if (unitValue == null) return null;
+
+    final unitString = unitValue.toString().toLowerCase();
     try {
-      return IngredientUnit.values.firstWhere((e) => e.name == unitString);
+      return IngredientUnit.values.firstWhere(
+        (e) => e.name.toLowerCase() == unitString,
+      );
     } catch (e) {
-      debugPrint('RecipeIngredient: Unknown unit "$unitString", defaulting to pieces');
-      return IngredientUnit.pieces;
+      debugPrint(
+        'RecipeIngredient: Unknown unit "$unitValue" (normalized: "$unitString"), returning null',
+      );
+      debugPrint(
+        'RecipeIngredient: Available units: ${IngredientUnit.values.map((e) => e.name).join(', ')}',
+      );
+      return null;
     }
   }
 
@@ -226,18 +241,16 @@ class InstructionSection {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'steps': steps,
-    };
+    return {'id': id, 'title': title, 'steps': steps};
   }
 
   factory InstructionSection.fromJson(Map<String, dynamic> json) {
     return InstructionSection(
       id: json['id'] as String? ?? '',
       title: json['title'] as String? ?? 'Instructions',
-      steps: json['steps'] != null ? List<String>.from(json['steps'] as List) : [],
+      steps: json['steps'] != null
+          ? List<String>.from(json['steps'] as List)
+          : [],
     );
   }
 
@@ -325,7 +338,9 @@ class Recipe {
       'time': time,
       'imageUrl': imageUrl,
       'ingredients': ingredients.map((e) => e.toJson()).toList(),
-      'instructionSections': instructionSections.map((e) => e.toJson()).toList(),
+      'instructionSections': instructionSections
+          .map((e) => e.toJson())
+          .toList(),
       'calories': calories,
       'macros': macros.toJson(),
       'description': description,
@@ -345,7 +360,7 @@ class Recipe {
 
     List<RecipeIngredient> ingredients = [];
     List<String> legacyIngredients = [];
-    
+
     if (ingredientsList != null && ingredientsList.isNotEmpty) {
       try {
         if (ingredientsList.first is Map) {
@@ -368,9 +383,10 @@ class Recipe {
 
     List<InstructionSection> instructionSections = [];
     List<String> legacyInstructions = [];
-    
+
     try {
-      if (instructionSectionsList != null && instructionSectionsList.isNotEmpty) {
+      if (instructionSectionsList != null &&
+          instructionSectionsList.isNotEmpty) {
         // New format with InstructionSection objects
         instructionSections = instructionSectionsList
             .where((e) => e is Map<String, dynamic>)
@@ -395,14 +411,22 @@ class Recipe {
       ingredients: ingredients,
       instructionSections: instructionSections,
       calories: (json['calories'] as num?)?.toInt() ?? 0,
-      macros: json['macros'] != null 
+      macros: json['macros'] != null
           ? RecipeMacros.fromJson(json['macros'] as Map<String, dynamic>)
           : const RecipeMacros(protein: 0, carbs: 0, fats: 0, fiber: 0),
       description: json['description'] as String?,
-      defaultServings: (json['defaultServings'] as num?)?.toInt() ?? 4,
+      defaultServings: () {
+        final servings = (json['defaultServings'] as num?)?.toInt() ?? 4;
+        debugPrint(
+          'Recipe ${json['id']}: defaultServings from JSON = ${json['defaultServings']}, parsed = $servings',
+        );
+        return servings;
+      }(),
       legacyIngredients: legacyIngredients,
       legacyInstructions: legacyInstructions,
-      tags: json['tags'] != null ? List<String>.from(json['tags'] as List) : const [],
+      tags: json['tags'] != null
+          ? List<String>.from(json['tags'] as List)
+          : const [],
       source: json['source'] as String?,
     );
   }
@@ -421,7 +445,7 @@ class Recipe {
     if (legacyInstructions.isNotEmpty) {
       return legacyInstructions;
     }
-    
+
     List<String> allInstructions = [];
     for (final section in instructionSections) {
       allInstructions.addAll(section.steps);
@@ -433,8 +457,10 @@ class Recipe {
     if (legacyIngredients.isNotEmpty) {
       return legacyIngredients;
     }
-    
-    return ingredients.map((ingredient) => ingredient.getDisplayText(UnitSystem.cups)).toList();
+
+    return ingredients
+        .map((ingredient) => ingredient.getDisplayText(UnitSystem.cups))
+        .toList();
   }
 
   @override
@@ -471,12 +497,7 @@ class RecipeMacros {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'protein': protein,
-      'carbs': carbs,
-      'fats': fats,
-      'fiber': fiber,
-    };
+    return {'protein': protein, 'carbs': carbs, 'fats': fats, 'fiber': fiber};
   }
 
   factory RecipeMacros.fromJson(Map<String, dynamic> json) {

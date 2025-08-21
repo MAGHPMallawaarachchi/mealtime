@@ -373,7 +373,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     );
   }
 
-
   Widget _buildDescription(String description) {
     const maxLines = 3;
 
