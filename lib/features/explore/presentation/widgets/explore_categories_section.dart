@@ -1,8 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../recipes/domain/usecases/get_available_categories_usecase.dart';
-import '../../../recipes/data/repositories/recipes_repository_impl.dart';
 
 class ExploreCategoriesSection extends StatefulWidget {
   final Function(String?)? onCategorySelected;
@@ -20,62 +17,15 @@ class ExploreCategoriesSection extends StatefulWidget {
 }
 
 class _ExploreCategoriesSectionState extends State<ExploreCategoriesSection> {
-  List<String> categories = ['All'];
-  bool _isLoading = true;
-  bool _hasError = false;
-
-  // Dependencies
-  late final RecipesRepositoryImpl _recipesRepository;
-  late final GetAvailableCategoriesUseCase _getAvailableCategoriesUseCase;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeDependencies();
-    _loadCategories();
-  }
-
-  void _initializeDependencies() {
-    _recipesRepository = RecipesRepositoryImpl();
-    _getAvailableCategoriesUseCase = GetAvailableCategoriesUseCase(_recipesRepository);
-  }
-
-  Future<void> _loadCategories() async {
-    try {
-      setState(() {
-        _isLoading = true;
-        _hasError = false;
-      });
-
-      final availableCategories = await _getAvailableCategoriesUseCase.execute();
-      
-      if (mounted) {
-        setState(() {
-          // Start with 'All' and add available categories
-          categories = ['All', ...availableCategories];
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      debugPrint('ExploreCategoriesSection: Error loading categories: $e');
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _hasError = true;
-          // Fall back to hardcoded categories
-          categories = [
-            'All',
-            'beverages',
-            'breakfast',
-            'lunch',
-            'dinner',
-            'snacks',
-            'desserts',
-          ];
-        });
-      }
-    }
-  }
+  final List<String> categories = [
+    'All',
+    'beverages',
+    'breakfast',
+    'lunch',
+    'dinner',
+    'snacks',
+    'desserts',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -94,37 +44,8 @@ class _ExploreCategoriesSectionState extends State<ExploreCategoriesSection> {
           ),
         ),
         const SizedBox(height: 16),
-        if (_isLoading)
-          _buildLoadingState()
-        else
-          _buildCategoriesList(),
+        _buildCategoriesList(),
       ],
-    );
-  }
-
-  Widget _buildLoadingState() {
-    return SizedBox(
-      height: 40,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.only(left: 12),
-        itemCount: 5, // Show 5 skeleton items
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(
-              right: index == 4 ? 12 : 8,
-            ),
-            child: Container(
-              width: 80,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.textSecondary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-          );
-        },
-      ),
     );
   }
 
