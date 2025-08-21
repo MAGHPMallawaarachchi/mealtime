@@ -11,6 +11,7 @@ import '../../features/meal_planner/presentation/pages/meal_planner_screen.dart'
 import '../../features/pantry/presentation/pages/pantry_screen.dart';
 import '../../features/auth/presentation/pages/profile_screen.dart';
 import '../../features/recipes/presentation/pages/recipe_detail_screen.dart';
+import '../../features/meal_planner/domain/models/meal_planner_return_context.dart';
 import '../guards/auth_guard.dart';
 import '../services/auth_service.dart';
 import 'main_scaffold.dart';
@@ -37,11 +38,11 @@ class AppRouter {
       final isLoggedIn = user != null;
       
       final authRoutes = ['/login', '/register'];
-      final isAuthRoute = authRoutes.contains(state.uri.toString());
+      final isAuthRoute = authRoutes.contains(state.uri.path);
       final mainAppRoutes = ['/home', '/explore', '/meal-planner', '/pantry', '/profile'];
-      final isMainAppRoute = mainAppRoutes.contains(state.uri.toString());
+      final isMainAppRoute = mainAppRoutes.contains(state.uri.path);
       
-      if (!isLoggedIn && !isAuthRoute && state.uri.toString() != '/' && state.uri.toString() != '/onboarding') {
+      if (!isLoggedIn && !isAuthRoute && state.uri.path != '/' && state.uri.path != '/onboarding') {
         return '/login';
       }
       
@@ -109,7 +110,17 @@ class AppRouter {
         name: 'recipe-detail',
         builder: (context, state) {
           final recipeId = state.pathParameters['recipeId']!;
-          return RecipeDetailScreen(recipeId: recipeId);
+          final selectedDate = state.uri.queryParameters['selectedDate'];
+          final weekStart = state.uri.queryParameters['weekStart'];
+          return RecipeDetailScreen(
+            recipeId: recipeId,
+            returnContext: selectedDate != null && weekStart != null
+                ? MealPlannerReturnContext(
+                    selectedDate: DateTime.parse(selectedDate),
+                    weekStart: DateTime.parse(weekStart),
+                  )
+                : null,
+          );
         },
       ),
     ],

@@ -11,6 +11,7 @@ import '../../domain/usecases/get_weekly_meal_plan_usecase.dart';
 import '../../domain/usecases/save_meal_slot_usecase.dart';
 import '../../domain/usecases/delete_meal_slot_usecase.dart';
 import '../../data/repositories/meal_planner_repository_impl.dart';
+import '../../domain/models/meal_planner_return_context.dart';
 import '../widgets/day_timeline_view.dart';
 import '../widgets/week_navigation_header.dart';
 import '../widgets/meal_detail_expanded_view.dart';
@@ -21,8 +22,13 @@ import '../../../recipes/domain/models/recipe.dart';
 
 class MealPlannerScreen extends StatefulWidget {
   final Function(VoidCallback)? onRegisterAddMealCallback;
+  final MealPlannerReturnContext? returnContext;
 
-  const MealPlannerScreen({super.key, this.onRegisterAddMealCallback});
+  const MealPlannerScreen({
+    super.key, 
+    this.onRegisterAddMealCallback,
+    this.returnContext,
+  });
 
   @override
   State<MealPlannerScreen> createState() => _MealPlannerScreenState();
@@ -50,12 +56,33 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     _initializeDependencies();
     final today = DateTime.now();
     _todayNormalized = _normalizeDate(today);
-    currentWeekStart = _getWeekStart(_todayNormalized);
-    selectedDate = _todayNormalized;
+    
+    // Initialize state from return context or use defaults
+    if (widget.returnContext != null) {
+      _restoreStateFromContext(widget.returnContext!);
+    } else {
+      // Use default state
+      currentWeekStart = _getWeekStart(_todayNormalized);
+      selectedDate = _todayNormalized;
+    }
+    
     _loadWeekPlan();
 
     // Register our add meal callback with the parent
     widget.onRegisterAddMealCallback?.call(triggerAddMeal);
+  }
+
+  void _restoreStateFromContext(MealPlannerReturnContext context) {
+    // Restore the exact state from when user left
+    currentWeekStart = _normalizeDate(context.weekStart);
+    selectedDate = _normalizeDate(context.selectedDate);
+    
+    // Validate that the selected date is within the current week
+    final weekEnd = currentWeekStart.add(const Duration(days: 6));
+    if (selectedDate.isBefore(currentWeekStart) || selectedDate.isAfter(weekEnd)) {
+      // If selected date is outside the week, adjust it to be within the week
+      selectedDate = currentWeekStart;
+    }
   }
 
   void _initializeDependencies() {
@@ -345,12 +372,44 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     if (mealSlot.isEmpty) {
       _showAddMealModal(mealSlot, date);
     } else if (mealSlot.recipeId != null) {
+      // Show tap feedback
+      _showMealTapFeedback(mealSlot);
       // Navigate directly to recipe detail screen
       _navigateToRecipe(mealSlot.recipeId!);
     } else {
       // Show "no recipe available" message for meals without recipes
       _showNoRecipeMessage();
     }
+  }
+
+  void _showMealTapFeedback(MealSlot mealSlot) {
+    // Show a brief feedback message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            PhosphorIcon(
+              PhosphorIcons.cookingPot(),
+              color: Colors.white,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Opening ${mealSlot.displayName}...',
+                style: const TextStyle(fontSize: 14),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.primary,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        duration: const Duration(milliseconds: 800),
+      ),
+    );
   }
 
   void _handleMealLongPress(MealSlot mealSlot, DateTime date) {
@@ -819,31 +878,68 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   void _navigateToRecipe(String recipeId) {
     try {
-      context.push('/recipe/$recipeId');
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              PhosphorIcon(
-                PhosphorIcons.warning(),
-                color: Colors.white,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              const Expanded(
-                child: Text('Failed to open recipe. Please try again.'),
-              ),
-            ],
-          ),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
+      // Create return context to preserve current state
+      final returnContext = MealPlannerReturnContext(
+        selectedDate: selectedDate,
+        weekStart: currentWeekStart,
       );
+      
+      // Build URL with context parameters
+      final uri = Uri(
+        path: '/recipe/$recipeId',
+        queryParameters: returnContext.toQueryParameters(),
+      );
+      
+      // Show subtle loading feedback
+      _showNavigationFeedback(true);
+      
+      context.push(uri.toString()).then((_) {
+        // Hide loading feedback when returning
+        _hideNavigationFeedback();
+      }).catchError((e) {
+        _hideNavigationFeedback();
+        _showNavigationError();
+      });
+    } catch (e) {
+      _showNavigationError();
     }
+  }
+
+  void _showNavigationFeedback(bool isNavigating) {
+    if (isNavigating) {
+      // Clear any existing snackbars to avoid conflicts
+      ScaffoldMessenger.of(context).clearSnackBars();
+    }
+  }
+
+  void _hideNavigationFeedback() {
+    // Clear navigation feedback when returning
+    ScaffoldMessenger.of(context).clearSnackBars();
+  }
+
+  void _showNavigationError() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            PhosphorIcon(
+              PhosphorIcons.warning(),
+              color: Colors.white,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            const Expanded(
+              child: Text('Failed to open recipe. Please try again.'),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.error,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
   }
 
   void _showNoRecipeMessage() {

@@ -6,6 +6,7 @@ import '../../features/explore/presentation/pages/explore_screen.dart';
 import '../../features/meal_planner/presentation/pages/meal_planner_screen.dart';
 import '../../features/pantry/presentation/pages/pantry_screen.dart';
 import '../../features/auth/presentation/pages/profile_screen.dart';
+import '../../features/meal_planner/domain/models/meal_planner_return_context.dart';
 
 class MainScaffold extends StatefulWidget {
   final Widget child;
@@ -17,29 +18,58 @@ class MainScaffold extends StatefulWidget {
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
-  // Pre-create all screens to eliminate any build flickering
-  late final List<Widget> _screens;
+  // Pre-create static screens (non-contextual ones)
+  late final List<Widget?> _staticScreens;
   VoidCallback? _mealPlannerAddMealCallback;
 
   @override
   void initState() {
     super.initState();
-    _screens = [
+    _staticScreens = [
       const HomeScreen(),
       const ExploreScreen(),
-      MealPlannerScreen(
-        onRegisterAddMealCallback: (callback) {
-          _mealPlannerAddMealCallback = callback;
-        },
-      ),
+      null, // MealPlannerScreen will be created dynamically
       const PantryScreen(),
       const ProfileScreen(),
     ];
   }
 
+  Widget _getMealPlannerScreen() {
+    try {
+      final routerState = GoRouterState.of(context);
+      final returnContext = MealPlannerReturnContext.fromQueryParameters(
+        routerState.uri.queryParameters,
+      );
+      
+      return MealPlannerScreen(
+        onRegisterAddMealCallback: (callback) {
+          _mealPlannerAddMealCallback = callback;
+        },
+        returnContext: returnContext,
+      );
+    } catch (e) {
+      // Fallback to default MealPlannerScreen if context retrieval fails
+      return MealPlannerScreen(
+        onRegisterAddMealCallback: (callback) {
+          _mealPlannerAddMealCallback = callback;
+        },
+      );
+    }
+  }
+
+  Widget _getScreenAtIndex(int index) {
+    if (index == 2) {
+      // Return dynamic meal planner screen with context
+      return _getMealPlannerScreen();
+    } else {
+      // Return pre-created static screen
+      return _staticScreens[index]!;
+    }
+  }
+
   int _getCurrentIndex() {
     try {
-      final location = GoRouterState.of(context).uri.toString();
+      final location = GoRouterState.of(context).uri.path;
       switch (location) {
         case '/home':
           return 0;
@@ -82,6 +112,15 @@ class _MainScaffoldState extends State<MainScaffold> {
   Widget build(BuildContext context) {
     final currentIndex = _getCurrentIndex();
 
+    // Build screens dynamically to handle context properly
+    final screens = [
+      _getScreenAtIndex(0), // HomeScreen
+      _getScreenAtIndex(1), // ExploreScreen  
+      _getScreenAtIndex(2), // MealPlannerScreen (dynamic)
+      _getScreenAtIndex(3), // PantryScreen
+      _getScreenAtIndex(4), // ProfileScreen
+    ];
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -89,7 +128,7 @@ class _MainScaffoldState extends State<MainScaffold> {
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
-      body: IndexedStack(index: currentIndex, children: _screens),
+      body: IndexedStack(index: currentIndex, children: screens),
       extendBody: true, // Allow body to extend behind floating button
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: currentIndex,

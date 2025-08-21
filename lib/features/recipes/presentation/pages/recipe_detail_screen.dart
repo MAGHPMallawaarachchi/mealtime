@@ -6,13 +6,19 @@ import '../../../auth/presentation/widgets/primary_button.dart';
 import '../../domain/models/recipe.dart';
 import '../../domain/usecases/get_recipe_by_id_usecase.dart';
 import '../../data/repositories/recipes_repository_impl.dart';
+import '../../../meal_planner/domain/models/meal_planner_return_context.dart';
 
 enum RecipeTab { ingredients, instructions }
 
 class RecipeDetailScreen extends StatefulWidget {
   final String recipeId;
+  final MealPlannerReturnContext? returnContext;
 
-  const RecipeDetailScreen({super.key, required this.recipeId});
+  const RecipeDetailScreen({
+    super.key, 
+    required this.recipeId,
+    this.returnContext,
+  });
 
   @override
   State<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
@@ -75,6 +81,22 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
 
   Future<void> _refreshRecipe() async {
     await _loadRecipe();
+  }
+
+  void _navigateBack() {
+    if (widget.returnContext != null) {
+      // Navigate back to meal planner with context preservation
+      final context = widget.returnContext!;
+      final queryParams = context.toQueryParameters();
+      final uri = Uri(
+        path: '/meal-planner',
+        queryParameters: queryParams,
+      );
+      this.context.go(uri.toString());
+    } else {
+      // Default back navigation
+      this.context.pop();
+    }
   }
 
   @override
@@ -237,7 +259,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   PhosphorIcons.arrowLeft(),
                   color: AppColors.textPrimary,
                 ),
-                onPressed: () => context.pop(),
+                onPressed: () => _navigateBack(),
               ),
             ),
             actions: [
