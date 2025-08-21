@@ -343,15 +343,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   void _handleMealTap(MealSlot mealSlot, DateTime date) {
     if (mealSlot.isEmpty) {
       _showAddMealModal(mealSlot, date);
+    } else if (mealSlot.recipeId != null) {
+      // Navigate directly to recipe detail screen
+      _navigateToRecipe(mealSlot.recipeId!);
     } else {
-      showMealDetailExpandedView(
-        context: context,
-        mealSlot: mealSlot,
-        date: date,
-        onMealUpdated: (updatedMeal) => _updateMeal(updatedMeal, date),
-        onMealDeleted: (meal) => _deleteMeal(meal, date),
-        onViewRecipe: () => _viewRecipe(mealSlot),
-      );
+      // Show "no recipe available" message for meals without recipes
+      _showNoRecipeMessage();
     }
   }
 
@@ -795,15 +792,65 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   
   void _viewRecipe(MealSlot mealSlot) {
     if (mealSlot.recipeId != null) {
-      context.push('/recipe/${mealSlot.recipeId}');
+      _navigateToRecipe(mealSlot.recipeId!);
     } else {
+      _showNoRecipeMessage();
+    }
+  }
+  
+  void _navigateToRecipe(String recipeId) {
+    try {
+      context.push('/recipe/$recipeId');
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No recipe associated with this meal'),
+        SnackBar(
+          content: Row(
+            children: [
+              PhosphorIcon(
+                PhosphorIcons.warning(),
+                color: Colors.white,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text('Failed to open recipe. Please try again.'),
+              ),
+            ],
+          ),
+          backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
     }
+  }
+  
+  void _showNoRecipeMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            PhosphorIcon(
+              PhosphorIcons.info(),
+              color: Colors.white,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            const Expanded(
+              child: Text('No recipe available for this meal'),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.textSecondary,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
   
   IconData _getCategoryIcon(String category) {

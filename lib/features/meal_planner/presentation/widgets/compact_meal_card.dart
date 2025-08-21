@@ -47,7 +47,9 @@ class _CompactMealCardState extends State<CompactMealCard> {
     });
 
     try {
-      final recipe = await _recipesRepository.getRecipe(widget.mealSlot.recipeId!);
+      final recipe = await _recipesRepository.getRecipe(
+        widget.mealSlot.recipeId!,
+      );
       if (mounted) {
         setState(() {
           _recipe = recipe;
@@ -152,7 +154,7 @@ class _CompactMealCardState extends State<CompactMealCard> {
       onTap: widget.onTap,
       onLongPress: widget.onLongPress,
       child: Container(
-        height: 80,
+        height: 90,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -170,7 +172,7 @@ class _CompactMealCardState extends State<CompactMealCard> {
               children: [
                 // Image or icon section
                 Container(
-                  width: 60,
+                  width: 70,
                   height: double.infinity,
                   margin: const EdgeInsets.all(8),
                   child: ClipRRect(
@@ -197,7 +199,10 @@ class _CompactMealCardState extends State<CompactMealCard> {
                 // Content section
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 8,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -211,7 +216,7 @@ class _CompactMealCardState extends State<CompactMealCard> {
                             color: AppColors.textPrimary,
                             height: 1.2,
                           ),
-                          maxLines: 1,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 4),
@@ -231,7 +236,10 @@ class _CompactMealCardState extends State<CompactMealCard> {
                             if (widget.mealSlot.servingSize > 1) ...[
                               const SizedBox(width: 8),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
                                   color: AppColors.primary.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(8),
@@ -298,7 +306,8 @@ class _CompactMealCardState extends State<CompactMealCard> {
   }
 
   String _getMealDisplayName() {
-    if (widget.mealSlot.customMealName != null && widget.mealSlot.customMealName!.isNotEmpty) {
+    if (widget.mealSlot.customMealName != null &&
+        widget.mealSlot.customMealName!.isNotEmpty) {
       return widget.mealSlot.customMealName!;
     }
 
