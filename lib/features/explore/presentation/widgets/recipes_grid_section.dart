@@ -103,8 +103,6 @@ class RecipesGridSection extends StatelessWidget {
                 final recipe = displayedRecipes[index];
                 return ExploreRecipeCard(
                   recipe: recipe,
-                  isFavorite: favoriteRecipes?.contains(recipe.id) ?? false,
-                  onFavoriteToggle: onFavoriteToggle,
                   onAddToMealPlan: onAddToMealPlan,
                 );
               },

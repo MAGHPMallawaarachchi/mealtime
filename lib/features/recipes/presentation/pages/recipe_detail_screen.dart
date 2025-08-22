@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../auth/presentation/widgets/primary_button.dart';
 import '../../domain/models/recipe.dart';
 import '../../domain/usecases/get_recipe_by_id_usecase.dart';
 import '../../data/repositories/recipes_repository_impl.dart';
 import '../../../meal_planner/domain/models/meal_planner_return_context.dart';
+import '../../../favorites/presentation/providers/favorites_providers.dart';
 
 enum RecipeTab { ingredients, instructions }
 
-class RecipeDetailScreen extends StatefulWidget {
+class RecipeDetailScreen extends ConsumerStatefulWidget {
   final String recipeId;
   final MealPlannerReturnContext? returnContext;
 
@@ -21,11 +23,10 @@ class RecipeDetailScreen extends StatefulWidget {
   });
 
   @override
-  State<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
+  ConsumerState<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
 }
 
-class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
-  bool isFavorited = false;
+class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
   int currentServings = 4;
   UnitSystem selectedUnitSystem = UnitSystem.cups;
   Set<String> checkedIngredients = {};
@@ -44,6 +45,13 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     super.initState();
     _initializeDependencies();
     _loadRecipe();
+    _loadFavorites();
+  }
+
+  void _loadFavorites() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(favoritesProvider.notifier).loadUserFavorites();
+    });
   }
 
   void _initializeDependencies() {
@@ -271,21 +279,25 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   color: Colors.white.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(40),
                 ),
-                child: IconButton(
-                  icon: PhosphorIcon(
-                    size: 22,
-                    isFavorited
-                        ? PhosphorIconsFill.heart
-                        : PhosphorIcons.heart(),
-                    color: isFavorited
-                        ? AppColors.primary
-                        : AppColors.textPrimary,
-                    fill: isFavorited ? 1.0 : 0.0,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isFavorited = !isFavorited;
-                    });
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final isFavorited = ref.watch(isFavoriteProvider(widget.recipeId));
+                    
+                    return IconButton(
+                      icon: PhosphorIcon(
+                        size: 22,
+                        isFavorited
+                            ? PhosphorIconsFill.heart
+                            : PhosphorIcons.heart(),
+                        color: isFavorited
+                            ? AppColors.primary
+                            : AppColors.textPrimary,
+                        fill: isFavorited ? 1.0 : 0.0,
+                      ),
+                      onPressed: () {
+                        ref.read(favoritesProvider.notifier).toggleFavorite(widget.recipeId);
+                      },
+                    );
                   },
                 ),
               ),
