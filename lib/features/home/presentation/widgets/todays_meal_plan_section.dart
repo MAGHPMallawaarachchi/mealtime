@@ -5,17 +5,32 @@ import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/meal_plan_shimmer_card.dart';
-import '../../data/dummy_meal_plan_data.dart';
 import '../../domain/models/meal_plan_item.dart';
 import 'meal_plan_card.dart';
 import '../../../meal_planner/domain/models/meal_slot.dart';
 import '../../../meal_planner/presentation/providers/meal_plan_providers.dart';
+import '../../../recipes/data/repositories/recipes_repository_impl.dart';
+import '../../../recipes/domain/models/recipe.dart';
 
-class TodaysMealPlanSection extends ConsumerWidget {
+class TodaysMealPlanSection extends ConsumerStatefulWidget {
   const TodaysMealPlanSection({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TodaysMealPlanSection> createState() => _TodaysMealPlanSectionState();
+}
+
+class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
+  late final RecipesRepositoryImpl _recipesRepository;
+  final Map<String, Recipe> _recipeCache = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _recipesRepository = RecipesRepositoryImpl();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final todaysMealPlanAsync = ref.watch(todaysMealPlanProvider);
     final String todayDate = DateFormat('EEEE, MMMM d').format(DateTime.now());
 
@@ -88,8 +103,21 @@ class TodaysMealPlanSection extends ConsumerWidget {
                 itemCount: todaysMeals.length,
                 itemBuilder: (context, index) {
                   final mealSlot = todaysMeals[index] as MealSlot;
-                  final mealPlanItem = _convertMealSlotToMealPlanItem(mealSlot);
-                  return MealPlanCard(mealPlan: mealPlanItem);
+                  return FutureBuilder<MealPlanItem>(
+                    future: _convertMealSlotToMealPlanItem(mealSlot),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          width: 170,
+                          margin: const EdgeInsets.only(right: 12, bottom: 12),
+                          child: const MealPlanShimmerCard(),
+                        );
+                      }
+                      
+                      final mealPlanItem = snapshot.data ?? _createFallbackMealPlanItem(mealSlot);
+                      return MealPlanCard(mealPlan: mealPlanItem);
+                    },
+                  );
                 },
               );
             },
@@ -101,17 +129,33 @@ class TodaysMealPlanSection extends ConsumerWidget {
     );
   }
 
-  MealPlanItem _convertMealSlotToMealPlanItem(MealSlot mealSlot) {
-    String title = 'Unknown Meal';
-    String imageUrl = 'https://images.unsplash.com/photo-1547573854-74d2a71d0826?w=800&h=600&fit=crop';
+  Future<MealPlanItem> _convertMealSlotToMealPlanItem(MealSlot mealSlot) async {
+    String title = mealSlot.customMealName ?? mealSlot.category;
+    String imageUrl = _getFallbackImageForMealType(mealSlot.category);
 
-    if (mealSlot.customMealName != null) {
-      title = mealSlot.customMealName!;
-    } else if (mealSlot.recipeId != null) {
-      final recipe = DummyMealPlanData.getRecipeById(mealSlot.recipeId!);
-      if (recipe != null) {
-        title = recipe.title;
-        imageUrl = recipe.imageUrl;
+    // If there's a recipe ID, try to fetch the recipe
+    if (mealSlot.recipeId != null) {
+      try {
+        // Check cache first
+        Recipe? recipe = _recipeCache[mealSlot.recipeId!];
+        
+        // If not in cache, fetch from repository
+        if (recipe == null) {
+          recipe = await _recipesRepository.getRecipe(mealSlot.recipeId!);
+          if (recipe != null) {
+            _recipeCache[mealSlot.recipeId!] = recipe;
+          }
+        }
+        
+        if (recipe != null) {
+          title = recipe.title;
+          if (recipe.imageUrl.isNotEmpty) {
+            imageUrl = recipe.imageUrl;
+          }
+        }
+      } catch (e) {
+        // If recipe fetching fails, use custom meal name or category as fallback
+        debugPrint('Failed to fetch recipe ${mealSlot.recipeId}: $e');
       }
     }
 
@@ -124,6 +168,35 @@ class TodaysMealPlanSection extends ConsumerWidget {
     );
   }
 
+  MealPlanItem _createFallbackMealPlanItem(MealSlot mealSlot) {
+    return MealPlanItem(
+      id: mealSlot.id,
+      title: mealSlot.customMealName ?? mealSlot.category,
+      time: mealSlot.displayTime,
+      imageUrl: _getFallbackImageForMealType(mealSlot.category),
+      recipeId: mealSlot.recipeId,
+    );
+  }
+
+  String _getFallbackImageForMealType(String category) {
+    switch (category) {
+      case MealCategory.breakfast:
+        return 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=800&h=600&fit=crop'; // Breakfast pancakes
+      case MealCategory.lunch:
+        return 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=600&fit=crop'; // Healthy salad
+      case MealCategory.dinner:
+        return 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&h=600&fit=crop'; // Dinner plate
+      case MealCategory.snack:
+        return 'https://images.unsplash.com/photo-1549490349-8643362247b5?w=800&h=600&fit=crop'; // Healthy snack
+      case MealCategory.brunch:
+        return 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=800&h=600&fit=crop'; // Brunch spread
+      case MealCategory.lateNight:
+        return 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=800&h=600&fit=crop'; // Light meal
+      default:
+        return 'https://images.unsplash.com/photo-1547573854-74d2a71d0826?w=800&h=600&fit=crop'; // Generic food
+    }
+  }
+
   Widget _buildEmptyState() {
     return Container(
       width: double.infinity,
@@ -131,7 +204,7 @@ class TodaysMealPlanSection extends ConsumerWidget {
         color: AppColors.background,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.textSecondary.withOpacity(0.2),
+          color: AppColors.textSecondary.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
