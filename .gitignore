@@ -46,3 +46,4 @@ app.*.map.json
 /requirements
 CLAUDE.md
 /macos/Flutter/GeneratedPluginRegistrant.swift
+MEAL_PLAN_INTEGRATION.md

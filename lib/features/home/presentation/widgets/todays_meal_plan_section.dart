@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/meal_plan_shimmer_card.dart';
 import '../../data/dummy_meal_plan_data.dart';
 import '../../domain/models/meal_plan_item.dart';
 import 'meal_plan_card.dart';
-import '../../../meal_planner/data/dummy_meal_plan_service.dart';
 import '../../../meal_planner/domain/models/meal_slot.dart';
+import '../../../meal_planner/presentation/providers/meal_plan_providers.dart';
 
-class TodaysMealPlanSection extends StatelessWidget {
+class TodaysMealPlanSection extends ConsumerWidget {
   const TodaysMealPlanSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final weekPlan = DummyMealPlanService.getCurrentWeekPlan();
-    final todaysPlan = weekPlan.todaysPlan;
-    final List<MealSlot> todaysMeals = todaysPlan?.scheduledMeals ?? [];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final todaysMealPlanAsync = ref.watch(todaysMealPlanProvider);
     final String todayDate = DateFormat('EEEE, MMMM d').format(DateTime.now());
 
     return Column(
@@ -77,18 +77,25 @@ class TodaysMealPlanSection extends StatelessWidget {
         const SizedBox(height: 16),
         SizedBox(
           height: 250,
-          child: todaysMeals.isNotEmpty
-              ? ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.only(left: 12),
-                  itemCount: todaysMeals.length,
-                  itemBuilder: (context, index) {
-                    final mealSlot = todaysMeals[index];
-                    final mealPlanItem = _convertMealSlotToMealPlanItem(mealSlot);
-                    return MealPlanCard(mealPlan: mealPlanItem);
-                  },
-                )
-              : _buildEmptyState(),
+          child: todaysMealPlanAsync.when(
+            data: (todaysMeals) {
+              if (todaysMeals.isEmpty) {
+                return _buildEmptyState();
+              }
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.only(left: 12),
+                itemCount: todaysMeals.length,
+                itemBuilder: (context, index) {
+                  final mealSlot = todaysMeals[index] as MealSlot;
+                  final mealPlanItem = _convertMealSlotToMealPlanItem(mealSlot);
+                  return MealPlanCard(mealPlan: mealPlanItem);
+                },
+              );
+            },
+            loading: () => const MealPlanShimmerSection(itemCount: 3),
+            error: (error, stack) => _buildEmptyState(), // Silent failure
+          ),
         ),
       ],
     );
@@ -113,6 +120,7 @@ class TodaysMealPlanSection extends StatelessWidget {
       title: title,
       time: mealSlot.displayTime,
       imageUrl: imageUrl,
+      recipeId: mealSlot.recipeId,
     );
   }
 

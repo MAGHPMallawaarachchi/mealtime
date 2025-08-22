@@ -3,12 +3,14 @@ class MealPlanItem {
   final String title;
   final String time;
   final String imageUrl;
+  final String? recipeId;
 
   const MealPlanItem({
     required this.id,
     required this.title,
     required this.time,
     required this.imageUrl,
+    this.recipeId,
   });
 
   MealPlanItem copyWith({
@@ -16,12 +18,14 @@ class MealPlanItem {
     String? title,
     String? time,
     String? imageUrl,
+    String? recipeId,
   }) {
     return MealPlanItem(
       id: id ?? this.id,
       title: title ?? this.title,
       time: time ?? this.time,
       imageUrl: imageUrl ?? this.imageUrl,
+      recipeId: recipeId ?? this.recipeId,
     );
   }
 
@@ -31,6 +35,7 @@ class MealPlanItem {
       'title': title,
       'time': time,
       'imageUrl': imageUrl,
+      'recipeId': recipeId,
     };
   }
 
@@ -40,6 +45,7 @@ class MealPlanItem {
       title: json['title'] as String,
       time: json['time'] as String,
       imageUrl: json['imageUrl'] as String,
+      recipeId: json['recipeId'] as String?,
     );
   }
 
@@ -54,6 +60,6 @@ class MealPlanItem {
 
   @override
   String toString() {
-    return 'MealPlanItem(id: $id, title: $title, time: $time, imageUrl: $imageUrl)';
+    return 'MealPlanItem(id: $id, title: $title, time: $time, imageUrl: $imageUrl, recipeId: $recipeId)';
   }
 }

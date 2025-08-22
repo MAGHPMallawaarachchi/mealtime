@@ -14,7 +14,10 @@ class MealPlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push('/recipe/${mealPlan.id}');
+        // Only navigate if there's a valid recipeId
+        if (mealPlan.recipeId != null) {
+          context.push('/recipe/${mealPlan.recipeId}');
+        }
       },
       child: Container(
         width: 170,
