@@ -6,7 +6,7 @@ class GetRecipesByCategoryUseCase {
 
   GetRecipesByCategoryUseCase(this._repository);
 
-  Future<List<Recipe>> execute(List<String> tags) {
-    return _repository.getRecipesByTags(tags);
+  Future<List<Recipe>> execute(List<String> tags, {bool forceRefresh = false}) {
+    return _repository.getRecipesByTags(tags, forceRefresh: forceRefresh);
   }
 }

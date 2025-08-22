@@ -6,7 +6,7 @@ class SearchRecipesUseCase {
 
   SearchRecipesUseCase(this._repository);
 
-  Future<List<Recipe>> execute(String query) {
-    return _repository.searchRecipes(query);
+  Future<List<Recipe>> execute(String query, {bool forceRefresh = false}) {
+    return _repository.searchRecipes(query, forceRefresh: forceRefresh);
   }
 }

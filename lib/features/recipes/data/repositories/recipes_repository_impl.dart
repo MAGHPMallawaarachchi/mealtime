@@ -93,9 +93,9 @@ class RecipesRepositoryImpl implements RecipesRepository {
   }
 
   @override
-  Future<List<Recipe>> getRecipesByTags(List<String> tags) async {
+  Future<List<Recipe>> getRecipesByTags(List<String> tags, {bool forceRefresh = false}) async {
     try {
-      final allRecipes = await getRecipes();
+      final allRecipes = await getRecipes(forceRefresh: forceRefresh);
       
       if (tags.isEmpty) {
         return allRecipes;
@@ -112,9 +112,9 @@ class RecipesRepositoryImpl implements RecipesRepository {
   }
 
   @override
-  Future<List<Recipe>> searchRecipes(String query) async {
+  Future<List<Recipe>> searchRecipes(String query, {bool forceRefresh = false}) async {
     try {
-      final allRecipes = await getRecipes();
+      final allRecipes = await getRecipes(forceRefresh: forceRefresh);
       
       if (query.trim().isEmpty) {
         return allRecipes;

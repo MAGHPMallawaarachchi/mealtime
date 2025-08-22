@@ -65,14 +65,14 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     super.dispose();
   }
 
-  Future<void> _loadRecipes() async {
+  Future<void> _loadRecipes({bool forceRefresh = false}) async {
     try {
       setState(() {
         _isLoading = true;
         _errorMessage = null;
       });
 
-      final recipes = await _getFilteredRecipes();
+      final recipes = await _getFilteredRecipes(forceRefresh: forceRefresh);
 
       if (mounted) {
         setState(() {
@@ -90,16 +90,16 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     }
   }
 
-  Future<List<Recipe>> _getFilteredRecipes() async {
+  Future<List<Recipe>> _getFilteredRecipes({bool forceRefresh = false}) async {
     if (_searchQuery.isNotEmpty) {
       // Use search functionality
-      return await _searchRecipesUseCase.execute(_searchQuery);
+      return await _searchRecipesUseCase.execute(_searchQuery, forceRefresh: forceRefresh);
     } else if (_selectedCategory != null) {
       // Filter by category
-      return await _getRecipesByCategoryUseCase.execute([_selectedCategory!]);
+      return await _getRecipesByCategoryUseCase.execute([_selectedCategory!], forceRefresh: forceRefresh);
     } else {
       // Get all recipes
-      return await _getRecipesUseCase.execute();
+      return await _getRecipesUseCase.execute(forceRefresh: forceRefresh);
     }
   }
 
@@ -165,12 +165,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   }
 
   Future<void> _refreshData() async {
-    // Force refresh from database to get latest data
-    await _recipesRepository.refreshRecipes();
-
-    // Refresh both the main recipes and featured recipes
+    // Refresh both the main recipes and featured recipes with force refresh
     await Future.wait([
-      _loadRecipes(),
+      _loadRecipes(forceRefresh: true),
       (_featuredRecipesKey.currentState as FeaturedRecipesSectionController?)
               ?.refreshFeaturedRecipes() ??
           Future.value(),
