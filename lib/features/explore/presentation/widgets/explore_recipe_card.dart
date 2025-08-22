@@ -44,7 +44,7 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
     setState(() {
       _isFavorite = !_isFavorite;
     });
-    
+
     // Only call the callback if provided (UI-only toggle)
     widget.onFavoriteToggle?.call(widget.recipe);
 
@@ -58,19 +58,6 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
         backgroundColor: _isFavorite
             ? AppColors.success
             : AppColors.textSecondary,
-      ),
-    );
-  }
-
-  void _addToMealPlan() {
-    widget.onAddToMealPlan?.call(widget.recipe);
-
-    // Show feedback to user
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Recipe added to meal plan!'),
-        duration: Duration(seconds: 2),
-        backgroundColor: AppColors.success,
       ),
     );
   }

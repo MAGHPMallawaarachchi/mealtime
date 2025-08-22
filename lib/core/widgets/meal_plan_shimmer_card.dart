@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import '../constants/app_colors.dart';
 
 class MealPlanShimmerCard extends StatelessWidget {
   const MealPlanShimmerCard({super.key});
@@ -96,11 +95,8 @@ class MealPlanShimmerCard extends StatelessWidget {
 
 class MealPlanShimmerSection extends StatelessWidget {
   final int itemCount;
-  
-  const MealPlanShimmerSection({
-    super.key,
-    this.itemCount = 3,
-  });
+
+  const MealPlanShimmerSection({super.key, this.itemCount = 3});
 
   @override
   Widget build(BuildContext context) {

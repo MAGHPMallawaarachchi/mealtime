@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
@@ -30,7 +29,7 @@ class _AddMealModalState extends State<AddMealModal>
   late TabController _tabController;
   final TextEditingController _customMealController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
-  
+
   List<Recipe> _allRecipes = [];
   List<Recipe> _filteredRecipes = [];
   List<String> _suggestions = [];
@@ -64,8 +63,13 @@ class _AddMealModalState extends State<AddMealModal>
     // Filter recipes by meal type and search query
     var recipes = _allRecipes.where((recipe) {
       if (_searchQuery.isNotEmpty) {
-        return recipe.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-            (recipe.description?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
+        return recipe.title.toLowerCase().contains(
+              _searchQuery.toLowerCase(),
+            ) ||
+            (recipe.description?.toLowerCase().contains(
+                  _searchQuery.toLowerCase(),
+                ) ??
+                false);
       }
       return true;
     }).toList();
@@ -182,7 +186,10 @@ class _AddMealModalState extends State<AddMealModal>
             color: AppColors.textSecondary,
           ),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
+          ),
         ),
       ),
     );
@@ -241,7 +248,7 @@ class _AddMealModalState extends State<AddMealModal>
 
   Widget _buildLeftoversTab() {
     final leftovers = DummyMealPlanService.getLeftoverSuggestions();
-    
+
     return ListView.builder(
       padding: const EdgeInsets.all(20),
       itemCount: leftovers.length,
@@ -368,10 +375,7 @@ class _AddMealModalState extends State<AddMealModal>
                 ],
               ),
             ),
-            PhosphorIcon(
-              PhosphorIcons.plus(),
-              color: AppColors.primary,
-            ),
+            PhosphorIcon(PhosphorIcons.plus(), color: AppColors.primary),
           ],
         ),
       ),
@@ -415,10 +419,7 @@ class _AddMealModalState extends State<AddMealModal>
                 ),
               ),
             ),
-            PhosphorIcon(
-              PhosphorIcons.plus(),
-              color: AppColors.primary,
-            ),
+            PhosphorIcon(PhosphorIcons.plus(), color: AppColors.primary),
           ],
         ),
       ),
@@ -462,10 +463,7 @@ class _AddMealModalState extends State<AddMealModal>
                 ),
               ),
             ),
-            PhosphorIcon(
-              PhosphorIcons.plus(),
-              color: AppColors.success,
-            ),
+            PhosphorIcon(PhosphorIcons.plus(), color: AppColors.success),
           ],
         ),
       ),
@@ -510,7 +508,7 @@ class _AddMealModalState extends State<AddMealModal>
       customMealName: null,
       leftoverId: null,
     );
-    
+
     widget.onMealSelected?.call(updatedSlot);
     Navigator.pop(context);
   }
@@ -518,7 +516,7 @@ class _AddMealModalState extends State<AddMealModal>
   void _selectSuggestion(String suggestion) {
     // Check if suggestion is a recipe ID
     final recipe = _allRecipes.where((r) => r.id == suggestion).firstOrNull;
-    
+
     final updatedSlot = recipe != null
         ? widget.mealSlot.copyWith(
             recipeId: recipe.id,
@@ -530,7 +528,7 @@ class _AddMealModalState extends State<AddMealModal>
             recipeId: null,
             leftoverId: null,
           );
-    
+
     widget.onMealSelected?.call(updatedSlot);
     Navigator.pop(context);
   }
@@ -541,7 +539,7 @@ class _AddMealModalState extends State<AddMealModal>
       recipeId: null,
       leftoverId: 'leftover_${DateTime.now().millisecondsSinceEpoch}',
     );
-    
+
     widget.onMealSelected?.call(updatedSlot);
     Navigator.pop(context);
   }
@@ -555,7 +553,7 @@ class _AddMealModalState extends State<AddMealModal>
       recipeId: null,
       leftoverId: null,
     );
-    
+
     widget.onMealSelected?.call(updatedSlot);
     Navigator.pop(context);
   }

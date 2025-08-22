@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../features/onboarding/presentation/pages/splash_screen.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 import '../../features/auth/presentation/pages/login_screen.dart';
@@ -18,7 +17,7 @@ import 'main_scaffold.dart';
 
 class AuthNotifier extends ChangeNotifier {
   final AuthService _authService;
-  
+
   AuthNotifier(this._authService) {
     _authService.authStateChanges.listen((_) {
       notifyListeners();
@@ -36,20 +35,29 @@ class AppRouter {
     redirect: (context, state) {
       final user = _authService.currentUser;
       final isLoggedIn = user != null;
-      
+
       final authRoutes = ['/login', '/register'];
       final isAuthRoute = authRoutes.contains(state.uri.path);
-      final mainAppRoutes = ['/home', '/explore', '/meal-planner', '/pantry', '/profile'];
-      final isMainAppRoute = mainAppRoutes.contains(state.uri.path);
-      
-      if (!isLoggedIn && !isAuthRoute && state.uri.path != '/' && state.uri.path != '/onboarding') {
+      final mainAppRoutes = [
+        '/home',
+        '/explore',
+        '/meal-planner',
+        '/pantry',
+        '/profile',
+      ];
+      mainAppRoutes.contains(state.uri.path);
+
+      if (!isLoggedIn &&
+          !isAuthRoute &&
+          state.uri.path != '/' &&
+          state.uri.path != '/onboarding') {
         return '/login';
       }
-      
+
       if (isLoggedIn && isAuthRoute) {
         return '/home';
       }
-      
+
       return null;
     },
     routes: [
@@ -74,9 +82,8 @@ class AppRouter {
         builder: (context, state) => const RegisterScreen(),
       ),
       ShellRoute(
-        builder: (context, state, child) => AuthGuard(
-          child: MainScaffold(child: child),
-        ),
+        builder: (context, state, child) =>
+            AuthGuard(child: MainScaffold(child: child)),
         routes: [
           GoRoute(
             path: '/home',

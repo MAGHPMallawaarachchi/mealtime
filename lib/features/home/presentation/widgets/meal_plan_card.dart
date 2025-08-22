@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../domain/models/meal_plan_item.dart';
@@ -50,7 +49,7 @@ class MealPlanCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                     child: SizedBox(
                       width: double.infinity,
-                      height: 140,
+                      height: 120,
                       child: OptimizedCachedImage(
                         imageUrl: mealPlan.imageUrl,
                         fit: BoxFit.cover,
@@ -81,7 +80,7 @@ class MealPlanCard extends StatelessWidget {
                           color: AppColors.textPrimary,
                           height: 1.2,
                         ),
-                        maxLines: 2,
+                        maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],

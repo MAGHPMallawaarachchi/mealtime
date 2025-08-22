@@ -1,11 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mealtime/features/recipes/domain/models/recipe.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../recipes/domain/usecases/get_recipes_usecase.dart';
 import '../../../recipes/domain/usecases/search_recipes_usecase.dart';
 import '../../../recipes/domain/usecases/get_recipes_by_category_usecase.dart';
-import '../../../recipes/domain/usecases/get_available_categories_usecase.dart';
 import '../../../recipes/data/repositories/recipes_repository_impl.dart';
 import '../widgets/explore_search_bar.dart';
 import '../widgets/featured_recipes_section.dart';
@@ -21,20 +19,20 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   final TextEditingController _searchController = TextEditingController();
-  final GlobalKey<State<FeaturedRecipesSection>> _featuredRecipesKey = GlobalKey<State<FeaturedRecipesSection>>();
+  final GlobalKey<State<FeaturedRecipesSection>> _featuredRecipesKey =
+      GlobalKey<State<FeaturedRecipesSection>>();
   String? _selectedCategory;
   String _searchQuery = '';
   List<Recipe> _filteredRecipes = [];
   final Set<String> _favoriteRecipes = <String>{}; // Local-only favorites
   bool _isLoading = true;
   String? _errorMessage;
-  
+
   // Dependencies
   late final RecipesRepositoryImpl _recipesRepository;
   late final GetRecipesUseCase _getRecipesUseCase;
   late final SearchRecipesUseCase _searchRecipesUseCase;
   late final GetRecipesByCategoryUseCase _getRecipesByCategoryUseCase;
-  late final GetAvailableCategoriesUseCase _getAvailableCategoriesUseCase;
 
   @override
   void initState() {
@@ -47,8 +45,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
     _recipesRepository = RecipesRepositoryImpl();
     _getRecipesUseCase = GetRecipesUseCase(_recipesRepository);
     _searchRecipesUseCase = SearchRecipesUseCase(_recipesRepository);
-    _getRecipesByCategoryUseCase = GetRecipesByCategoryUseCase(_recipesRepository);
-    _getAvailableCategoriesUseCase = GetAvailableCategoriesUseCase(_recipesRepository);
+    _getRecipesByCategoryUseCase = GetRecipesByCategoryUseCase(
+      _recipesRepository,
+    );
   }
 
   @override
@@ -65,7 +64,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       });
 
       final recipes = await _getFilteredRecipes();
-      
+
       if (mounted) {
         setState(() {
           _filteredRecipes = recipes;
@@ -81,7 +80,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
       }
     }
   }
-
 
   Future<List<Recipe>> _getFilteredRecipes() async {
     if (_searchQuery.isNotEmpty) {
@@ -119,7 +117,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         _favoriteRecipes.add(recipe.id);
       }
     });
-    
+
     // Show feedback to user
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -146,7 +144,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
   }
 
-
   void _onAddToMealPlan(Recipe recipe) {
     // Placeholder implementation - will be connected to actual meal planner later
     // For now, just show a snackbar confirmation
@@ -161,11 +158,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
   Future<void> _refreshData() async {
     // Force refresh from database to get latest data
     await _recipesRepository.refreshRecipes();
-    
+
     // Refresh both the main recipes and featured recipes
     await Future.wait([
       _loadRecipes(),
-      (_featuredRecipesKey.currentState as FeaturedRecipesSectionController?)?.refreshFeaturedRecipes() ?? Future.value(),
+      (_featuredRecipesKey.currentState as FeaturedRecipesSectionController?)
+              ?.refreshFeaturedRecipes() ??
+          Future.value(),
     ]);
   }
 
@@ -174,19 +173,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: _refreshData,
-          child: _buildBody(),
-        ),
+        child: RefreshIndicator(onRefresh: _refreshData, child: _buildBody()),
       ),
     );
   }
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (_errorMessage != null) {

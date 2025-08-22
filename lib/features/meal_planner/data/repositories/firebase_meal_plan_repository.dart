@@ -9,12 +9,10 @@ import '../../utils/meal_plan_test_utils.dart';
 class FirebaseMealPlanRepository implements MealPlanRepository {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
-  
-  FirebaseMealPlanRepository({
-    FirebaseFirestore? firestore,
-    FirebaseAuth? auth,
-  }) : _firestore = firestore ?? FirebaseFirestore.instance,
-       _auth = auth ?? FirebaseAuth.instance;
+
+  FirebaseMealPlanRepository({FirebaseFirestore? firestore, FirebaseAuth? auth})
+    : _firestore = firestore ?? FirebaseFirestore.instance,
+      _auth = auth ?? FirebaseAuth.instance;
 
   String? get _currentUserId => _auth.currentUser?.uid;
 
@@ -53,16 +51,14 @@ class FirebaseMealPlanRepository implements MealPlanRepository {
       if (cachedPlan != null) {
         return cachedPlan;
       }
-      
+
       // If no cached data and user is authenticated, create and save a sample plan
-      if (userId != null) {
-        final samplePlan = MealPlanTestUtils.createSampleWeekPlan(userId: userId);
-        if (samplePlan.id == weekId) {
-          await cacheWeekPlan(samplePlan);
-          return samplePlan;
-        }
+      final samplePlan = MealPlanTestUtils.createSampleWeekPlan(userId: userId);
+      if (samplePlan.id == weekId) {
+        await cacheWeekPlan(samplePlan);
+        return samplePlan;
       }
-      
+
       return null;
     } catch (e) {
       // Silent failure - return cached data or sample data
@@ -70,14 +66,16 @@ class FirebaseMealPlanRepository implements MealPlanRepository {
       if (cachedPlan != null) {
         return cachedPlan;
       }
-      
+
       // Provide sample data for testing
-      final samplePlan = MealPlanTestUtils.createSampleWeekPlan(userId: _currentUserId);
+      final samplePlan = MealPlanTestUtils.createSampleWeekPlan(
+        userId: _currentUserId,
+      );
       if (samplePlan.id == weekId) {
         await cacheWeekPlan(samplePlan);
         return samplePlan;
       }
-      
+
       return null;
     }
   }
@@ -94,7 +92,7 @@ class FirebaseMealPlanRepository implements MealPlanRepository {
 
       // Ensure the userId is set on the meal plan
       final planWithUserId = weekPlan.copyWith(userId: userId);
-      
+
       await _firestore
           .collection('users')
           .doc(userId)
@@ -137,7 +135,7 @@ class FirebaseMealPlanRepository implements MealPlanRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       final cachedData = prefs.getString('meal_plan_$weekId');
-      
+
       if (cachedData != null) {
         final jsonData = json.decode(cachedData) as Map<String, dynamic>;
         return WeeklyMealPlan.fromJson(jsonData);
@@ -196,22 +194,25 @@ class FirebaseMealPlanRepository implements MealPlanRepository {
           return await _getFallbackWeekPlan(weekId, userId);
         });
   }
-  
+
   /// Get fallback data (cached or sample) for a week plan
-  Future<WeeklyMealPlan?> _getFallbackWeekPlan(String weekId, String? userId) async {
+  Future<WeeklyMealPlan?> _getFallbackWeekPlan(
+    String weekId,
+    String? userId,
+  ) async {
     // Try cached data first
     final cachedPlan = await getCachedWeekPlan(weekId);
     if (cachedPlan != null) {
       return cachedPlan;
     }
-    
+
     // Provide sample data for testing
     final samplePlan = MealPlanTestUtils.createSampleWeekPlan(userId: userId);
     if (samplePlan.id == weekId) {
       await cacheWeekPlan(samplePlan);
       return samplePlan;
     }
-    
+
     return null;
   }
 
