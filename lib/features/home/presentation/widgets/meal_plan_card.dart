@@ -19,7 +19,7 @@ class MealPlanCard extends StatelessWidget {
         }
       },
       child: Container(
-        width: 170,
+        width: 160,
         margin: const EdgeInsets.only(right: 12, bottom: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),

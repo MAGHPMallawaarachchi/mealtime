@@ -24,67 +24,62 @@ class MealPlanShimmerCard extends StatelessWidget {
         baseColor: Colors.grey[300]!,
         highlightColor: Colors.grey[100]!,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Image placeholder
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 14,
-                    bottom: 6,
-                    left: 12,
-                    right: 12,
-                  ),
-                  child: Container(
-                    width: double.infinity,
-                    height: 140,
+            // Image placeholder
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 14,
+                bottom: 6,
+                left: 12,
+                right: 12,
+              ),
+              child: Container(
+                width: double.infinity,
+                height: 120,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            // Text placeholders
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Time placeholder
+                  Container(
+                    width: 60,
+                    height: 14,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(4),
                       color: Colors.white,
                     ),
                   ),
-                ),
-                // Text placeholders
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Time placeholder
-                      Container(
-                        width: 60,
-                        height: 14,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      // Title placeholder - first line
-                      Container(
-                        width: double.infinity,
-                        height: 16,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      // Title placeholder - second line (shorter)
-                      Container(
-                        width: 100,
-                        height: 16,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 6),
+                  // Title placeholder - first line
+                  Container(
+                    width: double.infinity,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Container(
+                    width: 80,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                ],
+              ),
             ),
           ],
         ),
@@ -101,7 +96,6 @@ class MealPlanShimmerSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 250, // Match the height in TodaysMealPlanSection
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.only(left: 12),
