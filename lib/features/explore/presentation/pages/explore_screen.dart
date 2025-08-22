@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealtime/features/recipes/domain/models/recipe.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../recipes/domain/usecases/get_recipes_usecase.dart';
@@ -9,15 +10,16 @@ import '../widgets/explore_search_bar.dart';
 import '../widgets/featured_recipes_section.dart';
 import '../widgets/explore_categories_section.dart';
 import '../widgets/recipes_grid_section.dart';
+import '../../../favorites/presentation/providers/favorites_providers.dart';
 
-class ExploreScreen extends StatefulWidget {
+class ExploreScreen extends ConsumerStatefulWidget {
   const ExploreScreen({super.key});
 
   @override
-  State<ExploreScreen> createState() => _ExploreScreenState();
+  ConsumerState<ExploreScreen> createState() => _ExploreScreenState();
 }
 
-class _ExploreScreenState extends State<ExploreScreen> {
+class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   final TextEditingController _searchController = TextEditingController();
   final GlobalKey<State<FeaturedRecipesSection>> _featuredRecipesKey =
       GlobalKey<State<FeaturedRecipesSection>>();
@@ -39,6 +41,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
     super.initState();
     _initializeDependencies();
     _loadRecipes();
+    _loadFavorites();
+  }
+
+  void _loadFavorites() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(favoritesProvider.notifier).loadUserFavorites();
+    });
   }
 
   void _initializeDependencies() {
