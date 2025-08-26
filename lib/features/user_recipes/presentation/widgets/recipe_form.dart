@@ -116,6 +116,7 @@ class _RecipeFormState extends State<RecipeForm> {
             _buildTagsSection(),
             const SizedBox(height: 32),
             _buildActionButtons(),
+            const SizedBox(height: 32),
           ],
         ),
       ),
@@ -462,6 +463,38 @@ class _RecipeFormState extends State<RecipeForm> {
             ),
           ),
           const SizedBox(width: 8),
+          SizedBox(
+            width: 90,
+            child: DropdownButtonFormField<IngredientUnit>(
+              value: ingredient.unit,
+              decoration: InputDecoration(
+                labelText: 'Unit',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 12,
+                ),
+              ),
+              isExpanded: true,
+              hint: const Text('Select', style: TextStyle(fontSize: 12)),
+              items: IngredientUnit.values.map((unit) {
+                return DropdownMenuItem<IngredientUnit>(
+                  value: unit,
+                  child: Text(
+                    _getUnitDisplayText(unit),
+                    style: const TextStyle(fontSize: 12),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              }).toList(),
+              onChanged: (IngredientUnit? newUnit) {
+                _updateIngredient(index, ingredient.copyWith(unit: newUnit));
+              },
+            ),
+          ),
+          const SizedBox(width: 8),
           Expanded(
             child: TextFormField(
               initialValue: ingredient.name,
@@ -693,7 +726,7 @@ class _RecipeFormState extends State<RecipeForm> {
           child: OutlinedButton(
             onPressed: widget.isLoading ? null : widget.onCancel,
             style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -711,7 +744,7 @@ class _RecipeFormState extends State<RecipeForm> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -943,5 +976,40 @@ class _RecipeFormState extends State<RecipeForm> {
     }
 
     return int.tryParse(cleaned.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+  }
+
+  String _getUnitDisplayText(IngredientUnit unit) {
+    switch (unit) {
+      case IngredientUnit.cups:
+        return 'cups';
+      case IngredientUnit.teaspoons:
+        return 'tsp';
+      case IngredientUnit.tablespoons:
+        return 'tbsp';
+      case IngredientUnit.milliliters:
+        return 'ml';
+      case IngredientUnit.liters:
+        return 'L';
+      case IngredientUnit.grams:
+        return 'g';
+      case IngredientUnit.kilograms:
+        return 'kg';
+      case IngredientUnit.ounces:
+        return 'oz';
+      case IngredientUnit.pounds:
+        return 'lbs';
+      case IngredientUnit.centimeter:
+        return 'cm';
+      case IngredientUnit.pieces:
+        return 'pcs';
+      case IngredientUnit.whole:
+        return 'whole';
+      case IngredientUnit.pinch:
+        return 'pinch';
+      case IngredientUnit.dash:
+        return 'dash';
+      case IngredientUnit.toTaste:
+        return 'to taste';
+    }
   }
 }
