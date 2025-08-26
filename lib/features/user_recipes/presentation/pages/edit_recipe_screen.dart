@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/constants/app_colors.dart';
 import '../../domain/models/user_recipe.dart';
 import '../providers/user_recipes_providers.dart';
 import '../widgets/recipe_form.dart';
@@ -10,10 +9,7 @@ import '../widgets/recipe_form.dart';
 class EditRecipeScreen extends ConsumerStatefulWidget {
   final String recipeId;
 
-  const EditRecipeScreen({
-    super.key,
-    required this.recipeId,
-  });
+  const EditRecipeScreen({super.key, required this.recipeId});
 
   @override
   ConsumerState<EditRecipeScreen> createState() => _EditRecipeScreenState();
@@ -35,9 +31,7 @@ class _EditRecipeScreenState extends ConsumerState<EditRecipeScreen> {
             onPressed: () => context.pop(),
           ),
         ),
-        body: const Center(
-          child: Text('Recipe not found'),
-        ),
+        body: const Center(child: Text('Recipe not found')),
       );
     }
 
@@ -46,10 +40,7 @@ class _EditRecipeScreenState extends ConsumerState<EditRecipeScreen> {
       appBar: AppBar(
         title: const Text(
           'Edit Recipe',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -80,7 +71,7 @@ class _EditRecipeScreenState extends ConsumerState<EditRecipeScreen> {
 
     try {
       await ref.read(userRecipesProvider.notifier).updateUserRecipe(recipe);
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -102,7 +93,7 @@ class _EditRecipeScreenState extends ConsumerState<EditRecipeScreen> {
             ),
           ),
         );
-        
+
         context.pop();
       }
     } catch (e) {
@@ -139,13 +130,11 @@ class _EditRecipeScreenState extends ConsumerState<EditRecipeScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        icon: PhosphorIcon(
-          PhosphorIcons.trash(),
-          size: 24,
-          color: Colors.red,
-        ),
+        icon: PhosphorIcon(PhosphorIcons.trash(), size: 24, color: Colors.red),
         title: const Text('Delete Recipe'),
-        content: Text('Are you sure you want to delete "${recipe.title}"? This action cannot be undone.'),
+        content: Text(
+          'Are you sure you want to delete "${recipe.title}"? This action cannot be undone.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -172,7 +161,7 @@ class _EditRecipeScreenState extends ConsumerState<EditRecipeScreen> {
 
     try {
       await ref.read(userRecipesProvider.notifier).deleteUserRecipe(recipeId);
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -194,7 +183,7 @@ class _EditRecipeScreenState extends ConsumerState<EditRecipeScreen> {
             ),
           ),
         );
-        
+
         context.pop();
       }
     } catch (e) {

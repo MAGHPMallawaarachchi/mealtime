@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../recipes/domain/models/recipe.dart';
 import '../../domain/models/user_recipe.dart';
 import '../providers/user_recipes_providers.dart';
 import '../widgets/recipe_form.dart';
@@ -85,8 +84,10 @@ class _CreateRecipeScreenState extends ConsumerState<CreateRecipeScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final recipeId = await ref.read(userRecipesProvider.notifier).createUserRecipe(recipe);
-      
+      final recipeId = await ref
+          .read(userRecipesProvider.notifier)
+          .createUserRecipe(recipe);
+
       if (recipeId != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -108,7 +109,7 @@ class _CreateRecipeScreenState extends ConsumerState<CreateRecipeScreen> {
             ),
           ),
         );
-        
+
         context.pop();
       } else if (mounted) {
         throw Exception('Failed to create recipe');
