@@ -35,6 +35,10 @@ class _RecipeFormState extends State<RecipeForm> {
   late final TextEditingController _prepTimeController;
   late final TextEditingController _cookTimeController;
   late final TextEditingController _servingsController;
+  late final TextEditingController _caloriesController;
+  late final TextEditingController _proteinController;
+  late final TextEditingController _carbsController;
+  late final TextEditingController _fatsController;
 
   DifficultyLevel _difficulty = DifficultyLevel.medium;
   List<RecipeIngredient> _ingredients = [];
@@ -57,6 +61,18 @@ class _RecipeFormState extends State<RecipeForm> {
     _cookTimeController = TextEditingController(text: recipe?.cookTime ?? '');
     _servingsController = TextEditingController(
       text: recipe?.servings.toString() ?? '4',
+    );
+    _caloriesController = TextEditingController(
+      text: recipe?.calories?.toString() ?? '',
+    );
+    _proteinController = TextEditingController(
+      text: recipe?.protein?.toString() ?? '',
+    );
+    _carbsController = TextEditingController(
+      text: recipe?.carbohydrates?.toString() ?? '',
+    );
+    _fatsController = TextEditingController(
+      text: recipe?.fats?.toString() ?? '',
     );
 
     if (recipe != null) {
@@ -93,6 +109,10 @@ class _RecipeFormState extends State<RecipeForm> {
     _prepTimeController.dispose();
     _cookTimeController.dispose();
     _servingsController.dispose();
+    _caloriesController.dispose();
+    _proteinController.dispose();
+    _carbsController.dispose();
+    _fatsController.dispose();
     super.dispose();
   }
 
@@ -106,6 +126,8 @@ class _RecipeFormState extends State<RecipeForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildBasicInfoSection(),
+            const SizedBox(height: 24),
+            _buildNutritionSection(),
             const SizedBox(height: 24),
             _buildPhotoSection(),
             const SizedBox(height: 24),
@@ -228,6 +250,125 @@ class _RecipeFormState extends State<RecipeForm> {
               ],
             ),
             const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNutritionSection() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Nutrition Information (Optional)',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Add nutrition information per serving',
+              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _caloriesController,
+              decoration: InputDecoration(
+                labelText: 'Calories',
+                prefixIcon: PhosphorIcon(PhosphorIcons.fire()),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                suffixText: 'kcal',
+              ),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _proteinController,
+                    decoration: InputDecoration(
+                      labelText: 'Protein',
+                      prefixIcon: PhosphorIcon(PhosphorIcons.shrimp()),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      suffixText: 'g',
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextFormField(
+                    controller: _carbsController,
+                    decoration: InputDecoration(
+                      labelText: 'Carbs',
+                      prefixIcon: PhosphorIcon(PhosphorIcons.grains()),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      suffixText: 'g',
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextFormField(
+                    controller: _fatsController,
+                    decoration: InputDecoration(
+                      labelText: 'Fats',
+                      prefixIcon: PhosphorIcon(PhosphorIcons.avocado()),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      suffixText: 'g',
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -936,6 +1077,18 @@ class _RecipeFormState extends State<RecipeForm> {
       ],
       tags: _tags,
       imageUrl: _selectedImage?.path ?? _imageUrl,
+      calories: _caloriesController.text.trim().isNotEmpty
+          ? double.tryParse(_caloriesController.text.trim())
+          : null,
+      protein: _proteinController.text.trim().isNotEmpty
+          ? double.tryParse(_proteinController.text.trim())
+          : null,
+      carbohydrates: _carbsController.text.trim().isNotEmpty
+          ? double.tryParse(_carbsController.text.trim())
+          : null,
+      fats: _fatsController.text.trim().isNotEmpty
+          ? double.tryParse(_fatsController.text.trim())
+          : null,
       createdAt: widget.initialRecipe?.createdAt ?? now,
       updatedAt: now,
     );

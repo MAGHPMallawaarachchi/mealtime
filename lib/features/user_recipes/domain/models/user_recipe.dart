@@ -1,10 +1,6 @@
 import '../../../recipes/domain/models/recipe.dart';
 
-enum DifficultyLevel {
-  easy,
-  medium,
-  hard,
-}
+enum DifficultyLevel { easy, medium, hard }
 
 extension DifficultyLevelExtension on DifficultyLevel {
   String get displayName {
@@ -45,6 +41,10 @@ class UserRecipe {
   final List<InstructionSection> instructionSections;
   final List<String> tags;
   final String? imageUrl;
+  final double? calories;
+  final double? protein;
+  final double? carbohydrates;
+  final double? fats;
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isPublic;
@@ -64,6 +64,10 @@ class UserRecipe {
     required this.instructionSections,
     required this.tags,
     this.imageUrl,
+    this.calories,
+    this.protein,
+    this.carbohydrates,
+    this.fats,
     required this.createdAt,
     required this.updatedAt,
     this.isPublic = false,
@@ -84,6 +88,10 @@ class UserRecipe {
     List<InstructionSection>? instructionSections,
     List<String>? tags,
     String? imageUrl,
+    double? calories,
+    double? protein,
+    double? carbohydrates,
+    double? fats,
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isPublic,
@@ -103,6 +111,10 @@ class UserRecipe {
       instructionSections: instructionSections ?? this.instructionSections,
       tags: tags ?? this.tags,
       imageUrl: imageUrl ?? this.imageUrl,
+      calories: calories ?? this.calories,
+      protein: protein ?? this.protein,
+      carbohydrates: carbohydrates ?? this.carbohydrates,
+      fats: fats ?? this.fats,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isPublic: isPublic ?? this.isPublic,
@@ -118,8 +130,13 @@ class UserRecipe {
       ingredients: ingredients,
       ingredientSections: ingredientSections,
       instructionSections: instructionSections,
-      calories: 0,
-      macros: const RecipeMacros(protein: 0, carbs: 0, fats: 0, fiber: 0),
+      calories: calories?.toInt() ?? 0,
+      macros: RecipeMacros(
+        protein: protein ?? 0,
+        carbs: carbohydrates ?? 0,
+        fats: fats ?? 0,
+        fiber: 0,
+      ),
       description: description,
       defaultServings: servings,
       tags: tags,
@@ -140,9 +157,15 @@ class UserRecipe {
       'difficulty': difficulty.name,
       'ingredients': ingredients.map((e) => e.toJson()).toList(),
       'ingredientSections': ingredientSections.map((e) => e.toJson()).toList(),
-      'instructionSections': instructionSections.map((e) => e.toJson()).toList(),
+      'instructionSections': instructionSections
+          .map((e) => e.toJson())
+          .toList(),
       'tags': tags,
       'imageUrl': imageUrl,
+      'calories': calories,
+      'protein': protein,
+      'carbohydrates': carbohydrates,
+      'fats': fats,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'isPublic': isPublic,
@@ -162,24 +185,40 @@ class UserRecipe {
       difficulty: _parseDifficulty(json['difficulty']),
       ingredients: json['ingredients'] != null
           ? (json['ingredients'] as List)
-              .where((e) => e is Map<String, dynamic>)
-              .map((e) => RecipeIngredient.fromJson(e as Map<String, dynamic>))
-              .toList()
+                .where((e) => e is Map<String, dynamic>)
+                .map(
+                  (e) => RecipeIngredient.fromJson(e as Map<String, dynamic>),
+                )
+                .toList()
           : [],
       ingredientSections: json['ingredientSections'] != null
           ? (json['ingredientSections'] as List)
-              .where((e) => e is Map<String, dynamic>)
-              .map((e) => IngredientSection.fromJson(e as Map<String, dynamic>))
-              .toList()
+                .where((e) => e is Map<String, dynamic>)
+                .map(
+                  (e) => IngredientSection.fromJson(e as Map<String, dynamic>),
+                )
+                .toList()
           : [],
       instructionSections: json['instructionSections'] != null
           ? (json['instructionSections'] as List)
-              .where((e) => e is Map<String, dynamic>)
-              .map((e) => InstructionSection.fromJson(e as Map<String, dynamic>))
-              .toList()
+                .where((e) => e is Map<String, dynamic>)
+                .map(
+                  (e) => InstructionSection.fromJson(e as Map<String, dynamic>),
+                )
+                .toList()
           : [],
       tags: json['tags'] != null ? List<String>.from(json['tags'] as List) : [],
       imageUrl: json['imageUrl'] as String?,
+      calories: json['calories'] != null
+          ? (json['calories'] as num).toDouble()
+          : null,
+      protein: json['protein'] != null
+          ? (json['protein'] as num).toDouble()
+          : null,
+      carbohydrates: json['carbohydrates'] != null
+          ? (json['carbohydrates'] as num).toDouble()
+          : null,
+      fats: json['fats'] != null ? (json['fats'] as num).toDouble() : null,
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'] as String)
           : DateTime.now(),
@@ -192,7 +231,7 @@ class UserRecipe {
 
   static DifficultyLevel _parseDifficulty(dynamic difficulty) {
     if (difficulty == null) return DifficultyLevel.medium;
-    
+
     try {
       return DifficultyLevel.values.firstWhere(
         (e) => e.name == difficulty.toString(),
