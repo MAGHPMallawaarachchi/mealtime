@@ -6,6 +6,7 @@ class WeeklyMealPlan {
   final DateTime weekStartDate;
   final List<DailyMealPlan> dailyPlans;
   final String? householdId;
+  final String? userId;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -14,6 +15,7 @@ class WeeklyMealPlan {
     required this.weekStartDate,
     required this.dailyPlans,
     this.householdId,
+    this.userId,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -74,6 +76,7 @@ class WeeklyMealPlan {
     DateTime? weekStartDate,
     List<DailyMealPlan>? dailyPlans,
     String? householdId,
+    String? userId,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -82,15 +85,25 @@ class WeeklyMealPlan {
       weekStartDate: weekStartDate ?? this.weekStartDate,
       dailyPlans: dailyPlans ?? this.dailyPlans,
       householdId: householdId ?? this.householdId,
+      userId: userId ?? this.userId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );
   }
 
   WeeklyMealPlan updateDayPlan(DailyMealPlan updatedDay) {
-    final updatedPlans = dailyPlans.map((day) {
-      return isSameDay(day.date, updatedDay.date) ? updatedDay : day;
-    }).toList();
+    final existingDayIndex = dailyPlans.indexWhere((day) => isSameDay(day.date, updatedDay.date));
+    
+    List<DailyMealPlan> updatedPlans;
+    if (existingDayIndex != -1) {
+      // Update existing day
+      updatedPlans = dailyPlans.map((day) {
+        return isSameDay(day.date, updatedDay.date) ? updatedDay : day;
+      }).toList();
+    } else {
+      // Add new day plan
+      updatedPlans = [...dailyPlans, updatedDay]..sort((a, b) => a.date.compareTo(b.date));
+    }
 
     return copyWith(
       dailyPlans: updatedPlans,
@@ -108,7 +121,7 @@ class WeeklyMealPlan {
   }
 
   // Create a new weekly meal plan for a given week start date
-  static WeeklyMealPlan createForWeek(DateTime weekStart, {String? householdId}) {
+  static WeeklyMealPlan createForWeek(DateTime weekStart, {String? householdId, String? userId}) {
     // Ensure weekStart is a Monday
     final monday = weekStart.subtract(Duration(days: weekStart.weekday - 1));
     final weekId = _generateWeekId(monday);
@@ -123,14 +136,15 @@ class WeeklyMealPlan {
       weekStartDate: monday,
       dailyPlans: dailyPlans,
       householdId: householdId,
+      userId: userId,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
   }
 
   // Create for current week
-  static WeeklyMealPlan createForCurrentWeek({String? householdId}) {
-    return createForWeek(DateTime.now(), householdId: householdId);
+  static WeeklyMealPlan createForCurrentWeek({String? householdId, String? userId}) {
+    return createForWeek(DateTime.now(), householdId: householdId, userId: userId);
   }
 
   static String _generateWeekId(DateTime weekStart) {
@@ -154,7 +168,8 @@ class WeeklyMealPlan {
         other.id == id &&
         other.weekStartDate == weekStartDate &&
         other.dailyPlans.length == dailyPlans.length &&
-        other.householdId == householdId;
+        other.householdId == householdId &&
+        other.userId == userId;
   }
 
   @override
@@ -162,7 +177,48 @@ class WeeklyMealPlan {
     return id.hashCode ^
         weekStartDate.hashCode ^
         dailyPlans.hashCode ^
-        householdId.hashCode;
+        householdId.hashCode ^
+        userId.hashCode;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'weekStartDate': weekStartDate.toIso8601String(),
+      'dailyPlans': dailyPlans.map((plan) => plan.toJson()).toList(),
+      'householdId': householdId,
+      'userId': userId,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+    };
+  }
+
+  factory WeeklyMealPlan.fromJson(Map<String, dynamic> json) {
+    return WeeklyMealPlan(
+      id: json['id'] as String,
+      weekStartDate: _parseDateTime(json['weekStartDate']),
+      dailyPlans: (json['dailyPlans'] as List<dynamic>? ?? [])
+          .map((planJson) => DailyMealPlan.fromJson(planJson as Map<String, dynamic>))
+          .toList(),
+      householdId: json['householdId'] as String?,
+      userId: json['userId'] as String?,
+      createdAt: _parseDateTime(json['createdAt']),
+      updatedAt: _parseDateTime(json['updatedAt']),
+    );
+  }
+
+  /// Helper method to parse DateTime from either String or Timestamp
+  static DateTime _parseDateTime(dynamic value) {
+    if (value == null) throw ArgumentError('DateTime value cannot be null');
+    
+    if (value is String) {
+      return DateTime.parse(value);
+    } else if (value.runtimeType.toString() == 'Timestamp') {
+      // Handle Firebase Timestamp
+      return (value as dynamic).toDate();
+    } else {
+      throw ArgumentError('Expected String or Timestamp, got ${value.runtimeType}');
+    }
   }
 
   @override

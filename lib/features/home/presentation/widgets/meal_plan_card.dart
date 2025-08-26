@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../domain/models/meal_plan_item.dart';
@@ -14,10 +13,13 @@ class MealPlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push('/recipe/${mealPlan.id}');
+        // Only navigate if there's a valid recipeId
+        if (mealPlan.recipeId != null) {
+          context.push('/recipe/${mealPlan.recipeId}');
+        }
       },
       child: Container(
-        width: 170,
+        width: 160,
         margin: const EdgeInsets.only(right: 12, bottom: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
@@ -47,7 +49,7 @@ class MealPlanCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                     child: SizedBox(
                       width: double.infinity,
-                      height: 140,
+                      height: 120,
                       child: OptimizedCachedImage(
                         imageUrl: mealPlan.imageUrl,
                         fit: BoxFit.cover,
@@ -78,7 +80,7 @@ class MealPlanCard extends StatelessWidget {
                           color: AppColors.textPrimary,
                           height: 1.2,
                         ),
-                        maxLines: 2,
+                        maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],

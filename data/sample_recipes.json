@@ -1,0 +1,211 @@
+[
+  {
+    "id": "sri_chicken_curry_001",
+    "title": "Traditional Sri Lankan Chicken Curry",
+    "time": "1 hr 25 min",
+    "imageUrl": "https://www.hungrylankan.com/wp-content/uploads/2021/01/20210109_142907_compress1-768x1024.jpg.webp",
+    "calories": 320,
+    "macros": {
+      "protein": 28.5,
+      "carbs": 8.2,
+      "fats": 18.3,
+      "fiber": 2.1
+    },
+    "description": "This classic Sri Lankan Chicken Curry is the most popular meat curry in all Sri Lanka. The star of all the Lankan parties and gatherings. And the base of many other Sri Lankan dishes.",
+    "defaultServings": 4,
+    "ingredientSections": [
+      {
+        "id": "1",
+        "title": "To Marinate Chicken",
+        "ingredients": [
+          {
+            "id": "1",
+            "metricQuantity": 5,
+            "metricUnit": "grams",
+            "name": "Turmeric powder",
+            "quantity": 1,
+            "unit": "teaspoons"
+          },
+          {
+            "id": "2",
+            "metricQuantity": 4,
+            "metricUnit": "grams",
+            "name": "Crushed black pepper",
+            "quantity": 2,
+            "unit": "teaspoons"
+          },
+          {
+            "id": "3",
+            "metricQuantity": 60,
+            "metricUnit": "milliliters",
+            "name": "Tamarind paste",
+            "quantity": 4,
+            "unit": "tablespoons"
+          },
+          {
+            "id": "4",
+            "metricQuantity": 20,
+            "metricUnit": "grams",
+            "name": "Salt",
+            "quantity": 4,
+            "unit": "teaspoons"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "title": "Other Ingredients",
+        "ingredients": [
+          {
+            "id": "1",
+            "metricQuantity": 2.7,
+            "metricUnit": "kilograms",
+            "name": "Chicken thighs, bone-in, skin removed",
+            "quantity": 16,
+            "unit": null
+          },
+          {
+            "id": "2",
+            "metricQuantity": 320,
+            "metricUnit": "grams",
+            "name": "Chopped onion",
+            "quantity": 1.33,
+            "unit": "cups"
+          },
+          {
+            "id": "3",
+            "metricQuantity": 260,
+            "metricUnit": "grams",
+            "name": "Chopped tomato",
+            "quantity": 1.33,
+            "unit": "cups"
+          },
+          {
+            "id": "4",
+            "metricQuantity": 80,
+            "metricUnit": "grams",
+            "name": "garlic cloves (large)",
+            "quantity": 16,
+            "unit": null
+          },
+          {
+            "id": "5",
+            "metricQuantity": 40,
+            "metricUnit": "grams",
+            "name": "Ginger (sliced)",
+            "quantity": 10,
+            "unit": "centimeters"
+          },
+          {
+            "id": "6",
+            "metricQuantity": null,
+            "metricUnit": null,
+            "name": "Sprigs curry leaves",
+            "quantity": 4,
+            "unit": null
+          },
+          {
+            "id": "7",
+            "metricQuantity": null,
+            "metricUnit": null,
+            "name": "Pandan leaves, broken into pieces",
+            "quantity": 4,
+            "unit": null
+          },
+          {
+            "id": "8",
+            "metricQuantity": null,
+            "metricUnit": null,
+            "name": "Cardamom pods",
+            "quantity": 12,
+            "unit": null
+          },
+          {
+            "id": "9",
+            "metricQuantity": null,
+            "metricUnit": null,
+            "name": "Cloves",
+            "quantity": 12,
+            "unit": null
+          },
+          {
+            "id": "10",
+            "metricQuantity": null,
+            "metricUnit": null,
+            "name": "Goraka",
+            "quantity": 4,
+            "unit": "pieces"
+          },
+          {
+            "id": "11",
+            "metricQuantity": 30,
+            "metricUnit": "grams",
+            "name": "Roasted curry powder",
+            "quantity": 4,
+            "unit": "tablespoons"
+          },
+          {
+            "id": "12",
+            "metricQuantity": 16,
+            "metricUnit": "grams",
+            "name": "Roasted curry powder",
+            "quantity": 8,
+            "unit": "teaspoons"
+          },
+          {
+            "id": "13",
+            "metricQuantity": 4,
+            "metricUnit": "grams",
+            "name": "Crushed black pepper (extra)",
+            "quantity": 2,
+            "unit": "teaspoons"
+          },
+          {
+            "id": "14",
+            "metricQuantity": 60,
+            "metricUnit": "milliliters",
+            "name": "Coconut oil",
+            "quantity": 4,
+            "unit": "tablespoons"
+          },
+          {
+            "id": "15",
+            "metricQuantity": 960,
+            "metricUnit": "milliliters",
+            "name": "Water (or substitute with thin coconut milk for a creamier curry)",
+            "quantity": 4,
+            "unit": "cups"
+          },
+          {
+            "id": "16",
+            "metricQuantity": null,
+            "metricUnit": null,
+            "name": "Salt",
+            "quantity": null,
+            "unit": "toTaste"
+          }
+        ]
+      }
+    ],
+    "instructionSections": [
+      {
+        "id": "1",
+        "title": null,
+        "steps": [
+          "Marinate chicken with all the marinating ingredients given in the list overnight or at least half an hour.",
+          "In a mortar and pestle, grind cardamom and cloves. You can remove the shells.",
+          "Then add ginger and garlic into the mortar and pestle and crush them to a coarse paste.",
+          "Heat a pan. (clay pots are ideal, if not use any heavy bottom pan) Add the ginger-garlic paste you made in the previous step. Also, add curry leaves and pandan leaves.",
+          "When the mixture starts to turn brown add roasted curry powder and roasted chili powder. Mix and toast well in the oil for about 30 seconds. Do not let the spices burn.",
+          "Add the piece of goraka (Garcinia cambogia) onions and tomatoes. Mix well with the spices. Lower the heat. ",
+          "Cover, and cook until onions start to sweat and tomatoes become mushy. Make sure to mix in between to distribute even heating and avoid the bottom from burning.",
+          "Then add your chicken and mix really well. Cook for about a minute while continuously stirring.",
+          "Add a cup of water (you can substitute it with thin coconut milk for a creamier curry). Cover and simmer for 30mins on low heat.",
+          "In 30 mins, adjust salt to your taste and also add about 1/2tsp of black pepper. Mix, cover back and simmer for another 15mins."
+        ]
+      }
+    ],
+    "tags": ["sri lankan", "curry", "spicy", "traditional"],
+    "source": "https://www.hungrylankan.com/recipes/sri-lankan-chicken-curry/"
+  }
+]

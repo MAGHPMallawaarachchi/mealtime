@@ -1,62 +1,121 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../home/data/dummy_meal_plan_data.dart';
-import '../../../explore/data/dummy_explore_data.dart';
 import '../../../auth/presentation/widgets/primary_button.dart';
 import '../../domain/models/recipe.dart';
+import '../../domain/usecases/get_recipe_by_id_usecase.dart';
+import '../../data/repositories/recipes_repository_impl.dart';
+import '../../../meal_planner/domain/models/meal_planner_return_context.dart';
+import '../../../favorites/presentation/providers/favorites_providers.dart';
 
 enum RecipeTab { ingredients, instructions }
 
-class RecipeDetailScreen extends StatefulWidget {
+class RecipeDetailScreen extends ConsumerStatefulWidget {
   final String recipeId;
+  final MealPlannerReturnContext? returnContext;
 
-  const RecipeDetailScreen({super.key, required this.recipeId});
+  const RecipeDetailScreen({
+    super.key, 
+    required this.recipeId,
+    this.returnContext,
+  });
 
   @override
-  State<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
+  ConsumerState<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
 }
 
-class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
-  bool isFavorited = false;
+class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
   int currentServings = 4;
   UnitSystem selectedUnitSystem = UnitSystem.cups;
   Set<String> checkedIngredients = {};
   RecipeTab selectedTab = RecipeTab.ingredients;
   bool isDescriptionExpanded = false;
+  Recipe? _recipe;
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  // Dependencies
+  late final RecipesRepositoryImpl _recipesRepository;
+  late final GetRecipeByIdUseCase _getRecipeByIdUseCase;
 
   @override
   void initState() {
     super.initState();
-    final recipe = _getRecipeById(widget.recipeId);
-    if (recipe != null) {
-      currentServings = recipe.defaultServings;
+    _initializeDependencies();
+    _loadRecipe();
+    _loadFavorites();
+  }
+
+  void _loadFavorites() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(favoritesProvider.notifier).loadUserFavorites();
+    });
+  }
+
+  void _initializeDependencies() {
+    _recipesRepository = RecipesRepositoryImpl();
+    _getRecipeByIdUseCase = GetRecipeByIdUseCase(_recipesRepository);
+  }
+
+  Future<void> _loadRecipe() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+
+      final recipe = await _getRecipeByIdUseCase.execute(widget.recipeId);
+
+      if (mounted) {
+        setState(() {
+          _recipe = recipe;
+          _isLoading = false;
+          if (recipe != null) {
+            currentServings = recipe.defaultServings;
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.toString();
+        });
+      }
     }
   }
 
-  Recipe? _getRecipeById(String recipeId) {
-    // First try to get recipe from meal plan data
-    Recipe? recipe = DummyMealPlanData.getRecipeById(recipeId);
-    if (recipe != null) {
-      return recipe;
-    }
-    
-    // If not found, try to get from explore data
-    final allExploreRecipes = DummyExploreData.getAllRecipes();
-    try {
-      return allExploreRecipes.firstWhere((recipe) => recipe.id == recipeId);
-    } catch (e) {
-      return null;
+  Future<void> _refreshRecipe() async {
+    await _loadRecipe();
+  }
+
+  void _navigateBack() {
+    if (widget.returnContext != null) {
+      // Navigate back to meal planner with context preservation
+      final context = widget.returnContext!;
+      final queryParams = context.toQueryParameters();
+      final uri = Uri(
+        path: '/meal-planner',
+        queryParameters: queryParams,
+      );
+      this.context.go(uri.toString());
+    } else {
+      // Default back navigation
+      this.context.pop();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final Recipe? recipe = _getRecipeById(widget.recipeId);
+    return RefreshIndicator(onRefresh: _refreshRecipe, child: _buildContent());
+  }
 
-    if (recipe == null) {
+  Widget _buildContent() {
+    if (_isLoading) {
       return Scaffold(
+        backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: AppColors.background,
           elevation: 0,
@@ -68,19 +127,93 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
             onPressed: () => context.pop(),
           ),
         ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_errorMessage != null) {
+      return _buildErrorState();
+    }
+
+    if (_recipe == null) {
+      return _buildNotFoundState();
+    }
+
+    return _buildRecipeContent(_recipe!);
+  }
+
+  Widget _buildNotFoundState() {
+    return Scaffold(
+      appBar: AppBar(
         backgroundColor: AppColors.background,
-        body: Center(
+        elevation: 0,
+        leading: IconButton(
+          icon: PhosphorIcon(
+            PhosphorIcons.arrowLeft(),
+            color: AppColors.textPrimary,
+          ),
+          onPressed: () => context.pop(),
+        ),
+      ),
+      backgroundColor: AppColors.background,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            PhosphorIcon(
+              PhosphorIcons.cookingPot(),
+              size: 64,
+              color: AppColors.textSecondary,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Recipe not found',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'The recipe you are looking for does not exist.',
+              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        leading: IconButton(
+          icon: PhosphorIcon(
+            PhosphorIcons.arrowLeft(),
+            color: AppColors.textPrimary,
+          ),
+          onPressed: () => context.pop(),
+        ),
+      ),
+      backgroundColor: AppColors.background,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               PhosphorIcon(
-                PhosphorIcons.cookingPot(),
+                PhosphorIcons.warning(),
                 size: 64,
                 color: AppColors.textSecondary,
               ),
               const SizedBox(height: 16),
               const Text(
-                'Recipe not found',
+                'Something went wrong',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -88,17 +221,31 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'The recipe you are looking for does not exist.',
-                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              Text(
+                _errorMessage ?? 'Unknown error occurred',
                 textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: _refreshRecipe,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.white,
+                ),
+                child: const Text('Try Again'),
               ),
             ],
           ),
         ),
-      );
-    }
+      ),
+    );
+  }
 
+  Widget _buildRecipeContent(Recipe recipe) {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: CustomScrollView(
@@ -120,7 +267,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   PhosphorIcons.arrowLeft(),
                   color: AppColors.textPrimary,
                 ),
-                onPressed: () => context.pop(),
+                onPressed: () => _navigateBack(),
               ),
             ),
             actions: [
@@ -132,21 +279,25 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   color: Colors.white.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(40),
                 ),
-                child: IconButton(
-                  icon: PhosphorIcon(
-                    size: 22,
-                    isFavorited
-                        ? PhosphorIconsFill.heart
-                        : PhosphorIcons.heart(),
-                    color: isFavorited
-                        ? AppColors.primary
-                        : AppColors.textPrimary,
-                    fill: isFavorited ? 1.0 : 0.0,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isFavorited = !isFavorited;
-                    });
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final isFavorited = ref.watch(isFavoriteProvider(widget.recipeId));
+                    
+                    return IconButton(
+                      icon: PhosphorIcon(
+                        size: 22,
+                        isFavorited
+                            ? PhosphorIconsFill.heart
+                            : PhosphorIcons.heart(),
+                        color: isFavorited
+                            ? AppColors.primary
+                            : AppColors.textPrimary,
+                        fill: isFavorited ? 1.0 : 0.0,
+                      ),
+                      onPressed: () {
+                        ref.read(favoritesProvider.notifier).toggleFavorite(widget.recipeId);
+                      },
+                    );
                   },
                 ),
               ),
@@ -195,15 +346,17 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        recipe.title,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                      Expanded(
+                        child: Text(
+                          recipe.title,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(width: 16),
                       Row(
                         children: [
                           PhosphorIcon(
@@ -599,69 +752,120 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     );
   }
 
+  Widget _buildIngredientItem({
+    required String ingredientId,
+    required String displayText,
+  }) {
+    final isChecked = checkedIngredients.contains(ingredientId);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                if (isChecked) {
+                  checkedIngredients.remove(ingredientId);
+                } else {
+                  checkedIngredients.add(ingredientId);
+                }
+              });
+            },
+            child: Container(
+              width: 20,
+              height: 20,
+              margin: const EdgeInsets.only(right: 12, top: 2),
+              decoration: BoxDecoration(
+                color: isChecked ? AppColors.primary : Colors.transparent,
+                border: Border.all(
+                  color: isChecked ? AppColors.primary : AppColors.border,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: isChecked
+                  ? const Icon(Icons.check, color: Colors.white, size: 12)
+                  : null,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              displayText,
+              style: TextStyle(
+                fontSize: 14,
+                color: isChecked
+                    ? AppColors.textSecondary
+                    : AppColors.textPrimary,
+                height: 1.4,
+                decoration: isChecked
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildIngredients(Recipe recipe) {
-    // Handle both new and legacy ingredients
     List<Widget> ingredientWidgets = [];
 
-    if (recipe.ingredients.isNotEmpty) {
-      // New format with RecipeIngredient objects
+    // Handle sectioned ingredients (preferred format)
+    if (recipe.ingredientSections.isNotEmpty) {
+      for (final section in recipe.ingredientSections) {
+        // Add section header
+        ingredientWidgets.add(
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                section.title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        // Add section ingredients
+        for (final ingredient in section.ingredients) {
+          final scaledIngredient = ingredient.scaledForServings(
+            currentServings,
+            recipe.defaultServings,
+          );
+
+          ingredientWidgets.add(
+            _buildIngredientItem(
+              ingredientId: ingredient.id,
+              displayText: scaledIngredient.getDisplayText(selectedUnitSystem),
+            ),
+          );
+        }
+
+        // Add spacing between sections
+        if (section != recipe.ingredientSections.last) {
+          ingredientWidgets.add(const SizedBox(height: 24));
+        }
+      }
+    } else if (recipe.ingredients.isNotEmpty) {
+      // Flat ingredients format (new format with RecipeIngredient objects)
       for (final ingredient in recipe.ingredients) {
         final scaledIngredient = ingredient.scaledForServings(
           currentServings,
           recipe.defaultServings,
         );
-        final isChecked = checkedIngredients.contains(ingredient.id);
 
         ingredientWidgets.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (isChecked) {
-                        checkedIngredients.remove(ingredient.id);
-                      } else {
-                        checkedIngredients.add(ingredient.id);
-                      }
-                    });
-                  },
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    margin: const EdgeInsets.only(right: 12, top: 2),
-                    decoration: BoxDecoration(
-                      color: isChecked ? AppColors.primary : Colors.transparent,
-                      border: Border.all(
-                        color: isChecked ? AppColors.primary : AppColors.border,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: isChecked
-                        ? const Icon(Icons.check, color: Colors.white, size: 12)
-                        : null,
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    scaledIngredient.getDisplayText(selectedUnitSystem),
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isChecked
-                          ? AppColors.textSecondary
-                          : AppColors.textPrimary,
-                      height: 1.4,
-                      decoration: isChecked
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          _buildIngredientItem(
+            ingredientId: ingredient.id,
+            displayText: scaledIngredient.getDisplayText(selectedUnitSystem),
           ),
         );
       }
@@ -670,58 +874,11 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       for (int i = 0; i < recipe.legacyIngredients.length; i++) {
         final ingredient = recipe.legacyIngredients[i];
         final ingredientId = 'legacy_$i';
-        final isChecked = checkedIngredients.contains(ingredientId);
 
         ingredientWidgets.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (isChecked) {
-                        checkedIngredients.remove(ingredientId);
-                      } else {
-                        checkedIngredients.add(ingredientId);
-                      }
-                    });
-                  },
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    margin: const EdgeInsets.only(right: 12, top: 2),
-                    decoration: BoxDecoration(
-                      color: isChecked ? AppColors.primary : Colors.transparent,
-                      border: Border.all(
-                        color: isChecked ? AppColors.primary : AppColors.border,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: isChecked
-                        ? const Icon(Icons.check, color: Colors.white, size: 12)
-                        : null,
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    ingredient,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isChecked
-                          ? AppColors.textSecondary
-                          : AppColors.textPrimary,
-                      height: 1.4,
-                      decoration: isChecked
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          _buildIngredientItem(
+            ingredientId: ingredientId,
+            displayText: ingredient,
           ),
         );
       }
@@ -969,7 +1126,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       subtitle: Text(time),
       onTap: () {
         Navigator.pop(context);
-        
+
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

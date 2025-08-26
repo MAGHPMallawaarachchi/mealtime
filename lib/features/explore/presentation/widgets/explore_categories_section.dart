@@ -19,16 +19,12 @@ class ExploreCategoriesSection extends StatefulWidget {
 class _ExploreCategoriesSectionState extends State<ExploreCategoriesSection> {
   final List<String> categories = [
     'All',
-    'Sri Lankan',
-    'Leftover Magic',
-    'Quick Meals',
-    'Vegetarian',
-    'Breakfast',
-    'Lunch',
-    'Dinner',
-    'Desserts',
-    'Snacks',
-    'Beverages',
+    'beverages',
+    'breakfast',
+    'lunch',
+    'dinner',
+    'snacks',
+    'desserts',
   ];
 
   @override
@@ -48,35 +44,51 @@ class _ExploreCategoriesSectionState extends State<ExploreCategoriesSection> {
           ),
         ),
         const SizedBox(height: 16),
-        SizedBox(
-          height: 40,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.only(left: 12),
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              final category = categories[index];
-              final isSelected = widget.selectedCategory == category ||
-                  (widget.selectedCategory == null && category == 'All');
-
-              return Padding(
-                padding: EdgeInsets.only(
-                  right: index == categories.length - 1 ? 12 : 8,
-                ),
-                child: _CategoryButton(
-                  category: category,
-                  isSelected: isSelected,
-                  onTap: () {
-                    final selectedCategory = category == 'All' ? null : category;
-                    widget.onCategorySelected?.call(selectedCategory);
-                  },
-                ),
-              );
-            },
-          ),
-        ),
+        _buildCategoriesList(),
       ],
     );
+  }
+
+  Widget _buildCategoriesList() {
+    return SizedBox(
+      height: 40,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.only(left: 12),
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          final category = categories[index];
+          final isSelected = widget.selectedCategory == category ||
+              (widget.selectedCategory == null && category == 'All');
+
+          return Padding(
+            padding: EdgeInsets.only(
+              right: index == categories.length - 1 ? 12 : 8,
+            ),
+            child: _CategoryButton(
+              category: _formatCategoryName(category),
+              isSelected: isSelected,
+              onTap: () {
+                final selectedCategory = category == 'All' ? null : category;
+                widget.onCategorySelected?.call(selectedCategory);
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  String _formatCategoryName(String category) {
+    if (category == 'All') return category;
+    
+    // Capitalize first letter and handle multiple words
+    return category
+        .split(' ')
+        .map((word) => word.isEmpty 
+            ? word 
+            : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}')
+        .join(' ');
   }
 }
 

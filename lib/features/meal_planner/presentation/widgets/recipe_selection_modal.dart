@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../recipes/domain/models/recipe.dart';
-import '../../../explore/data/dummy_explore_data.dart';
+import '../../../recipes/domain/usecases/get_recipes_usecase.dart';
+import '../../../recipes/domain/usecases/search_recipes_usecase.dart';
+import '../../../recipes/data/repositories/recipes_repository_impl.dart';
 
 class RecipeSelectionModal extends StatefulWidget {
   final Function(Recipe) onRecipeSelected;
@@ -26,49 +29,87 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
   List<Recipe> _allRecipes = [];
   List<Recipe> _filteredRecipes = [];
   bool _isLoading = true;
+  String? _errorMessage;
+  Timer? _debounceTimer;
+
+  // Dependencies
+  late final RecipesRepositoryImpl _recipesRepository;
+  late final GetRecipesUseCase _getRecipesUseCase;
+  late final SearchRecipesUseCase _searchRecipesUseCase;
 
   @override
   void initState() {
     super.initState();
+    _initializeDependencies();
     _loadRecipes();
     _searchController.addListener(_filterRecipes);
+  }
+
+  void _initializeDependencies() {
+    _recipesRepository = RecipesRepositoryImpl();
+    _getRecipesUseCase = GetRecipesUseCase(_recipesRepository);
+    _searchRecipesUseCase = SearchRecipesUseCase(_recipesRepository);
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _debounceTimer?.cancel();
     super.dispose();
   }
 
-  void _loadRecipes() {
+  Future<void> _loadRecipes() async {
     setState(() {
       _isLoading = true;
+      _errorMessage = null;
     });
 
-    // Simulate loading delay for better UX
-    Future.delayed(const Duration(milliseconds: 300), () {
+    try {
+      final recipes = await _getRecipesUseCase.execute();
       setState(() {
-        _allRecipes = DummyExploreData.getAllRecipes();
-        _filteredRecipes = _allRecipes;
+        _allRecipes = recipes;
+        _filteredRecipes = recipes;
         _isLoading = false;
       });
-    });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Failed to load recipes. Please try again.';
+        _allRecipes = [];
+        _filteredRecipes = [];
+      });
+    }
   }
 
   void _filterRecipes() {
-    final query = _searchController.text.toLowerCase().trim();
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () async {
+      final query = _searchController.text.trim();
 
-    setState(() {
-      if (query.isEmpty) {
-        _filteredRecipes = _allRecipes;
-      } else {
-        _filteredRecipes = _allRecipes.where((recipe) {
-          return recipe.title.toLowerCase().contains(query) ||
-              recipe.description?.toLowerCase().contains(query) == true ||
-              recipe.ingredientsAsList.any(
-                (ingredient) => ingredient.toLowerCase().contains(query),
-              );
-        }).toList();
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+
+      try {
+        if (query.isEmpty) {
+          setState(() {
+            _filteredRecipes = _allRecipes;
+            _isLoading = false;
+          });
+        } else {
+          final searchResults = await _searchRecipesUseCase.execute(query);
+          setState(() {
+            _filteredRecipes = searchResults;
+            _isLoading = false;
+          });
+        }
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Search failed. Please try again.';
+          _filteredRecipes = [];
+        });
       }
     });
   }
@@ -86,7 +127,11 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
           _buildHeader(),
           _buildSearchBar(),
           Expanded(
-            child: _isLoading ? _buildLoadingState() : _buildRecipeList(),
+            child: _isLoading
+                ? _buildLoadingState()
+                : _errorMessage != null
+                ? _buildErrorState()
+                : _buildRecipeList(),
           ),
         ],
       ),
@@ -228,6 +273,49 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
     );
   }
 
+  Widget _buildErrorState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          PhosphorIcon(
+            PhosphorIcons.warningCircle(),
+            size: 64,
+            color: Colors.red.withOpacity(0.5),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Something went wrong',
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _errorMessage ?? 'Please try again',
+            style: const TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          OutlinedButton.icon(
+            onPressed: _loadRecipes,
+            icon: PhosphorIcon(PhosphorIcons.arrowClockwise()),
+            label: const Text('Retry'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.primary,
+              side: const BorderSide(color: AppColors.primary),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildRecipeList() {
     if (_filteredRecipes.isEmpty) {
       return _buildEmptyState();
@@ -237,7 +325,7 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 0.95,
+        childAspectRatio: 0.9,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
       ),
@@ -328,7 +416,7 @@ class _RecipeCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 3,
+              flex: 4,
               child: Padding(
                 padding: const EdgeInsets.only(
                   top: 12,
@@ -350,7 +438,7 @@ class _RecipeCard extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                 child: Column(

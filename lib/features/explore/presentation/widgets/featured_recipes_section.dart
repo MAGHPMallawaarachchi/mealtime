@@ -1,11 +1,13 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mealtime/features/recipes/domain/models/recipe.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../data/dummy_explore_data.dart';
+import '../../../recipes/domain/usecases/get_recipes_usecase.dart';
+import '../../../recipes/data/repositories/recipes_repository_impl.dart';
 
 class FeaturedRecipesSection extends StatefulWidget {
   const FeaturedRecipesSection({super.key});
@@ -14,22 +16,81 @@ class FeaturedRecipesSection extends StatefulWidget {
   State<FeaturedRecipesSection> createState() => _FeaturedRecipesSectionState();
 }
 
-class _FeaturedRecipesSectionState extends State<FeaturedRecipesSection> {
+abstract class FeaturedRecipesSectionController {
+  Future<void> refreshFeaturedRecipes();
+}
+
+class _FeaturedRecipesSectionState extends State<FeaturedRecipesSection> implements FeaturedRecipesSectionController {
   late PageController _pageController;
   late Timer _autoPlayTimer;
   int _currentPageIndex = 0;
-  final List<Recipe> _featuredRecipes = DummyExploreData.getFeaturedRecipes();
+  List<Recipe> _featuredRecipes = [];
+  bool _isLoading = true;
+  bool _hasError = false;
+
+  // Dependencies
+  late final RecipesRepositoryImpl _recipesRepository;
+  late final GetRecipesUseCase _getRecipesUseCase;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
-    _startAutoPlay();
+    _initializeDependencies();
+    _loadFeaturedRecipes();
+  }
+
+  void _initializeDependencies() {
+    _recipesRepository = RecipesRepositoryImpl();
+    _getRecipesUseCase = GetRecipesUseCase(_recipesRepository);
+  }
+
+  Future<void> _loadFeaturedRecipes({bool forceRefresh = false}) async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _hasError = false;
+      });
+
+      if (forceRefresh) {
+        // Force refresh from database to get latest data
+        await _recipesRepository.refreshRecipes();
+      }
+
+      // Get all recipes and take the first 5 as featured
+      // In the future, this could be replaced with a featured flag or algorithm
+      final allRecipes = await _getRecipesUseCase.execute();
+      
+      if (mounted) {
+        setState(() {
+          _featuredRecipes = allRecipes.take(5).toList();
+          _isLoading = false;
+        });
+
+        if (_featuredRecipes.isNotEmpty) {
+          _startAutoPlay();
+        }
+      }
+    } catch (e) {
+      debugPrint('FeaturedRecipesSection: Error loading featured recipes: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+        });
+      }
+    }
+  }
+
+  Future<void> refreshFeaturedRecipes() async {
+    await _loadFeaturedRecipes(forceRefresh: true);
   }
 
   @override
   void dispose() {
-    _autoPlayTimer.cancel();
+    if (_featuredRecipes.isNotEmpty) {
+      _autoPlayTimer.cancel();
+    }
     _pageController.dispose();
     super.dispose();
   }
@@ -60,8 +121,12 @@ class _FeaturedRecipesSectionState extends State<FeaturedRecipesSection> {
 
   @override
   Widget build(BuildContext context) {
-    if (_featuredRecipes.isEmpty) {
-      return const SizedBox.shrink();
+    if (_isLoading) {
+      return _buildLoadingState();
+    }
+
+    if (_hasError || _featuredRecipes.isEmpty) {
+      return const SizedBox.shrink(); // Hide section if error or no featured recipes
     }
 
     return Column(
@@ -83,6 +148,20 @@ class _FeaturedRecipesSectionState extends State<FeaturedRecipesSection> {
         const SizedBox(height: 16),
         _buildIndicators(),
       ],
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return Container(
+      height: 280,
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppColors.textSecondary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: const Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 

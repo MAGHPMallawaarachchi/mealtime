@@ -1,75 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealtime/features/recipes/domain/models/recipe.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
+import '../../../favorites/presentation/providers/favorites_providers.dart';
 
-class ExploreRecipeCard extends StatefulWidget {
+class ExploreRecipeCard extends ConsumerWidget {
   final Recipe recipe;
-  final bool isFavorite;
-  final Function(Recipe)? onFavoriteToggle;
   final Function(Recipe)? onAddToMealPlan;
 
   const ExploreRecipeCard({
     super.key,
     required this.recipe,
-    this.isFavorite = false,
-    this.onFavoriteToggle,
     this.onAddToMealPlan,
   });
 
   @override
-  State<ExploreRecipeCard> createState() => _ExploreRecipeCardState();
-}
-
-class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
-  bool _isFavorite = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _isFavorite = widget.isFavorite;
-  }
-
-  void _toggleFavorite() {
-    setState(() {
-      _isFavorite = !_isFavorite;
-    });
-    widget.onFavoriteToggle?.call(widget.recipe);
-
-    // Show feedback to user
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          _isFavorite ? 'Added to favorites!' : 'Removed from favorites',
-        ),
-        duration: const Duration(seconds: 2),
-        backgroundColor: _isFavorite
-            ? AppColors.success
-            : AppColors.textSecondary,
-      ),
-    );
-  }
-
-  void _addToMealPlan() {
-    widget.onAddToMealPlan?.call(widget.recipe);
-
-    // Show feedback to user
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Recipe added to meal plan!'),
-        duration: Duration(seconds: 2),
-        backgroundColor: AppColors.success,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isFavorite = ref.watch(isFavoriteProvider(recipe.id));
     return GestureDetector(
       onTap: () {
-        context.push('/recipe/${widget.recipe.id}');
+        context.push('/recipe/${recipe.id}');
       },
       child: Container(
         decoration: BoxDecoration(
@@ -101,7 +54,7 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
                       height: 140,
                       width: double.infinity,
                       child: OptimizedCachedImage(
-                        imageUrl: widget.recipe.imageUrl,
+                        imageUrl: recipe.imageUrl,
                         fit: BoxFit.cover,
                         preload: true,
                       ),
@@ -113,7 +66,9 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
                   top: 16,
                   right: 16,
                   child: GestureDetector(
-                    onTap: _toggleFavorite,
+                    onTap: () {
+                      ref.read(favoritesProvider.notifier).toggleFavorite(recipe.id);
+                    },
                     child: Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
@@ -128,11 +83,11 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
                         ],
                       ),
                       child: PhosphorIcon(
-                        _isFavorite
+                        isFavorite
                             ? PhosphorIconsFill.heart
                             : PhosphorIcons.heart(),
                         size: 18,
-                        color: _isFavorite
+                        color: isFavorite
                             ? AppColors.primary
                             : AppColors.textSecondary,
                       ),
@@ -156,7 +111,7 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          widget.recipe.time,
+                          recipe.time,
                           style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary,
@@ -171,7 +126,7 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          '${widget.recipe.calories} cal',
+                          '${recipe.calories} cal',
                           style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary,
@@ -183,7 +138,7 @@ class _ExploreRecipeCardState extends State<ExploreRecipeCard> {
                     const SizedBox(height: 6),
                     Expanded(
                       child: Text(
-                        widget.recipe.title,
+                        recipe.title,
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,

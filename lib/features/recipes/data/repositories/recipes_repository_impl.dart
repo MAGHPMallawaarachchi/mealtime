@@ -1,0 +1,204 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
+import '../../domain/models/recipe.dart';
+import '../../domain/repositories/recipes_repository.dart';
+import '../datasources/recipes_datasource.dart';
+import '../datasources/recipes_firebase_datasource.dart';
+import '../datasources/recipes_local_datasource.dart';
+
+class RecipesRepositoryImpl implements RecipesRepository {
+  final RecipesDataSource _remoteDataSource;
+  final RecipesLocalDataSource _localDataSource;
+
+  RecipesRepositoryImpl({
+    RecipesDataSource? remoteDataSource,
+    RecipesLocalDataSource? localDataSource,
+  })  : _remoteDataSource = remoteDataSource ?? RecipesFirebaseDataSource(),
+        _localDataSource = localDataSource ?? RecipesLocalDataSource();
+
+  @override
+  Future<List<Recipe>> getRecipes({bool forceRefresh = false}) async {
+    try {
+      if (!forceRefresh && await _localDataSource.isCacheValid()) {
+        debugPrint('RecipesRepository: Loading from cache');
+        final cachedRecipes = await _localDataSource.getRecipes();
+        if (cachedRecipes.isNotEmpty) {
+          return cachedRecipes;
+        }
+      }
+
+      debugPrint('RecipesRepository: Fetching from remote');
+      final remoteRecipes = await _remoteDataSource.getRecipes();
+      
+      await _localDataSource.cacheRecipes(remoteRecipes);
+      
+      return remoteRecipes;
+    } catch (e) {
+      debugPrint('RecipesRepository: Remote fetch failed, trying cache: $e');
+      
+      try {
+        final cachedRecipes = await _localDataSource.getRecipes();
+        if (cachedRecipes.isNotEmpty) {
+          debugPrint('RecipesRepository: Returning cached data due to remote failure');
+          return cachedRecipes;
+        }
+      } catch (cacheError) {
+        debugPrint('RecipesRepository: Cache also failed: $cacheError');
+      }
+      
+      throw RecipesRepositoryException(
+        'Failed to fetch recipes: ${e.toString()}',
+      );
+    }
+  }
+
+  @override
+  Stream<List<Recipe>> getRecipesStream() {
+    try {
+      return _remoteDataSource.getRecipesStream().handleError((error) {
+        debugPrint('RecipesRepository: Stream error: $error');
+        throw RecipesRepositoryException(
+          'Failed to stream recipes: ${error.toString()}',
+        );
+      });
+    } catch (e) {
+      throw RecipesRepositoryException(
+        'Failed to create recipes stream: ${e.toString()}',
+      );
+    }
+  }
+
+  @override
+  Future<Recipe?> getRecipe(String id) async {
+    try {
+      final recipe = await _remoteDataSource.getRecipe(id);
+      if (recipe != null) {
+        return recipe;
+      }
+
+      return await _localDataSource.getRecipe(id);
+    } catch (e) {
+      debugPrint('RecipesRepository: Failed to get recipe by id: $e');
+      
+      try {
+        return await _localDataSource.getRecipe(id);
+      } catch (cacheError) {
+        debugPrint('RecipesRepository: Cache lookup also failed: $cacheError');
+      }
+      
+      throw RecipesRepositoryException(
+        'Failed to fetch recipe with id $id: ${e.toString()}',
+      );
+    }
+  }
+
+  @override
+  Future<List<Recipe>> getRecipesByTags(List<String> tags, {bool forceRefresh = false}) async {
+    try {
+      final allRecipes = await getRecipes(forceRefresh: forceRefresh);
+      
+      if (tags.isEmpty) {
+        return allRecipes;
+      }
+
+      return allRecipes.where((recipe) {
+        return tags.any((tag) => recipe.tags.contains(tag));
+      }).toList();
+    } catch (e) {
+      throw RecipesRepositoryException(
+        'Failed to get recipes by tags: ${e.toString()}',
+      );
+    }
+  }
+
+  @override
+  Future<List<Recipe>> searchRecipes(String query, {bool forceRefresh = false}) async {
+    try {
+      final allRecipes = await getRecipes(forceRefresh: forceRefresh);
+      
+      if (query.trim().isEmpty) {
+        return allRecipes;
+      }
+
+      final lowerQuery = query.toLowerCase().trim();
+
+      return allRecipes.where((recipe) {
+        // Search in title
+        if (recipe.title.toLowerCase().contains(lowerQuery)) {
+          return true;
+        }
+
+        // Search in description
+        if (recipe.description?.toLowerCase().contains(lowerQuery) == true) {
+          return true;
+        }
+
+        // Search in tags
+        if (recipe.tags.any((tag) => tag.toLowerCase().contains(lowerQuery))) {
+          return true;
+        }
+
+        // Search in ingredients
+        final hasMatchingIngredient = recipe.ingredients.any((ingredient) {
+          return ingredient.name.toLowerCase().contains(lowerQuery);
+        });
+
+        if (hasMatchingIngredient) {
+          return true;
+        }
+
+        // Search in legacy ingredients for backward compatibility
+        if (recipe.legacyIngredients.any((ingredient) => 
+            ingredient.toLowerCase().contains(lowerQuery))) {
+          return true;
+        }
+
+        return false;
+      }).toList();
+    } catch (e) {
+      throw RecipesRepositoryException(
+        'Failed to search recipes: ${e.toString()}',
+      );
+    }
+  }
+
+  @override
+  Future<List<String>> getAvailableCategories() async {
+    try {
+      final allRecipes = await getRecipes();
+      final Set<String> categories = {};
+
+      for (final recipe in allRecipes) {
+        categories.addAll(recipe.tags);
+      }
+
+      final sortedCategories = categories.toList()..sort();
+      return sortedCategories;
+    } catch (e) {
+      throw RecipesRepositoryException(
+        'Failed to get available categories: ${e.toString()}',
+      );
+    }
+  }
+
+  @override
+  Future<void> refreshRecipes() async {
+    try {
+      debugPrint('RecipesRepository: Force refreshing recipes');
+      await getRecipes(forceRefresh: true);
+    } catch (e) {
+      throw RecipesRepositoryException(
+        'Failed to refresh recipes: ${e.toString()}',
+      );
+    }
+  }
+}
+
+class RecipesRepositoryException implements Exception {
+  final String message;
+
+  RecipesRepositoryException(this.message);
+
+  @override
+  String toString() => 'RecipesRepositoryException: $message';
+}

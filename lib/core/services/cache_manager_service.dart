@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import '../../features/recipes/data/datasources/recipes_local_datasource.dart';
+import '../../features/home/data/datasources/seasonal_ingredients_local_datasource.dart';
 
 class CacheManagerService extends WidgetsBindingObserver {
   static final CacheManagerService _instance = CacheManagerService._internal();
@@ -9,8 +11,14 @@ class CacheManagerService extends WidgetsBindingObserver {
 
   bool _isAppInBackground = false;
   
+  // Data source instances for cache management
+  late final RecipesLocalDataSource _recipesLocalDataSource;
+  late final SeasonalIngredientsLocalDataSource _seasonalIngredientsLocalDataSource;
+  
   void initialize() {
     WidgetsBinding.instance.addObserver(this);
+    _recipesLocalDataSource = RecipesLocalDataSource();
+    _seasonalIngredientsLocalDataSource = SeasonalIngredientsLocalDataSource();
   }
 
   void dispose() {
@@ -31,7 +39,7 @@ class CacheManagerService extends WidgetsBindingObserver {
       case AppLifecycleState.detached:
         // App is being removed from background tasks
         if (_isAppInBackground) {
-          clearImageCache();
+          clearAllCaches();
         }
         break;
       case AppLifecycleState.inactive:
@@ -48,6 +56,30 @@ class CacheManagerService extends WidgetsBindingObserver {
       debugPrint('Image cache cleared successfully');
     } catch (e) {
       debugPrint('Error clearing image cache: $e');
+    }
+  }
+
+  Future<void> clearDataCache() async {
+    try {
+      await Future.wait([
+        _recipesLocalDataSource.clearCache(),
+        _seasonalIngredientsLocalDataSource.clearCache(),
+      ]);
+      debugPrint('Data cache cleared successfully');
+    } catch (e) {
+      debugPrint('Error clearing data cache: $e');
+    }
+  }
+
+  Future<void> clearAllCaches() async {
+    try {
+      await Future.wait([
+        clearImageCache(),
+        clearDataCache(),
+      ]);
+      debugPrint('All caches cleared successfully');
+    } catch (e) {
+      debugPrint('Error clearing all caches: $e');
     }
   }
 

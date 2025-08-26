@@ -87,36 +87,15 @@ class DailyMealPlan {
   }
 
   DailyMealPlan removeMealSlot(String mealSlotId) {
-    final meal = meals.where((m) => m.id == mealSlotId).firstOrNull;
-    if (meal != null) {
-      return updateMealSlot(meal.clearMeal());
-    }
-    return this;
+    final updatedMeals = meals.where((m) => m.id != mealSlotId).toList();
+    return copyWith(meals: updatedMeals);
   }
 
-  // Create default meal slots for a day with common meal categories
+  // Create default meal slots for a day (now empty to allow flexible meal planning)
   static DailyMealPlan createDefault(DateTime date) {
-    final dateStr = date.toIso8601String().split('T')[0];
-    
     return DailyMealPlan(
       date: date,
-      meals: [
-        MealSlot.createDefault(
-          id: '${dateStr}_breakfast',
-          category: MealCategory.breakfast,
-          date: date,
-        ),
-        MealSlot.createDefault(
-          id: '${dateStr}_lunch',
-          category: MealCategory.lunch,
-          date: date,
-        ),
-        MealSlot.createDefault(
-          id: '${dateStr}_dinner',
-          category: MealCategory.dinner,
-          date: date,
-        ),
-      ],
+      meals: [], // Start with no predefined meals - users can add their own
     );
   }
   
@@ -145,6 +124,40 @@ class DailyMealPlan {
         meals.hashCode ^
         notes.hashCode ^
         isCompleted.hashCode;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'date': date.toIso8601String(),
+      'meals': meals.map((meal) => meal.toJson()).toList(),
+      'notes': notes,
+      'isCompleted': isCompleted,
+    };
+  }
+
+  factory DailyMealPlan.fromJson(Map<String, dynamic> json) {
+    return DailyMealPlan(
+      date: _parseDateTime(json['date']),
+      meals: (json['meals'] as List<dynamic>? ?? [])
+          .map((mealJson) => MealSlot.fromJson(mealJson as Map<String, dynamic>))
+          .toList(),
+      notes: json['notes'] as String?,
+      isCompleted: json['isCompleted'] as bool? ?? false,
+    );
+  }
+
+  /// Helper method to parse DateTime from either String or Timestamp
+  static DateTime _parseDateTime(dynamic value) {
+    if (value == null) throw ArgumentError('DateTime value cannot be null');
+    
+    if (value is String) {
+      return DateTime.parse(value);
+    } else if (value.runtimeType.toString() == 'Timestamp') {
+      // Handle Firebase Timestamp
+      return (value as dynamic).toDate();
+    } else {
+      throw ArgumentError('Expected String or Timestamp, got ${value.runtimeType}');
+    }
   }
 
   @override

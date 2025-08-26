@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/services/auth_service.dart';
 import '../../domain/models/meal_slot.dart';
 import '../../domain/models/daily_meal_plan.dart';
 import '../../domain/models/weekly_meal_plan.dart';
-import '../../data/dummy_meal_plan_service.dart';
+import '../../domain/usecases/get_weekly_meal_plan_usecase.dart';
+import '../../domain/usecases/save_meal_slot_usecase.dart';
+import '../../domain/usecases/delete_meal_slot_usecase.dart';
+import '../../data/repositories/meal_planner_repository_impl.dart';
+import '../../domain/models/meal_planner_return_context.dart';
 import '../widgets/day_timeline_view.dart';
 import '../widgets/week_navigation_header.dart';
 import '../widgets/meal_detail_expanded_view.dart';
@@ -15,83 +22,197 @@ import '../../../recipes/domain/models/recipe.dart';
 
 class MealPlannerScreen extends StatefulWidget {
   final Function(VoidCallback)? onRegisterAddMealCallback;
+  final MealPlannerReturnContext? returnContext;
 
-  const MealPlannerScreen({super.key, this.onRegisterAddMealCallback});
+  const MealPlannerScreen({
+    super.key, 
+    this.onRegisterAddMealCallback,
+    this.returnContext,
+  });
 
   @override
   State<MealPlannerScreen> createState() => _MealPlannerScreenState();
 }
 
 class _MealPlannerScreenState extends State<MealPlannerScreen> {
-  late PageController _pageController;
   late DateTime currentWeekStart;
-  late WeeklyMealPlan currentWeekPlan;
+  WeeklyMealPlan? currentWeekPlan;
   late DateTime selectedDate;
   late DateTime _todayNormalized; // Cached normalized today reference
-  bool _isUserSwipe = true; // Track if page change is from user swipe or programmatic
-  
-  static const int _initialPage = 1000; // For infinite scroll
+  bool _isLoading = false;
+  String? _errorMessage;
+  int _loadRequestId = 0; // Track loading requests to prevent race conditions
+
+  // Dependencies
+  late final AuthService _authService;
+  late final MealPlannerRepositoryImpl _mealPlannerRepository;
+  late final GetWeeklyMealPlanUseCase _getWeeklyMealPlanUseCase;
+  late final SaveMealSlotUseCase _saveMealSlotUseCase;
+  late final DeleteMealSlotUseCase _deleteMealSlotUseCase;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: _initialPage);
+    _initializeDependencies();
     final today = DateTime.now();
     _todayNormalized = _normalizeDate(today);
-    currentWeekStart = _getWeekStart(_todayNormalized);
-    selectedDate = _todayNormalized;
-    _loadWeekPlan();
     
+    // Initialize state from return context or use defaults
+    if (widget.returnContext != null) {
+      _restoreStateFromContext(widget.returnContext!);
+    } else {
+      // Use default state
+      currentWeekStart = _getWeekStart(_todayNormalized);
+      selectedDate = _todayNormalized;
+    }
+    
+    _loadWeekPlan();
+
     // Register our add meal callback with the parent
     widget.onRegisterAddMealCallback?.call(triggerAddMeal);
   }
 
+  void _restoreStateFromContext(MealPlannerReturnContext context) {
+    // Restore the exact state from when user left
+    currentWeekStart = _normalizeDate(context.weekStart);
+    selectedDate = _normalizeDate(context.selectedDate);
+    
+    // Validate that the selected date is within the current week
+    final weekEnd = currentWeekStart.add(const Duration(days: 6));
+    if (selectedDate.isBefore(currentWeekStart) || selectedDate.isAfter(weekEnd)) {
+      // If selected date is outside the week, adjust it to be within the week
+      selectedDate = currentWeekStart;
+    }
+  }
+
+  void _initializeDependencies() {
+    _authService = AuthService();
+    _mealPlannerRepository = MealPlannerRepositoryImpl();
+    _getWeeklyMealPlanUseCase = GetWeeklyMealPlanUseCase(
+      _mealPlannerRepository,
+    );
+    _saveMealSlotUseCase = SaveMealSlotUseCase(_mealPlannerRepository);
+    _deleteMealSlotUseCase = DeleteMealSlotUseCase(_mealPlannerRepository);
+  }
+
   @override
   void dispose() {
-    _pageController.dispose();
     super.dispose();
   }
-  
+
   /// Normalizes a DateTime to midnight (00:00:00) for consistent date calculations
   DateTime _normalizeDate(DateTime date) {
     return DateTime(date.year, date.month, date.day);
   }
-  
+
   /// Checks if two dates represent the same calendar day
   bool _isSameDay(DateTime date1, DateTime date2) {
     return date1.year == date2.year &&
         date1.month == date2.month &&
         date1.day == date2.day;
   }
-  
+
   DateTime _getWeekStart(DateTime date) {
     final normalized = _normalizeDate(date);
     return normalized.subtract(Duration(days: normalized.weekday - 1));
+  }
+
+  /// Checks if a given week start date represents the current week
+  bool _isCurrentWeek(DateTime weekStart) {
+    final todayWeekStart = _getWeekStart(_todayNormalized);
+    return _isSameDay(weekStart, todayWeekStart);
   }
 
   /// Public method to trigger add meal functionality from external sources (like navbar)
   void triggerAddMeal() {
     _showAddMealOptions(selectedDate);
   }
-  
-  void _loadWeekPlan() {
+
+  Future<void> _loadWeekPlan() async {
+    final user = _authService.currentUser;
+    if (user == null) {
+      setState(() {
+        _errorMessage = 'Please login to view your meal plans';
+        _isLoading = false;
+      });
+      return;
+    }
+
+    // Capture request context for race condition prevention
+    final requestedWeekStart = currentWeekStart;
+    final currentRequestId = ++_loadRequestId;
+
     setState(() {
-      currentWeekPlan = DummyMealPlanService.getWeekPlan(currentWeekStart);
+      _isLoading = true;
+      _errorMessage = null;
     });
+
+    try {
+      final weekPlan = await _getWeeklyMealPlanUseCase.execute(
+        user.uid,
+        requestedWeekStart,
+      );
+
+      if (!mounted) return;
+
+      // Ignore stale responses (user may have navigated again or newer request started)
+      if (currentRequestId != _loadRequestId ||
+          !_isSameDay(requestedWeekStart, currentWeekStart)) {
+        return; // drop outdated result
+      }
+
+      setState(() {
+        currentWeekPlan = weekPlan;
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      // Ignore stale errors from outdated requests
+      if (currentRequestId != _loadRequestId ||
+          !_isSameDay(requestedWeekStart, currentWeekStart))
+        return;
+
+      String errorMessage = 'Failed to load meal plan';
+      if (e.toString().contains('permission-denied')) {
+        errorMessage = 'You do not have permission to access meal plans';
+      } else if (e.toString().contains('network')) {
+        errorMessage = 'Network error. Please check your connection';
+      } else if (e.toString().contains('unavailable')) {
+        errorMessage = 'Service is currently unavailable';
+      }
+
+      setState(() {
+        _errorMessage = errorMessage;
+        _isLoading = false;
+      });
+    }
   }
 
   void _navigateToWeek(int direction) {
     setState(() {
       currentWeekStart = currentWeekStart.add(Duration(days: 7 * direction));
-      // Ensure selected date is within the new week
-      final weekEnd = currentWeekStart.add(const Duration(days: 6));
-      if (direction < 0 && selectedDate.isAfter(weekEnd)) {
-        selectedDate = weekEnd;
-      } else if (direction > 0 && selectedDate.isBefore(currentWeekStart)) {
-        selectedDate = currentWeekStart;
+      // If navigating to current week, select today; otherwise select Monday
+      // But preserve selected day within the week if user was already on a specific day
+      final currentDayOfWeek = selectedDate.weekday;
+      final newSelectedDate = currentWeekStart.add(
+        Duration(days: currentDayOfWeek - 1),
+      );
+
+      if (_isCurrentWeek(currentWeekStart) &&
+          currentDayOfWeek == DateTime.now().weekday) {
+        // Only auto-select today if user was already on today's weekday
+        selectedDate = _todayNormalized;
+      } else {
+        // Preserve the same day of week in the new week
+        selectedDate = _normalizeDate(newSelectedDate);
       }
-      _loadWeekPlan();
+      currentWeekPlan =
+          null; // ensure header uses the new week's skeleton immediately
     });
+
+    // Load the week plan data
+    _loadWeekPlan();
   }
 
   @override
@@ -103,32 +224,60 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           children: [
             _buildHeader(),
             WeekNavigationHeader(
-              weekPlan: currentWeekPlan,
+              key: ValueKey(currentWeekStart.toIso8601String()), // <-- ADD
+              weekPlan:
+                  currentWeekPlan ??
+                  WeeklyMealPlan.createForWeek(currentWeekStart),
               selectedDate: selectedDate,
               onDaySelected: _onDaySelected,
               onPreviousWeek: () => _navigateToWeek(-1),
               onNextWeek: () => _navigateToWeek(1),
             ),
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: _onPageChanged,
-                itemBuilder: (context, index) {
-                  final dayOffset = index - _initialPage;
-                  final dayDate = _todayNormalized.add(Duration(days: dayOffset));
-                  final dayPlan = _getDayPlan(dayDate);
-                  
-                  return DayTimelineView(
-                    dayPlan: dayPlan,
-                    onMealTap: (meal) => _handleMealTap(meal, dayDate),
-                    onMealLongPress: (meal) => _handleMealLongPress(meal, dayDate),
-                  );
-                },
-              ),
-            ),
+            Expanded(child: _buildContent()),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildContent() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_errorMessage != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              PhosphorIcons.warningCircle(),
+              size: 64,
+              color: AppColors.error,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _errorMessage!,
+              style: const TextStyle(fontSize: 16, color: AppColors.error),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _loadWeekPlan,
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final dayPlan = _getDayPlan(selectedDate);
+
+    return DayTimelineView(
+      dayPlan: dayPlan,
+      selectedDate: selectedDate,
+      onMealTap: (meal) => _handleMealTap(meal, selectedDate),
+      onMealLongPress: (meal) => _handleMealLongPress(meal, selectedDate),
     );
   }
 
@@ -151,10 +300,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               ),
               Text(
                 'Plan your meals with flexibility',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
-                ),
+                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
               ),
             ],
           ),
@@ -185,73 +331,85 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   void _onDaySelected(DateTime date) {
     final normalizedDate = _normalizeDate(date);
-    
+
     // Only update if the date has actually changed
     if (!_isSameDay(selectedDate, normalizedDate)) {
       setState(() {
         selectedDate = normalizedDate;
       });
     }
-    
-    // Calculate the offset from today to the selected date using normalized dates
-    final difference = normalizedDate.difference(_todayNormalized).inDays;
-    final targetPage = _initialPage + difference;
-    
-    // Flag this as programmatic navigation to prevent circular updates
-    _isUserSwipe = false;
-    
-    _pageController.animateToPage(
-      targetPage,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    ).then((_) {
-      // Reset the flag after animation completes
-      _isUserSwipe = true;
-    });
   }
-  
-  void _onPageChanged(int index) {
-    // Only update selectedDate for user swipes, not programmatic navigation
-    if (!_isUserSwipe) return;
-    
-    final dayOffset = index - _initialPage;
-    final newDate = _normalizeDate(_todayNormalized.add(Duration(days: dayOffset)));
-    
-    setState(() {
-      selectedDate = newDate;
-      
-      // Update week if we've moved to a different week
-      final newWeekStart = _getWeekStart(newDate);
-      if (!_isSameDay(newWeekStart, currentWeekStart)) {
-        currentWeekStart = newWeekStart;
-        _loadWeekPlan();
-      }
-    });
-  }
-  
+
   DailyMealPlan _getDayPlan(DateTime date) {
     final normalizedDate = _normalizeDate(date);
     final weekStart = _getWeekStart(normalizedDate);
-    final weekPlan = _isSameDay(weekStart, currentWeekStart)
-        ? currentWeekPlan 
-        : DummyMealPlanService.getWeekPlan(weekStart);
-    
-    return weekPlan.getDayPlan(normalizedDate) ?? DailyMealPlan.createDefault(normalizedDate);
+
+    // Always try to get data from the current week plan if it's loaded
+    if (currentWeekPlan != null) {
+      // First check: exact week match
+      if (_isSameDay(weekStart, currentWeekStart)) {
+        return currentWeekPlan!.getDayPlan(normalizedDate) ??
+            DailyMealPlan.createDefault(normalizedDate);
+      }
+
+      // Second check: the requested date might be in the loaded week's date range
+      // This handles edge cases where week calculations might have slight differences
+      final weekEndDate = currentWeekStart.add(const Duration(days: 6));
+      if (normalizedDate.isAtSameMomentAs(currentWeekStart) ||
+          normalizedDate.isAtSameMomentAs(weekEndDate) ||
+          (normalizedDate.isAfter(currentWeekStart) &&
+              normalizedDate.isBefore(weekEndDate))) {
+        return currentWeekPlan!.getDayPlan(normalizedDate) ??
+            DailyMealPlan.createDefault(normalizedDate);
+      }
+    }
+
+    // For other weeks or when no plan is loaded, return empty plan
+    return DailyMealPlan.createDefault(normalizedDate);
   }
 
   void _handleMealTap(MealSlot mealSlot, DateTime date) {
     if (mealSlot.isEmpty) {
       _showAddMealModal(mealSlot, date);
+    } else if (mealSlot.recipeId != null) {
+      // Show tap feedback
+      _showMealTapFeedback(mealSlot);
+      // Navigate directly to recipe detail screen
+      _navigateToRecipe(mealSlot.recipeId!);
     } else {
-      showMealDetailExpandedView(
-        context: context,
-        mealSlot: mealSlot,
-        date: date,
-        onMealUpdated: (updatedMeal) => _updateMeal(updatedMeal, date),
-        onMealDeleted: (meal) => _deleteMeal(meal, date),
-        onViewRecipe: () => _viewRecipe(mealSlot),
-      );
+      // Show "no recipe available" message for meals without recipes
+      _showNoRecipeMessage();
     }
+  }
+
+  void _showMealTapFeedback(MealSlot mealSlot) {
+    // Show a brief feedback message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            PhosphorIcon(
+              PhosphorIcons.cookingPot(),
+              color: Colors.white,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Opening ${mealSlot.displayName}...',
+                style: const TextStyle(fontSize: 14),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.primary,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        duration: const Duration(milliseconds: 800),
+      ),
+    );
   }
 
   void _handleMealLongPress(MealSlot mealSlot, DateTime date) {
@@ -261,7 +419,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   void _showAddMealModal(MealSlot mealSlot, DateTime date) {
     _showQuickAddMealDialog(date);
   }
-  
+
   void _showQuickAddMealDialog(DateTime date) {
     showModalBottomSheet(
       context: context,
@@ -278,8 +436,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            ...MealCategory.predefined.map((category) => 
-              ListTile(
+            ...MealCategory.predefined.map(
+              (category) => ListTile(
                 leading: PhosphorIcon(_getCategoryIcon(category)),
                 title: Text(category),
                 onTap: () {
@@ -305,7 +463,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   void _addQuickMeal(DateTime date, String category) {
     showTimePickerModal(
       context: context,
-      initialTime: MealCategory.defaultTimes[category] ?? const TimeOfDay(hour: 12, minute: 0),
+      initialTime:
+          MealCategory.defaultTimes[category] ??
+          const TimeOfDay(hour: 12, minute: 0),
       mealCategory: category,
       onTimeSelected: (time) {
         final mealSlot = MealSlot(
@@ -320,15 +480,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           ),
           customMealName: category,
         );
-        
+
         _addMeal(mealSlot, date);
       },
     );
   }
-  
+
   void _showCustomMealDialog(DateTime date) {
     String mealName = '';
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -380,7 +540,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   context: context,
                   mealSlot: mealSlot,
                   date: date,
-                  onMealUpdated: (updatedMeal) => _updateMeal(updatedMeal, date),
+                  onMealUpdated: (updatedMeal) =>
+                      _updateMeal(updatedMeal, date),
                   onMealDeleted: (meal) => _deleteMeal(meal, date),
                   onViewRecipe: () => _viewRecipe(mealSlot),
                 );
@@ -452,7 +613,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     });
   }
 
-  void _showMealConfirmationModal(DateTime date, TimeOfDay selectedTime, Recipe recipe) {
+  void _showMealConfirmationModal(
+    DateTime date,
+    TimeOfDay selectedTime,
+    Recipe recipe,
+  ) {
     showMealConfirmationModal(
       context: context,
       recipe: recipe,
@@ -464,14 +629,23 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       },
       onBackToRecipes: () {
         Navigator.of(context).pop(); // Close confirmation modal
-        _showRecipeSelectionModal(date, selectedTime); // Go back to recipe selection
+        _showRecipeSelectionModal(
+          date,
+          selectedTime,
+        ); // Go back to recipe selection
       },
       onBackToTime: () {
         Navigator.of(context).pop(); // Close confirmation modal
         _showTimeSelectionForNewMeal(date); // Go back to time selection
       },
       onTimeChangeRequest: (currentTime, onTimeChanged) {
-        _showTimePickerForEdit(date, currentTime, selectedTime, recipe, onTimeChanged);
+        _showTimePickerForEdit(
+          date,
+          currentTime,
+          selectedTime,
+          recipe,
+          onTimeChanged,
+        );
       },
       defaultServings: 4, // TODO: Get from user profile
     );
@@ -494,59 +668,298 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       },
     );
   }
-  
-  void _addMeal(MealSlot mealSlot, DateTime date) {
-    // TODO: Implement actual data persistence
+
+  Future<void> _addMeal(MealSlot mealSlot, DateTime date) async {
+    final user = _authService.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please login to add meals'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    // Validate meal slot data
+    if (mealSlot.category.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Meal category is required'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    // Show loading state
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${mealSlot.displayName} added successfully!'),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+        content: Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+            const SizedBox(width: 16),
+            const Text('Adding meal...'),
+          ],
         ),
-        backgroundColor: AppColors.success,
+        duration: const Duration(
+          seconds: 10,
+        ), // Will be dismissed when operation completes
+        backgroundColor: AppColors.primary,
       ),
     );
-  }
-  
-  void _updateMeal(MealSlot updatedMeal, DateTime date) {
-    // TODO: Implement actual data persistence
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Meal updated successfully!'),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+
+    try {
+      await _saveMealSlotUseCase.execute(user.uid, date, mealSlot);
+
+      // Dismiss loading snackbar
+      ScaffoldMessenger.of(context).clearSnackBars();
+
+      // Refresh the current week plan
+      await _loadWeekPlan();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              PhosphorIcon(
+                PhosphorIcons.checkCircle(),
+                color: Colors.white,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text('${mealSlot.displayName} added successfully!'),
+              ),
+            ],
+          ),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          backgroundColor: AppColors.success,
+          duration: const Duration(seconds: 3),
         ),
-        backgroundColor: AppColors.success,
-      ),
-    );
+      );
+    } catch (e) {
+      // Dismiss loading snackbar
+      ScaffoldMessenger.of(context).clearSnackBars();
+
+      String errorMessage = 'Failed to add meal';
+      if (e.toString().contains('permission-denied')) {
+        errorMessage = 'You do not have permission to add meals';
+      } else if (e.toString().contains('network')) {
+        errorMessage =
+            'Network error. Please check your connection and try again';
+      } else if (e.toString().contains('unavailable')) {
+        errorMessage =
+            'Service is currently unavailable. Please try again later';
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              PhosphorIcon(
+                PhosphorIcons.warning(),
+                color: Colors.white,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Expanded(child: Text(errorMessage)),
+            ],
+          ),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          duration: const Duration(seconds: 5),
+          action: SnackBarAction(
+            label: 'Retry',
+            textColor: Colors.white,
+            onPressed: () => _addMeal(mealSlot, date),
+          ),
+        ),
+      );
+    }
   }
-  
-  void _deleteMeal(MealSlot meal, DateTime date) {
-    // TODO: Implement actual data persistence
+
+  Future<void> _updateMeal(MealSlot updatedMeal, DateTime date) async {
+    final user = _authService.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please login to update meals'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    try {
+      await _saveMealSlotUseCase.execute(user.uid, date, updatedMeal);
+
+      // Refresh the current week plan
+      await _loadWeekPlan();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Meal updated successfully!'),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          backgroundColor: AppColors.success,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to update meal: ${e.toString()}'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
+
+  Future<void> _deleteMeal(MealSlot meal, DateTime date) async {
+    final user = _authService.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please login to delete meals'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    try {
+      await _deleteMealSlotUseCase.execute(user.uid, date, meal.id);
+
+      // Refresh the current week plan
+      await _loadWeekPlan();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Meal deleted'),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete meal: ${e.toString()}'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
+
+  void _viewRecipe(MealSlot mealSlot) {
+    if (mealSlot.recipeId != null) {
+      _navigateToRecipe(mealSlot.recipeId!);
+    } else {
+      _showNoRecipeMessage();
+    }
+  }
+
+  void _navigateToRecipe(String recipeId) {
+    try {
+      // Create return context to preserve current state
+      final returnContext = MealPlannerReturnContext(
+        selectedDate: selectedDate,
+        weekStart: currentWeekStart,
+      );
+      
+      // Build URL with context parameters
+      final uri = Uri(
+        path: '/recipe/$recipeId',
+        queryParameters: returnContext.toQueryParameters(),
+      );
+      
+      // Show subtle loading feedback
+      _showNavigationFeedback(true);
+      
+      context.push(uri.toString()).then((_) {
+        // Hide loading feedback when returning
+        _hideNavigationFeedback();
+      }).catchError((e) {
+        _hideNavigationFeedback();
+        _showNavigationError();
+      });
+    } catch (e) {
+      _showNavigationError();
+    }
+  }
+
+  void _showNavigationFeedback(bool isNavigating) {
+    if (isNavigating) {
+      // Clear any existing snackbars to avoid conflicts
+      ScaffoldMessenger.of(context).clearSnackBars();
+    }
+  }
+
+  void _hideNavigationFeedback() {
+    // Clear navigation feedback when returning
+    ScaffoldMessenger.of(context).clearSnackBars();
+  }
+
+  void _showNavigationError() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Meal deleted'),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+        content: Row(
+          children: [
+            PhosphorIcon(
+              PhosphorIcons.warning(),
+              color: Colors.white,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            const Expanded(
+              child: Text('Failed to open recipe. Please try again.'),
+            ),
+          ],
         ),
         backgroundColor: AppColors.error,
-      ),
-    );
-  }
-  
-  void _viewRecipe(MealSlot mealSlot) {
-    // TODO: Navigate to recipe detail
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Recipe view coming soon!'),
         behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
     );
   }
-  
+
+  void _showNoRecipeMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            PhosphorIcon(PhosphorIcons.info(), color: Colors.white, size: 20),
+            const SizedBox(width: 8),
+            const Expanded(child: Text('No recipe available for this meal')),
+          ],
+        ),
+        backgroundColor: AppColors.textSecondary,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
   IconData _getCategoryIcon(String category) {
     switch (category) {
       case MealCategory.breakfast:

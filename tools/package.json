@@ -1,0 +1,16 @@
+{
+  "name": "mealtime-recipe-importer",
+  "version": "1.0.0",
+  "description": "Import recipes to Firebase Firestore for Mealtime app",
+  "main": "import_recipes.js",
+  "scripts": {
+    "import": "node import_recipes.js",
+    "validate": "node import_recipes.js --validate-only"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  },
+  "devDependencies": {},
+  "author": "Mealtime Team",
+  "license": "MIT"
+}

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../features/onboarding/presentation/pages/splash_screen.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 import '../../features/auth/presentation/pages/login_screen.dart';
@@ -11,13 +10,14 @@ import '../../features/meal_planner/presentation/pages/meal_planner_screen.dart'
 import '../../features/pantry/presentation/pages/pantry_screen.dart';
 import '../../features/auth/presentation/pages/profile_screen.dart';
 import '../../features/recipes/presentation/pages/recipe_detail_screen.dart';
+import '../../features/meal_planner/domain/models/meal_planner_return_context.dart';
 import '../guards/auth_guard.dart';
 import '../services/auth_service.dart';
 import 'main_scaffold.dart';
 
 class AuthNotifier extends ChangeNotifier {
   final AuthService _authService;
-  
+
   AuthNotifier(this._authService) {
     _authService.authStateChanges.listen((_) {
       notifyListeners();
@@ -35,20 +35,29 @@ class AppRouter {
     redirect: (context, state) {
       final user = _authService.currentUser;
       final isLoggedIn = user != null;
-      
+
       final authRoutes = ['/login', '/register'];
-      final isAuthRoute = authRoutes.contains(state.uri.toString());
-      final mainAppRoutes = ['/home', '/explore', '/meal-planner', '/pantry', '/profile'];
-      final isMainAppRoute = mainAppRoutes.contains(state.uri.toString());
-      
-      if (!isLoggedIn && !isAuthRoute && state.uri.toString() != '/' && state.uri.toString() != '/onboarding') {
+      final isAuthRoute = authRoutes.contains(state.uri.path);
+      final mainAppRoutes = [
+        '/home',
+        '/explore',
+        '/meal-planner',
+        '/pantry',
+        '/profile',
+      ];
+      mainAppRoutes.contains(state.uri.path);
+
+      if (!isLoggedIn &&
+          !isAuthRoute &&
+          state.uri.path != '/' &&
+          state.uri.path != '/onboarding') {
         return '/login';
       }
-      
+
       if (isLoggedIn && isAuthRoute) {
         return '/home';
       }
-      
+
       return null;
     },
     routes: [
@@ -73,9 +82,8 @@ class AppRouter {
         builder: (context, state) => const RegisterScreen(),
       ),
       ShellRoute(
-        builder: (context, state, child) => AuthGuard(
-          child: MainScaffold(child: child),
-        ),
+        builder: (context, state, child) =>
+            AuthGuard(child: MainScaffold(child: child)),
         routes: [
           GoRoute(
             path: '/home',
@@ -109,7 +117,17 @@ class AppRouter {
         name: 'recipe-detail',
         builder: (context, state) {
           final recipeId = state.pathParameters['recipeId']!;
-          return RecipeDetailScreen(recipeId: recipeId);
+          final selectedDate = state.uri.queryParameters['selectedDate'];
+          final weekStart = state.uri.queryParameters['weekStart'];
+          return RecipeDetailScreen(
+            recipeId: recipeId,
+            returnContext: selectedDate != null && weekStart != null
+                ? MealPlannerReturnContext(
+                    selectedDate: DateTime.parse(selectedDate),
+                    weekStart: DateTime.parse(weekStart),
+                  )
+                : null,
+          );
         },
       ),
     ],

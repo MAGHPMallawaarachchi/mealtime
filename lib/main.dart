@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'core/navigation/app_router.dart';
@@ -20,7 +21,11 @@ void main() async {
   //   FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
   // }
   
-  runApp(const MealTimeApp());
+  runApp(
+    const ProviderScope(
+      child: MealTimeApp(),
+    ),
+  );
 }
 
 class MealTimeApp extends StatelessWidget {

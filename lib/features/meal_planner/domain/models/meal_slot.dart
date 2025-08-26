@@ -162,6 +162,48 @@ class MealSlot {
         isLocked.hashCode;
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'category': category,
+      'scheduledTime': scheduledTime.toIso8601String(),
+      'recipeId': recipeId,
+      'leftoverId': leftoverId,
+      'customMealName': customMealName,
+      'description': description,
+      'servingSize': servingSize,
+      'isLocked': isLocked,
+    };
+  }
+
+  factory MealSlot.fromJson(Map<String, dynamic> json) {
+    return MealSlot(
+      id: json['id'] as String,
+      category: json['category'] as String,
+      scheduledTime: _parseDateTime(json['scheduledTime']),
+      recipeId: json['recipeId'] as String?,
+      leftoverId: json['leftoverId'] as String?,
+      customMealName: json['customMealName'] as String?,
+      description: json['description'] as String?,
+      servingSize: json['servingSize'] as int? ?? 1,
+      isLocked: json['isLocked'] as bool? ?? false,
+    );
+  }
+
+  /// Helper method to parse DateTime from either String or Timestamp
+  static DateTime _parseDateTime(dynamic value) {
+    if (value == null) throw ArgumentError('DateTime value cannot be null');
+    
+    if (value is String) {
+      return DateTime.parse(value);
+    } else if (value.runtimeType.toString() == 'Timestamp') {
+      // Handle Firebase Timestamp
+      return (value as dynamic).toDate();
+    } else {
+      throw ArgumentError('Expected String or Timestamp, got ${value.runtimeType}');
+    }
+  }
+
   @override
   String toString() {
     return 'MealSlot(id: $id, category: $category, scheduledTime: $scheduledTime, recipeId: $recipeId, leftoverId: $leftoverId, customMealName: $customMealName, servingSize: $servingSize, isLocked: $isLocked)';
