@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
 import '../../../../core/services/auth_service.dart';
@@ -89,16 +91,53 @@ class UserRecipesNotifier extends StateNotifier<UserRecipesState> {
   String? get _currentUserId => _authService.currentUser?.uid;
 
   Future<void> loadUserRecipes() async {
-    final userId = _currentUserId;
+    debugPrint('UserRecipesNotifier: Starting loadUserRecipes');
+    
+    // Wait for auth state to be established if needed
+    final currentUser = _authService.currentUser;
+    if (currentUser == null) {
+      debugPrint('UserRecipesNotifier: No current user, waiting for auth state...');
+      
+      // Wait for auth state changes for up to 3 seconds
+      final authStateCompleter = Completer<User?>();
+      late StreamSubscription<User?> subscription;
+      
+      final timeout = Timer(const Duration(seconds: 3), () {
+        if (!authStateCompleter.isCompleted) {
+          authStateCompleter.complete(null);
+        }
+      });
+      
+      subscription = _authService.authStateChanges.listen((user) {
+        if (!authStateCompleter.isCompleted) {
+          authStateCompleter.complete(user);
+        }
+      });
+      
+      final user = await authStateCompleter.future;
+      subscription.cancel();
+      timeout.cancel();
+      
+      if (user == null) {
+        debugPrint('UserRecipesNotifier: No authenticated user after waiting, clearing recipes');
+        state = state.copyWith(recipes: [], error: 'User not authenticated');
+        return;
+      }
+      
+      debugPrint('UserRecipesNotifier: Auth state established - User: ${user.uid}, Email: ${user.email}');
+    }
+    
+    final userId = _authService.currentUser?.uid;
     if (userId == null) {
-      debugPrint('UserRecipesNotifier: No authenticated user, clearing recipes');
-      state = state.copyWith(recipes: [], error: null);
+      debugPrint('UserRecipesNotifier: Still no authenticated user, clearing recipes');
+      state = state.copyWith(recipes: [], error: 'User not authenticated');
       return;
     }
 
     state = state.copyWith(isLoading: true, error: null);
 
     try {
+      debugPrint('UserRecipesNotifier: Attempting to load recipes for user: $userId');
       final recipes = await _getUserRecipesUseCase.execute(userId);
       
       state = state.copyWith(
@@ -107,13 +146,24 @@ class UserRecipesNotifier extends StateNotifier<UserRecipesState> {
         error: null,
       );
       
-      debugPrint('UserRecipesNotifier: Loaded ${recipes.length} user recipes');
+      debugPrint('UserRecipesNotifier: Successfully loaded ${recipes.length} user recipes');
     } catch (e) {
       debugPrint('UserRecipesNotifier: Error loading user recipes: $e');
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      
+      // Check if it's a permission error specifically
+      if (e.toString().contains('permission-denied')) {
+        final errorMsg = 'Permission denied: User $userId cannot access user_recipes. Check authentication and Firestore rules.';
+        debugPrint('UserRecipesNotifier: $errorMsg');
+        state = state.copyWith(
+          isLoading: false,
+          error: errorMsg,
+        );
+      } else {
+        state = state.copyWith(
+          isLoading: false,
+          error: e.toString(),
+        );
+      }
     }
   }
 

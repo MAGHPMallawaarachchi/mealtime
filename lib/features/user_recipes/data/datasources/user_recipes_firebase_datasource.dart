@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
@@ -20,20 +21,42 @@ class UserRecipesFirebaseDataSource {
 
   Future<List<UserRecipe>> getUserRecipes(String userId) async {
     try {
-      debugPrint('UserRecipesFirebaseDataSource: Getting user recipes for $userId');
+      debugPrint('UserRecipesFirebaseDataSource: Getting user recipes for userId: $userId');
+      debugPrint('UserRecipesFirebaseDataSource: Firebase Auth current user: ${FirebaseAuth.instance.currentUser?.uid}');
       
-      final querySnapshot = await _getUserRecipesCollection(userId)
-          .orderBy('updatedAt', descending: true)
-          .get();
+      final collection = _getUserRecipesCollection(userId);
+      debugPrint('UserRecipesFirebaseDataSource: Collection path: users/$userId/user_recipes');
+      
+      // Try simple get first, then try with orderBy if that works
+      QuerySnapshot<Map<String, dynamic>> querySnapshot;
+      
+      try {
+        debugPrint('UserRecipesFirebaseDataSource: Attempting simple query first...');
+        querySnapshot = await collection.get();
+        debugPrint('UserRecipesFirebaseDataSource: Simple query successful, found ${querySnapshot.docs.length} documents');
+        
+        // If simple query works and we have documents, try ordering
+        if (querySnapshot.docs.isNotEmpty) {
+          debugPrint('UserRecipesFirebaseDataSource: Attempting ordered query...');
+          querySnapshot = await collection
+              .orderBy('updatedAt', descending: true)
+              .get();
+          debugPrint('UserRecipesFirebaseDataSource: Ordered query successful');
+        }
+      } catch (orderError) {
+        debugPrint('UserRecipesFirebaseDataSource: Order query failed, using simple query: $orderError');
+        querySnapshot = await collection.get();
+      }
       
       final recipes = querySnapshot.docs
           .map((doc) => UserRecipe.fromJson({...doc.data(), 'id': doc.id}))
           .toList();
       
-      debugPrint('UserRecipesFirebaseDataSource: Found ${recipes.length} user recipes');
+      debugPrint('UserRecipesFirebaseDataSource: Successfully found ${recipes.length} user recipes');
       return recipes;
     } catch (e) {
       debugPrint('UserRecipesFirebaseDataSource: Error getting user recipes: $e');
+      debugPrint('UserRecipesFirebaseDataSource: Error type: ${e.runtimeType}');
       throw Exception('Failed to load user recipes: $e');
     }
   }
