@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../favorites/presentation/providers/favorites_providers.dart';
-import '../../../recipes/domain/models/recipe.dart';
 import '../../../recipes/presentation/providers/recipes_providers.dart';
 import '../../../explore/presentation/widgets/explore_recipe_card.dart';
 
@@ -46,7 +45,7 @@ class FavoritesGrid extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 0.75,
+        childAspectRatio: 0.85,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
       ),

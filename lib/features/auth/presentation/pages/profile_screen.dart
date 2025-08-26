@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../favorites/presentation/providers/favorites_providers.dart';
@@ -103,52 +102,56 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     final userRecipesCount = ref.watch(userRecipesCountProvider);
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Stack(
               children: [
                 NestedScrollView(
-              headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                SliverToBoxAdapter(
-                  child: _buildProfileHeader(favoritesCount, userRecipesCount),
-                ),
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: _TabBarDelegate(
-                    TabBar(
-                      controller: _tabController,
-                      labelColor: AppColors.primary,
-                      unselectedLabelColor: AppColors.textSecondary,
-                      indicatorColor: AppColors.primary,
-                      indicatorWeight: 3,
-                      labelStyle: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                  headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                    SliverToBoxAdapter(
+                      child: _buildProfileHeader(
+                        favoritesCount,
+                        userRecipesCount,
                       ),
-                      unselectedLabelStyle: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
-                      tabs: [
-                        Tab(
-                          icon: PhosphorIcon(PhosphorIcons.heart()),
-                          text: 'Favorites ($favoritesCount)',
-                        ),
-                        Tab(
-                          icon: PhosphorIcon(PhosphorIcons.cookingPot()),
-                          text: 'My Recipes ($userRecipesCount)',
-                        ),
-                      ],
                     ),
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: _TabBarDelegate(
+                        TabBar(
+                          dividerColor: Colors.white,
+                          controller: _tabController,
+                          labelColor: AppColors.primary,
+                          unselectedLabelColor: AppColors.textSecondary,
+                          indicatorColor: AppColors.primary,
+                          indicatorWeight: 3,
+                          labelStyle: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                          unselectedLabelStyle: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                          tabs: [
+                            Tab(
+                              icon: PhosphorIcon(PhosphorIcons.heart()),
+                              text: 'Favorites ($favoritesCount)',
+                            ),
+                            Tab(
+                              icon: PhosphorIcon(PhosphorIcons.cookingPot()),
+                              text: 'My Recipes ($userRecipesCount)',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                  body: TabBarView(
+                    controller: _tabController,
+                    children: const [FavoritesGrid(), UserRecipesGrid()],
                   ),
                 ),
-              ],
-              body: TabBarView(
-                controller: _tabController,
-                children: const [FavoritesGrid(), UserRecipesGrid()],
-              ),
-            ),
                 // Floating menu icon
                 Positioned(
                   top: MediaQuery.of(context).padding.top + 8,
@@ -156,7 +159,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   child: GestureDetector(
                     onTap: () {
                       print('Menu button tapped!'); // Debug
-                      ProfileMenuBottomSheet.show(context, _showLogoutConfirmation);
+                      ProfileMenuBottomSheet.show(
+                        context,
+                        _showLogoutConfirmation,
+                      );
                     },
                     child: PhosphorIcon(
                       PhosphorIcons.list(),
@@ -171,88 +177,79 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   }
 
   Widget _buildProfileHeader(int favoritesCount, int userRecipesCount) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [AppColors.primary.withOpacity(0.08), Colors.transparent],
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24.0, 0, 24.0, 24.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            Stack(
-              children: [
-                CircleAvatar(
-                  radius: 60,
-                  backgroundColor: AppColors.primary.withOpacity(0.2),
-                  backgroundImage: _user?.photoURL != null
-                      ? NetworkImage(_user!.photoURL!)
-                      : null,
-                  child: _user?.photoURL == null
-                      ? PhosphorIcon(
-                          PhosphorIcons.user(),
-                          size: 60,
-                          color: AppColors.primary,
-                        )
-                      : null,
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24.0, 0, 24.0, 24.0),
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Stack(
+            children: [
+              CircleAvatar(
+                radius: 60,
+                backgroundColor: AppColors.primary.withOpacity(0.2),
+                backgroundImage: _user?.photoURL != null
+                    ? NetworkImage(_user!.photoURL!)
+                    : null,
+                child: _user?.photoURL == null
+                    ? PhosphorIcon(
+                        PhosphorIcons.user(),
+                        size: 60,
+                        color: AppColors.primary,
+                      )
+                    : null,
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Edit profile photo coming soon'),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    },
+                    icon: PhosphorIcon(
+                      PhosphorIcons.camera(),
+                      color: Colors.white,
+                      size: 16,
                     ),
-                    child: IconButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Edit profile photo coming soon'),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      },
-                      icon: PhosphorIcon(
-                        PhosphorIcons.camera(),
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                      style: IconButton.styleFrom(
-                        padding: const EdgeInsets.all(8),
-                        minimumSize: Size.zero,
-                      ),
+                    style: IconButton.styleFrom(
+                      padding: const EdgeInsets.all(8),
+                      minimumSize: Size.zero,
                     ),
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Text(
-              _user?.displayName ?? 'User',
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
               ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Text(
+            _user?.displayName ?? 'User',
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
             ),
-            const SizedBox(height: 6),
-            Text(
-              _user?.email ?? '',
-              style: const TextStyle(
-                fontSize: 16,
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w500,
-              ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            _user?.email ?? '',
+            style: const TextStyle(
+              fontSize: 16,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w500,
             ),
-            const SizedBox(height: 40),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -275,7 +272,7 @@ class _TabBarDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    return Container(color: Colors.grey[50], child: tabBar);
+    return Container(color: Colors.white, child: tabBar);
   }
 
   @override
