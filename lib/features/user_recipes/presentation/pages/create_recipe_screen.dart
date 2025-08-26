@@ -110,7 +110,7 @@ class _CreateRecipeScreenState extends ConsumerState<CreateRecipeScreen> {
           ),
         );
 
-        context.pop();
+        context.go('/profile?tab=1');
       } else if (mounted) {
         throw Exception('Failed to create recipe');
       }

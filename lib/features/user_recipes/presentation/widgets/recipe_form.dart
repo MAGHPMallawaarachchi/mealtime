@@ -40,7 +40,6 @@ class _RecipeFormState extends State<RecipeForm> {
   late final TextEditingController _carbsController;
   late final TextEditingController _fatsController;
 
-  DifficultyLevel _difficulty = DifficultyLevel.medium;
   List<RecipeIngredient> _ingredients = [];
   List<String> _instructions = [];
   List<String> _tags = [];
@@ -57,26 +56,25 @@ class _RecipeFormState extends State<RecipeForm> {
     _descriptionController = TextEditingController(
       text: recipe?.description ?? '',
     );
-    _prepTimeController = TextEditingController(text: recipe?.prepTime ?? '');
-    _cookTimeController = TextEditingController(text: recipe?.cookTime ?? '');
     _servingsController = TextEditingController(
-      text: recipe?.servings.toString() ?? '4',
+      text: recipe?.defaultServings.toString() ?? '4',
     );
     _caloriesController = TextEditingController(
-      text: recipe?.calories?.toString() ?? '',
+      text: recipe?.calories.toString() ?? '',
     );
     _proteinController = TextEditingController(
-      text: recipe?.protein?.toString() ?? '',
+      text: recipe?.macros.protein.toString() ?? '',
     );
     _carbsController = TextEditingController(
-      text: recipe?.carbohydrates?.toString() ?? '',
+      text: recipe?.macros.carbs.toString() ?? '',
     );
     _fatsController = TextEditingController(
-      text: recipe?.fats?.toString() ?? '',
+      text: recipe?.macros.fats.toString() ?? '',
     );
+    _prepTimeController = TextEditingController(text: recipe?.time ?? '');
+    _cookTimeController = TextEditingController(text: '');
 
     if (recipe != null) {
-      _difficulty = recipe.difficulty;
       _ingredients = List.from(recipe.ingredients);
       _instructions = recipe.instructionSections.isNotEmpty
           ? recipe.instructionSections
@@ -457,7 +455,7 @@ class _RecipeFormState extends State<RecipeForm> {
                   OutlinedButton.icon(
                     onPressed: _removeImage,
                     icon: PhosphorIcon(PhosphorIcons.trash()),
-                    label: const Text('Remove'),
+                    label: const Text(''),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       foregroundColor: Colors.red,
@@ -1054,6 +1052,19 @@ class _RecipeFormState extends State<RecipeForm> {
     final totalTime = _calculateTotalTime(prepTime, cookTime);
 
     final now = DateTime.now();
+    final macros = RecipeMacros(
+      protein: _proteinController.text.trim().isNotEmpty
+          ? double.tryParse(_proteinController.text.trim()) ?? 0
+          : 0,
+      carbs: _carbsController.text.trim().isNotEmpty
+          ? double.tryParse(_carbsController.text.trim()) ?? 0
+          : 0,
+      fats: _fatsController.text.trim().isNotEmpty
+          ? double.tryParse(_fatsController.text.trim()) ?? 0
+          : 0,
+      fiber: 0,
+    );
+
     final recipe = UserRecipe(
       id: widget.initialRecipe?.id ?? '',
       userId: userId,
@@ -1061,11 +1072,8 @@ class _RecipeFormState extends State<RecipeForm> {
       description: _descriptionController.text.trim().isNotEmpty
           ? _descriptionController.text.trim()
           : null,
-      prepTime: prepTime,
-      cookTime: cookTime,
-      totalTime: totalTime,
-      servings: int.parse(_servingsController.text),
-      difficulty: _difficulty,
+      time: totalTime,
+      defaultServings: int.parse(_servingsController.text),
       ingredients: _ingredients.where((i) => i.name.trim().isNotEmpty).toList(),
       ingredientSections: [],
       instructionSections: [
@@ -1078,17 +1086,10 @@ class _RecipeFormState extends State<RecipeForm> {
       tags: _tags,
       imageUrl: _selectedImage?.path ?? _imageUrl,
       calories: _caloriesController.text.trim().isNotEmpty
-          ? double.tryParse(_caloriesController.text.trim())
-          : null,
-      protein: _proteinController.text.trim().isNotEmpty
-          ? double.tryParse(_proteinController.text.trim())
-          : null,
-      carbohydrates: _carbsController.text.trim().isNotEmpty
-          ? double.tryParse(_carbsController.text.trim())
-          : null,
-      fats: _fatsController.text.trim().isNotEmpty
-          ? double.tryParse(_fatsController.text.trim())
-          : null,
+          ? double.tryParse(_caloriesController.text.trim())?.toInt() ?? 0
+          : 0,
+      macros: macros,
+      source: 'User Created',
       createdAt: widget.initialRecipe?.createdAt ?? now,
       updatedAt: now,
     );

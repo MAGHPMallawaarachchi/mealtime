@@ -21,12 +21,9 @@ class FavoritesFirebaseDataSource {
         'addedAt': FieldValue.serverTimestamp(),
       });
 
-      debugPrint('FavoritesFirebaseDataSource: Added recipe $recipeId to favorites for user $userId');
     } on FirebaseException catch (e) {
-      debugPrint('FavoritesFirebaseDataSource: Firebase error adding favorite: ${e.message}');
       throw _handleFirebaseException(e);
     } catch (e) {
-      debugPrint('FavoritesFirebaseDataSource: Unknown error adding favorite: $e');
       throw FavoritesDataSourceException('Failed to add recipe to favorites: ${e.toString()}');
     }
   }
@@ -41,12 +38,9 @@ class FavoritesFirebaseDataSource {
 
       await favoriteDoc.delete();
 
-      debugPrint('FavoritesFirebaseDataSource: Removed recipe $recipeId from favorites for user $userId');
     } on FirebaseException catch (e) {
-      debugPrint('FavoritesFirebaseDataSource: Firebase error removing favorite: ${e.message}');
       throw _handleFirebaseException(e);
     } catch (e) {
-      debugPrint('FavoritesFirebaseDataSource: Unknown error removing favorite: $e');
       throw FavoritesDataSourceException('Failed to remove recipe from favorites: ${e.toString()}');
     }
   }
@@ -67,13 +61,10 @@ class FavoritesFirebaseDataSource {
               }))
           .toList();
 
-      debugPrint('FavoritesFirebaseDataSource: Retrieved ${favorites.length} favorites for user $userId');
       return favorites;
     } on FirebaseException catch (e) {
-      debugPrint('FavoritesFirebaseDataSource: Firebase error getting favorites: ${e.message}');
       throw _handleFirebaseException(e);
     } catch (e) {
-      debugPrint('FavoritesFirebaseDataSource: Unknown error getting favorites: $e');
       throw FavoritesDataSourceException('Failed to get user favorites: ${e.toString()}');
     }
   }
@@ -88,14 +79,11 @@ class FavoritesFirebaseDataSource {
           .get();
 
       final isFavorite = favoriteDoc.exists;
-      debugPrint('FavoritesFirebaseDataSource: Recipe $recipeId is ${isFavorite ? "favorited" : "not favorited"} by user $userId');
       
       return isFavorite;
     } on FirebaseException catch (e) {
-      debugPrint('FavoritesFirebaseDataSource: Firebase error checking favorite: ${e.message}');
       throw _handleFirebaseException(e);
     } catch (e) {
-      debugPrint('FavoritesFirebaseDataSource: Unknown error checking favorite: $e');
       throw FavoritesDataSourceException('Failed to check if recipe is favorite: ${e.toString()}');
     }
   }
@@ -117,10 +105,8 @@ class FavoritesFirebaseDataSource {
             .toList();
       });
     } on FirebaseException catch (e) {
-      debugPrint('FavoritesFirebaseDataSource: Firebase error creating favorites stream: ${e.message}');
       throw _handleFirebaseException(e);
     } catch (e) {
-      debugPrint('FavoritesFirebaseDataSource: Unknown error creating favorites stream: $e');
       throw FavoritesDataSourceException('Failed to create favorites stream: ${e.toString()}');
     }
   }

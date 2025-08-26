@@ -140,8 +140,8 @@ class UserRecipeDetailScreen extends ConsumerWidget {
             Expanded(
               child: _buildMetric(
                 PhosphorIcons.clock(),
-                'Prep Time',
-                recipe.prepTime,
+                'Total Time',
+                recipe.time,
               ),
             ),
             Container(
@@ -152,8 +152,8 @@ class UserRecipeDetailScreen extends ConsumerWidget {
             Expanded(
               child: _buildMetric(
                 PhosphorIcons.fire(),
-                'Cook Time',
-                recipe.cookTime,
+                'Calories',
+                recipe.calories > 0 ? '${recipe.calories}' : 'N/A',
               ),
             ),
             Container(
@@ -165,20 +165,13 @@ class UserRecipeDetailScreen extends ConsumerWidget {
               child: _buildMetric(
                 PhosphorIcons.users(),
                 'Servings',
-                recipe.servings.toString(),
+                recipe.defaultServings.toString(),
               ),
             ),
             Container(
               width: 1,
               height: 40,
               color: Colors.grey.withOpacity(0.3),
-            ),
-            Expanded(
-              child: _buildMetric(
-                PhosphorIcons.chartBar(),
-                'Difficulty',
-                recipe.difficulty.displayName,
-              ),
             ),
           ],
         ),

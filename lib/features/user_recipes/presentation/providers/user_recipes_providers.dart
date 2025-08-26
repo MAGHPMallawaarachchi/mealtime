@@ -91,12 +91,10 @@ class UserRecipesNotifier extends StateNotifier<UserRecipesState> {
   String? get _currentUserId => _authService.currentUser?.uid;
 
   Future<void> loadUserRecipes() async {
-    debugPrint('UserRecipesNotifier: Starting loadUserRecipes');
     
     // Wait for auth state to be established if needed
     final currentUser = _authService.currentUser;
     if (currentUser == null) {
-      debugPrint('UserRecipesNotifier: No current user, waiting for auth state...');
       
       // Wait for auth state changes for up to 3 seconds
       final authStateCompleter = Completer<User?>();
@@ -119,17 +117,14 @@ class UserRecipesNotifier extends StateNotifier<UserRecipesState> {
       timeout.cancel();
       
       if (user == null) {
-        debugPrint('UserRecipesNotifier: No authenticated user after waiting, clearing recipes');
         state = state.copyWith(recipes: [], error: 'User not authenticated');
         return;
       }
       
-      debugPrint('UserRecipesNotifier: Auth state established - User: ${user.uid}, Email: ${user.email}');
     }
     
     final userId = _authService.currentUser?.uid;
     if (userId == null) {
-      debugPrint('UserRecipesNotifier: Still no authenticated user, clearing recipes');
       state = state.copyWith(recipes: [], error: 'User not authenticated');
       return;
     }
@@ -137,7 +132,6 @@ class UserRecipesNotifier extends StateNotifier<UserRecipesState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      debugPrint('UserRecipesNotifier: Attempting to load recipes for user: $userId');
       final recipes = await _getUserRecipesUseCase.execute(userId);
       
       state = state.copyWith(
@@ -146,14 +140,11 @@ class UserRecipesNotifier extends StateNotifier<UserRecipesState> {
         error: null,
       );
       
-      debugPrint('UserRecipesNotifier: Successfully loaded ${recipes.length} user recipes');
     } catch (e) {
-      debugPrint('UserRecipesNotifier: Error loading user recipes: $e');
       
       // Check if it's a permission error specifically
       if (e.toString().contains('permission-denied')) {
         final errorMsg = 'Permission denied: User $userId cannot access user_recipes. Check authentication and Firestore rules.';
-        debugPrint('UserRecipesNotifier: $errorMsg');
         state = state.copyWith(
           isLoading: false,
           error: errorMsg,
@@ -170,7 +161,6 @@ class UserRecipesNotifier extends StateNotifier<UserRecipesState> {
   Future<String?> createUserRecipe(UserRecipe recipe) async {
     final userId = _currentUserId;
     if (userId == null) {
-      debugPrint('UserRecipesNotifier: No authenticated user for create');
       return null;
     }
 
@@ -186,10 +176,8 @@ class UserRecipesNotifier extends StateNotifier<UserRecipesState> {
         error: null,
       );
       
-      debugPrint('UserRecipesNotifier: Created user recipe with ID $recipeId');
       return recipeId;
     } catch (e) {
-      debugPrint('UserRecipesNotifier: Error creating user recipe: $e');
       state = state.copyWith(error: e.toString());
       return null;
     }
@@ -198,7 +186,6 @@ class UserRecipesNotifier extends StateNotifier<UserRecipesState> {
   Future<void> updateUserRecipe(UserRecipe recipe) async {
     final userId = _currentUserId;
     if (userId == null) {
-      debugPrint('UserRecipesNotifier: No authenticated user for update');
       return;
     }
 
@@ -215,9 +202,7 @@ class UserRecipesNotifier extends StateNotifier<UserRecipesState> {
         error: null,
       );
       
-      debugPrint('UserRecipesNotifier: Updated user recipe ${recipe.id}');
     } catch (e) {
-      debugPrint('UserRecipesNotifier: Error updating user recipe: $e');
       state = state.copyWith(error: e.toString());
     }
   }
@@ -225,7 +210,6 @@ class UserRecipesNotifier extends StateNotifier<UserRecipesState> {
   Future<void> deleteUserRecipe(String recipeId) async {
     final userId = _currentUserId;
     if (userId == null) {
-      debugPrint('UserRecipesNotifier: No authenticated user for delete');
       return;
     }
 
@@ -240,9 +224,7 @@ class UserRecipesNotifier extends StateNotifier<UserRecipesState> {
         error: null,
       );
       
-      debugPrint('UserRecipesNotifier: Deleted user recipe $recipeId');
     } catch (e) {
-      debugPrint('UserRecipesNotifier: Error deleting user recipe: $e');
       state = state.copyWith(error: e.toString());
     }
   }

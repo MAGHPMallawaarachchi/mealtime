@@ -36,7 +36,7 @@ class UserRecipesGrid extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 0.65,
+        childAspectRatio: 0.85,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
       ),
@@ -46,7 +46,8 @@ class UserRecipesGrid extends ConsumerWidget {
         return UserRecipeCard(
           recipe: recipe,
           onEdit: () => context.push('/edit-recipe/${recipe.id}'),
-          onDelete: () => _showDeleteDialog(context, ref, recipe.id, recipe.title),
+          onDelete: () =>
+              _showDeleteDialog(context, ref, recipe.id, recipe.title),
         );
       },
     );
@@ -148,17 +149,20 @@ class UserRecipesGrid extends ConsumerWidget {
     );
   }
 
-  void _showDeleteDialog(BuildContext context, WidgetRef ref, String recipeId, String recipeTitle) {
+  void _showDeleteDialog(
+    BuildContext context,
+    WidgetRef ref,
+    String recipeId,
+    String recipeTitle,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        icon: PhosphorIcon(
-          PhosphorIcons.trash(),
-          size: 24,
-          color: Colors.red,
-        ),
+        icon: PhosphorIcon(PhosphorIcons.trash(), size: 24, color: Colors.red),
         title: const Text('Delete Recipe'),
-        content: Text('Are you sure you want to delete "$recipeTitle"? This action cannot be undone.'),
+        content: Text(
+          'Are you sure you want to delete "$recipeTitle"? This action cannot be undone.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -168,7 +172,7 @@ class UserRecipesGrid extends ConsumerWidget {
             onPressed: () {
               Navigator.of(context).pop();
               ref.read(userRecipesProvider.notifier).deleteUserRecipe(recipeId);
-              
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Row(

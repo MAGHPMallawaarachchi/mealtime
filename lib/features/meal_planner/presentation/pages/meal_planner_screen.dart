@@ -312,7 +312,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   PhosphorIcons.magicWand(),
                   color: AppColors.primary,
                 ),
-                tooltip: 'Auto-fill meals',
               ),
               IconButton(
                 onPressed: _showMealPlanOptions,
@@ -320,7 +319,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   PhosphorIcons.dotsThreeVertical(),
                   color: AppColors.textPrimary,
                 ),
-                tooltip: 'More options',
               ),
             ],
           ),

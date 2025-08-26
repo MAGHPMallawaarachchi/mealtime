@@ -86,7 +86,6 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
   Future<void> loadUserFavorites() async {
     final userId = _currentUserId;
     if (userId == null) {
-      debugPrint('FavoritesNotifier: No authenticated user, clearing favorites');
       state = state.copyWith(favoriteRecipeIds: {}, error: null);
       return;
     }
@@ -103,9 +102,7 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
         error: null,
       );
       
-      debugPrint('FavoritesNotifier: Loaded ${favoriteIds.length} favorites');
     } catch (e) {
-      debugPrint('FavoritesNotifier: Error loading favorites: $e');
       state = state.copyWith(
         isLoading: false,
         error: e.toString(),
@@ -116,7 +113,6 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
   Future<void> toggleFavorite(String recipeId) async {
     final userId = _currentUserId;
     if (userId == null) {
-      debugPrint('FavoritesNotifier: No authenticated user for toggle');
       return;
     }
 
@@ -135,13 +131,10 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
     try {
       if (wasAlreadyFavorite) {
         await _removeFromFavoritesUseCase.execute(userId, recipeId);
-        debugPrint('FavoritesNotifier: Removed $recipeId from favorites');
       } else {
         await _addToFavoritesUseCase.execute(userId, recipeId);
-        debugPrint('FavoritesNotifier: Added $recipeId to favorites');
       }
     } catch (e) {
-      debugPrint('FavoritesNotifier: Error toggling favorite: $e');
       
       // Revert optimistic update on error
       state = state.copyWith(favoriteRecipeIds: state.favoriteRecipeIds);

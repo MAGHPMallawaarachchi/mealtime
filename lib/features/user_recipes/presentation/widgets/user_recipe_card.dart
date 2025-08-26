@@ -83,67 +83,76 @@ class UserRecipeCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                
-                Positioned(
-                  top: 16,
-                  right: 16,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 4,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                    child: PhosphorIcon(
-                      PhosphorIcons.user(),
-                      size: 16,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ),
-                
-                Positioned(
-                  top: 16,
-                  left: 16,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: _getDifficultyColor().withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 4,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                    ),
+
+                if (onEdit != null || onDelete != null)
+                  Positioned(
+                    top: 16,
+                    right: 16,
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          recipe.difficulty.emoji,
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          recipe.difficulty.displayName,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
+                        if (onEdit != null)
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.9),
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 1),
+                                ),
+                              ],
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: onEdit,
+                                borderRadius: BorderRadius.circular(20),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: PhosphorIcon(
+                                    PhosphorIcons.pencil(),
+                                    size: 16,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                        if (onEdit != null && onDelete != null)
+                          const SizedBox(width: 8),
+                        if (onDelete != null)
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.9),
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 1),
+                                ),
+                              ],
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: onDelete,
+                                borderRadius: BorderRadius.circular(20),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: PhosphorIcon(
+                                    PhosphorIcons.trash(),
+                                    size: 16,
+                                    color: Colors.red.shade600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),
-                ),
               ],
             ),
             Expanded(
@@ -161,7 +170,7 @@ class UserRecipeCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          recipe.totalTime,
+                          recipe.time,
                           style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary,
@@ -170,13 +179,13 @@ class UserRecipeCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 12),
                         PhosphorIcon(
-                          PhosphorIcons.users(),
+                          PhosphorIcons.fire(),
                           size: 14,
                           color: AppColors.textSecondary,
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          '${recipe.servings} servings',
+                          '${recipe.calories} cal',
                           style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary,
@@ -199,39 +208,6 @@ class UserRecipeCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    if (onEdit != null || onDelete != null) ...[
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          if (onEdit != null)
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                onPressed: onEdit,
-                                icon: PhosphorIcon(PhosphorIcons.pencil(), size: 14),
-                                label: const Text(
-                                  'Edit',
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                                style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 4),
-                                  minimumSize: const Size(0, 32),
-                                ),
-                              ),
-                            ),
-                          if (onEdit != null && onDelete != null) const SizedBox(width: 8),
-                          if (onDelete != null)
-                            IconButton(
-                              onPressed: onDelete,
-                              icon: PhosphorIcon(PhosphorIcons.trash(), size: 16),
-                              style: IconButton.styleFrom(
-                                foregroundColor: Colors.red,
-                                padding: const EdgeInsets.all(4),
-                                minimumSize: const Size(32, 32),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ],
                   ],
                 ),
               ),
@@ -240,16 +216,5 @@ class UserRecipeCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Color _getDifficultyColor() {
-    switch (recipe.difficulty) {
-      case DifficultyLevel.easy:
-        return Colors.green;
-      case DifficultyLevel.medium:
-        return Colors.orange;
-      case DifficultyLevel.hard:
-        return Colors.red;
-    }
   }
 }

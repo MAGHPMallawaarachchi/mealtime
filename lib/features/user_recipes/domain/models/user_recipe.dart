@@ -31,20 +31,16 @@ class UserRecipe {
   final String userId;
   final String title;
   final String? description;
-  final String prepTime;
-  final String cookTime;
-  final String totalTime;
-  final int servings;
-  final DifficultyLevel difficulty;
+  final String time;
+  final int defaultServings;
   final List<RecipeIngredient> ingredients;
   final List<IngredientSection> ingredientSections;
   final List<InstructionSection> instructionSections;
   final List<String> tags;
   final String? imageUrl;
-  final double? calories;
-  final double? protein;
-  final double? carbohydrates;
-  final double? fats;
+  final int calories;
+  final RecipeMacros macros;
+  final String? source;
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isPublic;
@@ -54,20 +50,16 @@ class UserRecipe {
     required this.userId,
     required this.title,
     this.description,
-    required this.prepTime,
-    required this.cookTime,
-    required this.totalTime,
-    required this.servings,
-    required this.difficulty,
+    required this.time,
+    required this.defaultServings,
     required this.ingredients,
     required this.ingredientSections,
     required this.instructionSections,
     required this.tags,
     this.imageUrl,
-    this.calories,
-    this.protein,
-    this.carbohydrates,
-    this.fats,
+    this.calories = 0,
+    required this.macros,
+    this.source,
     required this.createdAt,
     required this.updatedAt,
     this.isPublic = false,
@@ -78,20 +70,17 @@ class UserRecipe {
     String? userId,
     String? title,
     String? description,
-    String? prepTime,
-    String? cookTime,
-    String? totalTime,
-    int? servings,
+    String? time,
+    int? defaultServings,
     DifficultyLevel? difficulty,
     List<RecipeIngredient>? ingredients,
     List<IngredientSection>? ingredientSections,
     List<InstructionSection>? instructionSections,
     List<String>? tags,
     String? imageUrl,
-    double? calories,
-    double? protein,
-    double? carbohydrates,
-    double? fats,
+    int? calories,
+    RecipeMacros? macros,
+    String? source,
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isPublic,
@@ -101,20 +90,16 @@ class UserRecipe {
       userId: userId ?? this.userId,
       title: title ?? this.title,
       description: description ?? this.description,
-      prepTime: prepTime ?? this.prepTime,
-      cookTime: cookTime ?? this.cookTime,
-      totalTime: totalTime ?? this.totalTime,
-      servings: servings ?? this.servings,
-      difficulty: difficulty ?? this.difficulty,
+      time: time ?? this.time,
+      defaultServings: defaultServings ?? this.defaultServings,
       ingredients: ingredients ?? this.ingredients,
       ingredientSections: ingredientSections ?? this.ingredientSections,
       instructionSections: instructionSections ?? this.instructionSections,
       tags: tags ?? this.tags,
       imageUrl: imageUrl ?? this.imageUrl,
       calories: calories ?? this.calories,
-      protein: protein ?? this.protein,
-      carbohydrates: carbohydrates ?? this.carbohydrates,
-      fats: fats ?? this.fats,
+      macros: macros ?? this.macros,
+      source: source ?? this.source,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isPublic: isPublic ?? this.isPublic,
@@ -125,22 +110,17 @@ class UserRecipe {
     return Recipe(
       id: id,
       title: title,
-      time: totalTime,
+      time: time,
       imageUrl: imageUrl ?? '',
       ingredients: ingredients,
       ingredientSections: ingredientSections,
       instructionSections: instructionSections,
-      calories: calories?.toInt() ?? 0,
-      macros: RecipeMacros(
-        protein: protein ?? 0,
-        carbs: carbohydrates ?? 0,
-        fats: fats ?? 0,
-        fiber: 0,
-      ),
+      calories: calories,
+      macros: macros,
       description: description,
-      defaultServings: servings,
+      defaultServings: defaultServings,
       tags: tags,
-      source: 'User Created',
+      source: source ?? 'User Created',
     );
   }
 
@@ -150,11 +130,8 @@ class UserRecipe {
       'userId': userId,
       'title': title,
       'description': description,
-      'prepTime': prepTime,
-      'cookTime': cookTime,
-      'totalTime': totalTime,
-      'servings': servings,
-      'difficulty': difficulty.name,
+      'time': time,
+      'defaultServings': defaultServings,
       'ingredients': ingredients.map((e) => e.toJson()).toList(),
       'ingredientSections': ingredientSections.map((e) => e.toJson()).toList(),
       'instructionSections': instructionSections
@@ -163,9 +140,8 @@ class UserRecipe {
       'tags': tags,
       'imageUrl': imageUrl,
       'calories': calories,
-      'protein': protein,
-      'carbohydrates': carbohydrates,
-      'fats': fats,
+      'macros': macros.toJson(),
+      'source': source,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'isPublic': isPublic,
@@ -178,11 +154,8 @@ class UserRecipe {
       userId: json['userId'] as String? ?? '',
       title: json['title'] as String? ?? 'Untitled Recipe',
       description: json['description'] as String?,
-      prepTime: json['prepTime'] as String? ?? '0 min',
-      cookTime: json['cookTime'] as String? ?? '0 min',
-      totalTime: json['totalTime'] as String? ?? '0 min',
-      servings: (json['servings'] as num?)?.toInt() ?? 4,
-      difficulty: _parseDifficulty(json['difficulty']),
+      time: json['time'] as String? ?? '30 min',
+      defaultServings: (json['defaultServings'] as num?)?.toInt() ?? 4,
       ingredients: json['ingredients'] != null
           ? (json['ingredients'] as List)
                 .where((e) => e is Map<String, dynamic>)
@@ -209,16 +182,11 @@ class UserRecipe {
           : [],
       tags: json['tags'] != null ? List<String>.from(json['tags'] as List) : [],
       imageUrl: json['imageUrl'] as String?,
-      calories: json['calories'] != null
-          ? (json['calories'] as num).toDouble()
-          : null,
-      protein: json['protein'] != null
-          ? (json['protein'] as num).toDouble()
-          : null,
-      carbohydrates: json['carbohydrates'] != null
-          ? (json['carbohydrates'] as num).toDouble()
-          : null,
-      fats: json['fats'] != null ? (json['fats'] as num).toDouble() : null,
+      calories: (json['calories'] as num?)?.toInt() ?? 0,
+      macros: json['macros'] != null
+          ? RecipeMacros.fromJson(json['macros'] as Map<String, dynamic>)
+          : const RecipeMacros(protein: 0, carbs: 0, fats: 0, fiber: 0),
+      source: json['source'] as String?,
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'] as String)
           : DateTime.now(),
@@ -227,18 +195,6 @@ class UserRecipe {
           : DateTime.now(),
       isPublic: json['isPublic'] as bool? ?? false,
     );
-  }
-
-  static DifficultyLevel _parseDifficulty(dynamic difficulty) {
-    if (difficulty == null) return DifficultyLevel.medium;
-
-    try {
-      return DifficultyLevel.values.firstWhere(
-        (e) => e.name == difficulty.toString(),
-      );
-    } catch (e) {
-      return DifficultyLevel.medium;
-    }
   }
 
   @override
@@ -252,6 +208,6 @@ class UserRecipe {
 
   @override
   String toString() {
-    return 'UserRecipe(id: $id, title: $title, userId: $userId, servings: $servings)';
+    return 'UserRecipe(id: $id, title: $title, userId: $userId, defaultServings: $defaultServings)';
   }
 }

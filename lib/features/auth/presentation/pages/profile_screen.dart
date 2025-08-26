@@ -11,7 +11,9 @@ import '../widgets/user_recipes_grid.dart';
 import '../widgets/profile_menu_bottom_sheet.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
-  const ProfileScreen({super.key});
+  final int initialTabIndex;
+  
+  const ProfileScreen({super.key, this.initialTabIndex = 0});
 
   @override
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
@@ -28,12 +30,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   void initState() {
     super.initState();
     _user = _authService.currentUser;
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(
+      length: 2, 
+      vsync: this,
+      initialIndex: widget.initialTabIndex.clamp(0, 1),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(favoritesProvider.notifier).loadUserFavorites();
       ref.read(userRecipesProvider.notifier).loadUserRecipes();
     });
+  }
+
+  @override
+  void didUpdateWidget(ProfileScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialTabIndex != widget.initialTabIndex) {
+      _tabController.animateTo(widget.initialTabIndex.clamp(0, 1));
+    }
   }
 
   @override
