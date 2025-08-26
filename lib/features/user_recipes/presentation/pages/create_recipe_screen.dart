@@ -22,28 +22,66 @@ class _CreateRecipeScreenState extends ConsumerState<CreateRecipeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: const Text(
-          'Create Recipe',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: PhosphorIcon(PhosphorIcons.arrowLeft()),
-          onPressed: () => context.pop(),
-        ),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : RecipeForm(
-              onSave: _handleSave,
-              onCancel: () => context.pop(),
-              isLoading: _isLoading,
+      body: Stack(
+        children: [
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 80.0, 0, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Page title
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(16.0, 0, 16.0, 24.0),
+                        child: Text(
+                          'Create Recipe',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 28,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: RecipeForm(
+                          onSave: _handleSave,
+                          onCancel: () => context.pop(),
+                          isLoading: _isLoading,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+          // Floating back button
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            left: 16,
+            child: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                icon: PhosphorIcon(
+                  PhosphorIcons.arrowLeft(),
+                  color: AppColors.textPrimary,
+                ),
+                onPressed: () => context.pop(),
+              ),
             ),
+          ),
+        ],
+      ),
     );
   }
 
