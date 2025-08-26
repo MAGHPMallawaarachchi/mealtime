@@ -9,6 +9,7 @@ import '../../../favorites/presentation/providers/favorites_providers.dart';
 import '../../../user_recipes/presentation/providers/user_recipes_providers.dart';
 import '../widgets/favorites_grid.dart';
 import '../widgets/user_recipes_grid.dart';
+import '../widgets/profile_menu_bottom_sheet.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -17,7 +18,8 @@ class ProfileScreen extends ConsumerStatefulWidget {
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTickerProviderStateMixin {
+class _ProfileScreenState extends ConsumerState<ProfileScreen>
+    with SingleTickerProviderStateMixin {
   final _authService = AuthService();
   User? _user;
   bool _isLoading = false;
@@ -28,7 +30,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
     super.initState();
     _user = _authService.currentUser;
     _tabController = TabController(length: 2, vsync: this);
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(favoritesProvider.notifier).loadUserFavorites();
       ref.read(userRecipesProvider.notifier).loadUserRecipes();
@@ -100,52 +102,72 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
     final favoritesCount = ref.watch(favoriteRecipeIdsProvider).length;
     final userRecipesCount = ref.watch(userRecipesCountProvider);
 
-    return _isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              SliverToBoxAdapter(
-                child: _buildProfileHeader(favoritesCount, userRecipesCount),
-              ),
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _TabBarDelegate(
-                  TabBar(
-                    controller: _tabController,
-                    labelColor: AppColors.primary,
-                    unselectedLabelColor: AppColors.textSecondary,
-                    indicatorColor: AppColors.primary,
-                    indicatorWeight: 3,
-                    labelStyle: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                    unselectedLabelStyle: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                    ),
-                    tabs: [
-                      Tab(
-                        icon: PhosphorIcon(PhosphorIcons.heart()),
-                        text: 'Favorites ($favoritesCount)',
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Stack(
+              children: [
+                NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                SliverToBoxAdapter(
+                  child: _buildProfileHeader(favoritesCount, userRecipesCount),
+                ),
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _TabBarDelegate(
+                    TabBar(
+                      controller: _tabController,
+                      labelColor: AppColors.primary,
+                      unselectedLabelColor: AppColors.textSecondary,
+                      indicatorColor: AppColors.primary,
+                      indicatorWeight: 3,
+                      labelStyle: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
                       ),
-                      Tab(
-                        icon: PhosphorIcon(PhosphorIcons.cookingPot()),
-                        text: 'My Recipes ($userRecipesCount)',
+                      unselectedLabelStyle: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
                       ),
-                    ],
+                      tabs: [
+                        Tab(
+                          icon: PhosphorIcon(PhosphorIcons.heart()),
+                          text: 'Favorites ($favoritesCount)',
+                        ),
+                        Tab(
+                          icon: PhosphorIcon(PhosphorIcons.cookingPot()),
+                          text: 'My Recipes ($userRecipesCount)',
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+              ],
+              body: TabBarView(
+                controller: _tabController,
+                children: const [FavoritesGrid(), UserRecipesGrid()],
               ),
-            ],
-            body: TabBarView(
-              controller: _tabController,
-              children: const [
-                FavoritesGrid(),
-                UserRecipesGrid(),
+            ),
+                // Floating menu icon
+                Positioned(
+                  top: MediaQuery.of(context).padding.top + 8,
+                  right: 16,
+                  child: GestureDetector(
+                    onTap: () {
+                      print('Menu button tapped!'); // Debug
+                      ProfileMenuBottomSheet.show(context, _showLogoutConfirmation);
+                    },
+                    child: PhosphorIcon(
+                      PhosphorIcons.list(),
+                      color: AppColors.textPrimary,
+                      size: 24,
+                    ),
+                  ),
+                ),
               ],
             ),
-          );
+    );
   }
 
   Widget _buildProfileHeader(int favoritesCount, int userRecipesCount) {
@@ -154,21 +176,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            AppColors.primary.withOpacity(0.05),
-            Colors.transparent,
-          ],
+          colors: [AppColors.primary.withOpacity(0.08), Colors.transparent],
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.fromLTRB(24.0, 0, 24.0, 24.0),
         child: Column(
           children: [
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Stack(
               children: [
                 CircleAvatar(
-                  radius: 50,
+                  radius: 60,
                   backgroundColor: AppColors.primary.withOpacity(0.2),
                   backgroundImage: _user?.photoURL != null
                       ? NetworkImage(_user!.photoURL!)
@@ -176,7 +195,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
                   child: _user?.photoURL == null
                       ? PhosphorIcon(
                           PhosphorIcons.user(),
-                          size: 50,
+                          size: 60,
                           color: AppColors.primary,
                         )
                       : null,
@@ -188,10 +207,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
                     decoration: BoxDecoration(
                       color: AppColors.primary,
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 2,
-                      ),
+                      border: Border.all(color: Colors.white, width: 2),
                     ),
                     child: IconButton(
                       onPressed: () {
@@ -216,132 +232,26 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Text(
               _user?.displayName ?? 'User',
               style: const TextStyle(
-                fontSize: 24,
+                fontSize: 28,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             Text(
               _user?.email ?? '',
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 16,
                 color: AppColors.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildActionCard(
-                    'Settings',
-                    'Manage your preferences',
-                    PhosphorIcons.gear(),
-                    () => context.push('/settings'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildActionCard(
-                    'New Recipe',
-                    'Create your own recipe',
-                    PhosphorIcons.plus(),
-                    () => context.push('/create-recipe'),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: _showLogoutConfirmation,
-                icon: PhosphorIcon(
-                  PhosphorIcons.signOut(),
-                  size: 18,
-                ),
-                label: const Text(
-                  'Sign Out',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  side: const BorderSide(color: Colors.red),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 40),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionCard(
-    String title,
-    String subtitle,
-    PhosphorIconData icon,
-    VoidCallback onTap,
-  ) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: PhosphorIcon(
-                  icon,
-                  size: 24,
-                  color: AppColors.primary,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -365,10 +275,7 @@ class _TabBarDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    return Container(
-      color: Colors.white,
-      child: tabBar,
-    );
+    return Container(color: Colors.grey[50], child: tabBar);
   }
 
   @override
