@@ -561,11 +561,10 @@ class _UserRecipeDetailScreenState
 
   Widget _buildNutritionInfo(UserRecipe recipe) {
     // Per serving nutrition values (no scaling needed)
-    final caloriesPerServing = (recipe.calories / recipe.defaultServings)
-        .round();
-    final proteinPerServing = recipe.macros.protein / recipe.defaultServings;
-    final carbsPerServing = recipe.macros.carbs / recipe.defaultServings;
-    final fatsPerServing = recipe.macros.fats / recipe.defaultServings;
+    final caloriesPerServing = (recipe.calories).round();
+    final proteinPerServing = recipe.macros.protein;
+    final carbsPerServing = recipe.macros.carbs;
+    final fatsPerServing = recipe.macros.fats;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
