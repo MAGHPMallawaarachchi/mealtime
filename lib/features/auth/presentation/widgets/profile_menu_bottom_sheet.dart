@@ -187,13 +187,11 @@ class ProfileMenuBottomSheet extends StatelessWidget {
   }
 
   static void show(BuildContext context, VoidCallback onSignOut) {
-    print('ProfileMenuBottomSheet.show called'); // Debug
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        print('Building ProfileMenuBottomSheet'); // Debug
         return ProfileMenuBottomSheet(onSignOut: onSignOut);
       },
     );

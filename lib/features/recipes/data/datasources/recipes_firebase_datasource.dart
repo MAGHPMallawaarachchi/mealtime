@@ -30,10 +30,6 @@ class RecipesFirebaseDataSource implements RecipesDataSource {
             recipes.add(recipe);
           }
         } catch (e) {
-          debugPrint('RecipesFirebaseDataSource: Skipping invalid recipe: $e');
-          debugPrint('Recipe data keys: ${data.keys}');
-          debugPrint('Recipe ID: ${data['id']}');
-          debugPrint('Recipe title: ${data['title']}');
           // Skip invalid recipes and continue
         }
       }

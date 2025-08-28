@@ -52,7 +52,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   Future<void> _loadUserProfilePicture() async {
     try {
       final profilePictureUrl = await _authService.getUserProfilePictureUrl();
-      print('Loaded profile picture URL: ${profilePictureUrl?.substring(0, 50)}...'); // Debug log
       if (mounted) {
         setState(() {
           _profilePictureUrl = profilePictureUrl;
@@ -60,15 +59,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       }
     } catch (e) {
       // If there's an error loading the profile picture, just use the default
-      print('Error loading profile picture: $e');
     }
   }
 
   Widget _buildProfileImage() {
-    print('Building profile image. URL: ${_profilePictureUrl != null ? _profilePictureUrl!.substring(0, 30) + "..." : "null"}'); // Debug
     
     if (_profilePictureUrl == null || _profilePictureUrl!.isEmpty) {
-      print('No profile picture URL, showing default icon'); // Debug
       return PhosphorIcon(
         PhosphorIcons.user(),
         size: 60,
@@ -78,11 +74,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
     // Check if it's a base64 data URL
     if (_profilePictureUrl!.startsWith('data:image/')) {
-      print('Loading base64 image'); // Debug
       try {
         final base64String = _profilePictureUrl!.split(',')[1];
         final bytes = base64Decode(base64String);
-        print('Successfully decoded base64 image, ${bytes.length} bytes'); // Debug
         return ClipOval(
           child: SizedBox(
             width: 120,
@@ -91,7 +85,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               bytes,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                print('Image.memory error: $error'); // Debug
                 return PhosphorIcon(
                   PhosphorIcons.user(),
                   size: 60,
@@ -102,7 +95,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           ),
         );
       } catch (e) {
-        print('Error decoding base64 image: $e');
         return PhosphorIcon(
           PhosphorIcons.user(),
           size: 60,
@@ -112,7 +104,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     }
 
     // Regular HTTP URL
-    print('Loading HTTP image'); // Debug
     return ClipOval(
       child: SizedBox(
         width: 120,
@@ -121,7 +112,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           _profilePictureUrl!,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            print('Image.network error: $error'); // Debug
             return PhosphorIcon(
               PhosphorIcons.user(),
               size: 60,
@@ -358,7 +348,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   right: 16,
                   child: GestureDetector(
                     onTap: () {
-                      print('Menu button tapped!'); // Debug
                       ProfileMenuBottomSheet.show(
                         context,
                         _showLogoutConfirmation,

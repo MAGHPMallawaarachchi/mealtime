@@ -155,7 +155,6 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
         }
       } catch (e) {
         // If recipe fetching fails, use custom meal name or category as fallback
-        debugPrint('Failed to fetch recipe ${mealSlot.recipeId}: $e');
       }
     }
 

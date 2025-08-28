@@ -53,9 +53,7 @@ class CacheManagerService extends WidgetsBindingObserver {
     try {
       await CachedNetworkImage.evictFromCache('');
       await DefaultCacheManager().emptyCache();
-      debugPrint('Image cache cleared successfully');
     } catch (e) {
-      debugPrint('Error clearing image cache: $e');
     }
   }
 
@@ -65,9 +63,7 @@ class CacheManagerService extends WidgetsBindingObserver {
         _recipesLocalDataSource.clearCache(),
         _seasonalIngredientsLocalDataSource.clearCache(),
       ]);
-      debugPrint('Data cache cleared successfully');
     } catch (e) {
-      debugPrint('Error clearing data cache: $e');
     }
   }
 
@@ -77,9 +73,7 @@ class CacheManagerService extends WidgetsBindingObserver {
         clearImageCache(),
         clearDataCache(),
       ]);
-      debugPrint('All caches cleared successfully');
     } catch (e) {
-      debugPrint('Error clearing all caches: $e');
     }
   }
 
@@ -87,9 +81,7 @@ class CacheManagerService extends WidgetsBindingObserver {
     try {
       // Preload image by adding it to cache manager
       await DefaultCacheManager().downloadFile(imageUrl);
-      debugPrint('Image preloaded successfully: $imageUrl');
     } catch (e) {
-      debugPrint('Error preloading image: $e');
     }
   }
 }

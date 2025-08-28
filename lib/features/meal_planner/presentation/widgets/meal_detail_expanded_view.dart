@@ -458,9 +458,6 @@ class _MealDetailExpandedViewState extends State<MealDetailExpandedView> {
     final recipeId = widget.mealSlot.recipeId;
     if (recipeId == null) return;
 
-    debugPrint(
-      'CompactMealCard: Loading recipe $recipeId for meal slot ${widget.mealSlot.id}',
-    );
 
     setState(() {
       _isLoadingRecipe = true;

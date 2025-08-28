@@ -62,9 +62,7 @@ class RecipesNotifier extends StateNotifier<RecipesState> {
         error: null,
       );
       
-      debugPrint('RecipesNotifier: Loaded ${recipes.length} recipes');
     } catch (e) {
-      debugPrint('RecipesNotifier: Error loading recipes: $e');
       state = state.copyWith(
         isLoading: false,
         error: e.toString(),

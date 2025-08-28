@@ -72,7 +72,6 @@ class _FeaturedRecipesSectionState extends State<FeaturedRecipesSection> impleme
         }
       }
     } catch (e) {
-      debugPrint('FeaturedRecipesSection: Error loading featured recipes: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;

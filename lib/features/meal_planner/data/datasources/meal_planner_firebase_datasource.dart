@@ -44,7 +44,6 @@ class MealPlannerFirebaseDataSource implements MealPlannerDataSource {
       return _firestoreService.getDocumentStream(_usersCollection, docPath)
           .map((data) => data != null ? WeeklyMealPlan.fromJson(data) : null)
           .handleError((error) {
-        debugPrint('MealPlannerFirebaseDataSource: Stream error: $error');
         throw MealPlannerDataSourceException(
           'Failed to stream weekly meal plan: ${error.toString()}',
         );
@@ -199,7 +198,6 @@ class MealPlannerFirebaseDataSource implements MealPlannerDataSource {
       return weekPlan != null;
     } catch (e) {
       // If there's an error fetching, assume it doesn't exist
-      debugPrint('Error checking if meal plan exists: $e');
       return false;
     }
   }
