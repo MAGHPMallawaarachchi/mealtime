@@ -1,7 +1,10 @@
+import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../favorites/presentation/providers/favorites_providers.dart';
@@ -22,8 +25,11 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends ConsumerState<ProfileScreen>
     with SingleTickerProviderStateMixin {
   final _authService = AuthService();
+  final _imagePicker = ImagePicker();
   User? _user;
+  String? _profilePictureUrl;
   bool _isLoading = false;
+  bool _isUploadingPhoto = false;
   late TabController _tabController;
 
   @override
@@ -37,9 +43,110 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadUserProfilePicture();
       ref.read(favoritesProvider.notifier).loadUserFavorites();
       ref.read(userRecipesProvider.notifier).loadUserRecipes();
     });
+  }
+
+  Future<void> _loadUserProfilePicture() async {
+    try {
+      final profilePictureUrl = await _authService.getUserProfilePictureUrl();
+      print('Loaded profile picture URL: ${profilePictureUrl?.substring(0, 50)}...'); // Debug log
+      if (mounted) {
+        setState(() {
+          _profilePictureUrl = profilePictureUrl;
+        });
+      }
+    } catch (e) {
+      // If there's an error loading the profile picture, just use the default
+      print('Error loading profile picture: $e');
+    }
+  }
+
+  Widget _buildProfileImage() {
+    print('Building profile image. URL: ${_profilePictureUrl != null ? _profilePictureUrl!.substring(0, 30) + "..." : "null"}'); // Debug
+    
+    if (_profilePictureUrl == null || _profilePictureUrl!.isEmpty) {
+      print('No profile picture URL, showing default icon'); // Debug
+      return PhosphorIcon(
+        PhosphorIcons.user(),
+        size: 60,
+        color: AppColors.primary,
+      );
+    }
+
+    // Check if it's a base64 data URL
+    if (_profilePictureUrl!.startsWith('data:image/')) {
+      print('Loading base64 image'); // Debug
+      try {
+        final base64String = _profilePictureUrl!.split(',')[1];
+        final bytes = base64Decode(base64String);
+        print('Successfully decoded base64 image, ${bytes.length} bytes'); // Debug
+        return ClipOval(
+          child: SizedBox(
+            width: 120,
+            height: 120,
+            child: Image.memory(
+              bytes,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                print('Image.memory error: $error'); // Debug
+                return PhosphorIcon(
+                  PhosphorIcons.user(),
+                  size: 60,
+                  color: AppColors.primary,
+                );
+              },
+            ),
+          ),
+        );
+      } catch (e) {
+        print('Error decoding base64 image: $e');
+        return PhosphorIcon(
+          PhosphorIcons.user(),
+          size: 60,
+          color: AppColors.primary,
+        );
+      }
+    }
+
+    // Regular HTTP URL
+    print('Loading HTTP image'); // Debug
+    return ClipOval(
+      child: SizedBox(
+        width: 120,
+        height: 120,
+        child: Image.network(
+          _profilePictureUrl!,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            print('Image.network error: $error'); // Debug
+            return PhosphorIcon(
+              PhosphorIcons.user(),
+              size: 60,
+              color: AppColors.primary,
+            );
+          },
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Center(
+              child: SizedBox(
+                width: 30,
+                height: 30,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                      : null,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -108,6 +215,85 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  Future<void> _updateProfilePicture() async {
+    final ImageSource? source = await _showImageSourceDialog();
+    if (source == null) return;
+
+    try {
+      final XFile? pickedFile = await _imagePicker.pickImage(
+        source: source,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+
+      if (pickedFile != null && mounted) {
+        setState(() => _isUploadingPhoto = true);
+        
+        final imageFile = File(pickedFile.path);
+        await _authService.updateUserProfilePicture(imageFile);
+        
+        // Refresh profile picture URL from Firestore
+        await _loadUserProfilePicture();
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Profile picture updated successfully'),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update profile picture: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isUploadingPhoto = false);
+      }
+    }
+  }
+
+  Future<ImageSource?> _showImageSourceDialog() async {
+    return await showDialog<ImageSource>(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: PhosphorIcon(
+          PhosphorIcons.camera(),
+          size: 24,
+          color: AppColors.primary,
+        ),
+        title: const Text('Update Profile Picture'),
+        content: const Text('Choose where to get your profile photo from:'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton.icon(
+            onPressed: () => Navigator.of(context).pop(ImageSource.camera),
+            icon: PhosphorIcon(PhosphorIcons.camera()),
+            label: const Text('Camera'),
+          ),
+          TextButton.icon(
+            onPressed: () => Navigator.of(context).pop(ImageSource.gallery),
+            icon: PhosphorIcon(PhosphorIcons.image()),
+            label: const Text('Gallery'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -201,16 +387,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               CircleAvatar(
                 radius: 60,
                 backgroundColor: AppColors.primary.withOpacity(0.2),
-                backgroundImage: _user?.photoURL != null
-                    ? NetworkImage(_user!.photoURL!)
-                    : null,
-                child: _user?.photoURL == null
-                    ? PhosphorIcon(
-                        PhosphorIcons.user(),
-                        size: 60,
-                        color: AppColors.primary,
-                      )
-                    : null,
+                child: _buildProfileImage(),
               ),
               Positioned(
                 bottom: 0,
@@ -223,19 +400,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     border: Border.all(color: Colors.white, width: 2),
                   ),
                   child: IconButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Edit profile photo coming soon'),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    },
-                    icon: PhosphorIcon(
-                      PhosphorIcons.camera(),
-                      color: Colors.white,
-                      size: 16,
-                    ),
+                    onPressed: _isUploadingPhoto ? null : _updateProfilePicture,
+                    icon: _isUploadingPhoto
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : PhosphorIcon(
+                            PhosphorIcons.camera(),
+                            color: Colors.white,
+                            size: 16,
+                          ),
                     style: IconButton.styleFrom(
                       padding: const EdgeInsets.all(8),
                       minimumSize: Size.zero,

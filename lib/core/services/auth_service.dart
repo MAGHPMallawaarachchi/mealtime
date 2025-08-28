@@ -1,6 +1,9 @@
+import 'dart:io';
+import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image/image.dart' as img;
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -103,6 +106,90 @@ class AuthService {
         'updatedAt': FieldValue.serverTimestamp(),
         'householdId': null,
       });
+    }
+  }
+
+  Future<String> updateUserProfilePicture(File imageFile) async {
+    final user = currentUser;
+    if (user == null) {
+      throw Exception('No user is currently signed in');
+    }
+
+    try {
+      // Process and compress image
+      final base64Image = await _processProfileImageToBase64(imageFile);
+      
+      // Create data URL for storage - smaller size for better performance
+      final dataURL = 'data:image/jpeg;base64,$base64Image';
+      
+      // Update Firestore user document with base64 - this is our primary source
+      await _updateUserDocument(user.uid, {
+        'customProfilePicture': base64Image, // Primary storage for profile picture
+        'photoURL': dataURL, // Backup reference
+      });
+      
+      // Don't update Firebase Auth photoURL with data URL as it has size limitations
+      // Instead, we'll use the Firestore data directly in the UI
+      
+      return dataURL;
+    } catch (e) {
+      throw Exception('Failed to update profile picture: ${e.toString()}');
+    }
+  }
+
+  Future<String> _processProfileImageToBase64(File imageFile) async {
+    try {
+      // Read and decode image
+      final bytes = await imageFile.readAsBytes();
+      final image = img.decodeImage(bytes);
+      
+      if (image == null) {
+        throw Exception('Invalid image file');
+      }
+
+      // Create a square crop from the center to avoid distortion
+      final size = image.width < image.height ? image.width : image.height;
+      final x = (image.width - size) ~/ 2;
+      final y = (image.height - size) ~/ 2;
+      final cropped = img.copyCrop(image, x: x, y: y, width: size, height: size);
+      
+      // Resize to 200x200 and compress more for smaller base64 storage
+      final resized = img.copyResize(cropped, width: 200, height: 200);
+      final processedBytes = img.encodeJpg(resized, quality: 75);
+      
+      // Convert to base64
+      final base64Image = base64Encode(processedBytes);
+      
+      return base64Image;
+    } catch (e) {
+      throw Exception('Failed to process image: ${e.toString()}');
+    }
+  }
+
+  Future<String?> getUserProfilePictureUrl() async {
+    final user = currentUser;
+    if (user == null) return null;
+    
+    try {
+      final userDoc = await _firestore.collection('users').doc(user.uid).get();
+      final data = userDoc.data();
+      
+      // Return custom profile picture URL if available, otherwise return Firebase Auth photoURL
+      return data?['photoURL'] as String? ?? user.photoURL;
+    } catch (e) {
+      // Fallback to Firebase Auth profile picture
+      return user.photoURL;
+    }
+  }
+
+  Future<void> _updateUserDocument(String uid, Map<String, dynamic> data) async {
+    try {
+      await _firestore.collection('users').doc(uid).update({
+        ...data,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      throw Exception('Failed to update user document: ${e.toString()}');
     }
   }
 

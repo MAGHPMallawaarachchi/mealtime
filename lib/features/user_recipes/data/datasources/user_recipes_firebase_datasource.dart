@@ -1,19 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
+import 'dart:convert';
+import 'package:image/image.dart' as img;
 import '../../domain/models/user_recipe.dart';
 
 class UserRecipesFirebaseDataSource {
   final FirebaseFirestore _firestore;
-  final FirebaseStorage _storage;
 
   UserRecipesFirebaseDataSource({
     FirebaseFirestore? firestore,
-    FirebaseStorage? storage,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _storage = storage ?? FirebaseStorage.instance;
+  })  : _firestore = firestore ?? FirebaseFirestore.instance;
 
   CollectionReference<Map<String, dynamic>> _getUserRecipesCollection(String userId) {
     return _firestore.collection('users').doc(userId).collection('user_recipes');
@@ -133,25 +131,44 @@ class UserRecipesFirebaseDataSource {
 
   Future<String?> uploadRecipeImage(String userId, String recipeId, File imageFile) async {
     try {
+      // Process image to base64
+      final base64Image = await _processRecipeImageToBase64(imageFile);
       
-      final ref = _storage.ref().child('user_recipes/$userId/$recipeId/${DateTime.now().millisecondsSinceEpoch}.jpg');
-      final uploadTask = ref.putFile(imageFile);
-      final snapshot = await uploadTask;
-      final downloadUrl = await snapshot.ref.getDownloadURL();
+      // Create data URL
+      final dataURL = 'data:image/jpeg;base64,$base64Image';
       
-      return downloadUrl;
+      return dataURL;
     } catch (e) {
-      throw Exception('Failed to upload image: $e');
+      throw Exception('Failed to process image: $e');
+    }
+  }
+
+  Future<String> _processRecipeImageToBase64(File imageFile) async {
+    try {
+      // Read and decode image
+      final bytes = await imageFile.readAsBytes();
+      final image = img.decodeImage(bytes);
+      
+      if (image == null) {
+        throw Exception('Invalid image file');
+      }
+
+      // Resize to 512x512 and compress (larger for recipe images)
+      final resized = img.copyResize(image, width: 512, height: 512);
+      final processedBytes = img.encodeJpg(resized, quality: 85);
+      
+      // Convert to base64
+      final base64Image = base64Encode(processedBytes);
+      
+      return base64Image;
+    } catch (e) {
+      throw Exception('Failed to process image: ${e.toString()}');
     }
   }
 
   Future<void> deleteRecipeImage(String imageUrl) async {
-    try {
-      
-      final ref = _storage.refFromURL(imageUrl);
-      await ref.delete();
-      
-    } catch (e) {
-    }
+    // With base64 storage, no separate cleanup needed
+    // Image data is part of the recipe document
+    return;
   }
 }

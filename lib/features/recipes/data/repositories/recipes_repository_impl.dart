@@ -20,30 +20,25 @@ class RecipesRepositoryImpl implements RecipesRepository {
   Future<List<Recipe>> getRecipes({bool forceRefresh = false}) async {
     try {
       if (!forceRefresh && await _localDataSource.isCacheValid()) {
-        debugPrint('RecipesRepository: Loading from cache');
         final cachedRecipes = await _localDataSource.getRecipes();
         if (cachedRecipes.isNotEmpty) {
           return cachedRecipes;
         }
       }
 
-      debugPrint('RecipesRepository: Fetching from remote');
       final remoteRecipes = await _remoteDataSource.getRecipes();
       
       await _localDataSource.cacheRecipes(remoteRecipes);
       
       return remoteRecipes;
     } catch (e) {
-      debugPrint('RecipesRepository: Remote fetch failed, trying cache: $e');
       
       try {
         final cachedRecipes = await _localDataSource.getRecipes();
         if (cachedRecipes.isNotEmpty) {
-          debugPrint('RecipesRepository: Returning cached data due to remote failure');
           return cachedRecipes;
         }
       } catch (cacheError) {
-        debugPrint('RecipesRepository: Cache also failed: $cacheError');
       }
       
       throw RecipesRepositoryException(
@@ -56,7 +51,6 @@ class RecipesRepositoryImpl implements RecipesRepository {
   Stream<List<Recipe>> getRecipesStream() {
     try {
       return _remoteDataSource.getRecipesStream().handleError((error) {
-        debugPrint('RecipesRepository: Stream error: $error');
         throw RecipesRepositoryException(
           'Failed to stream recipes: ${error.toString()}',
         );
@@ -78,12 +72,10 @@ class RecipesRepositoryImpl implements RecipesRepository {
 
       return await _localDataSource.getRecipe(id);
     } catch (e) {
-      debugPrint('RecipesRepository: Failed to get recipe by id: $e');
       
       try {
         return await _localDataSource.getRecipe(id);
       } catch (cacheError) {
-        debugPrint('RecipesRepository: Cache lookup also failed: $cacheError');
       }
       
       throw RecipesRepositoryException(
@@ -184,7 +176,6 @@ class RecipesRepositoryImpl implements RecipesRepository {
   @override
   Future<void> refreshRecipes() async {
     try {
-      debugPrint('RecipesRepository: Force refreshing recipes');
       await getRecipes(forceRefresh: true);
     } catch (e) {
       throw RecipesRepositoryException(

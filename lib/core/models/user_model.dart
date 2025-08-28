@@ -5,6 +5,7 @@ class UserModel {
   final String email;
   final String? displayName;
   final String? photoURL;
+  final String? customProfilePicture; // base64 encoded custom profile picture
   final String? householdId;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -14,6 +15,7 @@ class UserModel {
     required this.email,
     this.displayName,
     this.photoURL,
+    this.customProfilePicture,
     this.householdId,
     required this.createdAt,
     required this.updatedAt,
@@ -27,6 +29,7 @@ class UserModel {
       email: data['email'] ?? '',
       displayName: data['displayName'],
       photoURL: data['photoURL'],
+      customProfilePicture: data['customProfilePicture'],
       householdId: data['householdId'],
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
@@ -39,6 +42,7 @@ class UserModel {
       'email': email,
       'displayName': displayName,
       'photoURL': photoURL,
+      'customProfilePicture': customProfilePicture,
       'householdId': householdId,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
@@ -50,6 +54,7 @@ class UserModel {
     String? email,
     String? displayName,
     String? photoURL,
+    String? customProfilePicture,
     String? householdId,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -59,6 +64,7 @@ class UserModel {
       email: email ?? this.email,
       displayName: displayName ?? this.displayName,
       photoURL: photoURL ?? this.photoURL,
+      customProfilePicture: customProfilePicture ?? this.customProfilePicture,
       householdId: householdId ?? this.householdId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -74,6 +80,7 @@ class UserModel {
       other.email == email &&
       other.displayName == displayName &&
       other.photoURL == photoURL &&
+      other.customProfilePicture == customProfilePicture &&
       other.householdId == householdId &&
       other.createdAt == createdAt &&
       other.updatedAt == updatedAt;
@@ -85,6 +92,7 @@ class UserModel {
       email.hashCode ^
       displayName.hashCode ^
       photoURL.hashCode ^
+      customProfilePicture.hashCode ^
       householdId.hashCode ^
       createdAt.hashCode ^
       updatedAt.hashCode;
@@ -92,6 +100,6 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, email: $email, displayName: $displayName, photoURL: $photoURL, householdId: $householdId, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserModel(uid: $uid, email: $email, displayName: $displayName, photoURL: $photoURL, customProfilePicture: ${customProfilePicture != null ? '[base64 data]' : 'null'}, householdId: $householdId, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }

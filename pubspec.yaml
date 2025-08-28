@@ -50,7 +50,6 @@ dependencies:
   firebase_core: ^3.15.2
   firebase_auth: ^5.7.0
   cloud_firestore: ^5.4.3
-  firebase_storage: ^12.3.2
   google_sign_in: ^6.2.1
   
   # Icons
@@ -74,6 +73,9 @@ dependencies:
   
   # Image picker
   image_picker: ^1.1.2
+  
+  # Image processing
+  image: ^4.2.0
 
 dev_dependencies:
   flutter_test:
