@@ -1,4 +1,5 @@
 import '../../../recipes/domain/models/recipe.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum DifficultyLevel { easy, medium, hard }
 
@@ -187,14 +188,35 @@ class UserRecipe {
           ? RecipeMacros.fromJson(json['macros'] as Map<String, dynamic>)
           : const RecipeMacros(protein: 0, carbs: 0, fats: 0, fiber: 0),
       source: json['source'] as String?,
-      createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'] as String)
-          : DateTime.now(),
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'] as String)
-          : DateTime.now(),
+      createdAt: _parseDateTime(json['createdAt']),
+      updatedAt: _parseDateTime(json['updatedAt']),
       isPublic: json['isPublic'] as bool? ?? false,
     );
+  }
+
+  static DateTime _parseDateTime(dynamic dateValue) {
+    if (dateValue == null) return DateTime.now();
+    
+    // Handle Firestore Timestamp
+    if (dateValue is Timestamp) {
+      return dateValue.toDate();
+    }
+    
+    // Handle String (ISO format)
+    if (dateValue is String) {
+      try {
+        return DateTime.parse(dateValue);
+      } catch (e) {
+        return DateTime.now();
+      }
+    }
+    
+    // Handle DateTime (already parsed)
+    if (dateValue is DateTime) {
+      return dateValue;
+    }
+    
+    return DateTime.now();
   }
 
   @override
