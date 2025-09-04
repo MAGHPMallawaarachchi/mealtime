@@ -237,7 +237,7 @@ class _PersonalizedRecommendationsSectionState
     }
 
     return SizedBox(
-      height: 320,
+      height: 280,
       child: Stack(
         children: [
           // Subtle gradient background
@@ -342,36 +342,21 @@ class _PersonalizedRecommendationsSectionState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Recipe Card
+              // Recipe Card with embedded recommendation reason
               Expanded(
-                child: ExploreRecipeCard(
-                  recipe: recipe!,
-                  onAddToMealPlan: _onAddToMealPlan,
-                ),
-              ),
-              // Recommendation reason and score
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.primary.withOpacity(0.02),
-                      AppColors.primaryLight.withOpacity(0.01),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  border: Border(
-                    top: BorderSide(
-                      color: AppColors.border.withOpacity(0.5),
-                      width: 0.5,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Stack(
                   children: [
-                    Expanded(child: _buildRecommendationReason(recommendation)),
+                    ExploreRecipeCard(
+                      recipe: recipe!,
+                      onAddToMealPlan: _onAddToMealPlan,
+                    ),
+                    // Recommendation reason overlay at the bottom
+                    Positioned(
+                      bottom: 12,
+                      left: 12,
+                      right: 12,
+                      child: _buildRecommendationReason(recommendation),
+                    ),
                   ],
                 ),
               ),

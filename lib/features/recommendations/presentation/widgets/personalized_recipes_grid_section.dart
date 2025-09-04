@@ -204,35 +204,12 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
         itemCount: displayedRecipes.length,
         itemBuilder: (context, index) {
           final recipe = displayedRecipes[index];
-          final recommendation = recommendationMap[recipe.id];
 
           return ExploreRecipeCard(
             recipe: recipe,
             onAddToMealPlan: onAddToMealPlan,
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildRecommendationReason(RecommendationScore recommendation) {
-    return Container(
-      margin: const EdgeInsets.only(top: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        recommendation.reason,
-        style: const TextStyle(
-          fontSize: 10,
-          color: AppColors.primary,
-          fontWeight: FontWeight.w500,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.center,
       ),
     );
   }
