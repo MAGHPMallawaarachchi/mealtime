@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../recommendations/presentation/widgets/personalized_recommendations_section.dart';
 import '../widgets/todays_meal_plan_section.dart';
 import '../widgets/category_section.dart';
 import '../widgets/seasonal_spotlight_section.dart';
@@ -79,7 +80,10 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 10),
               const SeasonalSpotlightSection(),
               const SizedBox(height: 20),
+
               const TodaysMealPlanSection(),
+              const SizedBox(height: 20),
+              const PersonalizedRecommendationsSection(),
               const SizedBox(height: 20),
               const CategorySection(),
               const SizedBox(height: 20),

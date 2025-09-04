@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealtime/features/recipes/domain/models/recipe.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/providers/auth_providers.dart';
+import '../../../../core/models/user_interaction.dart';
 import '../../../recipes/domain/usecases/get_recipes_usecase.dart';
 import '../../../recipes/domain/usecases/search_recipes_usecase.dart';
 import '../../../recipes/domain/usecases/get_recipes_by_category_usecase.dart';
 import '../../../recipes/data/repositories/recipes_repository_impl.dart';
+import '../../../pantry/presentation/providers/pantry_providers.dart';
+import '../../../recommendations/presentation/widgets/personalized_recipes_grid_section.dart';
+import '../../../recommendations/presentation/providers/recommendation_provider.dart';
 import '../widgets/explore_search_bar.dart';
-import '../widgets/featured_recipes_section.dart';
 import '../widgets/explore_categories_section.dart';
 import '../widgets/recipes_grid_section.dart';
 import '../../../favorites/presentation/providers/favorites_providers.dart';
@@ -21,8 +25,6 @@ class ExploreScreen extends ConsumerStatefulWidget {
 
 class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   final TextEditingController _searchController = TextEditingController();
-  final GlobalKey<State<FeaturedRecipesSection>> _featuredRecipesKey =
-      GlobalKey<State<FeaturedRecipesSection>>();
   String? _selectedCategory;
   String _searchQuery = '';
   List<Recipe> _filteredRecipes = [];
@@ -42,6 +44,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     _initializeDependencies();
     _loadRecipes();
     _loadFavorites();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeRecommendations();
+    });
   }
 
   void _loadFavorites() {
@@ -103,7 +108,29 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     }
   }
 
+  void _initializeRecommendations() async {
+    final currentUser = ref.read(currentUserProvider).value;
+    if (currentUser == null) return;
+
+    final allRecipes = await _getRecipesUseCase.execute();
+    final pantryItems = ref.read(pantryProvider).items;
+
+    await ref.read(recommendationProvider.notifier).generateRecommendations(
+      user: currentUser,
+      allRecipes: allRecipes,
+      pantryItems: pantryItems,
+    );
+  }
+
   void _onSearchChanged(String query) {
+    final currentUser = ref.read(currentUserProvider).value;
+    if (currentUser != null && query.isNotEmpty) {
+      ref.recordSearchInteraction(
+        userId: currentUser.uid,
+        query: query,
+      );
+    }
+
     setState(() {
       _searchQuery = query;
     });
@@ -111,6 +138,14 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   }
 
   void _onCategorySelected(String? category) {
+    final currentUser = ref.read(currentUserProvider).value;
+    if (currentUser != null && category != null) {
+      ref.recordCategoryInteraction(
+        userId: currentUser.uid,
+        category: category,
+      );
+    }
+
     setState(() {
       _selectedCategory = category;
     });
@@ -165,13 +200,22 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   }
 
   Future<void> _refreshData() async {
-    // Refresh both the main recipes and featured recipes with force refresh
-    await Future.wait([
-      _loadRecipes(forceRefresh: true),
-      (_featuredRecipesKey.currentState as FeaturedRecipesSectionController?)
-              ?.refreshFeaturedRecipes() ??
-          Future.value(),
-    ]);
+    // Refresh recipes and recommendations
+    await _loadRecipes(forceRefresh: true);
+    
+    // Refresh recommendations if user is available
+    final currentUser = ref.read(currentUserProvider).value;
+    if (currentUser != null) {
+      final allRecipes = await _getRecipesUseCase.execute(forceRefresh: true);
+      final pantryItems = ref.read(pantryProvider).items;
+      
+      await ref.read(recommendationProvider.notifier).generateRecommendations(
+        user: currentUser,
+        allRecipes: allRecipes,
+        pantryItems: pantryItems,
+        forceRefresh: true,
+      );
+    }
   }
 
   @override
@@ -204,14 +248,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
             hintText: 'Search recipes, ingredients...',
           ),
           const SizedBox(height: 20),
-          FeaturedRecipesSection(key: _featuredRecipesKey),
-          const SizedBox(height: 24),
           ExploreCategoriesSection(
             selectedCategory: _selectedCategory,
             onCategorySelected: _onCategorySelected,
           ),
           const SizedBox(height: 24),
-          RecipesGridSection(
+          PersonalizedRecipesGridSection(
             recipes: _filteredRecipes,
             selectedCategory: _selectedCategory,
             favoriteRecipes: _favoriteRecipes,

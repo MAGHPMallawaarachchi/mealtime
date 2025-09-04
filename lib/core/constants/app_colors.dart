@@ -20,6 +20,7 @@ class AppColors {
 
   // Background colors
   static const Color background = Colors.white;
+  static const Color surface = Color(0xFFF5F5F5);
 
   // Border colors
   static const Color border = Color(0xFFE0E0E0);

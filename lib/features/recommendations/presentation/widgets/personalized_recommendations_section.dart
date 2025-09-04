@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/models/recommendation_score.dart';
+import '../../../../core/models/user_interaction.dart';
 import '../../../../core/providers/auth_providers.dart';
 import '../../../recipes/domain/models/recipe.dart';
 import '../../../explore/presentation/widgets/explore_recipe_card.dart';
@@ -13,38 +14,37 @@ class PersonalizedRecommendationsSection extends ConsumerStatefulWidget {
   const PersonalizedRecommendationsSection({super.key});
 
   @override
-  ConsumerState<PersonalizedRecommendationsSection> createState() => 
+  ConsumerState<PersonalizedRecommendationsSection> createState() =>
       _PersonalizedRecommendationsSectionState();
 }
 
-class _PersonalizedRecommendationsSectionState 
+class _PersonalizedRecommendationsSectionState
     extends ConsumerState<PersonalizedRecommendationsSection> {
-  
   int _currentSectionIndex = 0;
-  
+
   final List<RecommendationSectionConfig> _sections = [
     RecommendationSectionConfig(
       title: "Perfect for Your Pantry",
       subtitle: "Use up your ingredients",
-      icon: PhosphorIcons.forkKnife,
+      icon: PhosphorIconsRegular.forkKnife,
       type: RecommendationSectionType.pantry,
     ),
     RecommendationSectionConfig(
       title: "Just for You",
       subtitle: "Based on your preferences",
-      icon: PhosphorIcons.heart,
+      icon: PhosphorIconsRegular.heart,
       type: RecommendationSectionType.personalized,
     ),
     RecommendationSectionConfig(
       title: "Quick Weeknight Meals",
       subtitle: "Ready in 30 minutes or less",
-      icon: PhosphorIcons.clock,
+      icon: PhosphorIconsRegular.clock,
       type: RecommendationSectionType.quick,
     ),
     RecommendationSectionConfig(
       title: "Seasonal Favorites",
       subtitle: "Perfect for this time of year",
-      icon: PhosphorIcons.leaf,
+      icon: PhosphorIconsRegular.leaf,
       type: RecommendationSectionType.seasonal,
     ),
   ];
@@ -52,7 +52,7 @@ class _PersonalizedRecommendationsSectionState
   @override
   Widget build(BuildContext context) {
     final recommendationsAsync = ref.watch(recommendationProvider);
-    
+
     return recommendationsAsync.when(
       data: (batch) {
         if (batch == null || batch.recommendations.isEmpty) {
@@ -68,11 +68,13 @@ class _PersonalizedRecommendationsSectionState
   Widget _buildRecommendationsContent(RecommendationBatch batch) {
     final currentSection = _sections[_currentSectionIndex];
     final recommendations = _getRecommendationsForSection(currentSection.type);
-    
+
     if (recommendations.isEmpty) {
       // If current section is empty, try to find a section with recommendations
       for (int i = 0; i < _sections.length; i++) {
-        final sectionRecommendations = _getRecommendationsForSection(_sections[i].type);
+        final sectionRecommendations = _getRecommendationsForSection(
+          _sections[i].type,
+        );
         if (sectionRecommendations.isNotEmpty) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             setState(() => _currentSectionIndex = i);
@@ -82,17 +84,34 @@ class _PersonalizedRecommendationsSectionState
       }
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader(currentSection),
-        const SizedBox(height: 16),
-        _buildRecipesList(recommendations),
-      ],
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 400),
+      transitionBuilder: (child, animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: animation.drive(
+              Tween(begin: const Offset(0, 0.1), end: Offset.zero),
+            ),
+            child: child,
+          ),
+        );
+      },
+      child: Column(
+        key: ValueKey(_currentSectionIndex),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(currentSection),
+          const SizedBox(height: 24),
+          _buildRecipesList(recommendations),
+        ],
+      ),
     );
   }
 
-  List<RecommendationScore> _getRecommendationsForSection(RecommendationSectionType type) {
+  List<RecommendationScore> _getRecommendationsForSection(
+    RecommendationSectionType type,
+  ) {
     switch (type) {
       case RecommendationSectionType.pantry:
         return ref.watch(pantryBasedRecommendationsProvider).take(10).toList();
@@ -106,45 +125,71 @@ class _PersonalizedRecommendationsSectionState
   }
 
   Widget _buildSectionHeader(RecommendationSectionConfig section) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: PhosphorIcon(
-            section.icon,
-            size: 20,
-            color: AppColors.primary,
-          ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primary.withOpacity(0.05),
+            AppColors.primaryLight.withOpacity(0.02),
+          ],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                section.title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.primary.withOpacity(0.1), width: 1),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.primary, AppColors.primaryLight],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              Text(
-                section.subtitle,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
-              ),
-            ],
+              ],
+            ),
+            child: PhosphorIcon(section.icon, size: 22, color: AppColors.white),
           ),
-        ),
-        _buildSectionTabs(),
-      ],
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  section.title,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  section.subtitle,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary.withOpacity(0.8),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _buildSectionTabs(),
+        ],
+      ),
     );
   }
 
@@ -154,15 +199,31 @@ class _PersonalizedRecommendationsSectionState
         _sections.length,
         (index) => GestureDetector(
           onTap: () => setState(() => _currentSectionIndex = index),
-          child: Container(
-            margin: const EdgeInsets.only(left: 4),
-            width: 8,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            margin: const EdgeInsets.only(left: 6),
+            width: index == _currentSectionIndex ? 24 : 8,
             height: 8,
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
+              borderRadius: BorderRadius.circular(4),
+              gradient: index == _currentSectionIndex
+                  ? LinearGradient(
+                      colors: [AppColors.primary, AppColors.primaryLight],
+                    )
+                  : null,
               color: index == _currentSectionIndex
-                  ? AppColors.primary
-                  : AppColors.textSecondary.withOpacity(0.3),
+                  ? null
+                  : AppColors.textSecondary.withOpacity(0.2),
+              boxShadow: index == _currentSectionIndex
+                  ? [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.4),
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
+                      ),
+                    ]
+                  : null,
             ),
           ),
         ),
@@ -176,32 +237,66 @@ class _PersonalizedRecommendationsSectionState
     }
 
     return SizedBox(
-      height: 280,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: recommendations.length,
-        itemBuilder: (context, index) {
-          final recommendation = recommendations[index];
-          return _buildRecommendationCard(recommendation, index);
-        },
+      height: 320,
+      child: Stack(
+        children: [
+          // Subtle gradient background
+          Container(
+            height: 320,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  AppColors.primary.withOpacity(0.01),
+                  Colors.transparent,
+                ],
+                stops: const [0.0, 0.5, 1.0],
+              ),
+            ),
+          ),
+          // Recipe cards list
+          ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            physics: const BouncingScrollPhysics(),
+            itemCount: recommendations.length,
+            itemBuilder: (context, index) {
+              final recommendation = recommendations[index];
+              return AnimatedContainer(
+                duration: Duration(milliseconds: 200 + (index * 50)),
+                curve: Curves.easeOutBack,
+                child: _buildRecommendationCard(
+                  recommendation,
+                  index,
+                  recommendations.length,
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildRecommendationCard(RecommendationScore recommendation, int index) {
+  Widget _buildRecommendationCard(
+    RecommendationScore recommendation,
+    int index,
+    int totalCount,
+  ) {
     final recipesState = ref.watch(recipesProvider);
-    
+
     // Handle loading state
     if (recipesState.isLoading) {
-      return _buildRecipeCardSkeleton();
+      return _buildRecipeCardSkeleton(index);
     }
-    
+
     // Handle error state
     if (recipesState.error != null) {
       return _buildRecipeCardError();
     }
-    
+
     // Find the recipe
     final recipe = recipesState.recipes.cast<Recipe?>().firstWhere(
       (r) => r?.id == recommendation.recipeId,
@@ -218,81 +313,207 @@ class _PersonalizedRecommendationsSectionState
     );
 
     return Container(
-      width: 200,
+      width: 220,
       margin: EdgeInsets.only(
-        left: index == 0 ? 0 : 12,
-        right: index == recommendations.length - 1 ? 16 : 0,
+        left: index == 0 ? 0 : 16,
+        right: index == totalCount - 1 ? 16 : 0,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: ExploreRecipeCard(
-              recipe: recipe!,
-              onTap: () => _onRecipeTap(recipe),
-              onFavoriteToggle: () => _onFavoriteToggle(recipe),
-              isFavorite: false, // This will be managed by the parent
-              onAddToMealPlan: () => _onAddToMealPlan(recipe),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: AppColors.border.withOpacity(0.3),
+              width: 1,
             ),
           ),
-          const SizedBox(height: 8),
-          _buildRecommendationReason(recommendation),
-        ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Recipe Card
+              Expanded(
+                child: ExploreRecipeCard(
+                  recipe: recipe!,
+                  onAddToMealPlan: _onAddToMealPlan,
+                ),
+              ),
+              // Recommendation reason and score
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.primary.withOpacity(0.02),
+                      AppColors.primaryLight.withOpacity(0.01),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  border: Border(
+                    top: BorderSide(
+                      color: AppColors.border.withOpacity(0.5),
+                      width: 0.5,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(child: _buildRecommendationReason(recommendation)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildRecommendationReason(RecommendationScore recommendation) {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primary.withOpacity(0.08),
+            AppColors.primaryLight.withOpacity(0.12),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.primary.withOpacity(0.2),
+          width: 0.5,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          PhosphorIcon(
+            PhosphorIconsRegular.sparkle,
+            size: 12,
+            color: AppColors.primary,
+          ),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              recommendation.reason,
+              style: TextStyle(
+                fontSize: 11,
+                color: AppColors.primary.withOpacity(0.9),
+                fontWeight: FontWeight.w600,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMatchScore(double score) {
+    final percentage = (score * 100).round();
+    final color = score >= 0.8
+        ? AppColors.success
+        : score >= 0.6
+        ? AppColors.primary
+        : AppColors.warning;
+
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3), width: 0.5),
       ),
-      child: Text(
-        recommendation.reason,
-        style: const TextStyle(
-          fontSize: 11,
-          color: AppColors.primary,
-          fontWeight: FontWeight.w500,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          PhosphorIcon(PhosphorIconsRegular.percent, size: 10, color: color),
+          const SizedBox(width: 2),
+          Text(
+            '$percentage',
+            style: TextStyle(
+              fontSize: 11,
+              color: color,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildEmptySection() {
     return Container(
-      height: 160,
+      height: 200,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        gradient: LinearGradient(
+          colors: [
+            AppColors.surface.withOpacity(0.3),
+            AppColors.primary.withOpacity(0.02),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppColors.border.withOpacity(0.3),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
-      child: const Center(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            PhosphorIcon(
-              PhosphorIcons.cookingPot,
-              size: 32,
-              color: AppColors.textSecondary,
-            ),
-            SizedBox(height: 8),
-            Text(
-              'No recommendations yet',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 14,
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const PhosphorIcon(
+                PhosphorIconsRegular.sparkle,
+                size: 36,
+                color: AppColors.primary,
               ),
             ),
+            const SizedBox(height: 16),
+            const Text(
+              'No recommendations yet',
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 4),
             Text(
               'Try adding items to your pantry',
               style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 12,
+                color: AppColors.textSecondary.withOpacity(0.8),
+                fontSize: 14,
               ),
             ),
           ],
@@ -307,7 +528,7 @@ class _PersonalizedRecommendationsSectionState
       child: const Column(
         children: [
           PhosphorIcon(
-            PhosphorIcons.sparkle,
+            PhosphorIconsRegular.sparkle,
             size: 48,
             color: AppColors.textSecondary,
           ),
@@ -324,10 +545,7 @@ class _PersonalizedRecommendationsSectionState
           Text(
             'Add items to your pantry and set your preferences to get personalized recipe recommendations.',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -336,55 +554,96 @@ class _PersonalizedRecommendationsSectionState
 
   Widget _buildLoadingState() {
     return Container(
-      height: 280,
+      height: 320,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: 3,
-        itemBuilder: (context, index) => _buildRecipeCardSkeleton(),
+        itemBuilder: (context, index) => AnimatedContainer(
+          duration: Duration(milliseconds: 200 + (index * 100)),
+          curve: Curves.easeOutBack,
+          child: _buildRecipeCardSkeleton(index),
+        ),
       ),
     );
   }
 
-  Widget _buildRecipeCardSkeleton() {
+  Widget _buildRecipeCardSkeleton(int index) {
     return Container(
-      width: 200,
-      margin: const EdgeInsets.only(right: 12),
+      width: 220,
+      margin: EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withOpacity(0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: const Column(
+      child: Column(
         children: [
           Expanded(
             flex: 3,
-            child: DecoratedBox(
+            child: Container(
               decoration: BoxDecoration(
-                color: AppColors.border,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                color: AppColors.border.withOpacity(0.3),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
+              ),
+              child: const Center(
+                child: PhosphorIcon(
+                  PhosphorIconsRegular.image,
+                  size: 32,
+                  color: AppColors.textSecondary,
+                ),
               ),
             ),
           ),
           Expanded(
+            flex: 2,
             child: Padding(
-              padding: EdgeInsets.all(12),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  DecoratedBox(
+                  Container(
                     decoration: BoxDecoration(
-                      color: AppColors.border,
-                      borderRadius: BorderRadius.circular(4),
+                      color: AppColors.border.withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(6),
                     ),
-                    child: SizedBox(width: double.infinity, height: 16),
+                    child: const SizedBox(width: double.infinity, height: 18),
                   ),
-                  SizedBox(height: 8),
-                  DecoratedBox(
+                  const SizedBox(height: 12),
+                  Container(
                     decoration: BoxDecoration(
-                      color: AppColors.border,
+                      color: AppColors.border.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: SizedBox(width: 100, height: 12),
+                    child: const SizedBox(width: 120, height: 14),
+                  ),
+                  const Spacer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const SizedBox(width: 80, height: 24),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.border.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const SizedBox(width: 40, height: 24),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -409,17 +668,14 @@ class _PersonalizedRecommendationsSectionState
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             PhosphorIcon(
-              PhosphorIcons.warning,
+              PhosphorIconsRegular.warning,
               size: 24,
               color: AppColors.textSecondary,
             ),
             SizedBox(height: 8),
             Text(
               'Failed to load',
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
-              ),
+              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
             ),
           ],
         ),
@@ -433,7 +689,7 @@ class _PersonalizedRecommendationsSectionState
       child: Column(
         children: [
           const PhosphorIcon(
-            PhosphorIcons.warning,
+            PhosphorIconsRegular.warning,
             size: 48,
             color: AppColors.textSecondary,
           ),
@@ -450,10 +706,7 @@ class _PersonalizedRecommendationsSectionState
           const Text(
             'Please check your connection and try again.',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 16),
           ElevatedButton(
@@ -469,44 +722,17 @@ class _PersonalizedRecommendationsSectionState
     );
   }
 
-  void _onRecipeTap(Recipe recipe) {
-    final currentUser = ref.read(currentUserProvider).value;
-    if (currentUser == null) return;
-    
-    // Record interaction and navigate to recipe detail
-    ref.recordRecipeInteraction(
-      userId: currentUser.uid,
-      recipeId: recipe.id,
-      type: InteractionType.view,
-    );
-    
-    Navigator.pushNamed(context, '/recipe-detail', arguments: recipe);
-  }
-
-  void _onFavoriteToggle(Recipe recipe) {
-    final currentUser = ref.read(currentUserProvider).value;
-    if (currentUser == null) return;
-    
-    // This will be handled by the parent widget
-    // Record interaction
-    ref.recordRecipeInteraction(
-      userId: currentUser.uid,
-      recipeId: recipe.id,
-      type: InteractionType.favorite,
-    );
-  }
-
   void _onAddToMealPlan(Recipe recipe) {
     final currentUser = ref.read(currentUserProvider).value;
     if (currentUser == null) return;
-    
+
     // Record interaction and add to meal plan
     ref.recordRecipeInteraction(
       userId: currentUser.uid,
       recipeId: recipe.id,
       type: InteractionType.addToMealPlan,
     );
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${recipe.title} added to meal plan'),
@@ -535,9 +761,4 @@ class RecommendationSectionConfig {
   });
 }
 
-enum RecommendationSectionType {
-  pantry,
-  personalized,
-  quick,
-  seasonal,
-}
+enum RecommendationSectionType { pantry, personalized, quick, seasonal }
