@@ -71,7 +71,12 @@ function validateRecipeIngredient(ingredient) {
 }
 
 function validateIngredientSection(section) {
-  if (!section.id || !section.title || !Array.isArray(section.ingredients)) {
+  if (!section.id || !Array.isArray(section.ingredients)) {
+    return false;
+  }
+  
+  // Title can be null (will default to "Ingredients" in Dart model)
+  if (section.title !== null && typeof section.title !== 'string') {
     return false;
   }
   
