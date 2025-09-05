@@ -62,6 +62,14 @@ class PerformanceUtils {
     if (imageCache.currentSizeBytes > 100 * 1024 * 1024) { // 100MB threshold
       imageCache.clear();
     }
+    
+    // Force garbage collection hint for Dart VM
+    // Note: This is just a hint, the GC will decide when to actually run
+    if (imageCache.currentSizeBytes > 200 * 1024 * 1024) { // 200MB aggressive threshold
+      debugPrint('PerformanceUtils: Aggressive memory cleanup at ${(imageCache.currentSizeBytes / 1024 / 1024).toStringAsFixed(1)}MB');
+      imageCache.clearLiveImages();
+      imageCache.clear();
+    }
   }
 
   /// Debounce scroll events to reduce computational load

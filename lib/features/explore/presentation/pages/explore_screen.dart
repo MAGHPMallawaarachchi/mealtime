@@ -19,6 +19,8 @@ import '../../../favorites/presentation/providers/favorites_providers.dart';
 import '../providers/explore_pagination_provider.dart';
 import '../utils/pagination_utils.dart';
 import '../utils/performance_utils.dart';
+import '../utils/memory_manager.dart';
+import '../widgets/memory_optimized_scroll_controller.dart';
 
 class ExploreScreen extends ConsumerStatefulWidget {
   const ExploreScreen({super.key});
@@ -35,7 +37,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   final Set<String> _favoriteRecipes = <String>{}; // Local-only favorites
   bool _isLoading = true;
   String? _errorMessage;
-  late ScrollController _scrollController;
+  late MemoryOptimizedScrollController _scrollController;
   double _lastScrollOffset = 0;
 
   // Dependencies
@@ -47,8 +49,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   @override
   void initState() {
     super.initState();
-    _scrollController = PerformanceUtils.createOptimizedScrollController();
     _initializeDependencies();
+    // Initialize scroll controller after dependencies to get recipes
+    _initializeScrollController();
     _loadRecipes();
     _loadFavorites();
     _setupScrollListener();
@@ -71,11 +74,24 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       _recipesRepository,
     );
   }
+  
+  void _initializeScrollController() {
+    _scrollController = MemoryOptimizedScrollController(
+      allRecipes: _filteredRecipes,
+      itemsPerRow: 2,
+      estimatedItemHeight: 220,
+      debugLabel: 'ExploreScreenMemoryOptimizedScroll',
+    );
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
     _scrollController.dispose();
+    
+    // Clean up memory manager
+    InfiniteScrollMemoryManager.dispose();
+    
     super.dispose();
   }
 
@@ -95,6 +111,11 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
             _filteredRecipes = optimizedRecipes;
             _isLoading = false;
           });
+          
+          // Update scroll controller with new recipes
+          _scrollController.dispose();
+          _initializeScrollController();
+          _setupScrollListener();
           
           // Initialize pagination after recipes are loaded
           _updatePagination();
