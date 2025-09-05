@@ -1,9 +1,13 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/models/user_interaction.dart';
 import '../../../../core/models/recommendation_score.dart';
+import '../../../../core/providers/auth_providers.dart';
 import '../../../recipes/domain/models/recipe.dart';
+import '../../../recipes/presentation/providers/recipes_providers.dart';
 import '../../../pantry/domain/models/pantry_item.dart';
+import '../../../pantry/presentation/providers/pantry_providers.dart';
 import '../../domain/recommendation_engine.dart';
 import '../../data/user_analytics_service.dart';
 
@@ -140,25 +144,87 @@ final recommendationProvider = StateNotifierProvider<RecommendationNotifier, Asy
   return RecommendationNotifier(engine, analyticsService);
 });
 
-// Convenience providers for different types of recommendations
+// Reactive providers that properly watch state changes
 final pantryBasedRecommendationsProvider = Provider<List<RecommendationScore>>((ref) {
-  return ref.watch(recommendationProvider.notifier).getPantryBasedRecommendations();
+  final recommendationState = ref.watch(recommendationProvider);
+  return recommendationState.when(
+    data: (batch) => batch?.pantryBasedRecommendations ?? [],
+    loading: () => [],
+    error: (_, __) => [],
+  );
 });
 
 final personalizedRecommendationsProvider = Provider<List<RecommendationScore>>((ref) {
-  return ref.watch(recommendationProvider.notifier).getPersonalizedRecommendations();
+  final recommendationState = ref.watch(recommendationProvider);
+  return recommendationState.when(
+    data: (batch) => batch?.contentBasedRecommendations ?? [],
+    loading: () => [],
+    error: (_, __) => [],
+  );
 });
 
 final seasonalRecommendationsProvider = Provider<List<RecommendationScore>>((ref) {
-  return ref.watch(recommendationProvider.notifier).getSeasonalRecommendations();
+  final recommendationState = ref.watch(recommendationProvider);
+  return recommendationState.when(
+    data: (batch) => batch?.seasonalRecommendations ?? [],
+    loading: () => [],
+    error: (_, __) => [],
+  );
 });
 
 final quickMealRecommendationsProvider = Provider<List<RecommendationScore>>((ref) {
-  return ref.watch(recommendationProvider.notifier).getQuickMealRecommendations();
+  final recommendationState = ref.watch(recommendationProvider);
+  return recommendationState.when(
+    data: (batch) => batch?.quickMealRecommendations ?? [],
+    loading: () => [],
+    error: (_, __) => [],
+  );
 });
 
 final topRecommendationsProvider = Provider<List<RecommendationScore>>((ref) {
-  return ref.watch(recommendationProvider.notifier).getTopRecommendations();
+  final recommendationState = ref.watch(recommendationProvider);
+  return recommendationState.when(
+    data: (batch) => batch?.topRecommendations ?? [],
+    loading: () => [],
+    error: (_, __) => [],
+  );
+});
+
+// Tab state management
+final selectedRecommendationTabProvider = StateProvider<int>((ref) => 0);
+
+// Auto-loading recommendation provider that triggers generation when dependencies are ready
+final autoRecommendationProvider = Provider<AsyncValue<RecommendationBatch?>>((ref) {
+  final userAsync = ref.watch(currentUserProvider);
+  final recipesState = ref.watch(recipesProvider);
+  final pantryState = ref.watch(pantryProvider);
+  
+  // Watch the base recommendation provider state
+  final recommendationState = ref.watch(recommendationProvider);
+  
+  // Only trigger generation if we have all required data and no recommendations yet
+  userAsync.whenData((user) {
+    if (user != null && 
+        user.enableRecommendations && 
+        !recipesState.isLoading && 
+        recipesState.error == null &&
+        recipesState.recipes.isNotEmpty &&
+        !pantryState.isLoading &&
+        pantryState.error == null &&
+        (recommendationState.value == null || recommendationState.value!.recommendations.isEmpty)) {
+      
+      // Trigger recommendation generation
+      Future.microtask(() {
+        ref.read(recommendationProvider.notifier).generateRecommendations(
+          user: user,
+          allRecipes: recipesState.recipes,
+          pantryItems: pantryState.items,
+        );
+      });
+    }
+  });
+  
+  return recommendationState;
 });
 
 // Helper for recording interactions

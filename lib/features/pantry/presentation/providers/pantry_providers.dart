@@ -277,7 +277,7 @@ final pantryProvider = StateNotifierProvider<PantryNotifier, PantryState>((ref) 
   final addStarterKitUseCase = ref.read(addStarterKitUseCaseProvider);
   final authService = ref.read(authServiceProvider);
 
-  return PantryNotifier(
+  final notifier = PantryNotifier(
     getPantryItemsUseCase,
     addPantryItemUseCase,
     updatePantryItemUseCase,
@@ -285,6 +285,11 @@ final pantryProvider = StateNotifierProvider<PantryNotifier, PantryState>((ref) 
     addStarterKitUseCase,
     authService,
   );
+
+  // Auto-load pantry items when provider is created
+  notifier.loadPantryItems();
+
+  return notifier;
 });
 
 // Recipe matches state

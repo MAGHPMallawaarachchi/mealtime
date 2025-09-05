@@ -80,7 +80,6 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 10),
               const SeasonalSpotlightSection(),
               const SizedBox(height: 20),
-
               const TodaysMealPlanSection(),
               const SizedBox(height: 20),
               const PersonalizedRecommendationsSection(),
