@@ -6,7 +6,7 @@ import '../../domain/models/pantry_item.dart';
 import '../providers/pantry_providers.dart';
 import '../widgets/pantry_category_section.dart';
 import '../widgets/add_ingredient_modal.dart';
-import '../widgets/recipe_matches_section.dart';
+import '../widgets/leftover_item_with_suggestions.dart';
 
 class PantryScreen extends ConsumerStatefulWidget {
   const PantryScreen({super.key});
@@ -17,7 +17,6 @@ class PantryScreen extends ConsumerStatefulWidget {
 
 class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProviderStateMixin {
   final Map<PantryCategory, bool> _expandedCategories = {};
-  bool _showRecipeMatches = true;
   late TabController _tabController;
 
   @override
@@ -86,7 +85,6 @@ class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProvider
     final pantryState = ref.watch(pantryProvider);
     final ingredientCount = ref.watch(ingredientCountProvider);
     final leftoverCount = ref.watch(leftoverCountProvider);
-    final recipeMatchCount = ref.watch(recipeMatchCountProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -117,25 +115,6 @@ class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProvider
                           ),
                         ),
                       ),
-
-                      // Recipe matches toggle
-                      if (ingredientCount + leftoverCount > 0)
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _showRecipeMatches = !_showRecipeMatches;
-                            });
-                          },
-                          icon: PhosphorIcon(
-                            _showRecipeMatches
-                                ? PhosphorIcons.chefHat()
-                                : PhosphorIconsBold.chefHat,
-                            size: 24,
-                            color: _showRecipeMatches
-                                ? AppColors.success
-                                : AppColors.textSecondary,
-                          ),
-                        ),
 
                       // Add ingredient button
                       IconButton(
@@ -172,14 +151,6 @@ class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProvider
                           icon: PhosphorIcons.bowlFood(),
                           label: '$leftoverCount leftovers',
                           color: AppColors.leftover,
-                        ),
-                      ],
-                      if (recipeMatchCount > 0) ...[
-                        const SizedBox(width: 8),
-                        _buildStatChip(
-                          icon: PhosphorIcons.chefHat(),
-                          label: '$recipeMatchCount recipes',
-                          color: AppColors.success,
                         ),
                       ],
                     ],
@@ -271,9 +242,6 @@ class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProvider
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Recipe matches section
-          if (_showRecipeMatches) const RecipeMatchesSection(),
-
           // Ingredients by category
           ...ingredientsByCategory.entries.map((entry) {
             final category = entry.key;
@@ -315,84 +283,12 @@ class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProvider
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Recipe matches section
-          if (_showRecipeMatches) const RecipeMatchesSection(),
-
-          // Leftovers list (no categories for leftovers as per requirement)
+          // Leftovers list with integrated recipe suggestions
           ...leftoverItems.map((item) {
-            return Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.leftover.withOpacity(0.2)),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppColors.leftover.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: PhosphorIcon(
-                      PhosphorIcons.bowlFood(),
-                      color: AppColors.leftover,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      item.name,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ),
-                  PopupMenuButton<String>(
-                    onSelected: (value) {
-                      switch (value) {
-                        case 'edit':
-                          _showAddIngredientModal(editingItem: item);
-                          break;
-                        case 'delete':
-                          _showDeleteConfirmation(item);
-                          break;
-                      }
-                    },
-                    itemBuilder: (context) => [
-                      PopupMenuItem<String>(
-                        value: 'edit',
-                        child: Row(
-                          children: [
-                            PhosphorIcon(PhosphorIcons.pencil(), size: 16),
-                            const SizedBox(width: 8),
-                            const Text('Edit'),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem<String>(
-                        value: 'delete',
-                        child: Row(
-                          children: [
-                            PhosphorIcon(PhosphorIcons.trash(), size: 16, color: AppColors.error),
-                            const SizedBox(width: 8),
-                            Text('Delete', style: TextStyle(color: AppColors.error)),
-                          ],
-                        ),
-                      ),
-                    ],
-                    child: PhosphorIcon(
-                      PhosphorIcons.dotsThreeVertical(),
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
+            return LeftoverItemWithSuggestions(
+              leftover: item,
+              onEdit: () => _showAddIngredientModal(editingItem: item),
+              onDelete: () => _showDeleteConfirmation(item),
             );
           }),
 

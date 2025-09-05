@@ -59,7 +59,7 @@
 "id": "1",
 "title": null,
 "ingredients": [
-{ "id": "1", "metricQuantity": 500, "metricUnit": "grams", "name": "string hopper", "quantity": 10, "unit": "pieces" },
+{ "id": "1", "metricQuantity": 500, "metricUnit": "grams", "name": "string hoppers", "quantity": 10, "unit": "pieces" },
 { "id": "2", "metricQuantity": 2, "metricUnit": "pieces", "name": "egg", "quantity": 2, "unit": "pieces" },
 { "id": "3", "metricQuantity": 150, "metricUnit": "grams", "name": "carrot", "quantity": 1, "unit": "cups" },
 { "id": "4", "metricQuantity": 120, "metricUnit": "grams", "name": "leek", "quantity": 1, "unit": "cups" },
@@ -146,7 +146,7 @@
 },
 {
 "id": "R004",
-"title": "Sri Lankan Bread Pudding (with Stale Bread)",
+"title": "Bread Pudding",
 "time": "1 hr",
 "imageUrl": "https://www.allrecipes.com/thmb/NDzgJ1x6qWxJ_M-VYWULFzM-jl8=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/658615_Bread-Pudding-II-4x3-bc7dce39c1984a12bd1a38fe3c3ea42d.jpg",
 "calories": 316,
@@ -191,19 +191,19 @@
 },
 {
 "id": "R005",
-"title": "String Hopper Aasmi (from Leftover Batter)",
+"title": "String Hopper Aasmi",
 "time": "1 hr 15 min",
 "imageUrl": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi_vkjv6fdHGoCtCkAw8d2M0Lz-7OANIyNBMcDhFn793BrUIaUbf9H7agK06wiwNJcL2ZcYEEXZ8K5mHWzix9MlRckSkVfcaO4j91YK4TyCA9pCH0UmLzFPFS94a_j1MqwxwhDBa-4Sh50V/w1200-h630-p-k-no-nu/stringhopperaasmi.JPG",
 "calories": 342,
 "macros": { "protein": 5, "carbs": 40, "fats": 18, "fiber": 2 },
-"description": "Crisp, lacy coils made from leftover string hopper batter, finished with sweet treacle drizzle.",
+"description": "Crisp, lacy coils made from leftover string hoppers, finished with sweet treacle drizzle.",
 "defaultServings": 5,
 "ingredientSections": [
 {
 "id": "1",
 "title": null,
 "ingredients": [
-{ "id": "1", "metricQuantity": 500, "metricUnit": "grams", "name": "string hopper batter", "quantity": 2.5, "unit": "cups" },
+{ "id": "1", "metricQuantity": 500, "metricUnit": "grams", "name": "string hoppers", "quantity": 2.5, "unit": "cups" },
 { "id": "2", "metricQuantity": 200, "metricUnit": "milliliters", "name": "coconut milk", "quantity": 0.75, "unit": "cups" },
 { "id": "3", "metricQuantity": 5, "metricUnit": "grams", "name": "salt", "quantity": 0.75, "unit": "teaspoons" },
 { "id": "4", "metricQuantity": 500, "metricUnit": "milliliters", "name": "coconut oil", "quantity": 2, "unit": "cups" },
@@ -280,7 +280,7 @@
 },
 {
 "id": "R007",
-"title": "Cutlets from Leftover Fish",
+"title": "Fish Cutlets",
 "time": "50 min",
 "imageUrl": "https://www.kannammacooks.com/wp-content/uploads/srilankan-jaffna-fish-cutlets-recipe-1.jpg",
 "calories": 286,
@@ -327,7 +327,7 @@
 },
 {
 "id": "R008",
-"title": "Rice Pudding from Leftover Rice",
+"title": "Rice Pudding",
 "time": "35 min",
 "imageUrl": "https://www.allrecipes.com/thmb/DzRDzQ4wiiV9dWWdCsn5sdXekuw=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/AR-24059-creamy-rice-pudding-DDMFS-4x3-a47c1f5ad9d449c582d62e6e42da28ac.jpg",
 "calories": 282,
@@ -369,7 +369,7 @@
 },
 {
 "id": "R009",
-"title": "Sri Lankan Spiced Banana Bread (Overripe Bananas)",
+"title": "Sri Lankan Spiced Banana Bread",
 "time": "1 hr 10 min",
 "imageUrl": "https://www.allrecipes.com/thmb/fAkQn-FhjF89oTJ5JXpgwvwNf34=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/20144-banana-banana-bread-VAT-009-4x3-B-78f1cfc64bfa451e8a0fead814719b9f.jpg",
 "calories": 328,
@@ -415,7 +415,7 @@
 },
 {
 "id": "R010",
-"title": "Spicy Sweet Potato Hummus (Lankan-style)",
+"title": "Spicy Sweet Potato Hummus",
 "time": "35 min",
 "imageUrl": "https://images.immediate.co.uk/production/volatile/sites/30/2022/02/Sweet-Potato-Hummus-daa7201.jpg",
 "calories": 226,
@@ -458,7 +458,7 @@
 },
 {
 "id": "R011",
-"title": "Fridge-Raid Vegetable Soup (Lankan-style)",
+"title": "Fridge-Raid Vegetable Soup",
 "time": "40 min",
 "imageUrl": "https://images.immediate.co.uk/production/volatile/sites/30/2021/06/Fridge-raid-soup-da48228.jpg?resize=768,713",
 "calories": 180,
@@ -502,7 +502,7 @@
 },
 {
 "id": "R012",
-"title": "Creamy Curried Chicken & Rice Soup (Leftovers)",
+"title": "Creamy Curried Chicken & Rice Soup",
 "time": "35 min",
 "imageUrl": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/creamy-curried-chicken-rice-soup--0f5ea22.jpg",
 "calories": 292,
@@ -670,7 +670,7 @@
 },
 {
 "id": "R017",
-"title": "Kiri Hodi (Turmeric Coconut Gravy)",
+"title": "Kiri Hodi (Coconut Gravy)",
 "time": "20 min",
 "imageUrl": "https://www.theroute2roots.com/wp-content/uploads/2017/05/Kiri-Hoddi-1-1-of-1.jpg",
 "calories": 144,
