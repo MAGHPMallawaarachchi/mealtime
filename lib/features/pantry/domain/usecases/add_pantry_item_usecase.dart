@@ -31,12 +31,14 @@ class AddPantryItemUseCase {
     required String userId,
     required String name,
     required PantryCategory category,
+    PantryItemType type = PantryItemType.ingredient,
     List<String>? tags,
   }) async {
     final item = PantryItem(
       id: '',
       name: name,
       category: category,
+      type: type,
       tags: tags ?? [],
       userId: userId,
       createdAt: DateTime.now(),

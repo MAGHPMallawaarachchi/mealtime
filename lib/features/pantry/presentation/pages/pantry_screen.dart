@@ -15,16 +15,24 @@ class PantryScreen extends ConsumerStatefulWidget {
   ConsumerState<PantryScreen> createState() => _PantryScreenState();
 }
 
-class _PantryScreenState extends ConsumerState<PantryScreen> {
+class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProviderStateMixin {
   final Map<PantryCategory, bool> _expandedCategories = {};
   bool _showRecipeMatches = true;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(pantryProvider.notifier).loadPantryItems();
     });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   void _showAddIngredientModal({PantryItem? editingItem}) {
@@ -76,7 +84,8 @@ class _PantryScreenState extends ConsumerState<PantryScreen> {
   @override
   Widget build(BuildContext context) {
     final pantryState = ref.watch(pantryProvider);
-    final pantryItemCount = ref.watch(pantryItemCountProvider);
+    final ingredientCount = ref.watch(ingredientCountProvider);
+    final leftoverCount = ref.watch(leftoverCountProvider);
     final recipeMatchCount = ref.watch(recipeMatchCountProvider);
 
     return Scaffold(
@@ -110,7 +119,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen> {
                       ),
 
                       // Recipe matches toggle
-                      if (pantryItemCount > 0)
+                      if (ingredientCount + leftoverCount > 0)
                         IconButton(
                           onPressed: () {
                             setState(() {
@@ -154,11 +163,19 @@ class _PantryScreenState extends ConsumerState<PantryScreen> {
                     children: [
                       _buildStatChip(
                         icon: PhosphorIcons.package(),
-                        label: '$pantryItemCount ingredients',
+                        label: '$ingredientCount ingredients',
                         color: AppColors.primary,
                       ),
+                      if (leftoverCount > 0) ...[
+                        const SizedBox(width: 8),
+                        _buildStatChip(
+                          icon: PhosphorIcons.bowlFood(),
+                          label: '$leftoverCount leftovers',
+                          color: AppColors.leftover,
+                        ),
+                      ],
                       if (recipeMatchCount > 0) ...[
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 8),
                         _buildStatChip(
                           icon: PhosphorIcons.chefHat(),
                           label: '$recipeMatchCount recipes',
@@ -171,10 +188,216 @@ class _PantryScreenState extends ConsumerState<PantryScreen> {
               ),
             ),
 
-            // Content
-            Expanded(child: _buildContent(pantryState)),
+            // Tab Bar
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: TabBar(
+                controller: _tabController,
+                indicator: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                indicatorSize: TabBarIndicatorSize.tab,
+                dividerColor: Colors.transparent,
+                labelColor: Colors.white,
+                unselectedLabelColor: AppColors.textSecondary,
+                labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                tabs: [
+                  Tab(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        PhosphorIcon(PhosphorIcons.package(), size: 16),
+                        const SizedBox(width: 6),
+                        Text('Ingredients ($ingredientCount)'),
+                      ],
+                    ),
+                  ),
+                  Tab(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        PhosphorIcon(PhosphorIcons.bowlFood(), size: 16),
+                        const SizedBox(width: 6),
+                        Text('Leftovers ($leftoverCount)'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Tab Content
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildIngredientsTab(pantryState),
+                  _buildLeftoversTab(pantryState),
+                ],
+              ),
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildIngredientsTab(PantryState pantryState) {
+    final ingredientsByCategory = ref.watch(ingredientsByCategoryProvider);
+    final ingredientItems = pantryState.ingredientItems;
+
+    if (pantryState.isLoading) {
+      return _buildLoadingState();
+    }
+
+    if (pantryState.error != null) {
+      return _buildErrorState(pantryState.error!);
+    }
+
+    if (ingredientItems.isEmpty) {
+      return _buildEmptyIngredientsState();
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Recipe matches section
+          if (_showRecipeMatches) const RecipeMatchesSection(),
+
+          // Ingredients by category
+          ...ingredientsByCategory.entries.map((entry) {
+            final category = entry.key;
+            final items = entry.value;
+
+            return PantryCategorySection(
+              category: category,
+              items: items,
+              isExpanded: _isCategoryExpanded(category),
+              onToggleExpanded: () => _toggleCategoryExpansion(category),
+              onEditItem: (item) => _showAddIngredientModal(editingItem: item),
+              onDeleteItem: _showDeleteConfirmation,
+            );
+          }),
+
+          const SizedBox(height: 100), // Space for bottom nav
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLeftoversTab(PantryState pantryState) {
+    final leftoverItems = pantryState.leftoverItems;
+
+    if (pantryState.isLoading) {
+      return _buildLoadingState();
+    }
+
+    if (pantryState.error != null) {
+      return _buildErrorState(pantryState.error!);
+    }
+
+    if (leftoverItems.isEmpty) {
+      return _buildEmptyLeftoversState();
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Recipe matches section
+          if (_showRecipeMatches) const RecipeMatchesSection(),
+
+          // Leftovers list (no categories for leftovers as per requirement)
+          ...leftoverItems.map((item) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.leftover.withOpacity(0.2)),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.leftover.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: PhosphorIcon(
+                      PhosphorIcons.bowlFood(),
+                      color: AppColors.leftover,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      item.name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                  PopupMenuButton<String>(
+                    onSelected: (value) {
+                      switch (value) {
+                        case 'edit':
+                          _showAddIngredientModal(editingItem: item);
+                          break;
+                        case 'delete':
+                          _showDeleteConfirmation(item);
+                          break;
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem<String>(
+                        value: 'edit',
+                        child: Row(
+                          children: [
+                            PhosphorIcon(PhosphorIcons.pencil(), size: 16),
+                            const SizedBox(width: 8),
+                            const Text('Edit'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<String>(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            PhosphorIcon(PhosphorIcons.trash(), size: 16, color: AppColors.error),
+                            const SizedBox(width: 8),
+                            Text('Delete', style: TextStyle(color: AppColors.error)),
+                          ],
+                        ),
+                      ),
+                    ],
+                    child: PhosphorIcon(
+                      PhosphorIcons.dotsThreeVertical(),
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+
+          const SizedBox(height: 100), // Space for bottom nav
+        ],
       ),
     );
   }
@@ -208,47 +431,6 @@ class _PantryScreenState extends ConsumerState<PantryScreen> {
     );
   }
 
-  Widget _buildContent(PantryState pantryState) {
-    if (pantryState.isLoading) {
-      return _buildLoadingState();
-    }
-
-    if (pantryState.error != null) {
-      return _buildErrorState(pantryState.error!);
-    }
-
-    if (pantryState.items.isEmpty) {
-      return _buildEmptyState();
-    }
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Recipe matches section
-          if (_showRecipeMatches) const RecipeMatchesSection(),
-
-          // Pantry items by category
-          ...pantryState.itemsByCategory.entries.map((entry) {
-            final category = entry.key;
-            final items = entry.value;
-
-            return PantryCategorySection(
-              category: category,
-              items: items,
-              isExpanded: _isCategoryExpanded(category),
-              onToggleExpanded: () => _toggleCategoryExpansion(category),
-              onEditItem: (item) => _showAddIngredientModal(editingItem: item),
-              onDeleteItem: _showDeleteConfirmation,
-            );
-          }),
-
-          const SizedBox(height: 100), // Space for bottom nav
-        ],
-      ),
-    );
-  }
 
   Widget _buildLoadingState() {
     return const Center(
@@ -453,6 +635,212 @@ class _PantryScreenState extends ConsumerState<PantryScreen> {
     );
   }
 
+  Widget _buildEmptyIngredientsState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            PhosphorIcon(
+              PhosphorIcons.package(),
+              size: 80,
+              color: AppColors.textSecondary,
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'No Ingredients Yet',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Add fresh ingredients to discover recipes you can make!',
+              style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+
+            ElevatedButton.icon(
+              onPressed: () => _showAddIngredientModal(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              icon: PhosphorIcon(
+                PhosphorIcons.plus(),
+                size: 20,
+                color: Colors.white,
+              ),
+              label: const Text(
+                'Add Ingredient',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Quick add suggestions for ingredients
+            const Text(
+              'Quick Add Popular Items:',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _quickAddItems.map((item) {
+                return GestureDetector(
+                  onTap: () =>
+                      _quickAddIngredient(item['name']!, item['category']!),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: AppColors.primary.withOpacity(0.3),
+                      ),
+                    ),
+                    child: Text(
+                      item['name']!,
+                      style: const TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+
+            const SizedBox(height: 100), // Space for bottom nav
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyLeftoversState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            PhosphorIcon(
+              PhosphorIcons.bowlFood(),
+              size: 80,
+              color: AppColors.leftover.withOpacity(0.7),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'No Leftovers Yet',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Add leftover food items to find creative ways to use them up!',
+              style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+
+            ElevatedButton.icon(
+              onPressed: () => _showAddIngredientModal(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.leftover,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              icon: PhosphorIcon(
+                PhosphorIcons.plus(),
+                size: 20,
+                color: Colors.white,
+              ),
+              label: const Text(
+                'Add Leftover',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Examples of leftovers
+            const Text(
+              'Common leftovers to track:',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _leftoverExamples.map((item) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.leftover.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.leftover.withOpacity(0.3),
+                    ),
+                  ),
+                  child: Text(
+                    item,
+                    style: TextStyle(
+                      color: AppColors.leftoverDark,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+
+            const SizedBox(height: 100), // Space for bottom nav
+          ],
+        ),
+      ),
+    );
+  }
+
   static const List<Map<String, String>> _quickAddItems = [
     {'name': 'Rice', 'category': 'grains'},
     {'name': 'Coconut', 'category': 'pantryStaples'},
@@ -462,6 +850,17 @@ class _PantryScreenState extends ConsumerState<PantryScreen> {
     {'name': 'Turmeric', 'category': 'spices'},
     {'name': 'Chili Powder', 'category': 'spices'},
     {'name': 'Coconut Oil', 'category': 'oils'},
+  ];
+
+  static const List<String> _leftoverExamples = [
+    'Cooked Rice',
+    'Bread',
+    'Curry',
+    'Rotis',
+    'Overripe Bananas',
+    'Cooked Chicken',
+    'Cooked Vegetables',
+    'Pasta',
   ];
 
   Future<void> _quickAddIngredient(String name, String categoryName) async {

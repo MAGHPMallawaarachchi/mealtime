@@ -1,6 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+enum PantryItemType {
+  ingredient,
+  leftover,
+}
+
 enum PantryCategory {
   vegetables,
   fruits,
@@ -21,6 +26,7 @@ class PantryItem {
   final String id;
   final String name;
   final PantryCategory category;
+  final PantryItemType type;
   final List<String> tags;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -31,6 +37,7 @@ class PantryItem {
     required this.name,
     required this.category,
     required this.userId,
+    this.type = PantryItemType.ingredient,
     this.tags = const [],
     required this.createdAt,
     required this.updatedAt,
@@ -40,6 +47,7 @@ class PantryItem {
     String? id,
     String? name,
     PantryCategory? category,
+    PantryItemType? type,
     List<String>? tags,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -49,6 +57,7 @@ class PantryItem {
       id: id ?? this.id,
       name: name ?? this.name,
       category: category ?? this.category,
+      type: type ?? this.type,
       tags: tags ?? this.tags,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -61,6 +70,7 @@ class PantryItem {
       'id': id,
       'name': name,
       'category': category.name,
+      'type': type.name,
       'tags': tags,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
@@ -73,6 +83,7 @@ class PantryItem {
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? '',
       category: _parsePantryCategory(json['category']),
+      type: _parsePantryItemType(json['type']),
       tags: json['tags'] != null 
           ? List<String>.from(json['tags'] as List)
           : [],
@@ -93,6 +104,20 @@ class PantryItem {
       );
     } catch (e) {
       return PantryCategory.other;
+    }
+  }
+
+  static PantryItemType _parsePantryItemType(dynamic typeValue) {
+    if (typeValue == null) return PantryItemType.ingredient;
+    
+    final typeString = typeValue.toString().toLowerCase();
+    
+    try {
+      return PantryItemType.values.firstWhere(
+        (type) => type.name.toLowerCase() == typeString,
+      );
+    } catch (e) {
+      return PantryItemType.ingredient;
     }
   }
 
@@ -128,15 +153,37 @@ class PantryItem {
            other.id == id &&
            other.name == name &&
            other.category == category &&
+           other.type == type &&
            listEquals(other.tags, tags);
   }
 
   @override
-  int get hashCode => Object.hash(id, name, category, tags);
+  int get hashCode => Object.hash(id, name, category, type, tags);
 
   @override
   String toString() {
-    return 'PantryItem(id: $id, name: $name, category: $category, tags: $tags)';
+    return 'PantryItem(id: $id, name: $name, category: $category, type: $type, tags: $tags)';
+  }
+}
+
+// Extension for better type display
+extension PantryItemTypeExtension on PantryItemType {
+  String get displayName {
+    switch (this) {
+      case PantryItemType.ingredient:
+        return 'Ingredient';
+      case PantryItemType.leftover:
+        return 'Leftover';
+    }
+  }
+
+  String get emoji {
+    switch (this) {
+      case PantryItemType.ingredient:
+        return '🥕';
+      case PantryItemType.leftover:
+        return '🍽️';
+    }
   }
 }
 

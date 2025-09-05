@@ -23,6 +23,7 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
   final FocusNode _nameFocusNode = FocusNode();
   
   PantryCategory _selectedCategory = PantryCategory.other;
+  PantryItemType _selectedType = PantryItemType.ingredient;
   List<String> _tags = [];
   bool _isLoading = false;
   String? _errorMessage;
@@ -36,6 +37,7 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
     if (widget.editingItem != null) {
       _nameController.text = widget.editingItem!.name;
       _selectedCategory = widget.editingItem!.category;
+      _selectedType = widget.editingItem!.type;
       _tags = List.from(widget.editingItem!.tags);
     }
 
@@ -120,6 +122,7 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
         final updatedItem = widget.editingItem!.copyWith(
           name: _nameController.text.trim(),
           category: _selectedCategory,
+          type: _selectedType,
           tags: _tags,
           updatedAt: DateTime.now(),
         );
@@ -130,6 +133,7 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
         await pantryNotifier.addPantryItem(
           name: _nameController.text.trim(),
           category: _selectedCategory,
+          type: _selectedType,
           tags: _tags,
         );
       }
@@ -175,7 +179,9 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
               children: [
                 Expanded(
                   child: Text(
-                    isEditing ? 'Edit Ingredient' : 'Add Ingredient',
+                    isEditing 
+                        ? 'Edit ${widget.editingItem!.type.displayName}' 
+                        : 'Add ${_selectedType.displayName}',
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
@@ -232,10 +238,75 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                     const SizedBox(height: 16),
                   ],
 
-                  // Ingredient name
+                  // Type selection
                   const Text(
-                    'Ingredient Name',
+                    'Item Type',
                     style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.border),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: PantryItemType.values.map((type) {
+                        final isSelected = type == _selectedType;
+                        final color = type == PantryItemType.leftover ? AppColors.leftover : AppColors.primary;
+                        
+                        return Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _selectedType = type;
+                                // Reset category when switching to leftover (no categories for leftovers)
+                                if (type == PantryItemType.leftover) {
+                                  _selectedCategory = PantryCategory.other;
+                                }
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              decoration: BoxDecoration(
+                                color: isSelected ? color : Colors.transparent,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    type.emoji,
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    type.displayName,
+                                    style: TextStyle(
+                                      color: isSelected ? Colors.white : AppColors.textPrimary,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 24),
+
+                  // Item name
+                  Text(
+                    '${_selectedType.displayName} Name',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
@@ -249,7 +320,7 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                         controller: _nameController,
                         focusNode: _nameFocusNode,
                         decoration: InputDecoration(
-                          hintText: 'Enter ingredient name...',
+                          hintText: 'Enter ${_selectedType.displayName.toLowerCase()} name...',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(color: AppColors.border),
@@ -303,68 +374,70 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                   
                   const SizedBox(height: 24),
 
-                  // Category selection
-                  const Text(
-                    'Category',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                  // Category selection (only for ingredients)
+                  if (_selectedType == PantryItemType.ingredient) ...[
+                    const Text(
+                      'Category',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: PantryCategory.values.map((category) {
-                      final isSelected = category == _selectedCategory;
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _selectedCategory = category;
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: isSelected 
-                                ? AppColors.primary
-                                : Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
+                    const SizedBox(height: 12),
+                    
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: PantryCategory.values.map((category) {
+                        final isSelected = category == _selectedCategory;
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _selectedCategory = category;
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
                               color: isSelected 
                                   ? AppColors.primary
-                                  : AppColors.border,
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: isSelected 
+                                    ? AppColors.primary
+                                    : AppColors.border,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  category.emoji,
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  category.displayName,
+                                  style: TextStyle(
+                                    color: isSelected 
+                                        ? Colors.white
+                                        : AppColors.textPrimary,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                category.emoji,
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                category.displayName,
-                                style: TextStyle(
-                                  color: isSelected 
-                                      ? Colors.white
-                                      : AppColors.textPrimary,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                   
                   const SizedBox(height: 32),
                 ],
@@ -406,7 +479,9 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                         ),
                       )
                     : Text(
-                        isEditing ? 'Update Ingredient' : 'Add Ingredient',
+                        isEditing 
+                            ? 'Update ${widget.editingItem!.type.displayName}' 
+                            : 'Add ${_selectedType.displayName}',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

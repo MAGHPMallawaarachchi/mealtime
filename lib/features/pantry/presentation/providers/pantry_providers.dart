@@ -82,12 +82,18 @@ class PantryState {
   final bool isLoading;
   final String? error;
   final Map<PantryCategory, List<PantryItem>> itemsByCategory;
+  final List<PantryItem> ingredientItems;
+  final List<PantryItem> leftoverItems;
+  final Map<PantryCategory, List<PantryItem>> ingredientsByCategory;
 
   const PantryState({
     this.items = const [],
     this.isLoading = false,
     this.error,
     this.itemsByCategory = const {},
+    this.ingredientItems = const [],
+    this.leftoverItems = const [],
+    this.ingredientsByCategory = const {},
   });
 
   PantryState copyWith({
@@ -95,12 +101,18 @@ class PantryState {
     bool? isLoading,
     String? error,
     Map<PantryCategory, List<PantryItem>>? itemsByCategory,
+    List<PantryItem>? ingredientItems,
+    List<PantryItem>? leftoverItems,
+    Map<PantryCategory, List<PantryItem>>? ingredientsByCategory,
   }) {
     return PantryState(
       items: items ?? this.items,
       isLoading: isLoading ?? this.isLoading,
       error: error,
       itemsByCategory: itemsByCategory ?? this.itemsByCategory,
+      ingredientItems: ingredientItems ?? this.ingredientItems,
+      leftoverItems: leftoverItems ?? this.leftoverItems,
+      ingredientsByCategory: ingredientsByCategory ?? this.ingredientsByCategory,
     );
   }
 }
@@ -150,11 +162,18 @@ class PantryNotifier extends StateNotifier<PantryState> {
       _pantrySubscription = _getPantryItemsUseCase.executeStream(userId).listen(
         (items) {
           final itemsByCategory = _groupItemsByCategory(items);
+          final ingredientItems = items.where((item) => item.type == PantryItemType.ingredient).toList();
+          final leftoverItems = items.where((item) => item.type == PantryItemType.leftover).toList();
+          final ingredientsByCategory = _groupItemsByCategory(ingredientItems);
+          
           state = state.copyWith(
             items: items,
             isLoading: false,
             error: null,
             itemsByCategory: itemsByCategory,
+            ingredientItems: ingredientItems,
+            leftoverItems: leftoverItems,
+            ingredientsByCategory: ingredientsByCategory,
           );
         },
         onError: (error) {
@@ -175,6 +194,7 @@ class PantryNotifier extends StateNotifier<PantryState> {
   Future<String?> addPantryItem({
     required String name,
     required PantryCategory category,
+    PantryItemType type = PantryItemType.ingredient,
     List<String>? tags,
   }) async {
     final userId = _currentUserId;
@@ -185,6 +205,7 @@ class PantryNotifier extends StateNotifier<PantryState> {
         userId: userId,
         name: name,
         category: category,
+        type: type,
         tags: tags,
       );
       
@@ -397,9 +418,29 @@ final pantryItemCountProvider = Provider<int>((ref) {
   return pantryState.items.length;
 });
 
+final ingredientCountProvider = Provider<int>((ref) {
+  final pantryState = ref.watch(pantryProvider);
+  return pantryState.ingredientItems.length;
+});
+
+final leftoverCountProvider = Provider<int>((ref) {
+  final pantryState = ref.watch(pantryProvider);
+  return pantryState.leftoverItems.length;
+});
+
 final pantryItemsByCategoryProvider = Provider<Map<PantryCategory, List<PantryItem>>>((ref) {
   final pantryState = ref.watch(pantryProvider);
   return pantryState.itemsByCategory;
+});
+
+final ingredientsByCategoryProvider = Provider<Map<PantryCategory, List<PantryItem>>>((ref) {
+  final pantryState = ref.watch(pantryProvider);
+  return pantryState.ingredientsByCategory;
+});
+
+final leftoverItemsProvider = Provider<List<PantryItem>>((ref) {
+  final pantryState = ref.watch(pantryProvider);
+  return pantryState.leftoverItems;
 });
 
 final recipeMatchCountProvider = Provider<int>((ref) {
