@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealtime/features/recipes/domain/models/recipe.dart';
@@ -15,6 +16,9 @@ import '../widgets/explore_search_bar.dart';
 import '../widgets/explore_categories_section.dart';
 import '../widgets/recipes_grid_section.dart';
 import '../../../favorites/presentation/providers/favorites_providers.dart';
+import '../providers/explore_pagination_provider.dart';
+import '../utils/pagination_utils.dart';
+import '../utils/performance_utils.dart';
 
 class ExploreScreen extends ConsumerStatefulWidget {
   const ExploreScreen({super.key});
@@ -31,6 +35,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   final Set<String> _favoriteRecipes = <String>{}; // Local-only favorites
   bool _isLoading = true;
   String? _errorMessage;
+  late ScrollController _scrollController;
+  double _lastScrollOffset = 0;
 
   // Dependencies
   late final RecipesRepositoryImpl _recipesRepository;
@@ -41,9 +47,11 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   @override
   void initState() {
     super.initState();
+    _scrollController = PerformanceUtils.createOptimizedScrollController();
     _initializeDependencies();
     _loadRecipes();
     _loadFavorites();
+    _setupScrollListener();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeRecommendations();
     });
@@ -67,32 +75,39 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   Future<void> _loadRecipes({bool forceRefresh = false}) async {
-    try {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
-
-      final recipes = await _getFilteredRecipes(forceRefresh: forceRefresh);
-
-      if (mounted) {
+    await PerformanceUtils.batchOperation(() async {
+      try {
         setState(() {
-          _filteredRecipes = recipes;
-          _isLoading = false;
+          _isLoading = true;
+          _errorMessage = null;
         });
+
+        final recipes = await _getFilteredRecipes(forceRefresh: forceRefresh);
+        final optimizedRecipes = PerformanceUtils.optimizeRecipeList(recipes);
+
+        if (mounted) {
+          setState(() {
+            _filteredRecipes = optimizedRecipes;
+            _isLoading = false;
+          });
+          
+          // Initialize pagination after recipes are loaded
+          _updatePagination();
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _errorMessage = e.toString();
+          });
+        }
       }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _errorMessage = e.toString();
-        });
-      }
-    }
+    });
   }
 
   Future<List<Recipe>> _getFilteredRecipes({bool forceRefresh = false}) async {
@@ -135,6 +150,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       _searchQuery = query;
     });
     _loadRecipes(); // This will now use the async method
+    _updatePagination();
   }
 
   void _onCategorySelected(String? category) {
@@ -150,6 +166,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       _selectedCategory = category;
     });
     _loadRecipes(); // This will now use the async method
+    _updatePagination();
   }
 
   void _onFavoriteToggle(Recipe recipe) {
@@ -199,6 +216,53 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     );
   }
 
+  void _setupScrollListener() {
+    _scrollController.addListener(() {
+      final currentOffset = _scrollController.offset;
+      
+      // Optimize scroll event processing
+      if (PerformanceUtils.shouldProcessScrollEvent(currentOffset, _lastScrollOffset)) {
+        _lastScrollOffset = currentOffset;
+        
+        if (PaginationUtils.shouldLoadMore(
+          currentOffset: currentOffset,
+          maxScrollExtent: _scrollController.position.maxScrollExtent,
+        )) {
+          _loadMoreRecipes();
+        }
+        
+        // Periodic memory optimization
+        if (currentOffset % 5000 < 50) { // Every ~5000px of scrolling
+          PerformanceUtils.optimizeMemoryUsage();
+        }
+      }
+    });
+  }
+
+  Future<void> _loadMoreRecipes() async {
+    await ref.read(explorePaginationProvider.notifier).loadNextPage();
+  }
+
+  void _updatePagination() {
+    final filteredRecipes = PaginationUtils.applyFiltering(
+      allRecipes: _filteredRecipes,
+      searchQuery: _searchQuery,
+      selectedCategory: _selectedCategory,
+    );
+    
+    debugPrint('ExploreScreen: _updatePagination called with ${filteredRecipes.length} recipes');
+    
+    // Initialize pagination if this is the first time or update with new filtered recipes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (filteredRecipes.isNotEmpty) {
+        debugPrint('ExploreScreen: Initializing pagination with ${filteredRecipes.length} recipes');
+        ref.read(explorePaginationProvider.notifier).loadInitialRecipes(filteredRecipes);
+      } else {
+        debugPrint('ExploreScreen: No filtered recipes to initialize pagination with');
+      }
+    });
+  }
+
   Future<void> _refreshData() async {
     // Refresh recipes and recommendations
     await _loadRecipes(forceRefresh: true);
@@ -216,6 +280,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
         forceRefresh: true,
       );
     }
+    
+    // Refresh pagination
+    _updatePagination();
   }
 
   @override
@@ -223,7 +290,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: RefreshIndicator(onRefresh: _refreshData, child: _buildBody()),
+        child: RefreshIndicator(
+          onRefresh: _refreshData,
+          child: _buildBody(),
+        ),
       ),
     );
   }
@@ -237,80 +307,98 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       return _buildErrorState();
     }
 
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: Column(
-        children: [
-          const SizedBox(height: 12),
-          ExploreSearchBar(
-            controller: _searchController,
-            onChanged: _onSearchChanged,
-            hintText: 'Search recipes, ingredients...',
+    return CustomScrollView(
+      controller: _scrollController,
+      physics: PerformanceUtils.getOptimizedScrollPhysics(),
+      slivers: [
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
+              const SizedBox(height: 12),
+              ExploreSearchBar(
+                controller: _searchController,
+                onChanged: _onSearchChanged,
+                hintText: 'Search recipes, ingredients...',
+              ),
+              const SizedBox(height: 20),
+              ExploreCategoriesSection(
+                selectedCategory: _selectedCategory,
+                onCategorySelected: _onCategorySelected,
+              ),
+              const SizedBox(height: 24),
+            ],
           ),
-          const SizedBox(height: 20),
-          ExploreCategoriesSection(
-            selectedCategory: _selectedCategory,
-            onCategorySelected: _onCategorySelected,
+        ),
+        SliverToBoxAdapter(
+          child: RepaintBoundary(
+            child: PersonalizedRecipesGridSection(
+              allRecipes: _filteredRecipes,
+              selectedCategory: _selectedCategory,
+              searchQuery: _searchQuery,
+              favoriteRecipes: _favoriteRecipes,
+              onFavoriteToggle: _onFavoriteToggle,
+              onAddToMealPlan: _onAddToMealPlan,
+              onLoadMore: _loadMoreRecipes,
+              enablePagination: true,
+            ),
           ),
-          const SizedBox(height: 24),
-          PersonalizedRecipesGridSection(
-            recipes: _filteredRecipes,
-            selectedCategory: _selectedCategory,
-            favoriteRecipes: _favoriteRecipes,
-            onFavoriteToggle: _onFavoriteToggle,
-            onAddToMealPlan: _onAddToMealPlan,
-          ),
-          const SizedBox(height: 24),
-        ],
-      ),
+        ),
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 24),
+        ),
+      ],
     );
   }
 
   Widget _buildErrorState() {
-    return SingleChildScrollView(
+    return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.error_outline,
-                size: 64,
-                color: AppColors.textSecondary,
+      slivers: [
+        SliverFillRemaining(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: AppColors.textSecondary,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Something went wrong',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _errorMessage ?? 'Unknown error occurred',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: _refreshData,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: AppColors.white,
+                    ),
+                    child: const Text('Try Again'),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              const Text(
-                'Something went wrong',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _errorMessage ?? 'Unknown error occurred',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _refreshData,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: AppColors.white,
-                ),
-                child: const Text('Try Again'),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
