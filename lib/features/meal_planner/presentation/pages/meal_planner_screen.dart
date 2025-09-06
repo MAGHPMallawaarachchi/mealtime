@@ -569,7 +569,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               iconColor: AppColors.error,
               onTap: () {
                 Navigator.pop(context);
-                // TODO: Implement remove functionality
+                _showRemoveMealConfirmation(mealSlot, date);
               },
             ),
           ],
@@ -954,6 +954,35 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showRemoveMealConfirmation(MealSlot mealSlot, DateTime date) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remove Meal'),
+        content: Text(
+          'Are you sure you want to remove "${mealSlot.displayName}"?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _deleteMeal(mealSlot, date);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Remove'),
+          ),
+        ],
       ),
     );
   }
