@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealtime/features/recipes/domain/models/recipe.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../favorites/presentation/providers/favorites_providers.dart';
 
 class ExploreRecipeCard extends ConsumerWidget {
@@ -50,14 +49,19 @@ class ExploreRecipeCard extends ConsumerWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: SizedBox(
+                    child: Container(
                       height: 140,
                       width: double.infinity,
-                      child: OptimizedCachedImage(
-                        imageUrl: recipe.imageUrl,
-                        fit: BoxFit.cover,
-                        preload: true,
-                      ),
+                      color: Colors.grey.shade300,
+                      child: recipe.imageUrl.isNotEmpty
+                          ? Image.network(
+                              recipe.imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return _buildImagePlaceholder();
+                              },
+                            )
+                          : _buildImagePlaceholder(),
                     ),
                   ),
                 ),
@@ -155,6 +159,29 @@ class ExploreRecipeCard extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildImagePlaceholder() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: Colors.grey.shade300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          PhosphorIcon(
+            PhosphorIcons.forkKnife(),
+            size: 32,
+            color: Colors.grey.shade500,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Recipe Image',
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+          ),
+        ],
       ),
     );
   }
