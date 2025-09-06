@@ -15,7 +15,8 @@ class PantryScreen extends ConsumerStatefulWidget {
   ConsumerState<PantryScreen> createState() => _PantryScreenState();
 }
 
-class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProviderStateMixin {
+class _PantryScreenState extends ConsumerState<PantryScreen>
+    with TickerProviderStateMixin {
   final Map<PantryCategory, bool> _expandedCategories = {};
   late TabController _tabController;
 
@@ -176,8 +177,14 @@ class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProvider
                 dividerColor: Colors.transparent,
                 labelColor: Colors.white,
                 unselectedLabelColor: AppColors.textSecondary,
-                labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-                unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                labelStyle: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+                unselectedLabelStyle: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                ),
                 tabs: [
                   Tab(
                     child: Row(
@@ -257,6 +264,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProvider
             );
           }),
 
+
           const SizedBox(height: 100), // Space for bottom nav
         ],
       ),
@@ -326,7 +334,6 @@ class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProvider
       ),
     );
   }
-
 
   Widget _buildLoadingState() {
     return const Center(
@@ -565,7 +572,10 @@ class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProvider
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 16,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -577,10 +587,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProvider
               ),
               label: const Text(
                 'Add Ingredient',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
 
@@ -670,7 +677,10 @@ class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProvider
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.leftover,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 16,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -682,10 +692,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen> with TickerProvider
               ),
               label: const Text(
                 'Add Leftover',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
 

@@ -1,32 +1,22 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/services/auth_service.dart';
-import '../../../recipes/data/repositories/recipes_repository_impl.dart';
-import '../../../user_recipes/data/repositories/user_recipes_repository_impl.dart';
 import '../../data/repositories/pantry_repository_impl.dart';
 import '../../domain/usecases/get_pantry_items_usecase.dart';
 import '../../domain/usecases/add_pantry_item_usecase.dart';
 import '../../domain/usecases/update_pantry_item_usecase.dart';
 import '../../domain/usecases/delete_pantry_item_usecase.dart';
 import '../../domain/usecases/search_ingredients_usecase.dart';
-import '../../domain/usecases/get_recipe_matches_usecase.dart';
 import '../../domain/usecases/add_starter_kit_usecase.dart';
 import '../../domain/models/pantry_item.dart';
-import '../../domain/models/recipe_match.dart';
 
 // Repository providers
 final pantryRepositoryProvider = Provider<PantryRepositoryImpl>((ref) {
   return PantryRepositoryImpl();
 });
 
-final recipesRepositoryProvider = Provider<RecipesRepositoryImpl>((ref) {
-  return RecipesRepositoryImpl();
-});
-
-final userRecipesRepositoryProvider = Provider<UserRecipesRepositoryImpl>((ref) {
-  return UserRecipesRepositoryImpl();
-});
 
 // Use case providers
 final getPantryItemsUseCaseProvider = Provider<GetPantryItemsUseCase>((ref) {
@@ -54,17 +44,6 @@ final searchIngredientsUseCaseProvider = Provider<SearchIngredientsUseCase>((ref
   return SearchIngredientsUseCase(repository);
 });
 
-final getRecipeMatchesUseCaseProvider = Provider<GetRecipeMatchesUseCase>((ref) {
-  final pantryRepository = ref.read(pantryRepositoryProvider);
-  final recipesRepository = ref.read(recipesRepositoryProvider);
-  final userRecipesRepository = ref.read(userRecipesRepositoryProvider);
-  
-  return GetRecipeMatchesUseCase(
-    pantryRepository: pantryRepository,
-    recipesRepository: recipesRepository,
-    userRecipesRepository: userRecipesRepository,
-  );
-});
 
 final addStarterKitUseCaseProvider = Provider<AddStarterKitUseCase>((ref) {
   final repository = ref.read(pantryRepositoryProvider);
@@ -313,98 +292,6 @@ final pantryProvider = StateNotifierProvider<PantryNotifier, PantryState>((ref) 
   return notifier;
 });
 
-// Recipe matches state
-class RecipeMatchesState {
-  final List<RecipeMatch> matches;
-  final bool isLoading;
-  final String? error;
-
-  const RecipeMatchesState({
-    this.matches = const [],
-    this.isLoading = false,
-    this.error,
-  });
-
-  RecipeMatchesState copyWith({
-    List<RecipeMatch>? matches,
-    bool? isLoading,
-    String? error,
-  }) {
-    return RecipeMatchesState(
-      matches: matches ?? this.matches,
-      isLoading: isLoading ?? this.isLoading,
-      error: error,
-    );
-  }
-}
-
-// Recipe matches notifier
-class RecipeMatchesNotifier extends StateNotifier<RecipeMatchesState> {
-  final GetRecipeMatchesUseCase _getRecipeMatchesUseCase;
-  final AuthService _authService;
-
-  RecipeMatchesNotifier(
-    this._getRecipeMatchesUseCase,
-    this._authService,
-  ) : super(const RecipeMatchesState());
-
-  String? get _currentUserId => _authService.currentUser?.uid;
-
-  Future<void> loadRecipeMatches({
-    MatchType? minMatchType,
-    int? limit,
-  }) async {
-    final userId = _currentUserId;
-    if (userId == null) {
-      state = state.copyWith(error: 'User not authenticated');
-      return;
-    }
-
-    state = state.copyWith(isLoading: true, error: null);
-
-    try {
-      final matches = await _getRecipeMatchesUseCase.execute(
-        userId,
-        minMatchType: minMatchType,
-        limit: limit,
-      );
-
-      state = state.copyWith(
-        matches: matches,
-        isLoading: false,
-        error: null,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
-    }
-  }
-
-  void clearError() {
-    state = state.copyWith(error: null);
-  }
-
-  List<RecipeMatch> getMatchesByType(MatchType matchType) {
-    return state.matches.where((match) => match.matchType == matchType).toList();
-  }
-
-  List<RecipeMatch> getCompleteMatches() => getMatchesByType(MatchType.complete);
-  List<RecipeMatch> getPartialMatches() => getMatchesByType(MatchType.partial);
-  List<RecipeMatch> getMinimalMatches() => getMatchesByType(MatchType.minimal);
-}
-
-// Recipe matches provider
-final recipeMatchesProvider = StateNotifierProvider<RecipeMatchesNotifier, RecipeMatchesState>((ref) {
-  final getRecipeMatchesUseCase = ref.read(getRecipeMatchesUseCaseProvider);
-  final authService = ref.read(authServiceProvider);
-
-  return RecipeMatchesNotifier(
-    getRecipeMatchesUseCase,
-    authService,
-  );
-});
 
 // Ingredient search provider
 final ingredientSearchProvider = FutureProvider.family<List<String>, String>((ref, query) async {
@@ -443,7 +330,3 @@ final leftoverItemsProvider = Provider<List<PantryItem>>((ref) {
   return pantryState.leftoverItems;
 });
 
-final recipeMatchCountProvider = Provider<int>((ref) {
-  final recipeMatchesState = ref.watch(recipeMatchesProvider);
-  return recipeMatchesState.matches.length;
-});

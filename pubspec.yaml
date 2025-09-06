@@ -104,6 +104,7 @@ flutter:
   assets:
     - assets/images/general/
     - assets/images/onboarding/
+    - data/
     - assets/images/recipes/
     - assets/images/pantry/
     - assets/images/seasonal/
