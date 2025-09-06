@@ -194,30 +194,43 @@ class WeeklyMealPlan {
   }
 
   factory WeeklyMealPlan.fromJson(Map<String, dynamic> json) {
+    final now = DateTime.now();
     return WeeklyMealPlan(
       id: json['id'] as String,
-      weekStartDate: _parseDateTime(json['weekStartDate']),
+      weekStartDate: _parseDateTime(json['weekStartDate'], fallback: now),
       dailyPlans: (json['dailyPlans'] as List<dynamic>? ?? [])
           .map((planJson) => DailyMealPlan.fromJson(planJson as Map<String, dynamic>))
           .toList(),
       householdId: json['householdId'] as String?,
       userId: json['userId'] as String?,
-      createdAt: _parseDateTime(json['createdAt']),
-      updatedAt: _parseDateTime(json['updatedAt']),
+      createdAt: _parseDateTime(json['createdAt'], fallback: now),
+      updatedAt: _parseDateTime(json['updatedAt'], fallback: now),
     );
   }
 
   /// Helper method to parse DateTime from either String or Timestamp
-  static DateTime _parseDateTime(dynamic value) {
-    if (value == null) throw ArgumentError('DateTime value cannot be null');
+  static DateTime _parseDateTime(dynamic value, {DateTime? fallback}) {
+    if (value == null) {
+      if (fallback != null) {
+        return fallback;
+      }
+      throw ArgumentError('DateTime value cannot be null and no fallback provided');
+    }
     
-    if (value is String) {
-      return DateTime.parse(value);
-    } else if (value.runtimeType.toString() == 'Timestamp') {
-      // Handle Firebase Timestamp
-      return (value as dynamic).toDate();
-    } else {
-      throw ArgumentError('Expected String or Timestamp, got ${value.runtimeType}');
+    try {
+      if (value is String) {
+        return DateTime.parse(value);
+      } else if (value.runtimeType.toString() == 'Timestamp') {
+        // Handle Firebase Timestamp
+        return (value as dynamic).toDate();
+      } else {
+        throw ArgumentError('Expected String or Timestamp, got ${value.runtimeType}');
+      }
+    } catch (e) {
+      if (fallback != null) {
+        return fallback;
+      }
+      rethrow;
     }
   }
 

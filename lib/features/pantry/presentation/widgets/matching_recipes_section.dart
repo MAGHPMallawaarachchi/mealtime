@@ -160,7 +160,7 @@ class MatchingRecipesSection extends ConsumerWidget {
         separatorBuilder: (context, index) => const SizedBox(width: 16),
         itemBuilder: (context, index) {
           final match = matches[index];
-          return RecipeMatchCard(match: match, width: 240);
+          return RecipeMatchCard(match: match, width: 200);
         },
       ),
     );

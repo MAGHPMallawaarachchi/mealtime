@@ -180,7 +180,7 @@ class MealSlot {
     return MealSlot(
       id: json['id'] as String,
       category: json['category'] as String,
-      scheduledTime: _parseDateTime(json['scheduledTime']),
+      scheduledTime: _parseDateTime(json['scheduledTime'], fallback: DateTime.now()),
       recipeId: json['recipeId'] as String?,
       leftoverId: json['leftoverId'] as String?,
       customMealName: json['customMealName'] as String?,
@@ -191,16 +191,28 @@ class MealSlot {
   }
 
   /// Helper method to parse DateTime from either String or Timestamp
-  static DateTime _parseDateTime(dynamic value) {
-    if (value == null) throw ArgumentError('DateTime value cannot be null');
+  static DateTime _parseDateTime(dynamic value, {DateTime? fallback}) {
+    if (value == null) {
+      if (fallback != null) {
+        return fallback;
+      }
+      throw ArgumentError('DateTime value cannot be null and no fallback provided');
+    }
     
-    if (value is String) {
-      return DateTime.parse(value);
-    } else if (value.runtimeType.toString() == 'Timestamp') {
-      // Handle Firebase Timestamp
-      return (value as dynamic).toDate();
-    } else {
-      throw ArgumentError('Expected String or Timestamp, got ${value.runtimeType}');
+    try {
+      if (value is String) {
+        return DateTime.parse(value);
+      } else if (value.runtimeType.toString() == 'Timestamp') {
+        // Handle Firebase Timestamp
+        return (value as dynamic).toDate();
+      } else {
+        throw ArgumentError('Expected String or Timestamp, got ${value.runtimeType}');
+      }
+    } catch (e) {
+      if (fallback != null) {
+        return fallback;
+      }
+      rethrow;
     }
   }
 
