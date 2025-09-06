@@ -84,8 +84,6 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 20),
               const PersonalizedRecommendationsSection(),
               const SizedBox(height: 20),
-              const CategorySection(),
-              const SizedBox(height: 20),
             ],
           ),
         ),
