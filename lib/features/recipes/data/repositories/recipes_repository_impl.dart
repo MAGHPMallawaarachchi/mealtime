@@ -4,7 +4,6 @@ import '../../domain/models/recipe.dart';
 import '../../domain/repositories/recipes_repository.dart';
 import '../datasources/recipes_datasource.dart';
 import '../datasources/recipes_firebase_datasource.dart';
-import '../datasources/recipes_mock_datasource.dart';
 import '../datasources/recipes_local_datasource.dart';
 
 class RecipesRepositoryImpl implements RecipesRepository {
@@ -14,7 +13,7 @@ class RecipesRepositoryImpl implements RecipesRepository {
   RecipesRepositoryImpl({
     RecipesDataSource? remoteDataSource,
     RecipesLocalDataSource? localDataSource,
-  })  : _remoteDataSource = remoteDataSource ?? (kDebugMode ? RecipesMockDataSource() : RecipesFirebaseDataSource()),
+  })  : _remoteDataSource = remoteDataSource ?? RecipesFirebaseDataSource(),
         _localDataSource = localDataSource ?? RecipesLocalDataSource();
 
   @override
