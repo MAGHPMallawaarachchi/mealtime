@@ -7,6 +7,7 @@ import '../../../../core/providers/auth_providers.dart';
 import '../../../recipes/domain/models/recipe.dart';
 import '../../../recipes/presentation/providers/recipes_providers.dart';
 import '../../../pantry/domain/models/pantry_item.dart';
+import '../../../pantry/domain/models/ingredient_recipe_match.dart';
 import '../../../pantry/presentation/providers/pantry_providers.dart';
 import '../../domain/recommendation_engine.dart';
 import '../../data/user_analytics_service.dart';
@@ -19,12 +20,13 @@ final userAnalyticsServiceProvider = Provider<UserAnalyticsService>((ref) {
   return UserAnalyticsService.instance;
 });
 
-class RecommendationNotifier extends StateNotifier<AsyncValue<RecommendationBatch?>> {
+class RecommendationNotifier
+    extends StateNotifier<AsyncValue<RecommendationBatch?>> {
   final RecommendationEngine _engine;
   final UserAnalyticsService _analyticsService;
 
-  RecommendationNotifier(this._engine, this._analyticsService) 
-      : super(const AsyncValue.data(null));
+  RecommendationNotifier(this._engine, this._analyticsService)
+    : super(const AsyncValue.data(null));
 
   Future<void> generateRecommendations({
     required UserModel user,
@@ -45,8 +47,9 @@ class RecommendationNotifier extends StateNotifier<AsyncValue<RecommendationBatc
     state = const AsyncValue.loading();
 
     try {
-      final interactionSummary = await _analyticsService.getUserInteractionSummary(user.uid);
-      
+      final interactionSummary = await _analyticsService
+          .getUserInteractionSummary(user.uid);
+
       final batch = await _engine.generateRecommendations(
         user: user,
         allRecipes: allRecipes,
@@ -63,7 +66,7 @@ class RecommendationNotifier extends StateNotifier<AsyncValue<RecommendationBatc
 
   Future<void> recordInteraction(UserInteraction interaction) async {
     await _analyticsService.recordInteraction(interaction);
-    
+
     // If this interaction might affect recommendations, mark for refresh
     if (_shouldTriggerRefresh(interaction.type)) {
       _markForRefresh();
@@ -138,32 +141,70 @@ class RecommendationNotifier extends StateNotifier<AsyncValue<RecommendationBatc
   }
 }
 
-final recommendationProvider = StateNotifierProvider<RecommendationNotifier, AsyncValue<RecommendationBatch?>>((ref) {
-  final engine = ref.watch(recommendationEngineProvider);
-  final analyticsService = ref.watch(userAnalyticsServiceProvider);
-  return RecommendationNotifier(engine, analyticsService);
-});
+final recommendationProvider =
+    StateNotifierProvider<
+      RecommendationNotifier,
+      AsyncValue<RecommendationBatch?>
+    >((ref) {
+      final engine = ref.watch(recommendationEngineProvider);
+      final analyticsService = ref.watch(userAnalyticsServiceProvider);
+      return RecommendationNotifier(engine, analyticsService);
+    });
 
 // Reactive providers that properly watch state changes
-final pantryBasedRecommendationsProvider = Provider<List<RecommendationScore>>((ref) {
-  final recommendationState = ref.watch(recommendationProvider);
-  return recommendationState.when(
-    data: (batch) => batch?.pantryBasedRecommendations ?? [],
-    loading: () => [],
-    error: (_, __) => [],
-  );
+final pantryBasedRecommendationsProvider = Provider<List<RecommendationScore>>((
+  ref,
+) {
+  // Use the same ingredient matching algorithm as the pantry screen
+  final pantryState = ref.watch(pantryProvider);
+  final recipesState = ref.watch(recipesProvider);
+  final currentUser = ref.watch(currentUserProvider).value;
+  
+  if (pantryState.isLoading || recipesState.isLoading || currentUser == null) {
+    return [];
+  }
+  
+  if (pantryState.ingredientItems.isEmpty || recipesState.recipes.isEmpty) {
+    return [];
+  }
+
+  // Get high-quality ingredient matches (≥80% match) from pantry screen algorithm
+  final ingredientMatches = ref.watch(ingredientRecipeMatchesProvider);
+  final highQualityMatches = ingredientMatches
+      .where((match) => 
+          match.matchLevel == MatchLevel.perfect || 
+          match.matchLevel == MatchLevel.high)
+      .toList();
+
+  // Convert IngredientRecipeMatch to RecommendationScore format
+  return highQualityMatches.map((match) {
+    return RecommendationScore(
+      recipeId: match.recipe.id,
+      totalScore: match.matchPercentage,
+      componentScores: {RecommendationType.pantryMatch: match.matchPercentage},
+      reason: match.matchLevel == MatchLevel.perfect
+          ? 'Perfect match! You have all ingredients'
+          : 'Great match! You have ${match.availableIngredients}/${match.totalIngredients} ingredients',
+      generatedAt: DateTime.now(),
+      matchedPantryItems: match.matchedIngredients,
+    );
+  }).toList();
 });
 
-final personalizedRecommendationsProvider = Provider<List<RecommendationScore>>((ref) {
-  final recommendationState = ref.watch(recommendationProvider);
-  return recommendationState.when(
-    data: (batch) => batch?.contentBasedRecommendations ?? [],
-    loading: () => [],
-    error: (_, __) => [],
-  );
-});
+final personalizedRecommendationsProvider = Provider<List<RecommendationScore>>(
+  (ref) {
+    final recommendationState = ref.watch(recommendationProvider);
+    return recommendationState.when(
+      data: (batch) => batch?.contentBasedRecommendations ?? [],
+      loading: () => [],
+      error: (_, __) => [],
+    );
+  },
+);
 
-final seasonalRecommendationsProvider = Provider<List<RecommendationScore>>((ref) {
+final seasonalRecommendationsProvider = Provider<List<RecommendationScore>>((
+  ref,
+) {
   final recommendationState = ref.watch(recommendationProvider);
   return recommendationState.when(
     data: (batch) => batch?.seasonalRecommendations ?? [],
@@ -172,7 +213,9 @@ final seasonalRecommendationsProvider = Provider<List<RecommendationScore>>((ref
   );
 });
 
-final quickMealRecommendationsProvider = Provider<List<RecommendationScore>>((ref) {
+final quickMealRecommendationsProvider = Provider<List<RecommendationScore>>((
+  ref,
+) {
   final recommendationState = ref.watch(recommendationProvider);
   return recommendationState.when(
     data: (batch) => batch?.quickMealRecommendations ?? [],
@@ -194,36 +237,40 @@ final topRecommendationsProvider = Provider<List<RecommendationScore>>((ref) {
 final selectedRecommendationTabProvider = StateProvider<int>((ref) => 0);
 
 // Auto-loading recommendation provider that triggers generation when dependencies are ready
-final autoRecommendationProvider = Provider<AsyncValue<RecommendationBatch?>>((ref) {
+final autoRecommendationProvider = Provider<AsyncValue<RecommendationBatch?>>((
+  ref,
+) {
   final userAsync = ref.watch(currentUserProvider);
   final recipesState = ref.watch(recipesProvider);
   final pantryState = ref.watch(pantryProvider);
-  
+
   // Watch the base recommendation provider state
   final recommendationState = ref.watch(recommendationProvider);
-  
+
   // Only trigger generation if we have all required data and no recommendations yet
   userAsync.whenData((user) {
-    if (user != null && 
-        user.enableRecommendations && 
-        !recipesState.isLoading && 
+    if (user != null &&
+        user.enableRecommendations &&
+        !recipesState.isLoading &&
         recipesState.error == null &&
         recipesState.recipes.isNotEmpty &&
         !pantryState.isLoading &&
         pantryState.error == null &&
-        (recommendationState.value == null || recommendationState.value!.recommendations.isEmpty)) {
-      
+        (recommendationState.value == null ||
+            recommendationState.value!.recommendations.isEmpty)) {
       // Trigger recommendation generation
       Future.microtask(() {
-        ref.read(recommendationProvider.notifier).generateRecommendations(
-          user: user,
-          allRecipes: recipesState.recipes,
-          pantryItems: pantryState.items,
-        );
+        ref
+            .read(recommendationProvider.notifier)
+            .generateRecommendations(
+              user: user,
+              allRecipes: recipesState.recipes,
+              pantryItems: pantryState.items,
+            );
       });
     }
   });
-  
+
   return recommendationState;
 });
 
