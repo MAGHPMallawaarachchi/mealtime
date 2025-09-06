@@ -209,6 +209,20 @@ class ExplorePaginationNotifier extends StateNotifier<PaginationState> {
     state = state.copyWith(clearError: true, retryAttempts: 0);
   }
 
+  void clearRecipes() {
+    _allFilteredRecipes = [];
+    state = const PaginationState(
+      displayedRecipes: [],
+      currentPage: 0,
+      hasReachedMax: true,
+      isInitialLoading: false,
+      isLoadingMore: false,
+      isRefreshing: false,
+      error: null,
+      retryAttempts: 0,
+    );
+  }
+
   List<Recipe> _getRecipesForPage(int page) {
     final startIndex = page * _itemsPerPage;
     final endIndex = (startIndex + _itemsPerPage).clamp(0, _allFilteredRecipes.length);

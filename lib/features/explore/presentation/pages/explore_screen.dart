@@ -279,7 +279,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
         debugPrint('ExploreScreen: Initializing pagination with ${filteredRecipes.length} recipes');
         ref.read(explorePaginationProvider.notifier).loadInitialRecipes(filteredRecipes);
       } else {
-        debugPrint('ExploreScreen: No filtered recipes to initialize pagination with');
+        debugPrint('ExploreScreen: No filtered recipes to initialize pagination with - clearing pagination');
+        // Clear pagination state when no recipes are found
+        ref.read(explorePaginationProvider.notifier).clearRecipes();
       }
     });
   }
