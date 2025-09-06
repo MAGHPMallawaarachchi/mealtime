@@ -33,9 +33,7 @@ class PantryCategorySection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.border.withOpacity(0.3),
-        ),
+        border: Border.all(color: AppColors.border.withOpacity(0.3)),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withOpacity(0.05),
@@ -67,10 +65,7 @@ class PantryCategorySection extends StatelessWidget {
                 child: Row(
                   children: [
                     // Category emoji and name
-                    Text(
-                      category.emoji,
-                      style: const TextStyle(fontSize: 24),
-                    ),
+                    Text(category.emoji, style: const TextStyle(fontSize: 24)),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -94,10 +89,10 @@ class PantryCategorySection extends StatelessWidget {
                         ],
                       ),
                     ),
-                    
+
                     // Expand/collapse icon
                     PhosphorIcon(
-                      isExpanded 
+                      isExpanded
                           ? PhosphorIcons.caretUp()
                           : PhosphorIcons.caretDown(),
                       size: 20,
@@ -108,7 +103,7 @@ class PantryCategorySection extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Category items
           if (isExpanded)
             Container(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -25,7 +24,7 @@ class MealPlannerScreen extends StatefulWidget {
   final MealPlannerReturnContext? returnContext;
 
   const MealPlannerScreen({
-    super.key, 
+    super.key,
     this.onRegisterAddMealCallback,
     this.returnContext,
   });
@@ -56,7 +55,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     _initializeDependencies();
     final today = DateTime.now();
     _todayNormalized = _normalizeDate(today);
-    
+
     // Initialize state from return context or use defaults
     if (widget.returnContext != null) {
       _restoreStateFromContext(widget.returnContext!);
@@ -65,7 +64,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       currentWeekStart = _getWeekStart(_todayNormalized);
       selectedDate = _todayNormalized;
     }
-    
+
     _loadWeekPlan();
 
     // Register our add meal callback with the parent
@@ -76,10 +75,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     // Restore the exact state from when user left
     currentWeekStart = _normalizeDate(context.weekStart);
     selectedDate = _normalizeDate(context.selectedDate);
-    
+
     // Validate that the selected date is within the current week
     final weekEnd = currentWeekStart.add(const Duration(days: 6));
-    if (selectedDate.isBefore(currentWeekStart) || selectedDate.isAfter(weekEnd)) {
+    if (selectedDate.isBefore(currentWeekStart) ||
+        selectedDate.isAfter(weekEnd)) {
       // If selected date is outside the week, adjust it to be within the week
       selectedDate = currentWeekStart;
     }
@@ -170,8 +170,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
       // Ignore stale errors from outdated requests
       if (currentRequestId != _loadRequestId ||
-          !_isSameDay(requestedWeekStart, currentWeekStart))
+          !_isSameDay(requestedWeekStart, currentWeekStart)) {
         return;
+      }
 
       String errorMessage = 'Failed to load meal plan';
       if (e.toString().contains('permission-denied')) {
@@ -402,9 +403,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         ),
         backgroundColor: AppColors.primary,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         duration: const Duration(milliseconds: 800),
       ),
     );
@@ -881,23 +880,26 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         selectedDate: selectedDate,
         weekStart: currentWeekStart,
       );
-      
+
       // Build URL with context parameters
       final uri = Uri(
         path: '/recipe/$recipeId',
         queryParameters: returnContext.toQueryParameters(),
       );
-      
+
       // Show subtle loading feedback
       _showNavigationFeedback(true);
-      
-      context.push(uri.toString()).then((_) {
-        // Hide loading feedback when returning
-        _hideNavigationFeedback();
-      }).catchError((e) {
-        _hideNavigationFeedback();
-        _showNavigationError();
-      });
+
+      context
+          .push(uri.toString())
+          .then((_) {
+            // Hide loading feedback when returning
+            _hideNavigationFeedback();
+          })
+          .catchError((e) {
+            _hideNavigationFeedback();
+            _showNavigationError();
+          });
     } catch (e) {
       _showNavigationError();
     }
@@ -933,9 +935,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         ),
         backgroundColor: AppColors.error,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }

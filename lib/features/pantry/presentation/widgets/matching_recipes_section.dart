@@ -152,10 +152,10 @@ class MatchingRecipesSection extends ConsumerWidget {
     List<IngredientRecipeMatch> matches,
   ) {
     return SizedBox(
-      height: 310,
+      height: 300,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         itemCount: matches.length,
         separatorBuilder: (context, index) => const SizedBox(width: 16),
         itemBuilder: (context, index) {

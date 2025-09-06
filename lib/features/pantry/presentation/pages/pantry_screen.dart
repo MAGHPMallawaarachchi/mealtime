@@ -95,23 +95,22 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
           children: [
             // Header
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.only(
+                top: 4,
+                left: 16,
+                right: 16,
+                bottom: 8,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      PhosphorIcon(
-                        PhosphorIcons.jar(),
-                        size: 32,
-                        color: AppColors.primary,
-                      ),
-                      const SizedBox(width: 16),
                       const Expanded(
                         child: Text(
                           'My Pantry',
                           style: TextStyle(
-                            fontSize: 28,
+                            fontSize: 24,
                             fontWeight: FontWeight.bold,
                             color: AppColors.textPrimary,
                           ),
@@ -125,7 +124,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             color: AppColors.primary,
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(30),
                           ),
                           child: PhosphorIcon(
                             PhosphorIcons.plus(),
