@@ -9,6 +9,7 @@ import '../../../../core/services/auth_service.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../favorites/presentation/providers/favorites_providers.dart';
 import '../../../user_recipes/presentation/providers/user_recipes_providers.dart';
+import '../../../recipes/presentation/providers/recipes_providers.dart';
 import '../widgets/favorites_grid.dart';
 import '../widgets/user_recipes_grid.dart';
 import '../widgets/profile_menu_bottom_sheet.dart';
@@ -46,6 +47,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       _loadUserProfilePicture();
       ref.read(favoritesProvider.notifier).loadUserFavorites();
       ref.read(userRecipesProvider.notifier).loadUserRecipes();
+      ref.read(recipesProvider.notifier).loadRecipes();
     });
   }
 

@@ -39,21 +39,21 @@ class FavoritesGrid extends ConsumerWidget {
       return _buildEmptyState();
     }
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+    return Padding(
       padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.85,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.85,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+        ),
+        itemCount: favoriteRecipes.length,
+        itemBuilder: (context, index) {
+          final recipe = favoriteRecipes[index];
+          return ExploreRecipeCard(recipe: recipe);
+        },
       ),
-      itemCount: favoriteRecipes.length,
-      itemBuilder: (context, index) {
-        final recipe = favoriteRecipes[index];
-        return ExploreRecipeCard(recipe: recipe);
-      },
     );
   }
 

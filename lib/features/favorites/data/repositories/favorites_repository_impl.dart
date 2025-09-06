@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import '../../domain/models/favorite_recipe.dart';
 import '../../domain/repositories/favorites_repository.dart';
 import '../datasources/favorites_firebase_datasource.dart';
@@ -6,16 +5,17 @@ import '../datasources/favorites_firebase_datasource.dart';
 class FavoritesRepositoryImpl implements FavoritesRepository {
   final FavoritesFirebaseDataSource _dataSource;
 
-  FavoritesRepositoryImpl({
-    FavoritesFirebaseDataSource? dataSource,
-  }) : _dataSource = dataSource ?? FavoritesFirebaseDataSource();
+  FavoritesRepositoryImpl({FavoritesFirebaseDataSource? dataSource})
+    : _dataSource = dataSource ?? FavoritesFirebaseDataSource();
 
   @override
   Future<void> addToFavorites(String userId, String recipeId) async {
     try {
       await _dataSource.addToFavorites(userId, recipeId);
     } catch (e) {
-      throw FavoritesRepositoryException('Failed to add recipe to favorites: ${e.toString()}');
+      throw FavoritesRepositoryException(
+        'Failed to add recipe to favorites: ${e.toString()}',
+      );
     }
   }
 
@@ -24,7 +24,9 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
     try {
       await _dataSource.removeFromFavorites(userId, recipeId);
     } catch (e) {
-      throw FavoritesRepositoryException('Failed to remove recipe from favorites: ${e.toString()}');
+      throw FavoritesRepositoryException(
+        'Failed to remove recipe from favorites: ${e.toString()}',
+      );
     }
   }
 
@@ -34,7 +36,9 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
       final favorites = await _dataSource.getUserFavorites(userId);
       return favorites;
     } catch (e) {
-      throw FavoritesRepositoryException('Failed to get user favorites: ${e.toString()}');
+      throw FavoritesRepositoryException(
+        'Failed to get user favorites: ${e.toString()}',
+      );
     }
   }
 
@@ -44,7 +48,9 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
       final isFavorite = await _dataSource.isFavorite(userId, recipeId);
       return isFavorite;
     } catch (e) {
-      throw FavoritesRepositoryException('Failed to check favorite status: ${e.toString()}');
+      throw FavoritesRepositoryException(
+        'Failed to check favorite status: ${e.toString()}',
+      );
     }
   }
 
@@ -52,10 +58,14 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
   Stream<List<FavoriteRecipe>> getUserFavoritesStream(String userId) {
     try {
       return _dataSource.getUserFavoritesStream(userId).handleError((error) {
-        throw FavoritesRepositoryException('Failed to stream favorites: ${error.toString()}');
+        throw FavoritesRepositoryException(
+          'Failed to stream favorites: ${error.toString()}',
+        );
       });
     } catch (e) {
-      throw FavoritesRepositoryException('Failed to create favorites stream: ${e.toString()}');
+      throw FavoritesRepositoryException(
+        'Failed to create favorites stream: ${e.toString()}',
+      );
     }
   }
 }
