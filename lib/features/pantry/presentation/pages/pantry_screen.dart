@@ -7,6 +7,7 @@ import '../providers/pantry_providers.dart';
 import '../widgets/pantry_category_section.dart';
 import '../widgets/add_ingredient_modal.dart';
 import '../widgets/leftover_item_with_suggestions.dart';
+import '../widgets/matching_recipes_section.dart';
 
 class PantryScreen extends ConsumerStatefulWidget {
   const PantryScreen({super.key});
@@ -245,25 +246,35 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Matching recipes section
+          const MatchingRecipesSection(),
+
           // Ingredients by category
-          ...ingredientsByCategory.entries.map((entry) {
-            final category = entry.key;
-            final items = entry.value;
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...ingredientsByCategory.entries.map((entry) {
+                  final category = entry.key;
+                  final items = entry.value;
 
-            return PantryCategorySection(
-              category: category,
-              items: items,
-              isExpanded: _isCategoryExpanded(category),
-              onToggleExpanded: () => _toggleCategoryExpansion(category),
-              onEditItem: (item) => _showAddIngredientModal(editingItem: item),
-              onDeleteItem: _showDeleteConfirmation,
-            );
-          }),
-
+                  return PantryCategorySection(
+                    category: category,
+                    items: items,
+                    isExpanded: _isCategoryExpanded(category),
+                    onToggleExpanded: () => _toggleCategoryExpansion(category),
+                    onEditItem: (item) =>
+                        _showAddIngredientModal(editingItem: item),
+                    onDeleteItem: _showDeleteConfirmation,
+                  );
+                }),
+              ],
+            ),
+          ),
 
           const SizedBox(height: 100), // Space for bottom nav
         ],
@@ -395,143 +406,6 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
               ),
               child: const Text('Try Again'),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            PhosphorIcon(
-              PhosphorIcons.jar(),
-              size: 80,
-              color: AppColors.textSecondary,
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Your Pantry is Empty',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Add ingredients to discover recipes you can make with what you have!',
-              style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
-
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => _showAddIngredientModal(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    icon: PhosphorIcon(
-                      PhosphorIcons.plus(),
-                      size: 20,
-                      color: Colors.white,
-                    ),
-                    label: const Text(
-                      'Add Ingredient',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: _addStarterKit,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary,
-                      side: const BorderSide(color: AppColors.primary),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    icon: PhosphorIcon(
-                      PhosphorIcons.package(),
-                      size: 20,
-                      color: AppColors.primary,
-                    ),
-                    label: const Text(
-                      'Starter Kit',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 24),
-
-            // Quick add suggestions
-            const Text(
-              'Quick Add Popular Items:',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _quickAddItems.map((item) {
-                return GestureDetector(
-                  onTap: () =>
-                      _quickAddIngredient(item['name']!, item['category']!),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: AppColors.primary.withOpacity(0.3),
-                      ),
-                    ),
-                    child: Text(
-                      item['name']!,
-                      style: const TextStyle(
-                        color: AppColors.primary,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-
-            const SizedBox(height: 100), // Space for bottom nav
           ],
         ),
       ),

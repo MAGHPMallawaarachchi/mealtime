@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/services/auth_service.dart';
+import '../../../recipes/domain/models/recipe.dart';
 import '../../data/repositories/pantry_repository_impl.dart';
 import '../../domain/usecases/get_pantry_items_usecase.dart';
 import '../../domain/usecases/add_pantry_item_usecase.dart';
@@ -11,12 +14,14 @@ import '../../domain/usecases/delete_pantry_item_usecase.dart';
 import '../../domain/usecases/search_ingredients_usecase.dart';
 import '../../domain/usecases/add_starter_kit_usecase.dart';
 import '../../domain/models/pantry_item.dart';
+import '../../domain/models/ingredient_recipe_match.dart';
+import '../../domain/services/ingredient_recipe_matcher.dart';
+import '../../../recipes/presentation/providers/recipes_providers.dart';
 
 // Repository providers
 final pantryRepositoryProvider = Provider<PantryRepositoryImpl>((ref) {
   return PantryRepositoryImpl();
 });
-
 
 // Use case providers
 final getPantryItemsUseCaseProvider = Provider<GetPantryItemsUseCase>((ref) {
@@ -29,21 +34,26 @@ final addPantryItemUseCaseProvider = Provider<AddPantryItemUseCase>((ref) {
   return AddPantryItemUseCase(repository);
 });
 
-final updatePantryItemUseCaseProvider = Provider<UpdatePantryItemUseCase>((ref) {
+final updatePantryItemUseCaseProvider = Provider<UpdatePantryItemUseCase>((
+  ref,
+) {
   final repository = ref.read(pantryRepositoryProvider);
   return UpdatePantryItemUseCase(repository);
 });
 
-final deletePantryItemUseCaseProvider = Provider<DeletePantryItemUseCase>((ref) {
+final deletePantryItemUseCaseProvider = Provider<DeletePantryItemUseCase>((
+  ref,
+) {
   final repository = ref.read(pantryRepositoryProvider);
   return DeletePantryItemUseCase(repository);
 });
 
-final searchIngredientsUseCaseProvider = Provider<SearchIngredientsUseCase>((ref) {
+final searchIngredientsUseCaseProvider = Provider<SearchIngredientsUseCase>((
+  ref,
+) {
   final repository = ref.read(pantryRepositoryProvider);
   return SearchIngredientsUseCase(repository);
 });
-
 
 final addStarterKitUseCaseProvider = Provider<AddStarterKitUseCase>((ref) {
   final repository = ref.read(pantryRepositoryProvider);
@@ -91,7 +101,8 @@ class PantryState {
       itemsByCategory: itemsByCategory ?? this.itemsByCategory,
       ingredientItems: ingredientItems ?? this.ingredientItems,
       leftoverItems: leftoverItems ?? this.leftoverItems,
-      ingredientsByCategory: ingredientsByCategory ?? this.ingredientsByCategory,
+      ingredientsByCategory:
+          ingredientsByCategory ?? this.ingredientsByCategory,
     );
   }
 }
@@ -104,7 +115,7 @@ class PantryNotifier extends StateNotifier<PantryState> {
   final DeletePantryItemUseCase _deletePantryItemUseCase;
   final AddStarterKitUseCase _addStarterKitUseCase;
   final AuthService _authService;
-  
+
   StreamSubscription<List<PantryItem>>? _pantrySubscription;
 
   PantryNotifier(
@@ -138,35 +149,37 @@ class PantryNotifier extends StateNotifier<PantryState> {
       _pantrySubscription?.cancel();
 
       // Start listening to real-time updates
-      _pantrySubscription = _getPantryItemsUseCase.executeStream(userId).listen(
-        (items) {
-          final itemsByCategory = _groupItemsByCategory(items);
-          final ingredientItems = items.where((item) => item.type == PantryItemType.ingredient).toList();
-          final leftoverItems = items.where((item) => item.type == PantryItemType.leftover).toList();
-          final ingredientsByCategory = _groupItemsByCategory(ingredientItems);
-          
-          state = state.copyWith(
-            items: items,
-            isLoading: false,
-            error: null,
-            itemsByCategory: itemsByCategory,
-            ingredientItems: ingredientItems,
-            leftoverItems: leftoverItems,
-            ingredientsByCategory: ingredientsByCategory,
+      _pantrySubscription = _getPantryItemsUseCase
+          .executeStream(userId)
+          .listen(
+            (items) {
+              final itemsByCategory = _groupItemsByCategory(items);
+              final ingredientItems = items
+                  .where((item) => item.type == PantryItemType.ingredient)
+                  .toList();
+              final leftoverItems = items
+                  .where((item) => item.type == PantryItemType.leftover)
+                  .toList();
+              final ingredientsByCategory = _groupItemsByCategory(
+                ingredientItems,
+              );
+
+              state = state.copyWith(
+                items: items,
+                isLoading: false,
+                error: null,
+                itemsByCategory: itemsByCategory,
+                ingredientItems: ingredientItems,
+                leftoverItems: leftoverItems,
+                ingredientsByCategory: ingredientsByCategory,
+              );
+            },
+            onError: (error) {
+              state = state.copyWith(isLoading: false, error: error.toString());
+            },
           );
-        },
-        onError: (error) {
-          state = state.copyWith(
-            isLoading: false,
-            error: error.toString(),
-          );
-        },
-      );
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
@@ -187,7 +200,7 @@ class PantryNotifier extends StateNotifier<PantryState> {
         type: type,
         tags: tags,
       );
-      
+
       // State will be updated via stream
       return itemId;
     } catch (e) {
@@ -249,27 +262,31 @@ class PantryNotifier extends StateNotifier<PantryState> {
     state = state.copyWith(error: null);
   }
 
-  Map<PantryCategory, List<PantryItem>> _groupItemsByCategory(List<PantryItem> items) {
+  Map<PantryCategory, List<PantryItem>> _groupItemsByCategory(
+    List<PantryItem> items,
+  ) {
     final Map<PantryCategory, List<PantryItem>> grouped = {};
-    
+
     for (final item in items) {
       if (grouped[item.category] == null) {
         grouped[item.category] = [];
       }
       grouped[item.category]!.add(item);
     }
-    
+
     // Sort items within each category alphabetically
     for (final category in grouped.keys) {
       grouped[category]!.sort((a, b) => a.name.compareTo(b.name));
     }
-    
+
     return grouped;
   }
 }
 
 // Main pantry provider
-final pantryProvider = StateNotifierProvider<PantryNotifier, PantryState>((ref) {
+final pantryProvider = StateNotifierProvider<PantryNotifier, PantryState>((
+  ref,
+) {
   final getPantryItemsUseCase = ref.read(getPantryItemsUseCaseProvider);
   final addPantryItemUseCase = ref.read(addPantryItemUseCaseProvider);
   final updatePantryItemUseCase = ref.read(updatePantryItemUseCaseProvider);
@@ -292,9 +309,11 @@ final pantryProvider = StateNotifierProvider<PantryNotifier, PantryState>((ref) 
   return notifier;
 });
 
-
 // Ingredient search provider
-final ingredientSearchProvider = FutureProvider.family<List<String>, String>((ref, query) async {
+final ingredientSearchProvider = FutureProvider.family<List<String>, String>((
+  ref,
+  query,
+) async {
   final searchUseCase = ref.read(searchIngredientsUseCaseProvider);
   return await searchUseCase.execute(query, limit: 15);
 });
@@ -315,18 +334,138 @@ final leftoverCountProvider = Provider<int>((ref) {
   return pantryState.leftoverItems.length;
 });
 
-final pantryItemsByCategoryProvider = Provider<Map<PantryCategory, List<PantryItem>>>((ref) {
-  final pantryState = ref.watch(pantryProvider);
-  return pantryState.itemsByCategory;
-});
+final pantryItemsByCategoryProvider =
+    Provider<Map<PantryCategory, List<PantryItem>>>((ref) {
+      final pantryState = ref.watch(pantryProvider);
+      return pantryState.itemsByCategory;
+    });
 
-final ingredientsByCategoryProvider = Provider<Map<PantryCategory, List<PantryItem>>>((ref) {
-  final pantryState = ref.watch(pantryProvider);
-  return pantryState.ingredientsByCategory;
-});
+final ingredientsByCategoryProvider =
+    Provider<Map<PantryCategory, List<PantryItem>>>((ref) {
+      final pantryState = ref.watch(pantryProvider);
+      return pantryState.ingredientsByCategory;
+    });
 
 final leftoverItemsProvider = Provider<List<PantryItem>>((ref) {
   final pantryState = ref.watch(pantryProvider);
   return pantryState.leftoverItems;
 });
 
+// Recipe matcher provider
+final ingredientRecipeMatcherProvider = Provider<IngredientRecipeMatcher>((
+  ref,
+) {
+  return IngredientRecipeMatcher();
+});
+
+// Recipe matching state
+class RecipeMatchingState {
+  final List<IngredientRecipeMatch> matches;
+  final bool isLoading;
+  final String? error;
+
+  const RecipeMatchingState({
+    this.matches = const [],
+    this.isLoading = false,
+    this.error,
+  });
+
+  RecipeMatchingState copyWith({
+    List<IngredientRecipeMatch>? matches,
+    bool? isLoading,
+    String? error,
+  }) {
+    return RecipeMatchingState(
+      matches: matches ?? this.matches,
+      isLoading: isLoading ?? this.isLoading,
+      error: error,
+    );
+  }
+}
+
+// Recipe matching notifier
+class RecipeMatchingNotifier extends StateNotifier<RecipeMatchingState> {
+  final IngredientRecipeMatcher _matcher;
+
+  RecipeMatchingNotifier(this._matcher) : super(const RecipeMatchingState());
+
+  void updateMatches(List<PantryItem> ingredients, List<Recipe> recipes) {
+    try {
+      state = state.copyWith(isLoading: true, error: null);
+
+      if (ingredients.isEmpty || recipes.isEmpty) {
+        state = state.copyWith(matches: [], isLoading: false);
+        return;
+      }
+
+      final matches = _matcher.findMatchingRecipes(ingredients, recipes);
+      state = state.copyWith(matches: matches, isLoading: false);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
+    }
+  }
+
+  void clearMatches() {
+    state = const RecipeMatchingState();
+  }
+
+  void clearError() {
+    state = state.copyWith(error: null);
+  }
+}
+
+// Recipe matching provider
+final recipeMatchingProvider =
+    StateNotifierProvider<RecipeMatchingNotifier, RecipeMatchingState>((ref) {
+      final matcher = ref.read(ingredientRecipeMatcherProvider);
+      return RecipeMatchingNotifier(matcher);
+    });
+
+// Combined provider that automatically updates matches when ingredients or recipes change
+final ingredientRecipeMatchesProvider = Provider<List<IngredientRecipeMatch>>((
+  ref,
+) {
+  final pantryState = ref.watch(pantryProvider);
+  final recipesState = ref.watch(recipesProvider);
+  final matchingNotifier = ref.read(recipeMatchingProvider.notifier);
+
+  if (!pantryState.isLoading && !recipesState.isLoading) {
+    final ingredients = pantryState.ingredientItems;
+    final recipes = recipesState.recipes;
+
+    if (ingredients.isNotEmpty && recipes.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        matchingNotifier.updateMatches(ingredients, recipes);
+      });
+    }
+  }
+
+  final matchingState = ref.watch(recipeMatchingProvider);
+  return matchingState.matches;
+});
+
+// Helper providers for different match levels
+final perfectMatchRecipesProvider = Provider<List<IngredientRecipeMatch>>((
+  ref,
+) {
+  final matches = ref.watch(ingredientRecipeMatchesProvider);
+  return matches
+      .where((match) => match.matchLevel == MatchLevel.perfect)
+      .toList();
+});
+
+final goodMatchRecipesProvider = Provider<List<IngredientRecipeMatch>>((ref) {
+  final matches = ref.watch(ingredientRecipeMatchesProvider);
+  return matches
+      .where(
+        (match) =>
+            match.matchLevel == MatchLevel.high ||
+            match.matchLevel == MatchLevel.medium,
+      )
+      .toList();
+});
+
+final hasMatchingRecipesProvider = Provider<bool>((ref) {
+  final matches = ref.watch(ingredientRecipeMatchesProvider);
+  return matches.isNotEmpty;
+});
