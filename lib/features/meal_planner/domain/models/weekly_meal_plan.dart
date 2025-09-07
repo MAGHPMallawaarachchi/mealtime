@@ -52,6 +52,9 @@ class WeeklyMealPlan {
 
   // Check if week has any planned meals
   bool get hasPlannedMeals => totalPlannedMeals > 0;
+  
+  // Check if week has no planned meals
+  bool get isEmpty => !hasPlannedMeals;
 
   // Get all locked meals
   List<MealSlot> get lockedMeals {

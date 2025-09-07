@@ -77,6 +77,12 @@ dependencies:
   
   # Image processing
   image: ^4.2.0
+  
+  # Sharing functionality
+  share_plus: ^7.2.2
+  
+  # Value equality
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:

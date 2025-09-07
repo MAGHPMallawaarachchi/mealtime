@@ -596,6 +596,62 @@ class Recipe {
         .toList();
   }
 
+  /// Check if this recipe has valid ingredients for grocery list generation
+  bool get hasValidIngredientsForGroceryList {
+    // Check structured ingredients
+    if (ingredients.isNotEmpty) {
+      return ingredients.any((ingredient) => 
+        ingredient.name.trim().isNotEmpty && ingredient.quantity > 0
+      );
+    }
+    
+    // Check legacy ingredients
+    if (legacyIngredients.isNotEmpty) {
+      return legacyIngredients.any((ingredient) => ingredient.trim().isNotEmpty);
+    }
+    
+    // Check ingredient sections (for recipes that use sectioned ingredients)
+    if (ingredientSections.isNotEmpty) {
+      return ingredientSections.any((section) =>
+        section.ingredients.any((ingredient) =>
+          ingredient.name.trim().isNotEmpty && ingredient.quantity > 0
+        )
+      );
+    }
+    
+    return false;
+  }
+
+  /// Get count of valid ingredients that can be used for grocery lists
+  int get validIngredientsCount {
+    int count = 0;
+    
+    // Count structured ingredients
+    for (final ingredient in ingredients) {
+      if (ingredient.name.trim().isNotEmpty && ingredient.quantity > 0) {
+        count++;
+      }
+    }
+    
+    // Count legacy ingredients
+    for (final ingredient in legacyIngredients) {
+      if (ingredient.trim().isNotEmpty) {
+        count++;
+      }
+    }
+    
+    // Count ingredients in sections
+    for (final section in ingredientSections) {
+      for (final ingredient in section.ingredients) {
+        if (ingredient.name.trim().isNotEmpty && ingredient.quantity > 0) {
+          count++;
+        }
+      }
+    }
+    
+    return count;
+  }
+
   @override
   String toString() {
     return 'Recipe(id: $id, title: $title, time: $time, calories: $calories)';
