@@ -47,3 +47,6 @@ app.*.map.json
 CLAUDE.md
 /macos/Flutter/GeneratedPluginRegistrant.swift
 MEAL_PLAN_INTEGRATION.md
+chapter-5.md
+recommendation_algorithm_pseudocode.md
+recommendation_system_workflow.md
