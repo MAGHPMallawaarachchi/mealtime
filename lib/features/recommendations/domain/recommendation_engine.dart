@@ -28,7 +28,6 @@ class RecommendationEngine {
     final contentBasedEngine = ContentBasedEngine();
     final seasonalEngine = SeasonalEngine();
     final quickMealEngine = QuickMealEngine();
-    final popularityEngine = PopularityEngine();
 
     for (final recipe in allRecipes) {
       final scores = <RecommendationType, double>{};
@@ -66,12 +65,6 @@ class RecommendationEngine {
       );
       scores[RecommendationType.quickMeal] = quickMealScore.score;
 
-      final popularityScore = await popularityEngine.calculateScore(
-        recipe: recipe,
-        interactionSummary: interactionSummary,
-      );
-      scores[RecommendationType.popular] = popularityScore.score;
-
       final totalScore = _calculateWeightedScore(scores, user);
 
       if (totalScore > 0.1) {
@@ -104,11 +97,10 @@ class RecommendationEngine {
     UserModel user,
   ) {
     final weights = <RecommendationType, double>{
-      RecommendationType.pantryMatch: user.prioritizePantryItems ? 0.4 : 0.2,
-      RecommendationType.contentBased: 0.25,
+      RecommendationType.pantryMatch: user.prioritizePantryItems ? 0.5 : 0.3,
+      RecommendationType.contentBased: 0.3,
       RecommendationType.seasonal: 0.15,
-      RecommendationType.quickMeal: 0.1,
-      RecommendationType.popular: 0.1,
+      RecommendationType.quickMeal: 0.05,
     };
 
     double totalScore = 0.0;
@@ -138,17 +130,18 @@ class RecommendationEngine {
         return 'Uses ingredients from your pantry';
       case RecommendationType.contentBased:
         if (matchedTags.isNotEmpty) {
-          return 'Because you like ${matchedTags.first} recipes';
+          return 'Based on your preferences';
         }
         return 'Similar to your preferences';
       case RecommendationType.seasonal:
         return 'Perfect for this season';
       case RecommendationType.quickMeal:
-        return 'Quick and easy weeknight meal';
-      case RecommendationType.popular:
-        return 'Popular among users like you';
+        return 'Quick and easy';
       case RecommendationType.similar:
         return 'Similar to recipes you\'ve enjoyed';
+      case RecommendationType.popular:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 }
@@ -399,11 +392,37 @@ class ContentBasedEngine {
       historyScore -= 0.2; // Slightly reduce score for already viewed recipes
     }
 
+    // Don't recommend recipes they've already favorited
     if (interactionSummary.mostFavoritedRecipes.contains(recipe.id)) {
-      historyScore += 0.3; // Boost similar recipes to favorites
+      historyScore -= 0.5; // Significantly reduce score for already favorited recipes
     }
 
+    // Boost recipes similar to their favorited ones
+    historyScore += _calculateSimilarityToFavorites(recipe, interactionSummary.mostFavoritedRecipes);
+
     return historyScore;
+  }
+
+  double _calculateSimilarityToFavorites(Recipe recipe, List<String> favoritedRecipeIds) {
+    if (favoritedRecipeIds.isEmpty) return 0.0;
+
+    // For now, we don't have access to favorited recipe details in this context
+    // This would ideally compare tags, ingredients, cuisine types, etc.
+    // As a simple implementation, we'll boost recipes that match common patterns
+    double similarityScore = 0.0;
+
+    // If user has favorited multiple recipes, look for common patterns
+    if (favoritedRecipeIds.length >= 2) {
+      // This is a placeholder - in a full implementation, you'd:
+      // 1. Get the full Recipe objects for favoritedRecipeIds
+      // 2. Analyze common tags, ingredients, cooking methods, etc.
+      // 3. Score current recipe based on similarity to those patterns
+      
+      // For now, give a small boost to encourage some variety
+      similarityScore += 0.1;
+    }
+
+    return similarityScore;
   }
 }
 
@@ -541,33 +560,5 @@ class QuickMealEngine {
     }
 
     return totalMinutes > 0 ? totalMinutes : 30; // Default to 30 minutes
-  }
-}
-
-class PopularityEngine {
-  Future<EngineScore> calculateScore({
-    required Recipe recipe,
-    InteractionSummary? interactionSummary,
-  }) async {
-    double score = 0.0;
-
-    if (interactionSummary != null) {
-      final viewCount = interactionSummary.recipeViews[recipe.id] ?? 0;
-      final favoriteCount = interactionSummary.recipeFavorites[recipe.id] ?? 0;
-
-      // Normalize view and favorite counts (simple approach)
-      score += math.min(viewCount / 100.0, 0.3); // Cap at 0.3
-      score += math.min(favoriteCount / 10.0, 0.4); // Cap at 0.4
-    }
-
-    // Tag-based popularity indicators
-    final popularTags = ['popular', 'trending', 'featured', 'top-rated'];
-    for (final tag in recipe.tags) {
-      if (popularTags.contains(tag.toLowerCase())) {
-        score += 0.2;
-      }
-    }
-
-    return EngineScore(score: math.min(score, 1.0));
   }
 }

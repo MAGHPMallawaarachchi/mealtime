@@ -24,11 +24,10 @@ class _PersonalizedRecommendationsSectionState
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-
   final List<RecommendationSectionConfig> _sections = [
     RecommendationSectionConfig(
       title: "Perfect for Your Pantry",
-      subtitle: "Use up your ingredients",
+      subtitle: "Use up your pantry items",
       icon: PhosphorIconsRegular.forkKnife,
       type: RecommendationSectionType.pantry,
     ),
@@ -59,20 +58,20 @@ class _PersonalizedRecommendationsSectionState
       duration: const Duration(milliseconds: 250),
       vsync: this,
     );
-    
+
     _fadeAnimation = CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeOutCubic,
     );
-    
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.02),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
-    
+
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.02), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
+
     _animationController.forward();
   }
 
@@ -82,9 +81,19 @@ class _PersonalizedRecommendationsSectionState
     super.dispose();
   }
 
+  int? _lastSectionIndex;
+
   @override
   Widget build(BuildContext context) {
     final recommendationsAsync = ref.watch(autoRecommendationProvider);
+    final currentSectionIndex = ref.watch(selectedRecommendationTabProvider);
+
+    // Reset animation when section changes
+    if (_lastSectionIndex != currentSectionIndex) {
+      _animationController.reset();
+      _animationController.forward();
+      _lastSectionIndex = currentSectionIndex;
+    }
 
     return recommendationsAsync.when(
       data: (batch) {
@@ -111,12 +120,22 @@ class _PersonalizedRecommendationsSectionState
           key: ValueKey(currentSectionIndex),
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionHeader(currentSection, currentSectionIndex),
+            _buildStaticHeader(),
             const SizedBox(height: 24),
             _buildRecipesList(recommendations),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildStaticHeader() {
+    final currentSectionIndex = ref.watch(selectedRecommendationTabProvider);
+    final currentSection = _sections[currentSectionIndex];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: _buildSectionHeader(currentSection, currentSectionIndex),
     );
   }
 
@@ -135,7 +154,10 @@ class _PersonalizedRecommendationsSectionState
     }
   }
 
-  Widget _buildSectionHeader(RecommendationSectionConfig section, int currentIndex) {
+  Widget _buildSectionHeader(
+    RecommendationSectionConfig section,
+    int currentIndex,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -180,7 +202,7 @@ class _PersonalizedRecommendationsSectionState
                 Text(
                   section.title,
                   style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                     letterSpacing: -0.2,
@@ -190,7 +212,7 @@ class _PersonalizedRecommendationsSectionState
                 Text(
                   section.subtitle,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 12,
                     color: AppColors.textSecondary.withOpacity(0.8),
                     fontWeight: FontWeight.w400,
                   ),
@@ -211,6 +233,7 @@ class _PersonalizedRecommendationsSectionState
         (index) => _RecommendationTabIndicator(
           isActive: index == currentIndex,
           onTap: () {
+            // Update the provider, which will trigger the listener to animate PageController
             ref.read(selectedRecommendationTabProvider.notifier).state = index;
             _animationController.reset();
             _animationController.forward();
@@ -249,7 +272,7 @@ class _PersonalizedRecommendationsSectionState
           ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            physics: const BouncingScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             itemCount: recommendations.length,
             itemBuilder: (context, index) {
               final recommendation = recommendations[index];
@@ -266,13 +289,12 @@ class _PersonalizedRecommendationsSectionState
     );
   }
 
-
   Widget _buildEmptySection() {
     final currentSectionIndex = ref.watch(selectedRecommendationTabProvider);
     final currentSection = _sections[currentSectionIndex];
-    
+
     final emptyStateInfo = _getEmptyStateInfo(currentSection.type);
-    
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOutCubic,
@@ -455,7 +477,10 @@ class _PersonalizedRecommendationsSectionState
                             color: AppColors.border.withOpacity(0.4),
                             borderRadius: BorderRadius.circular(6),
                           ),
-                          child: const SizedBox(width: double.infinity, height: 18),
+                          child: const SizedBox(
+                            width: double.infinity,
+                            height: 18,
+                          ),
                         ),
                         const SizedBox(height: 12),
                         Container(
@@ -496,7 +521,6 @@ class _PersonalizedRecommendationsSectionState
       ),
     );
   }
-
 
   Widget _buildErrorState() {
     return Container(

@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/models/user_interaction.dart';
@@ -159,11 +158,11 @@ final pantryBasedRecommendationsProvider = Provider<List<RecommendationScore>>((
   final pantryState = ref.watch(pantryProvider);
   final recipesState = ref.watch(recipesProvider);
   final currentUser = ref.watch(currentUserProvider).value;
-  
+
   if (pantryState.isLoading || recipesState.isLoading || currentUser == null) {
     return [];
   }
-  
+
   if (pantryState.ingredientItems.isEmpty || recipesState.recipes.isEmpty) {
     return [];
   }
@@ -171,9 +170,11 @@ final pantryBasedRecommendationsProvider = Provider<List<RecommendationScore>>((
   // Get high-quality ingredient matches (≥80% match) from pantry screen algorithm
   final ingredientMatches = ref.watch(ingredientRecipeMatchesProvider);
   final highQualityMatches = ingredientMatches
-      .where((match) => 
-          match.matchLevel == MatchLevel.perfect || 
-          match.matchLevel == MatchLevel.high)
+      .where(
+        (match) =>
+            match.matchLevel == MatchLevel.perfect ||
+            match.matchLevel == MatchLevel.high,
+      )
       .toList();
 
   // Convert IngredientRecipeMatch to RecommendationScore format
@@ -183,8 +184,8 @@ final pantryBasedRecommendationsProvider = Provider<List<RecommendationScore>>((
       totalScore: match.matchPercentage,
       componentScores: {RecommendationType.pantryMatch: match.matchPercentage},
       reason: match.matchLevel == MatchLevel.perfect
-          ? 'Perfect match! You have all ingredients'
-          : 'Great match! You have ${match.availableIngredients}/${match.totalIngredients} ingredients',
+          ? 'Perfect match!'
+          : 'Great match!',
       generatedAt: DateTime.now(),
       matchedPantryItems: match.matchedIngredients,
     );
@@ -247,7 +248,7 @@ final autoRecommendationProvider = Provider<AsyncValue<RecommendationBatch?>>((
   // Watch the base recommendation provider state
   final recommendationState = ref.watch(recommendationProvider);
 
-  // Only trigger generation if we have all required data and no recommendations yet
+  // Only trigger generation if we have all required data and no recommendations yet, or if recommendations are stale
   userAsync.whenData((user) {
     if (user != null &&
         user.enableRecommendations &&
@@ -257,7 +258,8 @@ final autoRecommendationProvider = Provider<AsyncValue<RecommendationBatch?>>((
         !pantryState.isLoading &&
         pantryState.error == null &&
         (recommendationState.value == null ||
-            recommendationState.value!.recommendations.isEmpty)) {
+            recommendationState.value!.recommendations.isEmpty ||
+            recommendationState.value!.isStale)) {
       // Trigger recommendation generation
       Future.microtask(() {
         ref

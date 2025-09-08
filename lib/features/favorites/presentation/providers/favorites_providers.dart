@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/foundation.dart';
 import '../../../../core/services/auth_service.dart';
+import '../../../../core/models/user_interaction.dart';
+import '../../../recommendations/presentation/providers/recommendation_provider.dart';
 import '../../data/repositories/favorites_repository_impl.dart';
 import '../../domain/usecases/add_to_favorites_usecase.dart';
 import '../../domain/usecases/remove_from_favorites_usecase.dart';
@@ -73,12 +74,14 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
   final AddToFavoritesUseCase _addToFavoritesUseCase;
   final RemoveFromFavoritesUseCase _removeFromFavoritesUseCase;
   final AuthService _authService;
+  final Ref _ref;
 
   FavoritesNotifier(
     this._getUserFavoritesUseCase,
     this._addToFavoritesUseCase,
     this._removeFromFavoritesUseCase,
     this._authService,
+    this._ref,
   ) : super(const FavoritesState());
 
   String? get _currentUserId => _authService.currentUser?.uid;
@@ -131,8 +134,28 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
     try {
       if (wasAlreadyFavorite) {
         await _removeFromFavoritesUseCase.execute(userId, recipeId);
+        // Record unfavorite interaction
+        await _ref.read(recommendationProvider.notifier).recordInteraction(
+          UserInteraction(
+            id: '${DateTime.now().millisecondsSinceEpoch}_unfavorite_$recipeId',
+            userId: userId,
+            recipeId: recipeId,
+            type: InteractionType.unfavorite,
+            timestamp: DateTime.now(),
+          ),
+        );
       } else {
         await _addToFavoritesUseCase.execute(userId, recipeId);
+        // Record favorite interaction
+        await _ref.read(recommendationProvider.notifier).recordInteraction(
+          UserInteraction(
+            id: '${DateTime.now().millisecondsSinceEpoch}_favorite_$recipeId',
+            userId: userId,
+            recipeId: recipeId,
+            type: InteractionType.favorite,
+            timestamp: DateTime.now(),
+          ),
+        );
       }
     } catch (e) {
       
@@ -161,6 +184,7 @@ final favoritesProvider = StateNotifierProvider<FavoritesNotifier, FavoritesStat
     addToFavoritesUseCase,
     removeFromFavoritesUseCase,
     authService,
+    ref,
   );
 });
 
