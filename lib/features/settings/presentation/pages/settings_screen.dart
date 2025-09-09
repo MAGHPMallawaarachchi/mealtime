@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/models/user_model.dart';
+import '../../../../core/providers/user_preferences_providers.dart';
+import '../../../../core/providers/auth_providers.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -15,13 +18,45 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   String _selectedLanguage = 'English';
   bool _notificationsEnabled = true;
   bool _mealPlanReminders = true;
-  bool _expiryAlerts = true;
   bool _shoppingListUpdates = false;
+  
+  DietaryType? _selectedDietaryType;
+  bool _prioritizePantryItems = true;
 
   final List<String> _languages = ['English', 'Sinhala'];
+  final List<DietaryType> _dietaryTypes = [
+    DietaryType.nonVegetarian,
+    DietaryType.vegetarian,
+    DietaryType.vegan,
+    DietaryType.pescatarian,
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final userPreferences = ref.watch(currentUserProvider);
+    
+    return userPreferences.when(
+      data: (user) {
+        // Initialize local state from server data on first load
+        if (user != null) {
+          _selectedDietaryType ??= user.dietaryType;
+          _prioritizePantryItems = user.prioritizePantryItems;
+        }
+        
+        return _buildSettingsContent(context);
+      },
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, stack) => Scaffold(
+        body: Center(
+          child: Text('Error loading preferences: $error'),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSettingsContent(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -77,6 +112,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             _buildSectionTitle('Language'),
             const SizedBox(height: 8),
             _buildLanguageCard(),
+
+            const SizedBox(height: 24),
+            _buildSectionTitle('Dietary Preferences'),
+            const SizedBox(height: 8),
+            _buildDietaryPreferencesCard(),
+
+            const SizedBox(height: 24),
+            _buildSectionTitle('Recipe Recommendations'),
+            const SizedBox(height: 8),
+            _buildRecommendationSettingsCard(),
 
             const SizedBox(height: 24),
             _buildSectionTitle('Notifications'),
@@ -403,6 +448,167 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
+  Widget _buildDietaryPreferencesCard() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                PhosphorIcon(
+                  PhosphorIcons.forkKnife(),
+                  size: 20,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Text(
+                    'Dietary Preference',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ..._dietaryTypes.map((type) => _buildDietaryOption(type)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDietaryOption(DietaryType dietaryType) {
+    final isSelected = _selectedDietaryType == dietaryType;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: InkWell(
+        onTap: () => setState(() => _selectedDietaryType = dietaryType),
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: isSelected ? AppColors.primary.withOpacity(0.1) : null,
+            border: isSelected
+                ? Border.all(color: AppColors.primary, width: 2)
+                : Border.all(color: Colors.grey.withOpacity(0.2)),
+          ),
+          child: Row(
+            children: [
+              PhosphorIcon(
+                isSelected
+                    ? PhosphorIconsFill.checkCircle
+                    : PhosphorIcons.circle(),
+                size: 20,
+                color: isSelected ? AppColors.primary : Colors.grey,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  _getDietaryTypeDisplayName(dietaryType),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                    color: isSelected
+                        ? AppColors.primary
+                        : AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecommendationSettingsCard() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                PhosphorIcon(
+                  PhosphorIcons.lightbulb(),
+                  size: 20,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Text(
+                    'Prioritize Pantry Items',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+                Switch(
+                  value: _prioritizePantryItems,
+                  activeColor: AppColors.primary,
+                  onChanged: (value) {
+                    setState(() => _prioritizePantryItems = value);
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'When enabled, recipes using ingredients from your pantry will be prioritized in recommendations',
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getDietaryTypeDisplayName(DietaryType type) {
+    switch (type) {
+      case DietaryType.nonVegetarian:
+        return 'Non-Vegetarian';
+      case DietaryType.vegetarian:
+        return 'Vegetarian';
+      case DietaryType.vegan:
+        return 'Vegan';
+      case DietaryType.pescatarian:
+        return 'Pescatarian';
+    }
+  }
+
   Widget _buildSaveButton() {
     return SizedBox(
       width: double.infinity,
@@ -425,30 +631,62 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  void _saveSettings() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            PhosphorIcon(
-              PhosphorIcons.checkCircle(),
-              color: Colors.white,
-              size: 20,
-            ),
-            const SizedBox(width: 8),
-            const Text('Settings saved successfully'),
-          ],
-        ),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-    );
+  void _saveSettings() async {
+    try {
+      final updatePreferences = ref.read(updateUserPreferencesProvider);
+      
+      await updatePreferences(
+        dietaryType: _selectedDietaryType,
+        prioritizePantryItems: _prioritizePantryItems,
+      );
 
-    Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted) {
-        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                PhosphorIcon(
+                  PhosphorIcons.checkCircle(),
+                  color: Colors.white,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                const Text('Settings saved successfully'),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        );
+
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
+        });
       }
-    });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                PhosphorIcon(
+                  PhosphorIcons.xCircle(),
+                  color: Colors.white,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text('Failed to save settings: ${e.toString()}'),
+              ],
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        );
+      }
+    }
   }
 }
