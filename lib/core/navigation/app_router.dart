@@ -14,10 +14,12 @@ import '../../features/meal_planner/presentation/pages/meal_planner_screen.dart'
 import '../../features/pantry/presentation/pages/pantry_screen.dart';
 import '../../features/auth/presentation/pages/profile_screen.dart';
 import '../../features/recipes/presentation/pages/recipe_detail_screen.dart';
+import '../../features/recipes/presentation/pages/seasonal_ingredient_recipes_screen.dart';
 import '../../features/meal_planner/domain/models/meal_planner_return_context.dart';
 import '../../features/settings/presentation/pages/settings_screen.dart';
 import '../../features/user_recipes/presentation/pages/create_recipe_screen.dart';
 import '../../features/user_recipes/presentation/pages/edit_recipe_screen.dart';
+import '../../features/home/domain/models/seasonal_ingredient.dart';
 
 class AuthNotifier extends ChangeNotifier {
   final AuthService _authService;
@@ -167,6 +169,25 @@ class AppRouter {
         builder: (context, state) {
           final recipeId = state.pathParameters['recipeId']!;
           return AuthGuard(child: UserRecipeDetailScreen(recipeId: recipeId));
+        },
+      ),
+      GoRoute(
+        path: '/seasonal-recipes/:ingredientName',
+        name: 'seasonal-ingredient-recipes',
+        builder: (context, state) {
+          final ingredientName = state.pathParameters['ingredientName']!;
+          final ingredientId = state.uri.queryParameters['id'] ?? '';
+          final ingredientImageUrl = state.uri.queryParameters['imageUrl'] ?? '';
+          final ingredientDescription = state.uri.queryParameters['description'] ?? '';
+          
+          final ingredient = SeasonalIngredient(
+            id: ingredientId,
+            name: Uri.decodeComponent(ingredientName),
+            imageUrl: Uri.decodeComponent(ingredientImageUrl),
+            description: Uri.decodeComponent(ingredientDescription),
+          );
+          
+          return SeasonalIngredientRecipesScreen(ingredient: ingredient);
         },
       ),
     ],

@@ -174,6 +174,72 @@ class RecipesRepositoryImpl implements RecipesRepository {
   }
 
   @override
+  Future<RecipesPagination> getRecipesByIngredient(
+    String ingredientName, {
+    int page = 1,
+    int limit = 20,
+    bool forceRefresh = false,
+  }) async {
+    try {
+      final allRecipes = await getRecipes(forceRefresh: forceRefresh);
+      
+      if (ingredientName.trim().isEmpty) {
+        return RecipesPagination(
+          recipes: const [],
+          hasMore: false,
+          totalCount: 0,
+        );
+      }
+
+      final lowerIngredientName = ingredientName.toLowerCase().trim();
+
+      // Filter recipes that contain the ingredient
+      final matchingRecipes = allRecipes.where((recipe) {
+        // Search in structured ingredients
+        final hasMatchingStructuredIngredient = recipe.ingredients.any((ingredient) {
+          return ingredient.name.toLowerCase().contains(lowerIngredientName);
+        });
+
+        if (hasMatchingStructuredIngredient) return true;
+
+        // Search in ingredient sections
+        final hasMatchingIngredientInSections = recipe.ingredientSections.any((section) {
+          return section.ingredients.any((ingredient) {
+            return ingredient.name.toLowerCase().contains(lowerIngredientName);
+          });
+        });
+
+        if (hasMatchingIngredientInSections) return true;
+
+        // Search in legacy ingredients for backward compatibility
+        final hasMatchingLegacyIngredient = recipe.legacyIngredients.any((ingredient) {
+          return ingredient.toLowerCase().contains(lowerIngredientName);
+        });
+
+        return hasMatchingLegacyIngredient;
+      }).toList();
+
+      // Calculate pagination
+      final totalCount = matchingRecipes.length;
+      final startIndex = (page - 1) * limit;
+      final endIndex = startIndex + limit;
+
+      final paginatedRecipes = matchingRecipes.skip(startIndex).take(limit).toList();
+      final hasMore = endIndex < totalCount;
+
+      return RecipesPagination(
+        recipes: paginatedRecipes,
+        hasMore: hasMore,
+        totalCount: totalCount,
+      );
+    } catch (e) {
+      throw RecipesRepositoryException(
+        'Failed to get recipes by ingredient: ${e.toString()}',
+      );
+    }
+  }
+
+  @override
   Future<void> refreshRecipes() async {
     try {
       await getRecipes(forceRefresh: true);
