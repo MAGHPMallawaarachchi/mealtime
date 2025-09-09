@@ -2,6 +2,37 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 enum DietaryType { vegetarian, vegan, pescatarian, nonVegetarian }
+
+extension DietaryTypeExtension on DietaryType {
+  String get databaseValue {
+    switch (this) {
+      case DietaryType.vegetarian:
+        return 'vegetarian';
+      case DietaryType.vegan:
+        return 'vegan';
+      case DietaryType.pescatarian:
+        return 'pescatarian';
+      case DietaryType.nonVegetarian:
+        return 'non-vegetarian';
+    }
+  }
+
+  static DietaryType? fromDatabaseValue(String? value) {
+    if (value == null) return null;
+    switch (value) {
+      case 'vegetarian':
+        return DietaryType.vegetarian;
+      case 'vegan':
+        return DietaryType.vegan;
+      case 'pescatarian':
+        return DietaryType.pescatarian;
+      case 'non-vegetarian':
+        return DietaryType.nonVegetarian;
+      default:
+        return null;
+    }
+  }
+}
 enum Allergen { dairy, eggs, fishSeafood, nuts, gluten }
 enum SpicePreference { mild, medium, spicy }
 enum SriLankanRegion { western, southern, central, northern, eastern, uva, northWestern, sabaragamuwa, northCentral }
@@ -55,7 +86,7 @@ class UserModel {
       householdId: data['householdId'],
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      dietaryType: _parseDietaryType(data['dietaryType']),
+      dietaryType: DietaryTypeExtension.fromDatabaseValue(data['dietaryType']),
       allergens: _parseAllergens(data['allergens']),
       spicePreference: _parseSpicePreference(data['spicePreference']),
       preferredRegions: _parseRegions(data['preferredRegions']),
@@ -75,7 +106,7 @@ class UserModel {
       'householdId': householdId,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
-      'dietaryType': dietaryType?.name,
+      'dietaryType': dietaryType?.databaseValue,
       'allergens': allergens.map((a) => a.name).toList(),
       'spicePreference': spicePreference?.name,
       'preferredRegions': preferredRegions.map((r) => r.name).toList(),
@@ -169,14 +200,6 @@ class UserModel {
     return 'UserModel(uid: $uid, email: $email, displayName: $displayName, photoURL: $photoURL, customProfilePicture: ${customProfilePicture != null ? '[base64 data]' : 'null'}, householdId: $householdId, createdAt: $createdAt, updatedAt: $updatedAt, dietaryType: $dietaryType, allergens: $allergens, spicePreference: $spicePreference, preferredRegions: $preferredRegions, specialDiets: $specialDiets)';
   }
 
-  static DietaryType? _parseDietaryType(dynamic value) {
-    if (value == null) return null;
-    try {
-      return DietaryType.values.firstWhere((e) => e.name == value.toString());
-    } catch (e) {
-      return null;
-    }
-  }
 
   static List<Allergen> _parseAllergens(dynamic value) {
     if (value == null) return [];

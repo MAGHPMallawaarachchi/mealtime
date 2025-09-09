@@ -1,26 +1,28 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mealtime/features/recipes/domain/models/recipe.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/providers/auth_providers.dart';
 import '../../../recipes/domain/usecases/get_recipes_usecase.dart';
 import '../../../recipes/data/repositories/recipes_repository_impl.dart';
 
-class FeaturedRecipesSection extends StatefulWidget {
+class FeaturedRecipesSection extends ConsumerStatefulWidget {
   const FeaturedRecipesSection({super.key});
 
   @override
-  State<FeaturedRecipesSection> createState() => _FeaturedRecipesSectionState();
+  ConsumerState<FeaturedRecipesSection> createState() => _FeaturedRecipesSectionState();
 }
 
 abstract class FeaturedRecipesSectionController {
   Future<void> refreshFeaturedRecipes();
 }
 
-class _FeaturedRecipesSectionState extends State<FeaturedRecipesSection> implements FeaturedRecipesSectionController {
+class _FeaturedRecipesSectionState extends ConsumerState<FeaturedRecipesSection> implements FeaturedRecipesSectionController {
   late PageController _pageController;
   late Timer _autoPlayTimer;
   int _currentPageIndex = 0;
@@ -38,6 +40,22 @@ class _FeaturedRecipesSectionState extends State<FeaturedRecipesSection> impleme
     _pageController = PageController();
     _initializeDependencies();
     _loadFeaturedRecipes();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Set up listener in post frame callback to avoid build phase conflicts
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.listen(currentUserProvider, (previousUser, currentUser) {
+          if (previousUser?.value?.dietaryType != currentUser?.value?.dietaryType) {
+            // User's dietary preference changed, refresh featured recipes
+            _loadFeaturedRecipes(forceRefresh: true);
+          }
+        });
+      }
+    });
   }
 
   void _initializeDependencies() {
@@ -59,7 +77,8 @@ class _FeaturedRecipesSectionState extends State<FeaturedRecipesSection> impleme
 
       // Get all recipes and take the first 5 as featured
       // In the future, this could be replaced with a featured flag or algorithm
-      final allRecipes = await _getRecipesUseCase.execute();
+      final currentUser = ref.read(currentUserProvider).value;
+      final allRecipes = await _getRecipesUseCase.execute(dietaryType: currentUser?.dietaryType);
       
       if (mounted) {
         setState(() {

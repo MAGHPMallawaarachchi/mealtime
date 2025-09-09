@@ -5,6 +5,8 @@ import '../../domain/repositories/recipes_repository.dart';
 import '../datasources/recipes_datasource.dart';
 import '../datasources/recipes_firebase_datasource.dart';
 import '../datasources/recipes_local_datasource.dart';
+import '../../../../core/models/user_model.dart';
+import '../../../../core/services/dietary_filter_service.dart';
 
 class RecipesRepositoryImpl implements RecipesRepository {
   final RecipesDataSource _remoteDataSource;
@@ -17,12 +19,15 @@ class RecipesRepositoryImpl implements RecipesRepository {
         _localDataSource = localDataSource ?? RecipesLocalDataSource();
 
   @override
-  Future<List<Recipe>> getRecipes({bool forceRefresh = false}) async {
+  Future<List<Recipe>> getRecipes({
+    bool forceRefresh = false,
+    DietaryType? dietaryType,
+  }) async {
     try {
       if (!forceRefresh && await _localDataSource.isCacheValid()) {
         final cachedRecipes = await _localDataSource.getRecipes();
         if (cachedRecipes.isNotEmpty) {
-          return cachedRecipes;
+          return DietaryFilterService.filterRecipesByDietaryType(cachedRecipes, dietaryType);
         }
       }
 
@@ -30,13 +35,13 @@ class RecipesRepositoryImpl implements RecipesRepository {
       
       await _localDataSource.cacheRecipes(remoteRecipes);
       
-      return remoteRecipes;
+      return DietaryFilterService.filterRecipesByDietaryType(remoteRecipes, dietaryType);
     } catch (e) {
       
       try {
         final cachedRecipes = await _localDataSource.getRecipes();
         if (cachedRecipes.isNotEmpty) {
-          return cachedRecipes;
+          return DietaryFilterService.filterRecipesByDietaryType(cachedRecipes, dietaryType);
         }
       } catch (cacheError) {
       }
@@ -48,9 +53,11 @@ class RecipesRepositoryImpl implements RecipesRepository {
   }
 
   @override
-  Stream<List<Recipe>> getRecipesStream() {
+  Stream<List<Recipe>> getRecipesStream({DietaryType? dietaryType}) {
     try {
-      return _remoteDataSource.getRecipesStream().handleError((error) {
+      return _remoteDataSource.getRecipesStream()
+          .map((recipes) => DietaryFilterService.filterRecipesByDietaryType(recipes, dietaryType))
+          .handleError((error) {
         throw RecipesRepositoryException(
           'Failed to stream recipes: ${error.toString()}',
         );
@@ -85,9 +92,13 @@ class RecipesRepositoryImpl implements RecipesRepository {
   }
 
   @override
-  Future<List<Recipe>> getRecipesByTags(List<String> tags, {bool forceRefresh = false}) async {
+  Future<List<Recipe>> getRecipesByTags(
+    List<String> tags, {
+    bool forceRefresh = false,
+    DietaryType? dietaryType,
+  }) async {
     try {
-      final allRecipes = await getRecipes(forceRefresh: forceRefresh);
+      final allRecipes = await getRecipes(forceRefresh: forceRefresh, dietaryType: dietaryType);
       
       if (tags.isEmpty) {
         return allRecipes;
@@ -104,9 +115,13 @@ class RecipesRepositoryImpl implements RecipesRepository {
   }
 
   @override
-  Future<List<Recipe>> searchRecipes(String query, {bool forceRefresh = false}) async {
+  Future<List<Recipe>> searchRecipes(
+    String query, {
+    bool forceRefresh = false,
+    DietaryType? dietaryType,
+  }) async {
     try {
-      final allRecipes = await getRecipes(forceRefresh: forceRefresh);
+      final allRecipes = await getRecipes(forceRefresh: forceRefresh, dietaryType: dietaryType);
       
       if (query.trim().isEmpty) {
         return allRecipes;
@@ -155,9 +170,9 @@ class RecipesRepositoryImpl implements RecipesRepository {
   }
 
   @override
-  Future<List<String>> getAvailableCategories() async {
+  Future<List<String>> getAvailableCategories({DietaryType? dietaryType}) async {
     try {
-      final allRecipes = await getRecipes();
+      final allRecipes = await getRecipes(dietaryType: dietaryType);
       final Set<String> categories = {};
 
       for (final recipe in allRecipes) {
@@ -179,9 +194,10 @@ class RecipesRepositoryImpl implements RecipesRepository {
     int page = 1,
     int limit = 20,
     bool forceRefresh = false,
+    DietaryType? dietaryType,
   }) async {
     try {
-      final allRecipes = await getRecipes(forceRefresh: forceRefresh);
+      final allRecipes = await getRecipes(forceRefresh: forceRefresh, dietaryType: dietaryType);
       
       if (ingredientName.trim().isEmpty) {
         return RecipesPagination(

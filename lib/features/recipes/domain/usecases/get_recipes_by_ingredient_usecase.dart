@@ -1,3 +1,4 @@
+import '../../../../core/models/user_model.dart';
 import '../repositories/recipes_repository.dart';
 
 class GetRecipesByIngredientUseCase {
@@ -10,12 +11,14 @@ class GetRecipesByIngredientUseCase {
     int page = 1,
     int limit = 20,
     bool forceRefresh = false,
+    DietaryType? dietaryType,
   }) {
     return _repository.getRecipesByIngredient(
       ingredientName,
       page: page,
       limit: limit,
       forceRefresh: forceRefresh,
+      dietaryType: dietaryType,
     );
   }
 }

@@ -395,6 +395,7 @@ class Recipe {
   final int defaultServings;
   final List<String> tags;
   final String? source;
+  final String? dietaryType;
 
   const Recipe({
     required this.id,
@@ -412,6 +413,7 @@ class Recipe {
     this.legacyInstructions = const [],
     this.tags = const [],
     this.source,
+    this.dietaryType,
   });
 
   Recipe copyWith({
@@ -430,6 +432,7 @@ class Recipe {
     List<String>? legacyInstructions,
     List<String>? tags,
     String? source,
+    String? dietaryType,
   }) {
     return Recipe(
       id: id ?? this.id,
@@ -447,6 +450,7 @@ class Recipe {
       legacyInstructions: legacyInstructions ?? this.legacyInstructions,
       tags: tags ?? this.tags,
       source: source ?? this.source,
+      dietaryType: dietaryType ?? this.dietaryType,
     );
   }
 
@@ -471,6 +475,7 @@ class Recipe {
       'legacyInstructions': legacyInstructions,
       'tags': tags,
       'source': source,
+      'dietaryType': dietaryType,
     };
   }
 
@@ -561,6 +566,7 @@ class Recipe {
           ? List<String>.from(json['tags'] as List)
           : const [],
       source: json['source'] as String?,
+      dietaryType: json['dietaryType'] as String?,
     );
   }
 

@@ -60,6 +60,22 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Set up listener in post frame callback to avoid build phase conflicts
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.listen(currentUserProvider, (previousUser, currentUser) {
+          if (previousUser?.value?.dietaryType != currentUser?.value?.dietaryType) {
+            // User's dietary preference changed, refresh recipes
+            _loadRecipes(forceRefresh: true);
+          }
+        });
+      }
+    });
+  }
+
   void _loadFavorites() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(favoritesProvider.notifier).loadUserFavorites();
@@ -132,15 +148,29 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   }
 
   Future<List<Recipe>> _getFilteredRecipes({bool forceRefresh = false}) async {
+    final currentUser = ref.read(currentUserProvider).value;
+    final userDietaryType = currentUser?.dietaryType;
+    
     if (_searchQuery.isNotEmpty) {
       // Use search functionality
-      return await _searchRecipesUseCase.execute(_searchQuery, forceRefresh: forceRefresh);
+      return await _searchRecipesUseCase.execute(
+        _searchQuery,
+        forceRefresh: forceRefresh,
+        dietaryType: userDietaryType,
+      );
     } else if (_selectedCategory != null) {
       // Filter by category
-      return await _getRecipesByCategoryUseCase.execute([_selectedCategory!], forceRefresh: forceRefresh);
+      return await _getRecipesByCategoryUseCase.execute(
+        [_selectedCategory!],
+        forceRefresh: forceRefresh,
+        dietaryType: userDietaryType,
+      );
     } else {
       // Get all recipes
-      return await _getRecipesUseCase.execute(forceRefresh: forceRefresh);
+      return await _getRecipesUseCase.execute(
+        forceRefresh: forceRefresh,
+        dietaryType: userDietaryType,
+      );
     }
   }
 
@@ -148,7 +178,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     final currentUser = ref.read(currentUserProvider).value;
     if (currentUser == null) return;
 
-    final allRecipes = await _getRecipesUseCase.execute();
+    final allRecipes = await _getRecipesUseCase.execute(dietaryType: currentUser.dietaryType);
     final pantryItems = ref.read(pantryProvider).items;
 
     await ref.read(recommendationProvider.notifier).generateRecommendations(
@@ -293,7 +323,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     // Refresh recommendations if user is available
     final currentUser = ref.read(currentUserProvider).value;
     if (currentUser != null) {
-      final allRecipes = await _getRecipesUseCase.execute(forceRefresh: true);
+      final allRecipes = await _getRecipesUseCase.execute(
+        forceRefresh: true,
+        dietaryType: currentUser.dietaryType,
+      );
       final pantryItems = ref.read(pantryProvider).items;
       
       await ref.read(recommendationProvider.notifier).generateRecommendations(
