@@ -572,6 +572,7 @@ class _EditItemDialogState extends State<_EditItemDialog> {
     'Meat & Fish',
     'Dairy',
     'Grains & Rice',
+    'Oils & Condiments',
     'Spices',
     'Other',
   ];
@@ -701,6 +702,7 @@ class _AddItemDialogState extends State<_AddItemDialog> {
     'Meat & Fish',
     'Dairy',
     'Grains & Rice',
+    'Oils & Condiments',
     'Spices',
     'Other',
   ];

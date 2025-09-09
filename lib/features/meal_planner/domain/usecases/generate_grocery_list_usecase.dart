@@ -227,22 +227,28 @@ class GenerateGroceryListUseCase {
       }
     }
     
-    // Create a unique key for ingredient aggregation (normalize similar units)
-    final normalizedUnit = _normalizeUnitForAggregation(unit);
-    final ingredientKey = '${ingredient.name.toLowerCase()}_$normalizedUnit';
+    // Convert to preferred unit for the ingredient category to avoid duplicates
+    final category = _categorizeIngredient(ingredient.name);
+    final (convertedQuantity, preferredUnit) = _convertToPreferredUnit(quantity, unit, category, ingredient.name);
+    
+    // Create aggregation key using normalized ingredient name and preferred unit
+    final normalizedName = _normalizeIngredientName(ingredient.name);
+    final ingredientKey = '${normalizedName}_$preferredUnit';
     
     if (aggregatedIngredients.containsKey(ingredientKey)) {
       // Add to existing ingredient
       final existingItem = aggregatedIngredients[ingredientKey]!;
-      aggregatedIngredients[ingredientKey] = existingItem.addQuantity(quantity);
+      print('🔄 CONSOLIDATING: ${ingredient.name} ($quantity$unit) + existing ${existingItem.quantity}${existingItem.unit} = ${(existingItem.quantity + convertedQuantity).toStringAsFixed(1)}$preferredUnit');
+      aggregatedIngredients[ingredientKey] = existingItem.addQuantity(convertedQuantity);
     } else {
-      // Create new grocery item
+      // Create new grocery item with preferred unit
+      print('➕ ADDING NEW: ${ingredient.name} → $normalizedName ($convertedQuantity$preferredUnit) [key: $ingredientKey]');
       final groceryItem = GroceryItem(
         ingredientName: ingredient.name,
-        quantity: quantity,
-        unit: unit,
-        category: _categorizeIngredient(ingredient.name),
-        displayName: ingredient.name, // Use ingredient name as display name
+        quantity: convertedQuantity,
+        unit: preferredUnit,
+        category: category,
+        displayName: ingredient.name,
       );
       aggregatedIngredients[ingredientKey] = groceryItem;
     }
@@ -354,20 +360,173 @@ class GenerateGroceryListUseCase {
     }
   }
 
+  // Convert ingredients to their preferred units to prevent duplicates
+  (double, String) _convertToPreferredUnit(double quantity, String unit, String category, String ingredientName) {
+    final normalizedUnit = unit.toLowerCase();
+    final ingredientLower = ingredientName.toLowerCase();
+    
+    // Determine preferred unit based on ingredient type and category
+    String preferredUnit = _getPreferredUnit(category, ingredientLower);
+    
+    // If already in preferred unit, return as-is
+    if (_normalizeUnitForAggregation(normalizedUnit) == _normalizeUnitForAggregation(preferredUnit)) {
+      return (quantity, preferredUnit);
+    }
+    
+    // Convert between weight and volume for specific ingredients that can be measured both ways
+    if (_canConvertBetweenWeightVolume(ingredientLower)) {
+      final converted = _convertBetweenWeightAndVolume(quantity, normalizedUnit, preferredUnit, ingredientLower);
+      if (converted != null) {
+        return converted;
+      }
+    }
+    
+    // If no conversion is possible or appropriate, use preferred unit anyway
+    // This ensures ingredients aggregate properly even without unit conversion
+    return (quantity, preferredUnit);
+  }
+  
+  // Determine preferred unit for each category and ingredient type
+  String _getPreferredUnit(String category, String ingredientName) {
+    switch (category) {
+      case 'Vegetables':
+      case 'Fruits':
+        // Fresh produce typically measured by weight
+        return _isTypicallyLiquid(ingredientName) ? 'ml' : 'g';
+        
+      case 'Meat & Fish':
+        return 'g'; // Always weight for proteins
+        
+      case 'Dairy':
+        // Dairy products - liquids in ml, solids in g
+        return _isTypicallyLiquid(ingredientName) ? 'ml' : 'g';
+        
+      case 'Oils & Condiments':
+        return 'ml'; // Mostly liquids
+        
+      case 'Grains & Rice':
+        return 'g'; // Dry goods by weight
+        
+      case 'Spices':
+        return 'g'; // Small amounts by weight
+        
+      default:
+        // For uncategorized items, check if it's liquid
+        return _isTypicallyLiquid(ingredientName) ? 'ml' : 'item';
+    }
+  }
+  
+  // Check if an ingredient is typically liquid
+  bool _isTypicallyLiquid(String ingredientName) {
+    const liquidIngredients = [
+      'milk', 'cream', 'water', 'oil', 'vinegar', 'sauce', 'syrup',
+      'honey', 'juice', 'wine', 'broth', 'stock', 'coconut milk',
+      'coconut cream', 'coconut water'
+    ];
+    return liquidIngredients.any((liquid) => ingredientName.contains(liquid));
+  }
+  
+  // Check if we can convert between weight and volume for specific ingredients
+  bool _canConvertBetweenWeightVolume(String ingredientName) {
+    // Only allow conversion for ingredients where weight-volume relationship is well-known
+    const convertibleIngredients = [
+      'milk', 'water', 'cream', 'coconut milk', 'coconut cream',
+      'oil', 'honey', 'syrup'
+    ];
+    return convertibleIngredients.any((ingredient) => ingredientName.contains(ingredient));
+  }
+  
+  // Convert between weight and volume for specific ingredients
+  (double, String)? _convertBetweenWeightAndVolume(double quantity, String fromUnit, String toUnit, String ingredientName) {
+    final fromUnitNorm = _normalizeUnitForAggregation(fromUnit);
+    final toUnitNorm = _normalizeUnitForAggregation(toUnit);
+    
+    // Get density factor for the ingredient (approximate)
+    double? densityFactor = _getIngredientDensity(ingredientName);
+    if (densityFactor == null) return null;
+    
+    double convertedQuantity = quantity;
+    
+    // Convert from weight to volume (g/kg → ml/L)
+    if ((fromUnitNorm == 'g' || fromUnitNorm == 'kg') && (toUnitNorm == 'ml' || toUnitNorm == 'L')) {
+      if (fromUnitNorm == 'kg') convertedQuantity *= 1000; // kg to g
+      convertedQuantity = convertedQuantity / densityFactor; // g to ml
+      if (toUnitNorm == 'L') convertedQuantity /= 1000; // ml to L
+      return (convertedQuantity, toUnit);
+    }
+    
+    // Convert from volume to weight (ml/L → g/kg)
+    if ((fromUnitNorm == 'ml' || fromUnitNorm == 'L') && (toUnitNorm == 'g' || toUnitNorm == 'kg')) {
+      if (fromUnitNorm == 'L') convertedQuantity *= 1000; // L to ml
+      convertedQuantity = convertedQuantity * densityFactor; // ml to g
+      if (toUnitNorm == 'kg') convertedQuantity /= 1000; // g to kg
+      return (convertedQuantity, toUnit);
+    }
+    
+    return null;
+  }
+  
+  // Get approximate density for common ingredients (g/ml)
+  double? _getIngredientDensity(String ingredientName) {
+    // Approximate densities in g/ml
+    if (ingredientName.contains('water')) return 1.0;
+    if (ingredientName.contains('milk')) return 1.03;
+    if (ingredientName.contains('cream')) return 1.0;
+    if (ingredientName.contains('coconut milk')) return 0.95;
+    if (ingredientName.contains('coconut cream')) return 0.9;
+    if (ingredientName.contains('oil')) return 0.9;
+    if (ingredientName.contains('honey')) return 1.4;
+    if (ingredientName.contains('syrup')) return 1.3;
+    return null;
+  }
+
+  // Normalize ingredient names to handle variations and ensure proper aggregation
+  String _normalizeIngredientName(String ingredientName) {
+    String normalized = ingredientName.toLowerCase().trim();
+    
+    // Remove common variations and standardize names
+    normalized = normalized.replaceAll(RegExp(r'\s+'), ' '); // Multiple spaces to single
+    normalized = normalized.replaceAll(RegExp(r'[,\-\(\)]'), ''); // Remove punctuation
+    
+    // Standardize common ingredient variations
+    if (normalized.contains('coconut milk')) return 'coconut milk';
+    if (normalized.contains('coconut oil')) return 'coconut oil';
+    if (normalized.contains('coconut water')) return 'coconut water';
+    if (normalized.contains('coconut cream')) return 'coconut cream';
+    if (normalized.contains('olive oil')) return 'olive oil';
+    if (normalized.contains('vegetable oil')) return 'vegetable oil';
+    if (normalized.contains('sunflower oil')) return 'sunflower oil';
+    if (normalized.contains('sesame oil')) return 'sesame oil';
+    
+    // Remove articles and common modifiers for better aggregation
+    normalized = normalized.replaceAll(RegExp(r'^(the|a|an)\s+'), '');
+    normalized = normalized.replaceAll(RegExp(r'\s+(fresh|frozen|dried|raw|cooked)$'), '');
+    
+    return normalized;
+  }
+
   String _categorizeIngredient(String ingredientName) {
     final name = ingredientName.toLowerCase();
+    
+    // Check specific product rules first (most specific)
+    if (_isSpecificProduct(name)) {
+      return _categorizeSpecificProduct(name);
+    }
+    
+    // Dairy products (check before fruits to catch "coconut milk")
+    if (_isDairy(name)) return 'Dairy';
+    
+    // Oils & Condiments (check before spices)
+    if (_isOilOrCondiment(name)) return 'Oils & Condiments';
+    
+    // Meat & Fish
+    if (_isMeatOrFish(name)) return 'Meat & Fish';
     
     // Vegetables
     if (_isVegetable(name)) return 'Vegetables';
     
     // Fruits
     if (_isFruit(name)) return 'Fruits';
-    
-    // Meat & Fish
-    if (_isMeatOrFish(name)) return 'Meat & Fish';
-    
-    // Dairy
-    if (_isDairy(name)) return 'Dairy';
     
     // Grains & Rice
     if (_isGrainOrRice(name)) return 'Grains & Rice';
@@ -384,19 +543,26 @@ class GenerateGroceryListUseCase {
       'lettuce', 'spinach', 'cucumber', 'bell pepper', 'green pepper',
       'red pepper', 'chili', 'broccoli', 'cauliflower', 'beans', 'peas',
       'corn', 'celery', 'mushroom', 'eggplant', 'zucchini', 'leek',
-      'okra', 'kale', 'bok choy', 'radish', 'turnip', 'beetroot'
+      'okra', 'kale', 'bok choy', 'radish', 'turnip', 'beetroot',
+      // Sri Lankan specific vegetables
+      'karavila', 'mukunuwenna', 'kankun', 'gotukola', 'nivithi', 'sarana',
+      'bandakka', 'pathola', 'kakiri', 'elabatu', 'wambatu', 'kakka',
+      'lunu miris', 'curry leaves', 'pandan', 'rampe'
     ];
-    return vegetables.any((veg) => name.contains(veg));
+    return vegetables.any((veg) => _containsWord(name, veg));
   }
 
   bool _isFruit(String name) {
     const fruits = [
       'apple', 'banana', 'orange', 'lemon', 'lime', 'mango', 'papaya',
-      'pineapple', 'coconut', 'grape', 'strawberry', 'blueberry',
-      'raspberry', 'avocado', 'tomato', 'cucumber', 'watermelon',
-      'melon', 'kiwi', 'peach', 'pear', 'cherry', 'plum'
+      'pineapple', 'grape', 'strawberry', 'blueberry', 'raspberry', 
+      'avocado', 'watermelon', 'melon', 'kiwi', 'peach', 'pear', 'cherry', 
+      'plum', 'guava', 'passion fruit', 'dragon fruit',
+      // Sri Lankan specific fruits  
+      'rambutan', 'mangosteen', 'wood apple', 'beli', 'nelli', 'jambu',
+      'rata del', 'puhul', 'dan', 'king coconut', 'fresh coconut'
     ];
-    return fruits.any((fruit) => name.contains(fruit));
+    return fruits.any((fruit) => _containsWord(name, fruit));
   }
 
   bool _isMeatOrFish(String name) {
@@ -411,9 +577,11 @@ class GenerateGroceryListUseCase {
   bool _isDairy(String name) {
     const dairy = [
       'milk', 'cheese', 'butter', 'cream', 'yogurt', 'yoghurt',
-      'ghee', 'paneer', 'cottage cheese', 'sour cream'
+      'ghee', 'paneer', 'cottage cheese', 'sour cream', 'curd',
+      // Coconut dairy products
+      'coconut milk', 'coconut cream'
     ];
-    return dairy.any((item) => name.contains(item));
+    return dairy.any((item) => _containsWord(name, item));
   }
 
   bool _isGrainOrRice(String name) {
@@ -428,12 +596,61 @@ class GenerateGroceryListUseCase {
   bool _isSpice(String name) {
     const spices = [
       'salt', 'pepper', 'cumin', 'coriander', 'turmeric', 'cinnamon',
-      'cardamom', 'cloves', 'nutmeg', 'paprika', 'curry', 'chili powder',
+      'cardamom', 'cloves', 'nutmeg', 'paprika', 'curry powder', 'chili powder',
       'garam masala', 'bay leaves', 'thyme', 'oregano', 'basil',
       'rosemary', 'sage', 'parsley', 'cilantro', 'mint', 'dill',
-      'vanilla', 'soy sauce', 'vinegar', 'oil', 'olive oil'
+      'vanilla', 'fennel', 'mustard seeds', 'fenugreek',
+      // Sri Lankan specific spices
+      'goraka', 'gamboge', 'lemongrass', 'curry leaves', 'pandan leaves',
+      'rampe', 'sera', 'karapincha', 'kaha', 'rathu miris', 'miris kudu'
     ];
-    return spices.any((spice) => name.contains(spice));
+    return spices.any((spice) => _containsWord(name, spice));
+  }
+
+  // Helper method for precise word-boundary matching
+  bool _containsWord(String text, String word) {
+    // Handle multi-word phrases
+    if (word.contains(' ')) {
+      return text.contains(word);
+    }
+    
+    // For single words, use word boundary matching
+    final regex = RegExp(r'\b' + RegExp.escape(word) + r'\b', caseSensitive: false);
+    return regex.hasMatch(text);
+  }
+
+  // Check for specific product rules that need custom categorization
+  bool _isSpecificProduct(String name) {
+    const specificProducts = [
+      'coconut oil', 'coconut water', 'coconut milk', 'coconut cream',
+      'coconut flour', 'desiccated coconut', 'coconut flakes'
+    ];
+    return specificProducts.any((product) => name.contains(product));
+  }
+
+  // Categorize specific products with custom rules
+  String _categorizeSpecificProduct(String name) {
+    // Coconut products
+    if (name.contains('coconut oil')) return 'Oils & Condiments';
+    if (name.contains('coconut milk') || name.contains('coconut cream')) return 'Dairy';
+    if (name.contains('coconut water')) return 'Other'; // Beverages
+    if (name.contains('coconut flour')) return 'Grains & Rice';
+    if (name.contains('desiccated coconut') || name.contains('coconut flakes')) return 'Other';
+    
+    return 'Other';
+  }
+
+  // New category for oils and condiments
+  bool _isOilOrCondiment(String name) {
+    const oilsAndCondiments = [
+      'oil', 'olive oil', 'coconut oil', 'sunflower oil', 'vegetable oil',
+      'sesame oil', 'mustard oil', 'vinegar', 'soy sauce', 'fish sauce',
+      'oyster sauce', 'tomato sauce', 'chili sauce', 'mayo', 'mayonnaise',
+      'ketchup', 'honey', 'syrup', 'jam', 'marmalade',
+      // Sri Lankan condiments
+      'pol sambol', 'lunu miris', 'maalu miris', 'amu miris'
+    ];
+    return oilsAndCondiments.any((item) => _containsWord(name, item));
   }
 }
 

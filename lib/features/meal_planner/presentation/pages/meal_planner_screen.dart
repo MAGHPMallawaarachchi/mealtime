@@ -315,9 +315,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           Row(
             children: [
               IconButton(
-                onPressed: _showAutoFillDialog,
+                onPressed: _generateGroceryList,
                 icon: PhosphorIcon(
-                  PhosphorIcons.magicWand(),
+                  PhosphorIcons.shoppingCart(),
                   color: AppColors.primary,
                 ),
               ),
@@ -1055,14 +1055,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: PhosphorIcon(PhosphorIcons.shoppingCart()),
-              title: const Text('Generate Shopping List'),
-              onTap: () {
-                Navigator.pop(context);
-                _generateGroceryList();
-              },
-            ),
             ListTile(
               leading: PhosphorIcon(PhosphorIcons.clockCounterClockwise()),
               title: const Text('View Previous Weeks'),
