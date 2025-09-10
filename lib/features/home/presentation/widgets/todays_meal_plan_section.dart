@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/meal_plan_shimmer_card.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/models/meal_plan_item.dart';
 import 'meal_plan_card.dart';
 import '../../../meal_planner/domain/models/meal_slot.dart';
@@ -16,7 +17,8 @@ class TodaysMealPlanSection extends ConsumerStatefulWidget {
   const TodaysMealPlanSection({super.key});
 
   @override
-  ConsumerState<TodaysMealPlanSection> createState() => _TodaysMealPlanSectionState();
+  ConsumerState<TodaysMealPlanSection> createState() =>
+      _TodaysMealPlanSectionState();
 }
 
 class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
@@ -33,7 +35,6 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
   Widget build(BuildContext context) {
     final todaysMealPlanAsync = ref.watch(todaysMealPlanProvider);
     final String todayDate = DateFormat('EEEE, MMMM d').format(DateTime.now());
-    
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,8 +48,8 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Today's Meal Plan",
+                  Text(
+                    AppLocalizations.of(context)!.todaysMealPlan,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -78,8 +79,8 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-                child: const Text(
-                  'See All',
+                child: Text(
+                  AppLocalizations.of(context)!.seeAll,
                   style: TextStyle(
                     fontSize: 14,
                     color: AppColors.primary,
@@ -114,8 +115,10 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
                           child: const MealPlanShimmerCard(),
                         );
                       }
-                      
-                      final mealPlanItem = snapshot.data ?? _createFallbackMealPlanItem(mealSlot);
+
+                      final mealPlanItem =
+                          snapshot.data ??
+                          _createFallbackMealPlanItem(mealSlot);
                       return MealPlanCard(mealPlan: mealPlanItem);
                     },
                   );
@@ -139,7 +142,7 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
       try {
         // Check cache first
         Recipe? recipe = _recipeCache[mealSlot.recipeId!];
-        
+
         // If not in cache, fetch from repository
         if (recipe == null) {
           recipe = await _recipesRepository.getRecipe(mealSlot.recipeId!);
@@ -147,7 +150,7 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
             _recipeCache[mealSlot.recipeId!] = recipe;
           }
         }
-        
+
         if (recipe != null) {
           title = recipe.title;
           if (recipe.imageUrl.isNotEmpty) {
@@ -217,8 +220,8 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
             color: AppColors.textSecondary,
           ),
           const SizedBox(height: 8),
-          const Text(
-            'No meals planned yet',
+          Text(
+            AppLocalizations.of(context)!.noMealsPlanned,
             style: TextStyle(
               fontSize: 16,
               color: AppColors.textSecondary,
@@ -226,8 +229,8 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'Tap "See All" to start planning your meals',
+          Text(
+            AppLocalizations.of(context)!.startPlanningMeals,
             style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
           ),
         ],

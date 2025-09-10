@@ -1,0 +1,106 @@
+{
+  "@@locale": "si",
+  "appTitle": "ආහාර වේලාව",
+  
+  "todaysMealPlan": "අද ආහාර සැලැස්ම",
+  
+  "seeAll": "සියල්ල බලන්න",
+  
+  "noMealsPlanned": "තවම ආහාර සැලසුම් නැත",
+  
+  "startPlanningMeals": "ආහාර සැලසුම් කිරීම ආරම්භ කිරීමට \"සියල්ල බලන්න\" ක්ලික් කරන්න",
+  
+  "settings": "සැකසුම්",
+  
+  "language": "භාෂාව",
+  
+  "appLanguage": "යෙදුම භාෂාව",
+  
+  "english": "ඉංග්‍රීසි",
+  
+  "sinhala": "සිංහල",
+  
+  "household": "ගෘහස්ථය",
+  
+  "householdSize": "ගෘහස්ථ ප්‍රමාණය",
+  
+  "dietaryPreferences": "ආහාර මනාපයන්",
+  
+  "dietaryPreference": "ආහාර මනාපය",
+  
+  "nonVegetarian": "මස් භක්ෂක",
+  
+  "vegetarian": "නිර්මාංශිත",
+  
+  "vegan": "සම්පූර්ණ ශාක ආහාර",
+  
+  "pescatarian": "මත්ස්‍ය භක්ෂක",
+  
+  "recipeRecommendations": "වට්ටෝරු නිර්දේශ",
+  
+  "prioritizePantryItems": "ගබඩා ද්‍රව්‍ය ප්‍රමුඛතාව",
+  
+  "prioritizePantryDescription": "සක්‍රීය කළ විට, ඔබේ ගබඩාවේ ඇති අමුද්‍රව්‍ය භාවිතා කරන වට්ටෝරුවලට නිර්දේශවල ප්‍රමුඛතාව ලැබෙනු ඇත",
+  
+  "notifications": "දැනුම් දීම්",
+  
+  "mealPlanReminders": "ආහාර සැලැස්ම සිහිකැඳවීම්",
+  
+  "mealPlanRemindersDescription": "ඔබේ සැලසුම් කළ ආහාර ගැන සිහිකැඳවීම් ලබා ගන්න",
+  
+  "shoppingListUpdates": "සාප්පු ලැයිස්තු යාවත්කාලීන",
+  
+  "shoppingListUpdatesDescription": "සාප්පු ලැයිස්තුව වෙනස් වන විට දැනුම් ලබා ගන්න",
+  
+  "saveSettings": "සැකසුම් සුරකින්න",
+  
+  "settingsSavedSuccessfully": "සැකසුම් සාර්ථකව සුරකින ලදී",
+  
+  "failedToSaveSettings": "සැකසුම් සුරැකීම අසාර්ථක විය: {error}",
+  
+  "errorLoadingPreferences": "මනාපයන් පැටවීමේ දෝෂය: {error}",
+  
+  "perfectForYourPantry": "ඔබේ ගබඩාවට සුදුසු",
+  
+  "useUpPantryItems": "ඔබේ ගබඩා ද්‍රව්‍ය භාවිතා කරන්න",
+  
+  "justForYou": "ඔබ සඳහා පමණි",
+  
+  "basedOnPreferences": "ඔබේ මනාපයන් මත පදනම් වූ",
+  
+  "quickWeeknightMeals": "ඉක්මන් සතියේ දින ආහාර",
+  
+  "readyInMinutes": "මිනිත්තු 30කට වඩා අඩු කාලයකින් සූදානම්",
+  
+  "seasonalFavorites": "කාලීන ප්‍රියතම",
+  
+  "perfectForTimeOfYear": "වර්ෂයේ මෙම කාලයට සුදුසු",
+  
+  "noPantryMatchesFound": "ගබඩා ගැලපීම් හමු නොවීය",
+  
+  "addItemsToGetSuggestions": "වට්ටෝරු යෝජනා ලබා ගැනීමට ඔබේ ගබඩාවට අයිතම එක් කරන්න",
+  
+  "buildingYourPreferences": "ඔබේ මනාපයන් ගොඩනගමින්",
+  
+  "interactToGetSuggestions": "පුද්ගලික යෝජනා ලබා ගැනීමට වට්ටෝරු සමග අන්තර්ක්‍රියා කරන්න",
+  
+  "noQuickMealsAvailable": "ඉක්මන් ආහාර නොමැත",
+  
+  "quickMealSuggestions": "ඉක්මන් ආහාර යෝජනා මෙහි දිස්වෙනු ඇත",
+  
+  "noSeasonalRecipesFound": "කාලීන වට්ටෝරු හමු නොවීය",
+  
+  "seasonalRecommendations": "වර්ෂයේ වර්තමාන කාලය මත පදනම් වූ කාලීන නිර්දේශ",
+  
+  "personalizedRecommendations": "පුද්ගලික නිර්දේශ",
+  
+  "addItemsAndSetPreferences": "පුද්ගලික වට්ටෝරු නිර්දේශ ලබා ගැනීමට ඔබේ ගබඩාවට අයිතම එක් කර ඔබේ මනාපයන් සකසන්න.",
+  
+  "unableToLoadRecommendations": "නිර්දේශ පැටවීමට නොහැකිය",
+  
+  "checkConnectionAndRetry": "කරුණාකර ඔබේ සම්බන්ධතාවය පරීක්ෂා කර නැවත උත්සාහ කරන්න.",
+  
+  "retry": "නැවත උත්සාහ කරන්න",
+  
+  "noImage": "පින්තූරයක් නැත"
+}

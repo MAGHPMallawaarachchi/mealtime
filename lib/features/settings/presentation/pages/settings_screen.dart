@@ -5,6 +5,8 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/providers/user_preferences_providers.dart';
 import '../../../../core/providers/auth_providers.dart';
+import '../../../../core/providers/locale_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -19,11 +21,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _notificationsEnabled = true;
   bool _mealPlanReminders = true;
   bool _shoppingListUpdates = false;
-  
+
   DietaryType? _selectedDietaryType;
   bool _prioritizePantryItems = true;
 
-  final List<String> _languages = ['English', 'Sinhala'];
+  // Languages will be loaded dynamically from localization
   final List<DietaryType> _dietaryTypes = [
     DietaryType.nonVegetarian,
     DietaryType.vegetarian,
@@ -34,7 +36,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final userPreferences = ref.watch(currentUserProvider);
-    
+    final currentLocale = ref.watch(localeProvider);
+
     return userPreferences.when(
       data: (user) {
         // Initialize local state from server data on first load
@@ -42,15 +45,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           _selectedDietaryType ??= user.dietaryType;
           _prioritizePantryItems = user.prioritizePantryItems;
         }
-        
+
+        // Update selected language based on current locale
+        if (currentLocale != null) {
+          _selectedLanguage = currentLocale.languageCode == 'si' ? 'Sinhala' : 'English';
+        }
+
         return _buildSettingsContent(context);
       },
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (error, stack) => Scaffold(
         body: Center(
-          child: Text('Error loading preferences: $error'),
+          child: Text(
+            AppLocalizations.of(
+              context,
+            )!.errorLoadingPreferences(error.toString()),
+          ),
         ),
       ),
     );
@@ -90,9 +101,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                 ),
                 const SizedBox(width: 16),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Settings',
+                    AppLocalizations.of(context)!.settings,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 28,
@@ -104,27 +115,31 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 32),
 
-            _buildSectionTitle('Household'),
+            _buildSectionTitle(AppLocalizations.of(context)!.household),
             const SizedBox(height: 8),
             _buildHouseholdCard(),
 
             const SizedBox(height: 24),
-            _buildSectionTitle('Language'),
+            _buildSectionTitle(AppLocalizations.of(context)!.language),
             const SizedBox(height: 8),
             _buildLanguageCard(),
 
             const SizedBox(height: 24),
-            _buildSectionTitle('Dietary Preferences'),
+            _buildSectionTitle(
+              AppLocalizations.of(context)!.dietaryPreferences,
+            ),
             const SizedBox(height: 8),
             _buildDietaryPreferencesCard(),
 
             const SizedBox(height: 24),
-            _buildSectionTitle('Recipe Recommendations'),
+            _buildSectionTitle(
+              AppLocalizations.of(context)!.recipeRecommendations,
+            ),
             const SizedBox(height: 8),
             _buildRecommendationSettingsCard(),
 
             const SizedBox(height: 24),
-            _buildSectionTitle('Notifications'),
+            _buildSectionTitle(AppLocalizations.of(context)!.notifications),
             const SizedBox(height: 8),
             _buildNotificationsCard(),
 
@@ -174,9 +189,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   color: AppColors.primary,
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Household Size',
+                    AppLocalizations.of(context)!.householdSize,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -270,9 +285,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   color: AppColors.primary,
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'App Language',
+                    AppLocalizations.of(context)!.appLanguage,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -283,19 +298,36 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            ..._languages.map((language) => _buildLanguageOption(language)),
+            _buildLanguageOption(
+              'English',
+              AppLocalizations.of(context)!.english,
+            ),
+            _buildLanguageOption(
+              'Sinhala',
+              AppLocalizations.of(context)!.sinhala,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLanguageOption(String language) {
-    final isSelected = _selectedLanguage == language;
+  Widget _buildLanguageOption(String languageKey, String languageDisplay) {
+    final isSelected = _selectedLanguage == languageKey;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: InkWell(
-        onTap: () => setState(() => _selectedLanguage = language),
+        onTap: () async {
+          setState(() => _selectedLanguage = languageKey);
+          
+          // Update the app locale
+          final localeNotifier = ref.read(localeProvider.notifier);
+          if (languageKey == 'Sinhala') {
+            await localeNotifier.setSinhala();
+          } else {
+            await localeNotifier.setEnglish();
+          }
+        },
         borderRadius: BorderRadius.circular(8),
         child: Container(
           padding: const EdgeInsets.all(12),
@@ -318,7 +350,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  language,
+                  languageDisplay,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
@@ -360,9 +392,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   color: AppColors.primary,
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Notifications',
+                    AppLocalizations.of(context)!.notifications,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -382,15 +414,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             if (_notificationsEnabled) ...[
               const Divider(height: 24),
               _buildNotificationOption(
-                'Meal Plan Reminders',
-                'Get reminded about your planned meals',
+                AppLocalizations.of(context)!.mealPlanReminders,
+                AppLocalizations.of(context)!.mealPlanRemindersDescription,
                 PhosphorIcons.calendar(),
                 _mealPlanReminders,
                 (value) => setState(() => _mealPlanReminders = value),
               ),
               _buildNotificationOption(
-                'Shopping List Updates',
-                'Get notified when shopping list changes',
+                AppLocalizations.of(context)!.shoppingListUpdates,
+                AppLocalizations.of(context)!.shoppingListUpdatesDescription,
                 PhosphorIcons.shoppingCart(),
                 _shoppingListUpdates,
                 (value) => setState(() => _shoppingListUpdates = value),
@@ -473,9 +505,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   color: AppColors.primary,
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Dietary Preference',
+                    AppLocalizations.of(context)!.dietaryPreference,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -521,7 +553,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  _getDietaryTypeDisplayName(dietaryType),
+                  _getDietaryTypeDisplayName(
+                    dietaryType,
+                    AppLocalizations.of(context)!,
+                  ),
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
@@ -563,9 +598,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   color: AppColors.primary,
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Prioritize Pantry Items',
+                    AppLocalizations.of(context)!.prioritizePantryItems,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -583,12 +618,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ],
             ),
             const SizedBox(height: 8),
-            const Text(
-              'When enabled, recipes using ingredients from your pantry will be prioritized in recommendations',
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
-              ),
+            Text(
+              AppLocalizations.of(context)!.prioritizePantryDescription,
+              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
             ),
           ],
         ),
@@ -596,16 +628,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  String _getDietaryTypeDisplayName(DietaryType type) {
+  String _getDietaryTypeDisplayName(DietaryType type, AppLocalizations l10n) {
     switch (type) {
       case DietaryType.nonVegetarian:
-        return 'Non-Vegetarian';
+        return l10n.nonVegetarian;
       case DietaryType.vegetarian:
-        return 'Vegetarian';
+        return l10n.vegetarian;
       case DietaryType.vegan:
-        return 'Vegan';
+        return l10n.vegan;
       case DietaryType.pescatarian:
-        return 'Pescatarian';
+        return l10n.pescatarian;
     }
   }
 
@@ -623,8 +655,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           elevation: 2,
         ),
-        child: const Text(
-          'Save Settings',
+        child: Text(
+          AppLocalizations.of(context)!.saveSettings,
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ),
@@ -634,7 +666,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   void _saveSettings() async {
     try {
       final updatePreferences = ref.read(updateUserPreferencesProvider);
-      
+
       await updatePreferences(
         dietaryType: _selectedDietaryType,
         prioritizePantryItems: _prioritizePantryItems,
@@ -651,12 +683,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   size: 20,
                 ),
                 const SizedBox(width: 8),
-                const Text('Settings saved successfully'),
+                Text(AppLocalizations.of(context)!.settingsSavedSuccessfully),
               ],
             ),
             backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         );
 
@@ -678,12 +712,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   size: 20,
                 ),
                 const SizedBox(width: 8),
-                Text('Failed to save settings: ${e.toString()}'),
+                Text(
+                  AppLocalizations.of(
+                    context,
+                  )!.failedToSaveSettings(e.toString()),
+                ),
               ],
             ),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         );
       }
