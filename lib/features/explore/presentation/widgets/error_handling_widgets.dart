@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class LoadMoreErrorWidget extends StatelessWidget {
   final String errorMessage;
@@ -22,10 +23,7 @@ class LoadMoreErrorWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.red.withOpacity(0.3),
-          width: 1,
-        ),
+        border: Border.all(color: Colors.red.withOpacity(0.3), width: 1),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -74,12 +72,15 @@ class LoadMoreErrorWidget extends StatelessWidget {
               TextButton(
                 onPressed: onRetry,
                 style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   minimumSize: Size.zero,
                 ),
-                child: const Text(
-                  'Try Again',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.tryAgain,
+                  style: const TextStyle(
                     fontSize: 13,
                     color: AppColors.primary,
                     fontWeight: FontWeight.w500,
@@ -98,11 +99,7 @@ class NetworkErrorSnackBar extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;
 
-  const NetworkErrorSnackBar({
-    super.key,
-    required this.message,
-    this.onRetry,
-  });
+  const NetworkErrorSnackBar({super.key, required this.message, this.onRetry});
 
   static void show(
     BuildContext context, {
@@ -139,10 +136,7 @@ class NetworkErrorSnackBar extends StatelessWidget {
         Expanded(
           child: Text(
             message,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-            ),
+            style: const TextStyle(color: Colors.white, fontSize: 14),
           ),
         ),
       ],
@@ -180,10 +174,7 @@ class RetryButton extends StatelessWidget {
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
             )
-          : const PhosphorIcon(
-              PhosphorIconsRegular.arrowClockwise,
-              size: 16,
-            ),
+          : const PhosphorIcon(PhosphorIconsRegular.arrowClockwise, size: 16),
       label: Text(
         isLoading ? 'Loading...' : text,
         style: const TextStyle(fontSize: 13),

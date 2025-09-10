@@ -176,4 +176,211 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get noImage => 'පින්තූරයක් නැත';
+
+  @override
+  String get goodMorning => 'සුභ උදෑසනක්';
+
+  @override
+  String get goodAfternoon => 'සුභ දවලක්';
+
+  @override
+  String get goodEvening => 'සුභ සන්ධ්‍යාවක්';
+
+  @override
+  String get guestUser => 'අමුත්තන් පරිශීලකයා';
+
+  @override
+  String get notificationsComingSoon => 'දැනුම්දීම් ඉක්මනින් පැමිණේ!';
+
+  @override
+  String get home => 'මුල් පිටුව';
+
+  @override
+  String get explore => 'ගවේෂණය';
+
+  @override
+  String get pantry => 'ගබඩාව';
+
+  @override
+  String get mealPlanner => 'ආහාර සැලසුම්කරු';
+
+  @override
+  String get profile => 'පැතිකඩ';
+
+  @override
+  String get searchRecipesIngredients => 'වට්ටෝරු, අමුද්‍රව්‍ය සොයන්න...';
+
+  @override
+  String get somethingWentWrong => 'කිසියම් දෝෂයක් සිදු වී ඇත';
+
+  @override
+  String get tryAgain => 'නැවත උත්සාහ කරන්න';
+
+  @override
+  String addedToFavorites(String recipeName) {
+    return '$recipeName ප්‍රියතමයන්ට එක් කරන ලදී!';
+  }
+
+  @override
+  String removedFromFavorites(String recipeName) {
+    return '$recipeName ප්‍රියතමයන්ගෙන් ඉවත් කරන ලදී';
+  }
+
+  @override
+  String get undo => 'අවලංගු කරන්න';
+
+  @override
+  String addedToMealPlan(String recipeName) {
+    return '$recipeName ආහාර සැලැස්මට එක් කරන ලදී';
+  }
+
+  @override
+  String get myPantry => 'මගේ ගබඩාව';
+
+  @override
+  String get ingredients => 'අමුද්‍රව්‍ය';
+
+  @override
+  String get leftovers => 'ඉතිරි ආහාර';
+
+  @override
+  String ingredientsCount(int count) {
+    return 'අමුද්‍රව්‍ය $countක්';
+  }
+
+  @override
+  String leftoversCount(int count) {
+    return 'ඉතිරි ආහාර $countක්';
+  }
+
+  @override
+  String get deleteIngredient => 'අමුද්‍රව්‍ය මකන්න';
+
+  @override
+  String confirmDeleteIngredient(String itemName) {
+    return 'ඔබට \"$itemName\" ඔබේ ගබඩාවෙන් ඉවත් කිරීමට අවශ්‍ය බව ඇත්තද?';
+  }
+
+  @override
+  String get cancel => 'අවලංගු කරන්න';
+
+  @override
+  String get delete => 'මකන්න';
+
+  @override
+  String get loadingYourPantry => 'ඔබේ ගබඩාව පූරණය වෙමින්...';
+
+  @override
+  String get failedToLoadPantry => 'ගබඩාව පූරණය කිරීම අසාර්ථක විය';
+
+  @override
+  String get noIngredientsYet => 'තවම අමුද්‍රව්‍ය නැත';
+
+  @override
+  String get addFreshIngredientsDiscover =>
+      'ඔබට සාදා ගත හැකි වට්ටෝරු සොයා ගැනීමට නැවුම් අමුද්‍රව්‍ය එක් කරන්න!';
+
+  @override
+  String get addIngredient => 'අමුද්‍රව්‍ය එක් කරන්න';
+
+  @override
+  String get quickAddPopularItems => 'ජනප්‍රිය අයිතම ඉක්මනින් එක් කරන්න:';
+
+  @override
+  String get noLeftoversYet => 'තවම ඉතිරි ආහාර නැත';
+
+  @override
+  String get addLeftoverFoodItems =>
+      'ඒවා භාවිතා කිරීමේ නිර්මාණශීලී ක්‍රම සොයා ගැනීමට ඉතිරි ආහාර අයිතම එක් කරන්න!';
+
+  @override
+  String get addLeftover => 'ඉතිරි ආහාර එක් කරන්න';
+
+  @override
+  String get commonLeftoversToTrack => 'ට්‍රැක් කිරීමට පොදු ඉතිරි ආහාර:';
+
+  @override
+  String get planYourMealsFlexibility =>
+      'නම්‍යශීලීභාවයකින් ඔබේ ආහාර සැලසුම් කරන්න';
+
+  @override
+  String get addMeal => 'ආහාරය එක් කරන්න';
+
+  @override
+  String get customMeal => 'අභිරුචි ආහාරය';
+
+  @override
+  String get addCustomMeal => 'අභිරුචි ආහාරය එක් කරන්න';
+
+  @override
+  String get mealName => 'ආහාර නම';
+
+  @override
+  String get enterMealName => 'ආහාර නම ඇතුළත් කරන්න';
+
+  @override
+  String get add => 'එක් කරන්න';
+
+  @override
+  String get editMeal => 'ආහාරය සංස්කරණය කරන්න';
+
+  @override
+  String get lockMeal => 'ආහාරය අගුළු දමන්න';
+
+  @override
+  String get unlockMeal => 'ආහාරය අගුළු ඇරින්න';
+
+  @override
+  String get removeMeal => 'ආහාරය ඉවත් කරන්න';
+
+  @override
+  String confirmRemoveMeal(String mealName) {
+    return 'ඔබට \"$mealName\" ඉවත් කිරීමට අවශ්‍ය බව ඇත්තද?';
+  }
+
+  @override
+  String get remove => 'ඉවත් කරන්න';
+
+  @override
+  String get breakfast => 'උදේ ආහාරය';
+
+  @override
+  String get lunch => 'දවල් ආහාරය';
+
+  @override
+  String get dinner => 'රාත්‍රී ආහාරය';
+
+  @override
+  String get snack => 'ස්නැක්ස්';
+
+  @override
+  String get brunch => 'බ්‍රන්ච්';
+
+  @override
+  String get lateNight => 'රාත්‍රියේ පසුව';
+
+  @override
+  String get addingMeal => 'ආහාරය එක් කරමින්...';
+
+  @override
+  String mealAddedSuccessfully(String mealName) {
+    return '$mealName සාර්ථකව එක් කරන ලදී!';
+  }
+
+  @override
+  String get mealUpdatedSuccessfully => 'ආහාරය සාර්ථකව යාවත්කාලීන කරන ලදී!';
+
+  @override
+  String get mealDeleted => 'ආහාරය මකන ලදී';
+
+  @override
+  String openingMeal(String mealName) {
+    return '$mealName විවෘත කරමින්...';
+  }
+
+  @override
+  String get noRecipeAvailable => 'මෙම ආහාරය සඳහා වට්ටෝරුවක් නොමැත';
+
+  @override
+  String get close => 'වසන්න';
 }

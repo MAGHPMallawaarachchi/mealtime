@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/models/recommendation_score.dart';
 import '../../../../core/models/user_interaction.dart';
 import '../../../../core/providers/auth_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../recipes/domain/models/recipe.dart';
 import '../../../explore/presentation/widgets/explore_recipe_card.dart';
 import '../../../recipes/presentation/providers/recipes_providers.dart';
@@ -574,7 +575,9 @@ class _PersonalizedRecommendationsSectionState
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${recipe.title} added to meal plan'),
+        content: Text(
+          AppLocalizations.of(context)!.addedToMealPlan(recipe.title),
+        ),
         duration: const Duration(seconds: 2),
       ),
     );

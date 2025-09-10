@@ -409,6 +409,378 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No Image'**
   String get noImage;
+
+  /// Morning greeting
+  ///
+  /// In en, this message translates to:
+  /// **'Good Morning'**
+  String get goodMorning;
+
+  /// Afternoon greeting
+  ///
+  /// In en, this message translates to:
+  /// **'Good Afternoon'**
+  String get goodAfternoon;
+
+  /// Evening greeting
+  ///
+  /// In en, this message translates to:
+  /// **'Good Evening'**
+  String get goodEvening;
+
+  /// Default text for guest users
+  ///
+  /// In en, this message translates to:
+  /// **'Guest User'**
+  String get guestUser;
+
+  /// Notification placeholder message
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications coming soon!'**
+  String get notificationsComingSoon;
+
+  /// Home tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// Explore tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get explore;
+
+  /// Pantry tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Pantry'**
+  String get pantry;
+
+  /// Meal Planner tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Meal Planner'**
+  String get mealPlanner;
+
+  /// Profile tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// Search bar placeholder text
+  ///
+  /// In en, this message translates to:
+  /// **'Search recipes, ingredients...'**
+  String get searchRecipesIngredients;
+
+  /// Generic error title
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get somethingWentWrong;
+
+  /// Button text to retry an action
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get tryAgain;
+
+  /// Message when recipe is added to favorites
+  ///
+  /// In en, this message translates to:
+  /// **'{recipeName} added to favorites!'**
+  String addedToFavorites(String recipeName);
+
+  /// Message when recipe is removed from favorites
+  ///
+  /// In en, this message translates to:
+  /// **'{recipeName} removed from favorites'**
+  String removedFromFavorites(String recipeName);
+
+  /// Undo action button text
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// Message when recipe is added to meal plan
+  ///
+  /// In en, this message translates to:
+  /// **'{recipeName} added to meal plan'**
+  String addedToMealPlan(String recipeName);
+
+  /// Pantry screen title
+  ///
+  /// In en, this message translates to:
+  /// **'My Pantry'**
+  String get myPantry;
+
+  /// Ingredients label
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredients'**
+  String get ingredients;
+
+  /// Leftovers label
+  ///
+  /// In en, this message translates to:
+  /// **'Leftovers'**
+  String get leftovers;
+
+  /// Count of ingredients
+  ///
+  /// In en, this message translates to:
+  /// **'{count} ingredients'**
+  String ingredientsCount(int count);
+
+  /// Count of leftovers
+  ///
+  /// In en, this message translates to:
+  /// **'{count} leftovers'**
+  String leftoversCount(int count);
+
+  /// Delete ingredient dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Ingredient'**
+  String get deleteIngredient;
+
+  /// Delete ingredient confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove \"{itemName}\" from your pantry?'**
+  String confirmDeleteIngredient(String itemName);
+
+  /// Cancel button text
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// Delete button text
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// Loading message for pantry
+  ///
+  /// In en, this message translates to:
+  /// **'Loading your pantry...'**
+  String get loadingYourPantry;
+
+  /// Error title when pantry fails to load
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to Load Pantry'**
+  String get failedToLoadPantry;
+
+  /// Empty state title for ingredients
+  ///
+  /// In en, this message translates to:
+  /// **'No Ingredients Yet'**
+  String get noIngredientsYet;
+
+  /// Empty state description for ingredients
+  ///
+  /// In en, this message translates to:
+  /// **'Add fresh ingredients to discover recipes you can make!'**
+  String get addFreshIngredientsDiscover;
+
+  /// Add ingredient button text
+  ///
+  /// In en, this message translates to:
+  /// **'Add Ingredient'**
+  String get addIngredient;
+
+  /// Quick add section title
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Add Popular Items:'**
+  String get quickAddPopularItems;
+
+  /// Empty state title for leftovers
+  ///
+  /// In en, this message translates to:
+  /// **'No Leftovers Yet'**
+  String get noLeftoversYet;
+
+  /// Empty state description for leftovers
+  ///
+  /// In en, this message translates to:
+  /// **'Add leftover food items to find creative ways to use them up!'**
+  String get addLeftoverFoodItems;
+
+  /// Add leftover button text
+  ///
+  /// In en, this message translates to:
+  /// **'Add Leftover'**
+  String get addLeftover;
+
+  /// Common leftovers section title
+  ///
+  /// In en, this message translates to:
+  /// **'Common leftovers to track:'**
+  String get commonLeftoversToTrack;
+
+  /// Meal planner subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Plan your meals with flexibility'**
+  String get planYourMealsFlexibility;
+
+  /// Add meal button text
+  ///
+  /// In en, this message translates to:
+  /// **'Add Meal'**
+  String get addMeal;
+
+  /// Custom meal option text
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Meal'**
+  String get customMeal;
+
+  /// Add custom meal dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Add Custom Meal'**
+  String get addCustomMeal;
+
+  /// Meal name input label
+  ///
+  /// In en, this message translates to:
+  /// **'Meal Name'**
+  String get mealName;
+
+  /// Meal name input hint
+  ///
+  /// In en, this message translates to:
+  /// **'Enter meal name'**
+  String get enterMealName;
+
+  /// Add button text
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// Edit meal option text
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Meal'**
+  String get editMeal;
+
+  /// Lock meal option text
+  ///
+  /// In en, this message translates to:
+  /// **'Lock Meal'**
+  String get lockMeal;
+
+  /// Unlock meal option text
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Meal'**
+  String get unlockMeal;
+
+  /// Remove meal option text
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Meal'**
+  String get removeMeal;
+
+  /// Remove meal confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove \"{mealName}\"?'**
+  String confirmRemoveMeal(String mealName);
+
+  /// Remove button text
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove;
+
+  /// Breakfast meal category
+  ///
+  /// In en, this message translates to:
+  /// **'Breakfast'**
+  String get breakfast;
+
+  /// Lunch meal category
+  ///
+  /// In en, this message translates to:
+  /// **'Lunch'**
+  String get lunch;
+
+  /// Dinner meal category
+  ///
+  /// In en, this message translates to:
+  /// **'Dinner'**
+  String get dinner;
+
+  /// Snack meal category
+  ///
+  /// In en, this message translates to:
+  /// **'Snack'**
+  String get snack;
+
+  /// Brunch meal category
+  ///
+  /// In en, this message translates to:
+  /// **'Brunch'**
+  String get brunch;
+
+  /// Late night meal category
+  ///
+  /// In en, this message translates to:
+  /// **'Late Night'**
+  String get lateNight;
+
+  /// Loading message when adding meal
+  ///
+  /// In en, this message translates to:
+  /// **'Adding meal...'**
+  String get addingMeal;
+
+  /// Success message when meal is added
+  ///
+  /// In en, this message translates to:
+  /// **'{mealName} added successfully!'**
+  String mealAddedSuccessfully(String mealName);
+
+  /// Success message when meal is updated
+  ///
+  /// In en, this message translates to:
+  /// **'Meal updated successfully!'**
+  String get mealUpdatedSuccessfully;
+
+  /// Message when meal is deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Meal deleted'**
+  String get mealDeleted;
+
+  /// Message when opening meal details
+  ///
+  /// In en, this message translates to:
+  /// **'Opening {mealName}...'**
+  String openingMeal(String mealName);
+
+  /// Message when meal has no recipe
+  ///
+  /// In en, this message translates to:
+  /// **'No recipe available for this meal'**
+  String get noRecipeAvailable;
+
+  /// Close button text
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
 }
 
 class _AppLocalizationsDelegate

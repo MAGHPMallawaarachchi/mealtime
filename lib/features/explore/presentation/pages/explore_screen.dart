@@ -1,10 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealtime/features/recipes/domain/models/recipe.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/providers/auth_providers.dart';
-import '../../../../core/models/user_interaction.dart';
 import '../../../recipes/domain/usecases/get_recipes_usecase.dart';
 import '../../../recipes/domain/usecases/search_recipes_usecase.dart';
 import '../../../recipes/domain/usecases/get_recipes_by_category_usecase.dart';
@@ -14,7 +13,6 @@ import '../../../recommendations/presentation/widgets/personalized_recipes_grid_
 import '../../../recommendations/presentation/providers/recommendation_provider.dart';
 import '../widgets/explore_search_bar.dart';
 import '../widgets/explore_categories_section.dart';
-import '../widgets/recipes_grid_section.dart';
 import '../../../favorites/presentation/providers/favorites_providers.dart';
 import '../providers/explore_pagination_provider.dart';
 import '../utils/pagination_utils.dart';
@@ -67,7 +65,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         ref.listen(currentUserProvider, (previousUser, currentUser) {
-          if (previousUser?.value?.dietaryType != currentUser?.value?.dietaryType) {
+          if (previousUser?.value?.dietaryType !=
+              currentUser?.value?.dietaryType) {
             // User's dietary preference changed, refresh recipes
             _loadRecipes(forceRefresh: true);
           }
@@ -90,7 +89,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       _recipesRepository,
     );
   }
-  
+
   void _initializeScrollController() {
     _scrollController = MemoryOptimizedScrollController(
       allRecipes: _filteredRecipes,
@@ -104,10 +103,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   void dispose() {
     _searchController.dispose();
     _scrollController.dispose();
-    
+
     // Clean up memory manager
     InfiniteScrollMemoryManager.dispose();
-    
+
     super.dispose();
   }
 
@@ -127,12 +126,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
             _filteredRecipes = optimizedRecipes;
             _isLoading = false;
           });
-          
+
           // Update scroll controller with new recipes
           _scrollController.dispose();
           _initializeScrollController();
           _setupScrollListener();
-          
+
           // Initialize pagination after recipes are loaded
           _updatePagination();
         }
@@ -150,7 +149,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   Future<List<Recipe>> _getFilteredRecipes({bool forceRefresh = false}) async {
     final currentUser = ref.read(currentUserProvider).value;
     final userDietaryType = currentUser?.dietaryType;
-    
+
     if (_searchQuery.isNotEmpty) {
       // Use search functionality
       return await _searchRecipesUseCase.execute(
@@ -178,23 +177,24 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     final currentUser = ref.read(currentUserProvider).value;
     if (currentUser == null) return;
 
-    final allRecipes = await _getRecipesUseCase.execute(dietaryType: currentUser.dietaryType);
+    final allRecipes = await _getRecipesUseCase.execute(
+      dietaryType: currentUser.dietaryType,
+    );
     final pantryItems = ref.read(pantryProvider).items;
 
-    await ref.read(recommendationProvider.notifier).generateRecommendations(
-      user: currentUser,
-      allRecipes: allRecipes,
-      pantryItems: pantryItems,
-    );
+    await ref
+        .read(recommendationProvider.notifier)
+        .generateRecommendations(
+          user: currentUser,
+          allRecipes: allRecipes,
+          pantryItems: pantryItems,
+        );
   }
 
   void _onSearchChanged(String query) {
     final currentUser = ref.read(currentUserProvider).value;
     if (currentUser != null && query.isNotEmpty) {
-      ref.recordSearchInteraction(
-        userId: currentUser.uid,
-        query: query,
-      );
+      ref.recordSearchInteraction(userId: currentUser.uid, query: query);
     }
 
     setState(() {
@@ -235,12 +235,14 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       SnackBar(
         content: Text(
           _favoriteRecipes.contains(recipe.id)
-              ? '${recipe.title} added to favorites!'
-              : '${recipe.title} removed from favorites',
+              ? AppLocalizations.of(context)!.addedToFavorites(recipe.title)
+              : AppLocalizations.of(
+                  context,
+                )!.removedFromFavorites(recipe.title),
         ),
         duration: const Duration(seconds: 2),
         action: SnackBarAction(
-          label: 'Undo',
+          label: AppLocalizations.of(context)!.undo,
           onPressed: () {
             // Undo the favorite toggle
             setState(() {
@@ -261,7 +263,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     // For now, just show a snackbar confirmation
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${recipe.title} added to meal plan'),
+        content: Text(
+          AppLocalizations.of(context)!.addedToMealPlan(recipe.title),
+        ),
         duration: const Duration(seconds: 1),
       ),
     );
@@ -270,20 +274,24 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   void _setupScrollListener() {
     _scrollController.addListener(() {
       final currentOffset = _scrollController.offset;
-      
+
       // Optimize scroll event processing
-      if (PerformanceUtils.shouldProcessScrollEvent(currentOffset, _lastScrollOffset)) {
+      if (PerformanceUtils.shouldProcessScrollEvent(
+        currentOffset,
+        _lastScrollOffset,
+      )) {
         _lastScrollOffset = currentOffset;
-        
+
         if (PaginationUtils.shouldLoadMore(
           currentOffset: currentOffset,
           maxScrollExtent: _scrollController.position.maxScrollExtent,
         )) {
           _loadMoreRecipes();
         }
-        
+
         // Periodic memory optimization
-        if (currentOffset % 5000 < 50) { // Every ~5000px of scrolling
+        if (currentOffset % 5000 < 50) {
+          // Every ~5000px of scrolling
           PerformanceUtils.optimizeMemoryUsage();
         }
       }
@@ -300,16 +308,24 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       searchQuery: _searchQuery,
       selectedCategory: _selectedCategory,
     );
-    
-    debugPrint('ExploreScreen: _updatePagination called with ${filteredRecipes.length} recipes');
-    
+
+    debugPrint(
+      'ExploreScreen: _updatePagination called with ${filteredRecipes.length} recipes',
+    );
+
     // Initialize pagination if this is the first time or update with new filtered recipes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (filteredRecipes.isNotEmpty) {
-        debugPrint('ExploreScreen: Initializing pagination with ${filteredRecipes.length} recipes');
-        ref.read(explorePaginationProvider.notifier).loadInitialRecipes(filteredRecipes);
+        debugPrint(
+          'ExploreScreen: Initializing pagination with ${filteredRecipes.length} recipes',
+        );
+        ref
+            .read(explorePaginationProvider.notifier)
+            .loadInitialRecipes(filteredRecipes);
       } else {
-        debugPrint('ExploreScreen: No filtered recipes to initialize pagination with - clearing pagination');
+        debugPrint(
+          'ExploreScreen: No filtered recipes to initialize pagination with - clearing pagination',
+        );
         // Clear pagination state when no recipes are found
         ref.read(explorePaginationProvider.notifier).clearRecipes();
       }
@@ -319,7 +335,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   Future<void> _refreshData() async {
     // Refresh recipes and recommendations
     await _loadRecipes(forceRefresh: true);
-    
+
     // Refresh recommendations if user is available
     final currentUser = ref.read(currentUserProvider).value;
     if (currentUser != null) {
@@ -328,15 +344,17 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
         dietaryType: currentUser.dietaryType,
       );
       final pantryItems = ref.read(pantryProvider).items;
-      
-      await ref.read(recommendationProvider.notifier).generateRecommendations(
-        user: currentUser,
-        allRecipes: allRecipes,
-        pantryItems: pantryItems,
-        forceRefresh: true,
-      );
+
+      await ref
+          .read(recommendationProvider.notifier)
+          .generateRecommendations(
+            user: currentUser,
+            allRecipes: allRecipes,
+            pantryItems: pantryItems,
+            forceRefresh: true,
+          );
     }
-    
+
     // Refresh pagination
     _updatePagination();
   }
@@ -346,10 +364,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: _refreshData,
-          child: _buildBody(),
-        ),
+        child: RefreshIndicator(onRefresh: _refreshData, child: _buildBody()),
       ),
     );
   }
@@ -374,7 +389,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
               ExploreSearchBar(
                 controller: _searchController,
                 onChanged: _onSearchChanged,
-                hintText: 'Search recipes, ingredients...',
+                hintText: AppLocalizations.of(
+                  context,
+                )!.searchRecipesIngredients,
               ),
               const SizedBox(height: 20),
               ExploreCategoriesSection(
@@ -399,9 +416,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
             ),
           ),
         ),
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 24),
-        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 24)),
       ],
     );
   }
@@ -423,9 +438,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                     color: AppColors.textSecondary,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Something went wrong',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.somethingWentWrong,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
@@ -447,7 +462,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                       backgroundColor: AppColors.primary,
                       foregroundColor: AppColors.white,
                     ),
-                    child: const Text('Try Again'),
+                    child: Text(AppLocalizations.of(context)!.tryAgain),
                   ),
                 ],
               ),

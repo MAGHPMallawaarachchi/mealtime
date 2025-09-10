@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../domain/models/meal_slot.dart';
 import '../../domain/models/daily_meal_plan.dart';
@@ -99,7 +100,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     );
     _saveMealSlotUseCase = SaveMealSlotUseCase(_mealPlannerRepository);
     _deleteMealSlotUseCase = DeleteMealSlotUseCase(_mealPlannerRepository);
-    _generateGroceryListUseCase = GenerateGroceryListUseCase(_recipesRepository);
+    _generateGroceryListUseCase = GenerateGroceryListUseCase(
+      _recipesRepository,
+    );
   }
 
   @override
@@ -295,20 +298,23 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Meal Planner',
-                style: TextStyle(
+                AppLocalizations.of(context)!.mealPlanner,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
               ),
               Text(
-                'Plan your meals with flexibility',
-                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                AppLocalizations.of(context)!.planYourMealsFlexibility,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                ),
               ),
             ],
           ),
@@ -435,15 +441,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Add Meal',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              AppLocalizations.of(context)!.addMeal,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             ...MealCategory.predefined.map(
               (category) => ListTile(
                 leading: PhosphorIcon(_getCategoryIcon(category)),
-                title: Text(category),
+                title: Text(_getLocalizedCategory(context, category)),
                 onTap: () {
                   Navigator.pop(context);
                   _addQuickMeal(date, category);
@@ -1101,7 +1107,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
     // Check if there are any meals with recipes
     final totalMeals = currentWeekPlan!.allScheduledMeals.length;
-    final mealsWithRecipes = currentWeekPlan!.allScheduledMeals.where((m) => m.recipeId != null).length;
+    final mealsWithRecipes = currentWeekPlan!.allScheduledMeals
+        .where((m) => m.recipeId != null)
+        .length;
 
     if (totalMeals == 0) {
       _showErrorSnackBar(
@@ -1123,28 +1131,29 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     _showGroceryListLoadingDialog();
 
     try {
-      final groceryList = await _generateGroceryListUseCase.execute(currentWeekPlan!);
-      
+      final groceryList = await _generateGroceryListUseCase.execute(
+        currentWeekPlan!,
+      );
+
       if (!mounted) return;
-      
+
       // Hide loading dialog
       Navigator.of(context).pop();
-      
+
       // Show grocery list preview modal
       await showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder: (context) => GroceryListPreviewModal(
-          initialGroceryList: groceryList,
-        ),
+        builder: (context) =>
+            GroceryListPreviewModal(initialGroceryList: groceryList),
       );
     } catch (e) {
       if (!mounted) return;
-      
+
       // Hide loading dialog
       Navigator.of(context).pop();
-      
+
       // Show detailed error message in a scrollable dialog
       _showDetailedErrorDialog('Grocery List Generation Failed', e.toString());
     }
@@ -1154,9 +1163,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   Future<void> _ensureCorrectWeekLoaded() async {
     final selectedWeekStart = _getWeekStart(selectedDate);
     final currentPlanWeekStart = currentWeekPlan?.weekStartDate;
-    
+
     // Check if we need to load a different week
-    if (currentPlanWeekStart == null || !_isSameDay(selectedWeekStart, currentPlanWeekStart)) {
+    if (currentPlanWeekStart == null ||
+        !_isSameDay(selectedWeekStart, currentPlanWeekStart)) {
       // Update to the correct week and reload the plan
       setState(() {
         currentWeekStart = selectedWeekStart;
@@ -1187,10 +1197,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               ],
             ),
             const SizedBox(height: 4),
-            Text(
-              description,
-              style: const TextStyle(fontSize: 13),
-            ),
+            Text(description, style: const TextStyle(fontSize: 13)),
           ],
         ),
         backgroundColor: AppColors.primary,
@@ -1213,12 +1220,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               size: 24,
             ),
             const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                title,
-                style: const TextStyle(fontSize: 18),
-              ),
-            ),
+            Expanded(child: Text(title, style: const TextStyle(fontSize: 18))),
           ],
         ),
         content: ConstrainedBox(
@@ -1268,18 +1270,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               const SizedBox(height: 16),
               const Text(
                 'Generating grocery list...',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppColors.textPrimary,
-                ),
+                style: TextStyle(fontSize: 16, color: AppColors.textPrimary),
               ),
               const SizedBox(height: 8),
               Text(
                 'Analyzing your meal plan and calculating ingredients',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
-                ),
+                style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -1287,5 +1283,25 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         ),
       ),
     );
+  }
+
+  String _getLocalizedCategory(BuildContext context, String category) {
+    final localizations = AppLocalizations.of(context);
+    switch (category) {
+      case MealCategory.breakfast:
+        return localizations!.breakfast;
+      case MealCategory.lunch:
+        return localizations!.lunch;
+      case MealCategory.dinner:
+        return localizations!.dinner;
+      case MealCategory.snack:
+        return localizations!.snack;
+      case MealCategory.brunch:
+        return localizations!.brunch;
+      case MealCategory.lateNight:
+        return localizations!.lateNight;
+      default:
+        return category;
+    }
   }
 }

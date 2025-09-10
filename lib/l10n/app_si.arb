@@ -1,106 +1,638 @@
 {
   "@@locale": "si",
   "appTitle": "ආහාර වේලාව",
-  
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+
   "todaysMealPlan": "අද ආහාර සැලැස්ම",
-  
+  "@todaysMealPlan": {
+    "description": "Title for today's meal plan section"
+  },
+
   "seeAll": "සියල්ල බලන්න",
-  
+  "@seeAll": {
+    "description": "Button text to view all items"
+  },
+
   "noMealsPlanned": "තවම ආහාර සැලසුම් නැත",
-  
+  "@noMealsPlanned": {
+    "description": "Message shown when no meals are planned"
+  },
+
   "startPlanningMeals": "ආහාර සැලසුම් කිරීම ආරම්භ කිරීමට \"සියල්ල බලන්න\" ක්ලික් කරන්න",
-  
+  "@startPlanningMeals": {
+    "description": "Instruction to start planning meals"
+  },
+
   "settings": "සැකසුම්",
-  
+  "@settings": {
+    "description": "Settings page title"
+  },
+
   "language": "භාෂාව",
-  
+  "@language": {
+    "description": "Language setting label"
+  },
+
   "appLanguage": "යෙදුම භාෂාව",
-  
+  "@appLanguage": {
+    "description": "App language setting title"
+  },
+
   "english": "ඉංග්‍රීසි",
-  
+  "@english": {
+    "description": "English language option"
+  },
+
   "sinhala": "සිංහල",
-  
+  "@sinhala": {
+    "description": "Sinhala language option"
+  },
+
   "household": "ගෘහස්ථය",
-  
+  "@household": {
+    "description": "Household section title"
+  },
+
   "householdSize": "ගෘහස්ථ ප්‍රමාණය",
-  
+  "@householdSize": {
+    "description": "Household size setting"
+  },
+
   "dietaryPreferences": "ආහාර මනාපයන්",
-  
+  "@dietaryPreferences": {
+    "description": "Dietary preferences section title"
+  },
+
   "dietaryPreference": "ආහාර මනාපය",
-  
+  "@dietaryPreference": {
+    "description": "Single dietary preference setting"
+  },
+
   "nonVegetarian": "මස් භක්ෂක",
-  
+  "@nonVegetarian": {
+    "description": "Non-vegetarian diet option"
+  },
+
   "vegetarian": "නිර්මාංශිත",
-  
+  "@vegetarian": {
+    "description": "Vegetarian diet option"
+  },
+
   "vegan": "සම්පූර්ණ ශාක ආහාර",
-  
+  "@vegan": {
+    "description": "Vegan diet option"
+  },
+
   "pescatarian": "මත්ස්‍ය භක්ෂක",
-  
+  "@pescatarian": {
+    "description": "Pescatarian diet option"
+  },
+
   "recipeRecommendations": "වට්ටෝරු නිර්දේශ",
-  
+  "@recipeRecommendations": {
+    "description": "Recipe recommendations section title"
+  },
+
   "prioritizePantryItems": "ගබඩා ද්‍රව්‍ය ප්‍රමුඛතාව",
-  
+  "@prioritizePantryItems": {
+    "description": "Setting to prioritize pantry items"
+  },
+
   "prioritizePantryDescription": "සක්‍රීය කළ විට, ඔබේ ගබඩාවේ ඇති අමුද්‍රව්‍ය භාවිතා කරන වට්ටෝරුවලට නිර්දේශවල ප්‍රමුඛතාව ලැබෙනු ඇත",
-  
+  "@prioritizePantryDescription": {
+    "description": "Description for prioritize pantry items setting"
+  },
+
   "notifications": "දැනුම් දීම්",
-  
+  "@notifications": {
+    "description": "Notifications section title"
+  },
+
   "mealPlanReminders": "ආහාර සැලැස්ම සිහිකැඳවීම්",
-  
+  "@mealPlanReminders": {
+    "description": "Meal plan reminders setting"
+  },
+
   "mealPlanRemindersDescription": "ඔබේ සැලසුම් කළ ආහාර ගැන සිහිකැඳවීම් ලබා ගන්න",
-  
+  "@mealPlanRemindersDescription": {
+    "description": "Description for meal plan reminders"
+  },
+
   "shoppingListUpdates": "සාප්පු ලැයිස්තු යාවත්කාලීන",
-  
+  "@shoppingListUpdates": {
+    "description": "Shopping list updates setting"
+  },
+
   "shoppingListUpdatesDescription": "සාප්පු ලැයිස්තුව වෙනස් වන විට දැනුම් ලබා ගන්න",
-  
+  "@shoppingListUpdatesDescription": {
+    "description": "Description for shopping list updates"
+  },
+
   "saveSettings": "සැකසුම් සුරකින්න",
-  
+  "@saveSettings": {
+    "description": "Button text to save settings"
+  },
+
   "settingsSavedSuccessfully": "සැකසුම් සාර්ථකව සුරකින ලදී",
-  
+  "@settingsSavedSuccessfully": {
+    "description": "Success message when settings are saved"
+  },
+
   "failedToSaveSettings": "සැකසුම් සුරැකීම අසාර්ථක විය: {error}",
-  
+  "@failedToSaveSettings": {
+    "description": "Error message when settings fail to save",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+
   "errorLoadingPreferences": "මනාපයන් පැටවීමේ දෝෂය: {error}",
-  
+  "@errorLoadingPreferences": {
+    "description": "Error message when preferences fail to load",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+
   "perfectForYourPantry": "ඔබේ ගබඩාවට සුදුසු",
-  
+  "@perfectForYourPantry": {
+    "description": "Recommendation section title for pantry-based recipes"
+  },
+
   "useUpPantryItems": "ඔබේ ගබඩා ද්‍රව්‍ය භාවිතා කරන්න",
-  
+  "@useUpPantryItems": {
+    "description": "Subtitle for pantry-based recommendations"
+  },
+
   "justForYou": "ඔබ සඳහා පමණි",
-  
+  "@justForYou": {
+    "description": "Personalized recommendations title"
+  },
+
   "basedOnPreferences": "ඔබේ මනාපයන් මත පදනම් වූ",
-  
+  "@basedOnPreferences": {
+    "description": "Subtitle for personalized recommendations"
+  },
+
   "quickWeeknightMeals": "ඉක්මන් සතියේ දින ආහාර",
-  
+  "@quickWeeknightMeals": {
+    "description": "Quick meals recommendation title"
+  },
+
   "readyInMinutes": "මිනිත්තු 30කට වඩා අඩු කාලයකින් සූදානම්",
-  
+  "@readyInMinutes": {
+    "description": "Subtitle for quick meals"
+  },
+
   "seasonalFavorites": "කාලීන ප්‍රියතම",
-  
+  "@seasonalFavorites": {
+    "description": "Seasonal recommendations title"
+  },
+
   "perfectForTimeOfYear": "වර්ෂයේ මෙම කාලයට සුදුසු",
-  
+  "@perfectForTimeOfYear": {
+    "description": "Subtitle for seasonal recommendations"
+  },
+
   "noPantryMatchesFound": "ගබඩා ගැලපීම් හමු නොවීය",
-  
+  "@noPantryMatchesFound": {
+    "description": "Empty state for pantry recommendations"
+  },
+
   "addItemsToGetSuggestions": "වට්ටෝරු යෝජනා ලබා ගැනීමට ඔබේ ගබඩාවට අයිතම එක් කරන්න",
-  
+  "@addItemsToGetSuggestions": {
+    "description": "Empty state description for pantry recommendations"
+  },
+
   "buildingYourPreferences": "ඔබේ මනාපයන් ගොඩනගමින්",
-  
+  "@buildingYourPreferences": {
+    "description": "Empty state for personalized recommendations"
+  },
+
   "interactToGetSuggestions": "පුද්ගලික යෝජනා ලබා ගැනීමට වට්ටෝරු සමග අන්තර්ක්‍රියා කරන්න",
-  
+  "@interactToGetSuggestions": {
+    "description": "Empty state description for personalized recommendations"
+  },
+
   "noQuickMealsAvailable": "ඉක්මන් ආහාර නොමැත",
-  
+  "@noQuickMealsAvailable": {
+    "description": "Empty state for quick meals"
+  },
+
   "quickMealSuggestions": "ඉක්මන් ආහාර යෝජනා මෙහි දිස්වෙනු ඇත",
-  
+  "@quickMealSuggestions": {
+    "description": "Empty state description for quick meals"
+  },
+
   "noSeasonalRecipesFound": "කාලීන වට්ටෝරු හමු නොවීය",
-  
+  "@noSeasonalRecipesFound": {
+    "description": "Empty state for seasonal recommendations"
+  },
+
   "seasonalRecommendations": "වර්ෂයේ වර්තමාන කාලය මත පදනම් වූ කාලීන නිර්දේශ",
-  
+  "@seasonalRecommendations": {
+    "description": "Empty state description for seasonal recommendations"
+  },
+
   "personalizedRecommendations": "පුද්ගලික නිර්දේශ",
-  
+  "@personalizedRecommendations": {
+    "description": "Title for personalized recommendations section"
+  },
+
   "addItemsAndSetPreferences": "පුද්ගලික වට්ටෝරු නිර්දේශ ලබා ගැනීමට ඔබේ ගබඩාවට අයිතම එක් කර ඔබේ මනාපයන් සකසන්න.",
-  
+  "@addItemsAndSetPreferences": {
+    "description": "Description for personalized recommendations setup"
+  },
+
   "unableToLoadRecommendations": "නිර්දේශ පැටවීමට නොහැකිය",
-  
+  "@unableToLoadRecommendations": {
+    "description": "Error message for failed recommendations"
+  },
+
   "checkConnectionAndRetry": "කරුණාකර ඔබේ සම්බන්ධතාවය පරීක්ෂා කර නැවත උත්සාහ කරන්න.",
-  
+  "@checkConnectionAndRetry": {
+    "description": "Error description for connection issues"
+  },
+
   "retry": "නැවත උත්සාහ කරන්න",
-  
-  "noImage": "පින්තූරයක් නැත"
+  "@retry": {
+    "description": "Button text to retry an action"
+  },
+
+  "noImage": "පින්තූරයක් නැත",
+  "@noImage": {
+    "description": "Placeholder text when no image is available"
+  },
+
+  "goodMorning": "සුභ උදෑසනක්",
+  "@goodMorning": {
+    "description": "Morning greeting"
+  },
+
+  "goodAfternoon": "සුභ දවලක්",
+  "@goodAfternoon": {
+    "description": "Afternoon greeting"
+  },
+
+  "goodEvening": "සුභ සන්ධ්‍යාවක්",
+  "@goodEvening": {
+    "description": "Evening greeting"
+  },
+
+  "guestUser": "අමුත්තන් පරිශීලකයා",
+  "@guestUser": {
+    "description": "Default text for guest users"
+  },
+
+  "notificationsComingSoon": "දැනුම්දීම් ඉක්මනින් පැමිණේ!",
+  "@notificationsComingSoon": {
+    "description": "Notification placeholder message"
+  },
+
+  "home": "මුල් පිටුව",
+  "@home": {
+    "description": "Home tab label"
+  },
+
+  "explore": "ගවේෂණය",
+  "@explore": {
+    "description": "Explore tab label"
+  },
+
+  "pantry": "ගබඩාව",
+  "@pantry": {
+    "description": "Pantry tab label"
+  },
+
+  "mealPlanner": "ආහාර සැලසුම්කරු",
+  "@mealPlanner": {
+    "description": "Meal Planner tab label"
+  },
+
+  "profile": "පැතිකඩ",
+  "@profile": {
+    "description": "Profile tab label"
+  },
+
+  "searchRecipesIngredients": "වට්ටෝරු, අමුද්‍රව්‍ය සොයන්න...",
+  "@searchRecipesIngredients": {
+    "description": "Search bar placeholder text"
+  },
+
+  "somethingWentWrong": "කිසියම් දෝෂයක් සිදු වී ඇත",
+  "@somethingWentWrong": {
+    "description": "Generic error title"
+  },
+
+  "tryAgain": "නැවත උත්සාහ කරන්න",
+  "@tryAgain": {
+    "description": "Button text to retry an action"
+  },
+
+  "addedToFavorites": "{recipeName} ප්‍රියතමයන්ට එක් කරන ලදී!",
+  "@addedToFavorites": {
+    "description": "Message when recipe is added to favorites",
+    "placeholders": {
+      "recipeName": {
+        "type": "String",
+        "description": "Name of the recipe"
+      }
+    }
+  },
+
+  "removedFromFavorites": "{recipeName} ප්‍රියතමයන්ගෙන් ඉවත් කරන ලදී",
+  "@removedFromFavorites": {
+    "description": "Message when recipe is removed from favorites",
+    "placeholders": {
+      "recipeName": {
+        "type": "String",
+        "description": "Name of the recipe"
+      }
+    }
+  },
+
+  "undo": "අවලංගු කරන්න",
+  "@undo": {
+    "description": "Undo action button text"
+  },
+
+  "addedToMealPlan": "{recipeName} ආහාර සැලැස්මට එක් කරන ලදී",
+  "@addedToMealPlan": {
+    "description": "Message when recipe is added to meal plan",
+    "placeholders": {
+      "recipeName": {
+        "type": "String",
+        "description": "Name of the recipe"
+      }
+    }
+  },
+
+  "myPantry": "මගේ ගබඩාව",
+  "@myPantry": {
+    "description": "Pantry screen title"
+  },
+
+  "ingredients": "අමුද්‍රව්‍ය",
+  "@ingredients": {
+    "description": "Ingredients label"
+  },
+
+  "leftovers": "ඉතිරි ආහාර",
+  "@leftovers": {
+    "description": "Leftovers label"
+  },
+
+  "ingredientsCount": "අමුද්‍රව්‍ය {count}ක්",
+  "@ingredientsCount": {
+    "description": "Count of ingredients",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of ingredients"
+      }
+    }
+  },
+
+  "leftoversCount": "ඉතිරි ආහාර {count}ක්",
+  "@leftoversCount": {
+    "description": "Count of leftovers",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of leftovers"
+      }
+    }
+  },
+
+  "deleteIngredient": "අමුද්‍රව්‍ය මකන්න",
+  "@deleteIngredient": {
+    "description": "Delete ingredient dialog title"
+  },
+
+  "confirmDeleteIngredient": "ඔබට \"{itemName}\" ඔබේ ගබඩාවෙන් ඉවත් කිරීමට අවශ්‍ය බව ඇත්තද?",
+  "@confirmDeleteIngredient": {
+    "description": "Delete ingredient confirmation message",
+    "placeholders": {
+      "itemName": {
+        "type": "String",
+        "description": "Name of the item to delete"
+      }
+    }
+  },
+
+  "cancel": "අවලංගු කරන්න",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+
+  "delete": "මකන්න",
+  "@delete": {
+    "description": "Delete button text"
+  },
+
+  "loadingYourPantry": "ඔබේ ගබඩාව පූරණය වෙමින්...",
+  "@loadingYourPantry": {
+    "description": "Loading message for pantry"
+  },
+
+  "failedToLoadPantry": "ගබඩාව පූරණය කිරීම අසාර්ථක විය",
+  "@failedToLoadPantry": {
+    "description": "Error title when pantry fails to load"
+  },
+
+  "noIngredientsYet": "තවම අමුද්‍රව්‍ය නැත",
+  "@noIngredientsYet": {
+    "description": "Empty state title for ingredients"
+  },
+
+  "addFreshIngredientsDiscover": "ඔබට සාදා ගත හැකි වට්ටෝරු සොයා ගැනීමට නැවුම් අමුද්‍රව්‍ය එක් කරන්න!",
+  "@addFreshIngredientsDiscover": {
+    "description": "Empty state description for ingredients"
+  },
+
+  "addIngredient": "අමුද්‍රව්‍ය එක් කරන්න",
+  "@addIngredient": {
+    "description": "Add ingredient button text"
+  },
+
+  "quickAddPopularItems": "ජනප්‍රිය අයිතම ඉක්මනින් එක් කරන්න:",
+  "@quickAddPopularItems": {
+    "description": "Quick add section title"
+  },
+
+  "noLeftoversYet": "තවම ඉතිරි ආහාර නැත",
+  "@noLeftoversYet": {
+    "description": "Empty state title for leftovers"
+  },
+
+  "addLeftoverFoodItems": "ඒවා භාවිතා කිරීමේ නිර්මාණශීලී ක්‍රම සොයා ගැනීමට ඉතිරි ආහාර අයිතම එක් කරන්න!",
+  "@addLeftoverFoodItems": {
+    "description": "Empty state description for leftovers"
+  },
+
+  "addLeftover": "ඉතිරි ආහාර එක් කරන්න",
+  "@addLeftover": {
+    "description": "Add leftover button text"
+  },
+
+  "commonLeftoversToTrack": "ට්‍රැක් කිරීමට පොදු ඉතිරි ආහාර:",
+  "@commonLeftoversToTrack": {
+    "description": "Common leftovers section title"
+  },
+
+  "planYourMealsFlexibility": "නම්‍යශීලීභාවයකින් ඔබේ ආහාර සැලසුම් කරන්න",
+  "@planYourMealsFlexibility": {
+    "description": "Meal planner subtitle"
+  },
+
+  "addMeal": "ආහාරය එක් කරන්න",
+  "@addMeal": {
+    "description": "Add meal button text"
+  },
+
+  "customMeal": "අභිරුචි ආහාරය",
+  "@customMeal": {
+    "description": "Custom meal option text"
+  },
+
+  "addCustomMeal": "අභිරුචි ආහාරය එක් කරන්න",
+  "@addCustomMeal": {
+    "description": "Add custom meal dialog title"
+  },
+
+  "mealName": "ආහාර නම",
+  "@mealName": {
+    "description": "Meal name input label"
+  },
+
+  "enterMealName": "ආහාර නම ඇතුළත් කරන්න",
+  "@enterMealName": {
+    "description": "Meal name input hint"
+  },
+
+  "add": "එක් කරන්න",
+  "@add": {
+    "description": "Add button text"
+  },
+
+  "editMeal": "ආහාරය සංස්කරණය කරන්න",
+  "@editMeal": {
+    "description": "Edit meal option text"
+  },
+
+  "lockMeal": "ආහාරය අගුළු දමන්න",
+  "@lockMeal": {
+    "description": "Lock meal option text"
+  },
+
+  "unlockMeal": "ආහාරය අගුළු ඇරින්න",
+  "@unlockMeal": {
+    "description": "Unlock meal option text"
+  },
+
+  "removeMeal": "ආහාරය ඉවත් කරන්න",
+  "@removeMeal": {
+    "description": "Remove meal option text"
+  },
+
+  "confirmRemoveMeal": "ඔබට \"{mealName}\" ඉවත් කිරීමට අවශ්‍ය බව ඇත්තද?",
+  "@confirmRemoveMeal": {
+    "description": "Remove meal confirmation message",
+    "placeholders": {
+      "mealName": {
+        "type": "String",
+        "description": "Name of the meal to remove"
+      }
+    }
+  },
+
+  "remove": "ඉවත් කරන්න",
+  "@remove": {
+    "description": "Remove button text"
+  },
+
+  "breakfast": "උදේ ආහාරය",
+  "@breakfast": {
+    "description": "Breakfast meal category"
+  },
+
+  "lunch": "දවල් ආහාරය",
+  "@lunch": {
+    "description": "Lunch meal category"
+  },
+
+  "dinner": "රාත්‍රී ආහාරය",
+  "@dinner": {
+    "description": "Dinner meal category"
+  },
+
+  "snack": "ස්නැක්ස්",
+  "@snack": {
+    "description": "Snack meal category"
+  },
+
+  "brunch": "බ්‍රන්ච්",
+  "@brunch": {
+    "description": "Brunch meal category"
+  },
+
+  "lateNight": "රාත්‍රියේ පසුව",
+  "@lateNight": {
+    "description": "Late night meal category"
+  },
+
+  "addingMeal": "ආහාරය එක් කරමින්...",
+  "@addingMeal": {
+    "description": "Loading message when adding meal"
+  },
+
+  "mealAddedSuccessfully": "{mealName} සාර්ථකව එක් කරන ලදී!",
+  "@mealAddedSuccessfully": {
+    "description": "Success message when meal is added",
+    "placeholders": {
+      "mealName": {
+        "type": "String",
+        "description": "Name of the added meal"
+      }
+    }
+  },
+
+  "mealUpdatedSuccessfully": "ආහාරය සාර්ථකව යාවත්කාලීන කරන ලදී!",
+  "@mealUpdatedSuccessfully": {
+    "description": "Success message when meal is updated"
+  },
+
+  "mealDeleted": "ආහාරය මකන ලදී",
+  "@mealDeleted": {
+    "description": "Message when meal is deleted"
+  },
+
+  "openingMeal": "{mealName} විවෘත කරමින්...",
+  "@openingMeal": {
+    "description": "Message when opening meal details",
+    "placeholders": {
+      "mealName": {
+        "type": "String",
+        "description": "Name of the meal being opened"
+      }
+    }
+  },
+
+  "noRecipeAvailable": "මෙම ආහාරය සඳහා වට්ටෝරුවක් නොමැත",
+  "@noRecipeAvailable": {
+    "description": "Message when meal has no recipe"
+  },
+
+  "close": "වසන්න",
+  "@close": {
+    "description": "Close button text"
+  }
 }

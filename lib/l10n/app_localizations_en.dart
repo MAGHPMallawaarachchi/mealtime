@@ -176,4 +176,210 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noImage => 'No Image';
+
+  @override
+  String get goodMorning => 'Good Morning';
+
+  @override
+  String get goodAfternoon => 'Good Afternoon';
+
+  @override
+  String get goodEvening => 'Good Evening';
+
+  @override
+  String get guestUser => 'Guest User';
+
+  @override
+  String get notificationsComingSoon => 'Notifications coming soon!';
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get explore => 'Explore';
+
+  @override
+  String get pantry => 'Pantry';
+
+  @override
+  String get mealPlanner => 'Meal Planner';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get searchRecipesIngredients => 'Search recipes, ingredients...';
+
+  @override
+  String get somethingWentWrong => 'Something went wrong';
+
+  @override
+  String get tryAgain => 'Try Again';
+
+  @override
+  String addedToFavorites(String recipeName) {
+    return '$recipeName added to favorites!';
+  }
+
+  @override
+  String removedFromFavorites(String recipeName) {
+    return '$recipeName removed from favorites';
+  }
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String addedToMealPlan(String recipeName) {
+    return '$recipeName added to meal plan';
+  }
+
+  @override
+  String get myPantry => 'My Pantry';
+
+  @override
+  String get ingredients => 'Ingredients';
+
+  @override
+  String get leftovers => 'Leftovers';
+
+  @override
+  String ingredientsCount(int count) {
+    return '$count ingredients';
+  }
+
+  @override
+  String leftoversCount(int count) {
+    return '$count leftovers';
+  }
+
+  @override
+  String get deleteIngredient => 'Delete Ingredient';
+
+  @override
+  String confirmDeleteIngredient(String itemName) {
+    return 'Are you sure you want to remove \"$itemName\" from your pantry?';
+  }
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get loadingYourPantry => 'Loading your pantry...';
+
+  @override
+  String get failedToLoadPantry => 'Failed to Load Pantry';
+
+  @override
+  String get noIngredientsYet => 'No Ingredients Yet';
+
+  @override
+  String get addFreshIngredientsDiscover =>
+      'Add fresh ingredients to discover recipes you can make!';
+
+  @override
+  String get addIngredient => 'Add Ingredient';
+
+  @override
+  String get quickAddPopularItems => 'Quick Add Popular Items:';
+
+  @override
+  String get noLeftoversYet => 'No Leftovers Yet';
+
+  @override
+  String get addLeftoverFoodItems =>
+      'Add leftover food items to find creative ways to use them up!';
+
+  @override
+  String get addLeftover => 'Add Leftover';
+
+  @override
+  String get commonLeftoversToTrack => 'Common leftovers to track:';
+
+  @override
+  String get planYourMealsFlexibility => 'Plan your meals with flexibility';
+
+  @override
+  String get addMeal => 'Add Meal';
+
+  @override
+  String get customMeal => 'Custom Meal';
+
+  @override
+  String get addCustomMeal => 'Add Custom Meal';
+
+  @override
+  String get mealName => 'Meal Name';
+
+  @override
+  String get enterMealName => 'Enter meal name';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get editMeal => 'Edit Meal';
+
+  @override
+  String get lockMeal => 'Lock Meal';
+
+  @override
+  String get unlockMeal => 'Unlock Meal';
+
+  @override
+  String get removeMeal => 'Remove Meal';
+
+  @override
+  String confirmRemoveMeal(String mealName) {
+    return 'Are you sure you want to remove \"$mealName\"?';
+  }
+
+  @override
+  String get remove => 'Remove';
+
+  @override
+  String get breakfast => 'Breakfast';
+
+  @override
+  String get lunch => 'Lunch';
+
+  @override
+  String get dinner => 'Dinner';
+
+  @override
+  String get snack => 'Snack';
+
+  @override
+  String get brunch => 'Brunch';
+
+  @override
+  String get lateNight => 'Late Night';
+
+  @override
+  String get addingMeal => 'Adding meal...';
+
+  @override
+  String mealAddedSuccessfully(String mealName) {
+    return '$mealName added successfully!';
+  }
+
+  @override
+  String get mealUpdatedSuccessfully => 'Meal updated successfully!';
+
+  @override
+  String get mealDeleted => 'Meal deleted';
+
+  @override
+  String openingMeal(String mealName) {
+    return 'Opening $mealName...';
+  }
+
+  @override
+  String get noRecipeAvailable => 'No recipe available for this meal';
+
+  @override
+  String get close => 'Close';
 }

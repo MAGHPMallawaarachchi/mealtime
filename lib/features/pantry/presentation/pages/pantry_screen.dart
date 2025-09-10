@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/models/pantry_item.dart';
 import '../providers/pantry_providers.dart';
 import '../widgets/pantry_category_section.dart';
@@ -50,14 +51,14 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        title: const Text('Delete Ingredient'),
+        title: Text(AppLocalizations.of(context)!.deleteIngredient),
         content: Text(
-          'Are you sure you want to remove "${item.name}" from your pantry?',
+          AppLocalizations.of(context)!.confirmDeleteIngredient(item.name),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -65,7 +66,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
               ref.read(pantryProvider.notifier).deletePantryItem(item.id);
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: const Text('Delete'),
+            child: Text(AppLocalizations.of(context)!.delete),
           ),
         ],
       ),
@@ -106,10 +107,10 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
                 children: [
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'My Pantry',
-                          style: TextStyle(
+                          AppLocalizations.of(context)!.myPantry,
+                          style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                             color: AppColors.textPrimary,
@@ -143,14 +144,18 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
                     children: [
                       _buildStatChip(
                         icon: PhosphorIcons.package(),
-                        label: '$ingredientCount ingredients',
+                        label: AppLocalizations.of(
+                          context,
+                        )!.ingredientsCount(ingredientCount),
                         color: AppColors.primary,
                       ),
                       if (leftoverCount > 0) ...[
                         const SizedBox(width: 8),
                         _buildStatChip(
                           icon: PhosphorIcons.bowlFood(),
-                          label: '$leftoverCount leftovers',
+                          label: AppLocalizations.of(
+                            context,
+                          )!.leftoversCount(leftoverCount),
                           color: AppColors.leftover,
                         ),
                       ],
@@ -192,7 +197,9 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
                       children: [
                         PhosphorIcon(PhosphorIcons.package(), size: 16),
                         const SizedBox(width: 6),
-                        Text('Ingredients ($ingredientCount)'),
+                        Text(
+                          '${AppLocalizations.of(context)!.ingredients} ($ingredientCount)',
+                        ),
                       ],
                     ),
                   ),
@@ -202,7 +209,9 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
                       children: [
                         PhosphorIcon(PhosphorIcons.bowlFood(), size: 16),
                         const SizedBox(width: 6),
-                        Text('Leftovers ($leftoverCount)'),
+                        Text(
+                          '${AppLocalizations.of(context)!.leftovers} ($leftoverCount)',
+                        ),
                       ],
                     ),
                   ),
@@ -346,15 +355,21 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
   }
 
   Widget _buildLoadingState() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2),
-          SizedBox(height: 16),
+          const CircularProgressIndicator(
+            color: AppColors.primary,
+            strokeWidth: 2,
+          ),
+          const SizedBox(height: 16),
           Text(
-            'Loading your pantry...',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+            AppLocalizations.of(context)!.loadingYourPantry,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 16,
+            ),
           ),
         ],
       ),
@@ -403,7 +418,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: const Text('Try Again'),
+              child: Text(AppLocalizations.of(context)!.tryAgain),
             ),
           ],
         ),
@@ -424,8 +439,8 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
               color: AppColors.textSecondary,
             ),
             const SizedBox(height: 24),
-            const Text(
-              'No Ingredients Yet',
+            Text(
+              AppLocalizations.of(context)!.noIngredientsYet,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -433,8 +448,8 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
               ),
             ),
             const SizedBox(height: 12),
-            const Text(
-              'Add fresh ingredients to discover recipes you can make!',
+            Text(
+              AppLocalizations.of(context)!.addFreshIngredientsDiscover,
               style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
@@ -458,8 +473,8 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
                 size: 20,
                 color: Colors.white,
               ),
-              label: const Text(
-                'Add Ingredient',
+              label: Text(
+                AppLocalizations.of(context)!.addIngredient,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
@@ -529,8 +544,8 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
               color: AppColors.leftover.withOpacity(0.7),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'No Leftovers Yet',
+            Text(
+              AppLocalizations.of(context)!.noLeftoversYet,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -563,8 +578,8 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
                 size: 20,
                 color: Colors.white,
               ),
-              label: const Text(
-                'Add Leftover',
+              label: Text(
+                AppLocalizations.of(context)!.addLeftover,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
@@ -655,79 +670,6 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
           SnackBar(
             content: Text('Failed to add $name: ${e.toString()}'),
             backgroundColor: AppColors.error,
-          ),
-        );
-      }
-    }
-  }
-
-  Future<void> _addStarterKit() async {
-    try {
-      // Show loading
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
-        ),
-      );
-
-      final addedIngredients = await ref
-          .read(pantryProvider.notifier)
-          .addStarterKit();
-
-      if (mounted) {
-        Navigator.of(context).pop(); // Close loading dialog
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                PhosphorIcon(
-                  PhosphorIcons.checkCircle(),
-                  color: Colors.white,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Added ${addedIngredients.length} essential Sri Lankan ingredients!',
-                  ),
-                ),
-              ],
-            ),
-            backgroundColor: AppColors.success,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        Navigator.of(context).pop(); // Close loading dialog
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                PhosphorIcon(
-                  PhosphorIcons.xCircle(),
-                  color: Colors.white,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(e.toString().replaceAll('Exception: ', '')),
-                ),
-              ],
-            ),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
           ),
         );
       }

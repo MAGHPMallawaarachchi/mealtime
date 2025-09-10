@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/models/grocery_list.dart';
 import '../../domain/models/grocery_item.dart';
 
 class GroceryListPreviewModal extends StatefulWidget {
   final GroceryList initialGroceryList;
 
-  const GroceryListPreviewModal({
-    super.key,
-    required this.initialGroceryList,
-  });
+  const GroceryListPreviewModal({super.key, required this.initialGroceryList});
 
   @override
-  State<GroceryListPreviewModal> createState() => _GroceryListPreviewModalState();
+  State<GroceryListPreviewModal> createState() =>
+      _GroceryListPreviewModalState();
 }
 
 class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
@@ -141,10 +140,7 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
             const Text(
               'Your meal plan doesn\'t contain meals with\ningredient information that can generate grocery items',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.textSecondary,
-              ),
+              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 24),
             _buildEmptyStateSteps(),
@@ -162,19 +158,22 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
           _buildEmptyStateStep(
             icon: PhosphorIcons.plus(),
             title: 'Add recipe-based meals',
-            description: 'Use the + button to add meals from your recipe collection',
+            description:
+                'Use the + button to add meals from your recipe collection',
           ),
           const SizedBox(height: 16),
           _buildEmptyStateStep(
             icon: PhosphorIcons.cookingPot(),
             title: 'Ensure recipes have ingredients',
-            description: 'Only recipes with ingredient lists can generate grocery items',
+            description:
+                'Only recipes with ingredient lists can generate grocery items',
           ),
           const SizedBox(height: 16),
           _buildEmptyStateStep(
             icon: PhosphorIcons.shoppingCart(),
             title: 'Generate your list',
-            description: 'Once you have recipe-based meals, try generating again',
+            description:
+                'Once you have recipe-based meals, try generating again',
           ),
         ],
       ),
@@ -201,11 +200,7 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
               color: AppColors.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(6),
             ),
-            child: PhosphorIcon(
-              icon,
-              size: 20,
-              color: AppColors.primary,
-            ),
+            child: PhosphorIcon(icon, size: 20, color: AppColors.primary),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -465,7 +460,7 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
       SnackBar(
         content: Text('${item.name} removed'),
         action: SnackBarAction(
-          label: 'Undo',
+          label: AppLocalizations.of(context)!.undo,
           onPressed: () {
             setState(() {
               groceryList = groceryList.addItem(item);
@@ -498,7 +493,7 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
 
     try {
       final formattedText = groceryList.toFormattedText();
-      
+
       // Use share_plus to export
       await Share.share(
         formattedText,
@@ -522,7 +517,9 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
             ),
             backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         );
       }
@@ -533,7 +530,9 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
             content: Text('Failed to export: $e'),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         );
       }
@@ -551,10 +550,7 @@ class _EditItemDialog extends StatefulWidget {
   final GroceryItem item;
   final Function(GroceryItem) onSave;
 
-  const _EditItemDialog({
-    required this.item,
-    required this.onSave,
-  });
+  const _EditItemDialog({required this.item, required this.onSave});
 
   @override
   State<_EditItemDialog> createState() => _EditItemDialogState();
@@ -581,7 +577,9 @@ class _EditItemDialogState extends State<_EditItemDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.item.name);
-    _quantityController = TextEditingController(text: widget.item.quantity.toString());
+    _quantityController = TextEditingController(
+      text: widget.item.quantity.toString(),
+    );
     _unitController = TextEditingController(text: widget.item.unit);
     _selectedCategory = widget.item.category;
   }
@@ -622,10 +620,10 @@ class _EditItemDialogState extends State<_EditItemDialog> {
             value: _selectedCategory,
             decoration: const InputDecoration(labelText: 'Category'),
             items: _categories
-                .map((category) => DropdownMenuItem(
-                      value: category,
-                      child: Text(category),
-                    ))
+                .map(
+                  (category) =>
+                      DropdownMenuItem(value: category, child: Text(category)),
+                )
                 .toList(),
             onChanged: (value) {
               setState(() {
@@ -640,10 +638,7 @@ class _EditItemDialogState extends State<_EditItemDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancel'),
         ),
-        ElevatedButton(
-          onPressed: _saveItem,
-          child: const Text('Save'),
-        ),
+        ElevatedButton(onPressed: _saveItem, child: const Text('Save')),
       ],
     );
   }
@@ -744,10 +739,10 @@ class _AddItemDialogState extends State<_AddItemDialog> {
             value: _selectedCategory,
             decoration: const InputDecoration(labelText: 'Category'),
             items: _categories
-                .map((category) => DropdownMenuItem(
-                      value: category,
-                      child: Text(category),
-                    ))
+                .map(
+                  (category) =>
+                      DropdownMenuItem(value: category, child: Text(category)),
+                )
                 .toList(),
             onChanged: (value) {
               setState(() {
@@ -762,10 +757,7 @@ class _AddItemDialogState extends State<_AddItemDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancel'),
         ),
-        ElevatedButton(
-          onPressed: _addItem,
-          child: const Text('Add'),
-        ),
+        ElevatedButton(onPressed: _addItem, child: const Text('Add')),
       ],
     );
   }

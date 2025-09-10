@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../home/domain/models/seasonal_ingredient.dart';
 import '../../../explore/presentation/widgets/explore_recipe_card.dart';
 import '../providers/seasonal_ingredient_recipes_provider.dart';
@@ -11,25 +12,22 @@ import '../widgets/load_more_button.dart';
 class SeasonalIngredientRecipesScreen extends ConsumerStatefulWidget {
   final SeasonalIngredient ingredient;
 
-  const SeasonalIngredientRecipesScreen({
-    super.key,
-    required this.ingredient,
-  });
+  const SeasonalIngredientRecipesScreen({super.key, required this.ingredient});
 
   @override
   ConsumerState<SeasonalIngredientRecipesScreen> createState() =>
       _SeasonalIngredientRecipesScreenState();
 }
 
-class _SeasonalIngredientRecipesScreenState 
+class _SeasonalIngredientRecipesScreenState
     extends ConsumerState<SeasonalIngredientRecipesScreen> {
-  
   @override
   void initState() {
     super.initState();
     // Load recipes when screen is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(seasonalIngredientRecipesProvider.notifier)
+      ref
+          .read(seasonalIngredientRecipesProvider.notifier)
           .loadRecipes(widget.ingredient.name);
     });
   }
@@ -56,11 +54,9 @@ class _SeasonalIngredientRecipesScreenState
               ingredient: widget.ingredient,
               totalRecipesCount: state.totalCount,
             ),
-            
+
             // Scrollable content
-            Expanded(
-              child: _buildContent(state),
-            ),
+            Expanded(child: _buildContent(state)),
           ],
         ),
       ),
@@ -94,19 +90,16 @@ class _SeasonalIngredientRecipesScreenState
                 mainAxisSpacing: 12,
                 childAspectRatio: 0.89,
               ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final recipe = state.recipes[index];
-                  return ExploreRecipeCard(
-                    recipe: recipe,
-                    onAddToMealPlan: null, // Optional meal plan integration
-                  );
-                },
-                childCount: state.recipes.length,
-              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final recipe = state.recipes[index];
+                return ExploreRecipeCard(
+                  recipe: recipe,
+                  onAddToMealPlan: null, // Optional meal plan integration
+                );
+              }, childCount: state.recipes.length),
             ),
           ),
-          
+
           // Load more button
           SliverToBoxAdapter(
             child: LoadMoreButton(
@@ -115,17 +108,13 @@ class _SeasonalIngredientRecipesScreenState
               onPressed: _loadMoreRecipes,
             ),
           ),
-          
+
           // Error message for load more
           if (state.error != null && state.recipes.isNotEmpty)
-            SliverToBoxAdapter(
-              child: _buildLoadMoreError(state.error!),
-            ),
-          
+            SliverToBoxAdapter(child: _buildLoadMoreError(state.error!)),
+
           // Bottom padding
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 20)),
         ],
       ),
     );
@@ -187,23 +176,24 @@ class _SeasonalIngredientRecipesScreenState
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
-                ref.read(seasonalIngredientRecipesProvider.notifier)
+                ref
+                    .read(seasonalIngredientRecipesProvider.notifier)
                     .loadRecipes(widget.ingredient.name, forceRefresh: true);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: AppColors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text(
-                'Try Again',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
+              child: Text(
+                AppLocalizations.of(context)!.tryAgain,
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -250,7 +240,10 @@ class _SeasonalIngredientRecipesScreenState
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: AppColors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -266,10 +259,7 @@ class _SeasonalIngredientRecipesScreenState
                   const SizedBox(width: 8),
                   const Text(
                     'Refresh',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -287,10 +277,7 @@ class _SeasonalIngredientRecipesScreenState
       decoration: BoxDecoration(
         color: Colors.red.shade50,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.red.shade200,
-          width: 1,
-        ),
+        border: Border.all(color: Colors.red.shade200, width: 1),
       ),
       child: Column(
         children: [
@@ -324,12 +311,9 @@ class _SeasonalIngredientRecipesScreenState
               foregroundColor: Colors.red.shade700,
               padding: EdgeInsets.zero,
             ),
-            child: const Text(
-              'Try Again',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
+            child: Text(
+              AppLocalizations.of(context)!.tryAgain,
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
           ),
         ],
