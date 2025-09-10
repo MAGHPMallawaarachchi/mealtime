@@ -116,10 +116,10 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
                         );
                       }
 
-                      final mealPlanItem =
-                          snapshot.data ??
-                          _createFallbackMealPlanItem(mealSlot);
-                      return MealPlanCard(mealPlan: mealPlanItem);
+                      if (snapshot.data == null) {
+                        return const SizedBox.shrink();
+                      }
+                      return MealPlanCard(mealPlan: snapshot.data!);
                     },
                   );
                 },
@@ -135,7 +135,7 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
 
   Future<MealPlanItem> _convertMealSlotToMealPlanItem(MealSlot mealSlot) async {
     String title = mealSlot.customMealName ?? mealSlot.category;
-    String imageUrl = _getFallbackImageForMealType(mealSlot.category);
+    String imageUrl = '';
 
     // If there's a recipe ID, try to fetch the recipe
     if (mealSlot.recipeId != null) {
@@ -171,69 +171,43 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
     );
   }
 
-  MealPlanItem _createFallbackMealPlanItem(MealSlot mealSlot) {
-    return MealPlanItem(
-      id: mealSlot.id,
-      title: mealSlot.customMealName ?? mealSlot.category,
-      time: mealSlot.displayTime,
-      imageUrl: _getFallbackImageForMealType(mealSlot.category),
-      recipeId: mealSlot.recipeId,
-    );
-  }
-
-  String _getFallbackImageForMealType(String category) {
-    switch (category) {
-      case MealCategory.breakfast:
-        return 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=800&h=600&fit=crop'; // Breakfast pancakes
-      case MealCategory.lunch:
-        return 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=600&fit=crop'; // Healthy salad
-      case MealCategory.dinner:
-        return 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&h=600&fit=crop'; // Dinner plate
-      case MealCategory.snack:
-        return 'https://images.unsplash.com/photo-1549490349-8643362247b5?w=800&h=600&fit=crop'; // Healthy snack
-      case MealCategory.brunch:
-        return 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=800&h=600&fit=crop'; // Brunch spread
-      case MealCategory.lateNight:
-        return 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=800&h=600&fit=crop'; // Light meal
-      default:
-        return 'https://images.unsplash.com/photo-1547573854-74d2a71d0826?w=800&h=600&fit=crop'; // Generic food
-    }
-  }
-
   Widget _buildEmptyState() {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.textSecondary.withValues(alpha: 0.2),
-          width: 1,
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: AppColors.textSecondary.withValues(alpha: 0.2),
+            width: 1,
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          PhosphorIcon(
-            PhosphorIcons.forkKnife(),
-            size: 48,
-            color: AppColors.textSecondary,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            AppLocalizations.of(context)!.noMealsPlanned,
-            style: TextStyle(
-              fontSize: 16,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            PhosphorIcon(
+              PhosphorIcons.forkKnife(),
+              size: 48,
               color: AppColors.textSecondary,
-              fontWeight: FontWeight.w500,
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            AppLocalizations.of(context)!.startPlanningMeals,
-            style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Text(
+              AppLocalizations.of(context)!.noMealsPlanned,
+              style: TextStyle(
+                fontSize: 16,
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              AppLocalizations.of(context)!.startPlanningMeals,
+              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -59,7 +59,7 @@ class DayTimelineView extends StatelessWidget {
     final dateStr = '${displayDate.day}/${displayDate.month}';
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 12),
       child: Row(
         children: [
           Column(
@@ -70,7 +70,7 @@ class DayTimelineView extends StatelessWidget {
                   Text(
                     dayName,
                     style: const TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
                     ),
@@ -176,6 +176,7 @@ class DayTimelineView extends StatelessWidget {
               style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 40),
           ],
         ),
       ),
