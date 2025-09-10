@@ -92,11 +92,11 @@ class RecipesGridSection extends StatelessWidget {
             child: GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 200, // Maximum width per card
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
-                childAspectRatio: 0.89,
+                childAspectRatio: _calculateAspectRatio(context),
               ),
               itemCount: displayedRecipes.length,
               itemBuilder: (context, index) {
@@ -112,6 +112,29 @@ class RecipesGridSection extends StatelessWidget {
           _buildEmptyState(),
       ],
     );
+  }
+
+  double _calculateAspectRatio(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    
+    // Calculate card width based on screen width and spacing
+    final availableWidth = screenWidth - 24; // Remove horizontal padding (12 * 2)
+    final cardWidth = (availableWidth - 12) / 2; // Remove spacing and divide by 2
+    
+    // Different aspect ratios based on screen size
+    if (screenWidth < 360) {
+      // Small screens: taller cards to accommodate content
+      return 0.75;
+    } else if (screenWidth < 400) {
+      // Medium-small screens
+      return 0.8;
+    } else if (screenWidth < 500) {
+      // Medium screens
+      return 0.85;
+    } else {
+      // Large screens: wider cards
+      return 0.9;
+    }
   }
 
   Widget _buildEmptyState() {

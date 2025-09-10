@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mealtime/features/recipes/domain/models/recipe.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../favorites/presentation/providers/favorites_providers.dart';
 
 class ExploreRecipeCard extends ConsumerWidget {
@@ -49,19 +50,23 @@ class ExploreRecipeCard extends ConsumerWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      height: 140,
-                      width: double.infinity,
-                      color: Colors.grey.shade300,
-                      child: recipe.imageUrl.isNotEmpty
-                          ? Image.network(
-                              recipe.imageUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return _buildImagePlaceholder();
-                              },
-                            )
-                          : _buildImagePlaceholder(),
+                    child: AspectRatio(
+                      aspectRatio:
+                          15 / 11, // Consistent 15:11 aspect ratio for images
+                      child: Container(
+                        width: double.infinity,
+                        color: Colors.grey.shade300,
+                        child: recipe.imageUrl.isNotEmpty
+                            ? OptimizedCachedImage(
+                                imageUrl: recipe.imageUrl,
+                                fit: BoxFit.cover,
+                                borderRadius: BorderRadius
+                                    .zero, // Already clipped by parent
+                                errorWidget: (context, url, error) =>
+                                    _buildImagePlaceholder(),
+                              )
+                            : _buildImagePlaceholder(),
+                      ),
                     ),
                   ),
                 ),
@@ -71,7 +76,9 @@ class ExploreRecipeCard extends ConsumerWidget {
                   right: 16,
                   child: GestureDetector(
                     onTap: () {
-                      ref.read(favoritesProvider.notifier).toggleFavorite(recipe.id);
+                      ref
+                          .read(favoritesProvider.notifier)
+                          .toggleFavorite(recipe.id);
                     },
                     child: Container(
                       padding: const EdgeInsets.all(6),
@@ -108,33 +115,57 @@ class ExploreRecipeCard extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        PhosphorIcon(
-                          PhosphorIcons.clock(),
-                          size: 14,
-                          color: AppColors.textSecondary,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          recipe.time,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textSecondary,
-                            fontWeight: FontWeight.w400,
+                        // Time section - flexible to take available space
+                        Expanded(
+                          flex: 3,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              PhosphorIcon(
+                                PhosphorIcons.clock(),
+                                size: 14,
+                                color: AppColors.textSecondary,
+                              ),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  recipe.time,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        PhosphorIcon(
-                          PhosphorIcons.fire(),
-                          size: 14,
-                          color: AppColors.textSecondary,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${recipe.calories} cal',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textSecondary,
-                            fontWeight: FontWeight.w400,
+                        const SizedBox(width: 0),
+                        // Calorie section - flexible to fit content
+                        Expanded(
+                          flex: 3,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              PhosphorIcon(
+                                PhosphorIcons.fire(),
+                                size: 14,
+                                color: AppColors.textSecondary,
+                              ),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  '${recipe.calories} cal',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
