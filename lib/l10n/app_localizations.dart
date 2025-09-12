@@ -919,6 +919,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Uses {count} {count, plural, =1{ingredient} other{ingredients}} from your pantry'**
   String usesPantryIngredients(int count);
+
+  /// Loading message when searching for recipes
+  ///
+  /// In en, this message translates to:
+  /// **'Finding recipes...'**
+  String get findingRecipes;
+
+  /// Error message when seasonal ingredients fail to load
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load current seasonal ingredients. Please try again.'**
+  String get failedToLoadCurrentSeasonalIngredients;
+
+  /// Error message when refresh action fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh'**
+  String get failedToRefresh;
+
+  /// Loading message when fetching seasonal ingredients
+  ///
+  /// In en, this message translates to:
+  /// **'Loading current seasonal ingredients...'**
+  String get loadingCurrentSeasonalIngredients;
+
+  /// Message when no seasonal ingredients are available
+  ///
+  /// In en, this message translates to:
+  /// **'No ingredients are in peak season right now. Check back later!'**
+  String get noIngredientsInPeakSeason;
 }
 
 class _AppLocalizationsDelegate

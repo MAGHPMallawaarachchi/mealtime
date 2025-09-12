@@ -464,4 +464,22 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return 'Uses $count $_temp0 from your pantry';
   }
+
+  @override
+  String get findingRecipes => 'Finding recipes...';
+
+  @override
+  String get failedToLoadCurrentSeasonalIngredients =>
+      'Failed to load current seasonal ingredients. Please try again.';
+
+  @override
+  String get failedToRefresh => 'Failed to refresh';
+
+  @override
+  String get loadingCurrentSeasonalIngredients =>
+      'Loading current seasonal ingredients...';
+
+  @override
+  String get noIngredientsInPeakSeason =>
+      'No ingredients are in peak season right now. Check back later!';
 }

@@ -24,7 +24,8 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection>
   List<SeasonalIngredient> _seasonalIngredients = [];
   bool _isLoading = true;
   String? _errorMessage;
-  final GetCurrentSeasonalIngredientsUseCase _getCurrentSeasonalIngredientsUseCase =
+  final GetCurrentSeasonalIngredientsUseCase
+  _getCurrentSeasonalIngredientsUseCase =
       GetCurrentSeasonalIngredientsUseCase();
 
   @override
@@ -61,9 +62,7 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection>
         _errorMessage = null;
       });
 
-      print('🌱 Loading current seasonal ingredients');
       final ingredients = await _getCurrentSeasonalIngredientsUseCase.call();
-      print('🌱 Loaded ${ingredients.length} current seasonal ingredients');
 
       if (mounted) {
         setState(() {
@@ -76,12 +75,12 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection>
         }
       }
     } catch (e) {
-      print('❌ Failed to load current seasonal ingredients: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _errorMessage =
-              'Failed to load current seasonal ingredients. Please try again.';
+          _errorMessage = AppLocalizations.of(
+            context,
+          )!.failedToLoadCurrentSeasonalIngredients;
         });
       }
     }
@@ -94,7 +93,9 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to refresh: ${e.toString()}'),
+            content: Text(
+              '${AppLocalizations.of(context)!.failedToRefresh}: ${e.toString()}',
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -202,15 +203,21 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection>
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.textSecondary.withOpacity(0.1)),
       ),
-      child: const Center(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2),
-            SizedBox(height: 16),
+            const CircularProgressIndicator(
+              color: AppColors.primary,
+              strokeWidth: 2,
+            ),
+            const SizedBox(height: 16),
             Text(
-              'Loading current seasonal ingredients...',
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+              AppLocalizations.of(context)!.loadingCurrentSeasonalIngredients,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14,
+              ),
             ),
           ],
         ),
@@ -286,17 +293,17 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection>
                 color: AppColors.textSecondary,
               ),
               const SizedBox(height: 16),
-              const Text(
-                'No ingredients are in peak season right now. Check back later!',
+              Text(
+                AppLocalizations.of(context)!.noIngredientsInPeakSeason,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
               ),
               const SizedBox(height: 16),
               TextButton(
                 onPressed: _refreshData,
-                child: const Text(
-                  'Refresh',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.refresh,
+                  style: const TextStyle(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w600,
                   ),

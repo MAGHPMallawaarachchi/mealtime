@@ -34,7 +34,7 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
   @override
   Widget build(BuildContext context) {
     final todaysMealPlanAsync = ref.watch(todaysMealPlanProvider);
-    final String todayDate = DateFormat('EEEE, MMMM d').format(DateTime.now());
+    final String todayDate = DateFormat('EEEE, MMMM d', Localizations.localeOf(context).toString()).format(DateTime.now());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

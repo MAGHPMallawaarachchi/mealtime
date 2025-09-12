@@ -763,6 +763,31 @@
         "description": "Number of matched ingredients"
       }
     }
+  },
+
+  "findingRecipes": "Finding recipes...",
+  "@findingRecipes": {
+    "description": "Loading message when searching for recipes"
+  },
+
+  "failedToLoadCurrentSeasonalIngredients": "Failed to load current seasonal ingredients. Please try again.",
+  "@failedToLoadCurrentSeasonalIngredients": {
+    "description": "Error message when seasonal ingredients fail to load"
+  },
+
+  "failedToRefresh": "Failed to refresh",
+  "@failedToRefresh": {
+    "description": "Error message when refresh action fails"
+  },
+
+  "loadingCurrentSeasonalIngredients": "Loading current seasonal ingredients...",
+  "@loadingCurrentSeasonalIngredients": {
+    "description": "Loading message when fetching seasonal ingredients"
+  },
+
+  "noIngredientsInPeakSeason": "No ingredients are in peak season right now. Check back later!",
+  "@noIngredientsInPeakSeason": {
+    "description": "Message when no seasonal ingredients are available"
   }
 
 }

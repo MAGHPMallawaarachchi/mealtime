@@ -459,4 +459,22 @@ class AppLocalizationsSi extends AppLocalizations {
   String usesPantryIngredients(int count) {
     return 'ඔබේ ගබඩාවේ අමුද්‍රව්‍ය $countක් භාවිතා කරයි';
   }
+
+  @override
+  String get findingRecipes => 'වට්ටෝරු සොයමින්...';
+
+  @override
+  String get failedToLoadCurrentSeasonalIngredients =>
+      'වර්තමාන කාලීන අමුද්‍රව්‍ය පූරණය කිරීම අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න.';
+
+  @override
+  String get failedToRefresh => 'නැවුම් කිරීම අසාර්ථක විය';
+
+  @override
+  String get loadingCurrentSeasonalIngredients =>
+      'වර්තමාන කාලීන අමුද්‍රව්‍ය පූරණය වෙමින්...';
+
+  @override
+  String get noIngredientsInPeakSeason =>
+      'දැන් කිසිදු අමුද්‍රව්‍යයක් පිරිමුළුන් කාලයේ නොමැත. පසුව නැවත පරීක්ෂා කරන්න!';
 }

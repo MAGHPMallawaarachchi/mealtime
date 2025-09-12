@@ -235,7 +235,7 @@ class _SeasonalIngredientRecipesScreenState
           ),
           const SizedBox(height: 16),
           Text(
-            'Finding recipes...',
+            AppLocalizations.of(context)!.findingRecipes,
             style: const TextStyle(
               color: AppColors.textSecondary,
               fontSize: 16,

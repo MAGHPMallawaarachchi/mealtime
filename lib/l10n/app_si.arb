@@ -761,5 +761,30 @@
         "description": "Number of matched ingredients"
       }
     }
+  },
+
+  "findingRecipes": "වට්ටෝරු සොයමින්...",
+  "@findingRecipes": {
+    "description": "Loading message when searching for recipes"
+  },
+
+  "failedToLoadCurrentSeasonalIngredients": "වර්තමාන කාලීන අමුද්‍රව්‍ය පූරණය කිරීම අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න.",
+  "@failedToLoadCurrentSeasonalIngredients": {
+    "description": "Error message when seasonal ingredients fail to load"
+  },
+
+  "failedToRefresh": "නැවුම් කිරීම අසාර්ථක විය",
+  "@failedToRefresh": {
+    "description": "Error message when refresh action fails"
+  },
+
+  "loadingCurrentSeasonalIngredients": "වර්තමාන කාලීන අමුද්‍රව්‍ය පූරණය වෙමින්...",
+  "@loadingCurrentSeasonalIngredients": {
+    "description": "Loading message when fetching seasonal ingredients"
+  },
+
+  "noIngredientsInPeakSeason": "දැන් කිසිදු අමුද්‍රව්‍යයක් පිරිමුළුන් කාලයේ නොමැත. පසුව නැවත පරීක්ෂා කරන්න!",
+  "@noIngredientsInPeakSeason": {
+    "description": "Message when no seasonal ingredients are available"
   }
 }
