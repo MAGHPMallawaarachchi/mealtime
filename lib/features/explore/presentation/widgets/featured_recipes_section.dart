@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import '../../../../core/widgets/optimized_cached_image.dart';
 import 'package:mealtime/features/recipes/domain/models/recipe.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -224,18 +223,24 @@ class _FeaturedRecipeCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            CachedNetworkImage(
+            OptimizedCachedImage(
               imageUrl: recipe.imageUrl,
               fit: BoxFit.cover,
               placeholder: (context, url) => Container(
-                color: Colors.grey[300],
+                color: AppColors.background,
                 child: const Center(
                   child: CircularProgressIndicator(),
                 ),
               ),
               errorWidget: (context, url, error) => Container(
-                color: Colors.grey[300],
-                child: const Icon(Icons.error),
+                color: AppColors.background,
+                child: Center(
+                  child: PhosphorIcon(
+                    PhosphorIcons.image(),
+                    color: AppColors.textSecondary,
+                    size: 48,
+                  ),
+                ),
               ),
             ),
             Container(

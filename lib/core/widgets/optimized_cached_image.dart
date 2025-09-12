@@ -31,6 +31,11 @@ class OptimizedCachedImage extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget image;
 
+    // Basic validation - just check if URL is not empty
+    if (imageUrl.isEmpty) {
+      return _buildDefaultErrorWidget();
+    }
+
     // Check if the imageUrl is a local file path
     if (_isLocalFilePath(imageUrl)) {
       final file = File(imageUrl);
@@ -61,7 +66,7 @@ class OptimizedCachedImage extends StatelessWidget {
         width: width,
         height: height,
         fit: fit,
-        cacheManager: DefaultCacheManager(),
+        cacheManager: DefaultCacheManager(), // Use default for now
         maxWidthDiskCache: 1024,
         maxHeightDiskCache: 1024,
         memCacheWidth: width?.toInt(),
@@ -123,6 +128,70 @@ class OptimizedCachedImage extends StatelessWidget {
            path.startsWith('file://') ||
            (path.length > 2 && path[1] == ':' && path[2] == '\\') || // Windows C:\
            path.startsWith('\\') || // Windows UNC path
-           (!path.startsWith('http://') && !path.startsWith('https://'));
+           (!path.startsWith('http://') && !path.startsWith('https://') && !path.startsWith('data:'));
+  }
+
+  bool _isValidImageUrl(String url) {
+    if (url.isEmpty) return false;
+    
+    // Allow all HTTP/HTTPS URLs
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return true;
+    }
+    
+    // Allow data URLs
+    if (url.startsWith('data:image/')) {
+      return url.contains('base64,');
+    }
+    
+    // Allow local file paths
+    return _isLocalFilePath(url);
+  }
+
+  bool _isValidImageFile(File file) {
+    try {
+      final stat = file.statSync();
+      // Check if file has content (size > 0)
+      return stat.size > 0;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  void _handleCorruptedFile(File file) {
+    try {
+      // Delete corrupted/empty file
+      if (file.existsSync()) {
+        file.deleteSync();
+      }
+    } catch (e) {
+      // Ignore deletion errors
+    }
+  }
+
+  void _handleImageError(String url, dynamic error) {
+    // Log the error for debugging (you can integrate with your logging solution)
+    debugPrint('Image loading error for URL: $url, Error: $error');
+    
+    // Clear cache for this URL if it's a network error
+    if (error.toString().contains('Failed to decode image') || 
+        error.toString().contains('empty')) {
+      try {
+        CachedNetworkImage.evictFromCache(url);
+      } catch (e) {
+        // Ignore cache eviction errors
+      }
+    }
+  }
+
+  CacheManager _createCustomCacheManager() {
+    return CacheManager(
+      Config(
+        'customImageCache',
+        stalePeriod: const Duration(days: 30),
+        maxNrOfCacheObjects: 200,
+        fileService: HttpFileService(),
+      ),
+    );
   }
 }
