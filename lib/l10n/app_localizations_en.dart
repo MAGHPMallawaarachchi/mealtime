@@ -128,6 +128,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seasonalFavorites => 'Seasonal Favorites';
 
   @override
+  String get seasonalSpotlight => 'Seasonal Spotlight';
+
+  @override
   String get perfectForTimeOfYear => 'Perfect for this time of year';
 
   @override
@@ -382,4 +385,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get close => 'Close';
+
+  @override
+  String get viewRecipes => 'View Recipes';
 }

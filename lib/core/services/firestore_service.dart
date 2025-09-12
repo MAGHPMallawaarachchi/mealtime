@@ -89,6 +89,42 @@ class FirestoreService {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getCollectionWithQueryFromServer(
+    String collectionPath, {
+    String? orderBy,
+    bool descending = false,
+    int? limit,
+    Map<String, dynamic>? where,
+  }) async {
+    try {
+      Query query = _firestore.collection(collectionPath);
+
+      if (where != null) {
+        where.forEach((field, value) {
+          query = query.where(field, isEqualTo: value);
+        });
+      }
+
+      if (orderBy != null) {
+        query = query.orderBy(orderBy, descending: descending);
+      }
+
+      if (limit != null) {
+        query = query.limit(limit);
+      }
+
+      final querySnapshot = await query.get(const GetOptions(source: Source.server));
+      return querySnapshot.docs.map((doc) => {
+        'id': doc.id,
+        ...doc.data() as Map<String, dynamic>,
+      }).toList();
+    } on FirebaseException catch (e) {
+      throw FirestoreException._fromFirebaseException(e);
+    } catch (e) {
+      throw FirestoreException('Unknown error occurred: ${e.toString()}');
+    }
+  }
+
   Future<void> addDocument(String collectionPath, Map<String, dynamic> data) async {
     try {
       await _firestore.collection(collectionPath).add({

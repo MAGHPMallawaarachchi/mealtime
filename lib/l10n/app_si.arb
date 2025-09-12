@@ -15,7 +15,7 @@
     "description": "Button text to view all items"
   },
 
-  "noMealsPlanned": "තවම ආහාර සැලසුම් නැත",
+  "noMealsPlanned": "තවම ආහාර සැලසුම් කර නැත",
   "@noMealsPlanned": {
     "description": "Message shown when no meals are planned"
   },
@@ -197,6 +197,11 @@
     "description": "Seasonal recommendations title"
   },
 
+  "seasonalSpotlight": "කාලීන අමුද්‍රව්‍ය",
+  "@seasonalSpotlight": {
+    "description": "Seasonal spotlight card title"
+  },
+
   "perfectForTimeOfYear": "වර්ෂයේ මෙම කාලයට සුදුසු",
   "@perfectForTimeOfYear": {
     "description": "Subtitle for seasonal recommendations"
@@ -277,7 +282,7 @@
     "description": "Morning greeting"
   },
 
-  "goodAfternoon": "සුභ දවලක්",
+  "goodAfternoon": "සුභ දවහලක්",
   "@goodAfternoon": {
     "description": "Afternoon greeting"
   },
@@ -634,5 +639,10 @@
   "close": "වසන්න",
   "@close": {
     "description": "Close button text"
+  },
+
+  "viewRecipes": "වට්ටෝරු බලන්න",
+  "@viewRecipes": {
+    "description": "Button text to view recipes"
   }
 }

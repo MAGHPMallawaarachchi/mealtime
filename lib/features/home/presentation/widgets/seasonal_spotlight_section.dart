@@ -4,7 +4,7 @@ import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../domain/models/seasonal_ingredient.dart';
-import '../../domain/usecases/get_seasonal_ingredients_usecase.dart';
+import '../../domain/usecases/get_current_seasonal_ingredients_usecase.dart';
 import 'seasonal_spotlight_card.dart';
 
 class SeasonalSpotlightSection extends StatefulWidget {
@@ -15,28 +15,43 @@ class SeasonalSpotlightSection extends StatefulWidget {
       _SeasonalSpotlightSectionState();
 }
 
-class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
+class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection>
+    with WidgetsBindingObserver {
   late PageController _pageController;
   Timer? _autoPlayTimer;
+  Timer? _refreshTimer;
   int _currentPageIndex = 0;
   List<SeasonalIngredient> _seasonalIngredients = [];
   bool _isLoading = true;
   String? _errorMessage;
-  final GetSeasonalIngredientsUseCase _getSeasonalIngredientsUseCase =
-      GetSeasonalIngredientsUseCase();
+  final GetCurrentSeasonalIngredientsUseCase _getCurrentSeasonalIngredientsUseCase =
+      GetCurrentSeasonalIngredientsUseCase();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _pageController = PageController();
     _loadSeasonalIngredients();
+    _startPeriodicRefresh();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _autoPlayTimer?.cancel();
+    _refreshTimer?.cancel();
     _pageController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      // Refresh data when app comes back to foreground
+      _refreshData();
+    }
   }
 
   Future<void> _loadSeasonalIngredients() async {
@@ -46,7 +61,9 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
         _errorMessage = null;
       });
 
-      final ingredients = await _getSeasonalIngredientsUseCase.call();
+      print('🌱 Loading current seasonal ingredients');
+      final ingredients = await _getCurrentSeasonalIngredientsUseCase.call();
+      print('🌱 Loaded ${ingredients.length} current seasonal ingredients');
 
       if (mounted) {
         setState(() {
@@ -59,11 +76,12 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
         }
       }
     } catch (e) {
+      print('❌ Failed to load current seasonal ingredients: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;
           _errorMessage =
-              'Failed to load seasonal ingredients. Please try again.';
+              'Failed to load current seasonal ingredients. Please try again.';
         });
       }
     }
@@ -71,7 +89,6 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
 
   Future<void> _refreshData() async {
     try {
-      await _getSeasonalIngredientsUseCase.refresh();
       await _loadSeasonalIngredients();
     } catch (e) {
       if (mounted) {
@@ -83,6 +100,15 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
         );
       }
     }
+  }
+
+  void _startPeriodicRefresh() {
+    // Refresh data every 30 minutes to ensure freshness
+    _refreshTimer = Timer.periodic(const Duration(minutes: 30), (timer) {
+      if (mounted) {
+        _refreshData();
+      }
+    });
   }
 
   void _startAutoPlay() {
@@ -183,7 +209,7 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
             CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2),
             SizedBox(height: 16),
             Text(
-              'Loading seasonal ingredients...',
+              'Loading current seasonal ingredients...',
               style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
             ),
           ],
@@ -223,7 +249,7 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
               ),
               const SizedBox(height: 16),
               TextButton(
-                onPressed: _loadSeasonalIngredients,
+                onPressed: () => _loadSeasonalIngredients(),
                 child: Text(
                   AppLocalizations.of(context)!.tryAgain,
                   style: const TextStyle(
@@ -261,7 +287,7 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
               ),
               const SizedBox(height: 16),
               const Text(
-                'No seasonal ingredients available at the moment.',
+                'No ingredients are in peak season right now. Check back later!',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
               ),

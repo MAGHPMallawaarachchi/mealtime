@@ -99,7 +99,7 @@ class MemoryOptimizedScrollController extends ScrollController {
     
     // Add buffer for smooth scrolling
     const bufferRows = 2;
-    final bufferedStartRow = (startRow - bufferRows).clamp(0, double.infinity).toInt();
+    final bufferedStartRow = (startRow - bufferRows).clamp(0, startRow).toInt();
     final bufferedEndRow = endRow + bufferRows;
     
     // Convert rows to item indices

@@ -240,6 +240,15 @@ class RecipesRepositoryImpl implements RecipesRepository {
       final startIndex = (page - 1) * limit;
       final endIndex = startIndex + limit;
 
+      // Safety check to prevent division by zero or invalid values
+      if (limit <= 0) {
+        return RecipesPagination(
+          recipes: const [],
+          hasMore: false,
+          totalCount: 0,
+        );
+      }
+
       final paginatedRecipes = matchingRecipes.skip(startIndex).take(limit).toList();
       final hasMore = endIndex < totalCount;
 

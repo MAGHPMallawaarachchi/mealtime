@@ -1,0 +1,216 @@
+[
+  {
+    "id": "SI001",
+    "name": "Rambutan",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664383/Mealtime/Seasonal%20Ingredients/SI001.jpg",
+    "seasonalMonths": [5, 6, 7, 8],
+    "peakSeason": "June-July",
+    "localizedNames": {
+      "en": "Rambutan",
+      "si": "රම්බුටන්"
+    },
+    "localizedDescriptions": {
+      "en": "A sweet and juicy tropical fruit native to Southeast Asia, Rambutan is now widely cultivated in Sri Lanka. The hairy red exterior conceals translucent, grape-like flesh with a sweet, slightly acidic flavor. Rich in vitamin C, iron, and antioxidants, rambutan is perfect for fresh eating, fruit salads, or traditional Sri Lankan desserts.",
+      "si": "දකුණු නැගෙනහිර ආසියාවට ආවේණික මිහිරි සහ යුෂ සහිත නිවර්තන පලතුරකි, රම්බුටන් දැන් ශ්‍රී ලංකාවේ බහුලව වගා කෙරේ. රෝමශ රතු පිටත විනිවිද පෙනෙන, මිදි වැනි මාංසය සමඟ මිහිරි, සුළු ලෙස ආම්ලික රසයක් සඟවයි. විටමින් සී, යකඩ සහ ප්‍රතිඔක්සිකාරක වලින් පොහොසත්, රම්බුටන් නැවුම් ආහාර ගැනීම, පළතුරු සලාද හෝ සාම්ප්‍රදායික ශ්‍රී ලාංකික අතුරුපස සඳහා සරුව."
+    }
+  },
+  {
+    "id": "SI002",
+    "name": "Avocado",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664384/Mealtime/Seasonal%20Ingredients/SI002.jpg",
+    "seasonalMonths": [5, 6, 7, 8, 9],
+    "peakSeason": "July-August",
+    "localizedNames": {
+      "en": "Avocado",
+      "si": "අලිගැට පේර"
+    },
+    "localizedDescriptions": {
+      "en": "A rich, creamy fruit widely known as butter fruit in Sri Lanka. Avocado's mild flavor and smooth texture make it ideal for shakes, salads, and spreads. It offers healthy fats, fiber, and key micronutrients, supporting heart health and satiety.",
+      "si": "ශ්‍රී ලංකාවේ 'බටර් ෆලූට්' ලෙසද හඳුන්වන අලිගැට පේර මෘදු රසය හා මෝරුමය මාංසය නිසා ජූස්, සලාද හා ස්ප්‍රෙඩ් සඳහා යොදාගනී. සෞඛ්‍ය සම්පන්න මේද, නාරිච්ච හා වැදගත් පෝෂක අඩංගුය."
+    }
+  },
+  {
+    "id": "SI003",
+    "name": "Mango", 
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664384/Mealtime/Seasonal%20Ingredients/SI003.png",
+    "seasonalMonths": [3, 4, 5, 6, 7],
+    "peakSeason": "April–June",
+    "localizedNames": {
+      "en": "Mango",
+      "si": "අඹ"
+    },
+    "localizedDescriptions": {
+      "en": "A beloved Sri Lankan fruit with rich sweetness and aroma. Ideal for fresh eating, achcharu, chutneys, and desserts. High in vitamins A and C.",
+      "si": "ශ්‍රී ලංකාවේ ප්‍රියතම අඹ පලතුර මධුර රසය සහ සුගන්ධයෙන් යුක්තය. නැවුම්ව, අච්චරු, චට්නි සහ මීඤ්ඤ සඳහා භාවිතා වේ. විටමින් A හා C පොහොසත්."
+    }
+  },
+  {
+    "id": "SI004",
+    "name": "Jackfruit",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664383/Mealtime/Seasonal%20Ingredients/SI004.jpg",
+    "seasonalMonths": [3, 4, 5, 6, 7, 8, 9],
+    "peakSeason": "April–June",
+    "localizedNames": {
+      "en": "Jackfruit",
+      "si": "කොස්"
+    },
+    "localizedDescriptions": {
+      "en": "Versatile fruit eaten young as a curry (polos) or ripe as a sweet snack. High in fiber and energy.",
+      "si": "කොස් තරුණ අවස්ථාවේ පොලොස් කරියක් ලෙසද පැළඹුණු විට මීහිරි කෑමක් ලෙසද භවිතා වේ. නාරිච්ච සහ ශක්තිමත්."
+    }
+  },
+  {
+    "id": "SI005",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664382/Mealtime/Seasonal%20Ingredients/SI005.jpg",
+    "seasonalMonths": [6, 7, 8],
+    "peakSeason": "July",
+    "localizedNames": {
+      "en": "Mangosteen",
+      "si": "මැංගුස්"
+    },
+    "localizedDescriptions": {
+      "en": "Delicately sweet, juicy segments protected by a purple rind. Enjoy fresh as a seasonal treat.",
+      "si": "මිහිරි හා යුෂවත් කැබලි පර්පල් පිටකටුවකින් ආවරණය වී ඇත. ඍතුව සමඟ නැවුම්ව රසවිඳින්න."
+    }
+  },
+  {
+    "id": "SI006",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664382/Mealtime/Seasonal%20Ingredients/SI006.png",
+    "seasonalMonths": [10, 11, 12, 1, 2, 3],
+    "peakSeason": "November–January",
+    "localizedNames": {
+      "en": "Wood Apple",
+      "si": "දිවුල්"
+    },
+    "localizedDescriptions": {
+      "en": "Aromatic pulp used for drinks and desserts (divul kiri). Tart-sweet flavor with fiber and micronutrients.",
+      "si": "සුවඳැති දිවුල් පින්ඩය පාන හා අතුරුපස (දිවුල් කිරි) සඳහා භාවිතා වේ. අම්ල-මිහිරි රසය, නාරිච්ච හා ඛනිජ සමඟ."
+    }
+  },
+  {
+    "id": "SI007",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664382/Mealtime/Seasonal%20Ingredients/SI007.jpg",
+    "seasonalMonths": [11, 12, 1, 2],
+    "peakSeason": "December–January",
+    "localizedNames": {
+      "en": "Indian Gooseberry (Nelli)",
+      "si": "නෙල්ලි"
+    },
+    "localizedDescriptions": {
+      "en": "Small, tart fruit used in pickles, juices, and Ayurveda. Exceptionally high in vitamin C.",
+      "si": "කුඩා, අම්ල නෙල්ලි අච්චරු, ජූස් හා ආයුර්වේදයට භාවිතා වේ. විටමින් C ඉතා ඉහළයි."
+    }
+  },
+  {
+    "id": "SI008",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664382/Mealtime/Seasonal%20Ingredients/SI008.png",
+    "seasonalMonths": [6, 7, 8, 9],
+    "peakSeason": "July–August",
+    "localizedNames": {
+      "en": "Soursop",
+      "si": "අනෝදා"
+    },
+    "localizedDescriptions": {
+      "en": "Large, spiky fruit with creamy, tangy flesh. Popular for refreshing juices and desserts.",
+      "si": "විශාල, කුරුක්කු සහිත තඹිලි මෝරුමය, අම්ල රසැති මාංසය ඇත. නැවුම් ජූස් සහ අතුරුපස සඳහා ජනප්‍රියය."
+    }
+  },
+  {
+    "id": "SI009",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664382/Mealtime/Seasonal%20Ingredients/SI009.jpg",
+    "seasonalMonths": [5, 6, 7, 8],
+    "peakSeason": "June–July",
+    "localizedNames": {
+      "en": "Starfruit (Carambola)",
+      "si": "කාමරංගා"
+    },
+    "localizedDescriptions": {
+      "en": "Crisp, juicy fruit with a unique star shape when sliced. Sweet-tart flavor ideal for fresh eating and garnishes.",
+      "si": "කුරුක්කු සහ යුෂවත් කාමරංගා කපා දැමූ විට විශේෂ තරු හැඩයක් ඇත. නැවුම්ව හා ගර්නිෂ් සඳහා සුදුසු මිහිරි-අම්ල රසයක් ඇත."
+    }
+  },
+  {
+    "id": "SI010",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664381/Mealtime/Seasonal%20Ingredients/SI010.jpg",
+    "seasonalMonths": [2, 3, 4, 5],
+    "peakSeason": "March–April",
+    "localizedNames": {
+      "en": "Drumstick (Moringa)",
+      "si": "මුරුංගා"
+    },
+    "localizedDescriptions": {
+      "en": "Pods and leaves used in curries and sambols. Noted for micronutrients and a delicate flavor.",
+      "si": "මුරුංගා පොඩ් සහ කොළ කරි හා සම්බෝල සඳහා. ඛනිජ/විටමින් බහුලය; මද රසයකි."
+    }
+  },
+  {
+    "id": "SI011",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664382/Mealtime/Seasonal%20Ingredients/SI011.jpg",
+    "seasonalMonths": [6, 7, 8],
+    "peakSeason": "July–August",
+    "localizedNames": {
+      "en": "Durian",
+      "si": "දුරියන්"
+    },
+    "localizedDescriptions": {
+      "en": "Strongly aromatic fruit with rich, custard-like flesh. Enjoyed fresh or in desserts; a distinct seasonal delicacy.",
+      "si": "තිව්‍ර සුවඳැති, කස්ටඩ් වැනි මාංසය ඇති දුරියන් ඍතුවේ නැවුම්ව හෝ අතුරුපස වශයෙන් රසවිඳිය හැක."
+    }
+  },
+  {
+    "id": "SI012",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664381/Mealtime/Seasonal%20Ingredients/SI012.jpg",
+    "seasonalMonths": [6, 7, 8, 9],
+    "peakSeason": "August",
+    "localizedNames": {
+      "en": "Ambarella",
+      "si": "අඹරැල්ල"
+    },
+    "localizedDescriptions": {
+      "en": "Crisp, tart fruit used for achcharu, juices, and sambols; also cooked in curries.",
+      "si": "කුරුක්කු සහ අම්ල අඹරැල්ල අච්චරු, ජූස්, සම්බෝල හා කරි සඳහා භාවිතා වේ."
+    }
+  },
+  {
+    "id": "SI013",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664381/Mealtime/Seasonal%20Ingredients/SI013.jpg",
+    "seasonalMonths": [4, 5, 6],
+    "peakSeason": "May",
+    "localizedNames": {
+      "en": "Rose Apple (Jambu)",
+      "si": "ජම්බු"
+    },
+    "localizedDescriptions": {
+      "en": "Light, fragrant fruit with a refreshing bite; enjoyed fresh or with chili-salt.",
+      "si": "ලාහු, සුගන්ධමත් ජම්බු නැවුම්ව හෝ මිරිස්-ලූණු සමඟ රසකර කන්න."
+    }
+  },
+  {
+    "id": "SI014",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664384/Mealtime/Seasonal%20Ingredients/SI014.jpg",
+    "seasonalMonths": [12, 1, 2, 3],
+    "peakSeason": "January–February",
+    "localizedNames": {
+      "en": "Pomelo",
+      "si": "ජම්බොල"
+    },
+    "localizedDescriptions": {
+      "en": "Large citrus with thick rind; mildly sweet, fragrant segments used fresh and in salads.",
+      "si": "ඝන පිටකටුවක් ඇති විශාල සීතල පැණිරසැති ජම්බොල සලාද හා නැවුම්ව භාවිතා කරයි."
+    }
+  },
+  {
+    "id": "SI015",
+    "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757664381/Mealtime/Seasonal%20Ingredients/SI015.jpg",
+    "seasonalMonths": [3, 4],
+    "peakSeason": "March",
+    "localizedNames": {
+      "en": "Cashew",
+      "si": "කජු"
+    },
+    "localizedDescriptions": {
+      "en": "Cashew nut is made up of a fruit in which the kernel is embedded. The real fruit of the cashew is commonly a nut. It is kidney- or heart-shaped.",
+      "si": "කජු ගෙඩිය සෑදී ඇත්තේ එහි මදය තැන්පත් කර ඇති පලතුරකිනි. කජු වල සැබෑ පලතුර සාමාන්‍යයෙන් කජු ගෙඩියකි. එය වකුගඩු හෝ හෘද හැඩැති ය."
+    }
+  }
+]

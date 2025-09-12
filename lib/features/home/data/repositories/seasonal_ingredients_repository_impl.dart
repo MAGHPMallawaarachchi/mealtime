@@ -17,30 +17,20 @@ class SeasonalIngredientsRepositoryImpl implements SeasonalIngredientsRepository
         _localDataSource = localDataSource ?? SeasonalIngredientsLocalDataSource();
 
   @override
-  Future<List<SeasonalIngredient>> getSeasonalIngredients({bool forceRefresh = false}) async {
+  Future<List<SeasonalIngredient>> getSeasonalIngredients() async {
     try {
-      if (!forceRefresh && await _localDataSource.isCacheValid()) {
-        final cachedIngredients = await _localDataSource.getSeasonalIngredients();
-        if (cachedIngredients.isNotEmpty) {
-          return cachedIngredients;
-        }
-      }
-
-      final remoteIngredients = await _remoteDataSource.getSeasonalIngredients();
+      // Always fetch from server to ensure fresh data
+      List<SeasonalIngredient> remoteIngredients;
       
-      await _localDataSource.cacheSeasonalIngredients(remoteIngredients);
+      if (_remoteDataSource is SeasonalIngredientsFirebaseDataSource) {
+        // Always force fetch from server to bypass all caches
+        remoteIngredients = await (_remoteDataSource as SeasonalIngredientsFirebaseDataSource).getSeasonalIngredientsFromServer();
+      } else {
+        remoteIngredients = await _remoteDataSource.getSeasonalIngredients();
+      }
       
       return remoteIngredients;
     } catch (e) {
-      
-      try {
-        final cachedIngredients = await _localDataSource.getSeasonalIngredients();
-        if (cachedIngredients.isNotEmpty) {
-          return cachedIngredients;
-        }
-      } catch (cacheError) {
-      }
-      
       throw SeasonalIngredientsRepositoryException(
         'Failed to fetch seasonal ingredients: ${e.toString()}',
       );
@@ -65,19 +55,8 @@ class SeasonalIngredientsRepositoryImpl implements SeasonalIngredientsRepository
   @override
   Future<SeasonalIngredient?> getSeasonalIngredientById(String id) async {
     try {
-      final ingredient = await _remoteDataSource.getSeasonalIngredientById(id);
-      if (ingredient != null) {
-        return ingredient;
-      }
-
-      return await _localDataSource.getSeasonalIngredientById(id);
+      return await _remoteDataSource.getSeasonalIngredientById(id);
     } catch (e) {
-      
-      try {
-        return await _localDataSource.getSeasonalIngredientById(id);
-      } catch (cacheError) {
-      }
-      
       throw SeasonalIngredientsRepositoryException(
         'Failed to fetch seasonal ingredient with id $id: ${e.toString()}',
       );
@@ -87,7 +66,7 @@ class SeasonalIngredientsRepositoryImpl implements SeasonalIngredientsRepository
   @override
   Future<void> refreshSeasonalIngredients() async {
     try {
-      await getSeasonalIngredients(forceRefresh: true);
+      await getSeasonalIngredients();
     } catch (e) {
       throw SeasonalIngredientsRepositoryException(
         'Failed to refresh seasonal ingredients: ${e.toString()}',

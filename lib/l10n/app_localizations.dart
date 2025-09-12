@@ -320,6 +320,12 @@ abstract class AppLocalizations {
   /// **'Seasonal Favorites'**
   String get seasonalFavorites;
 
+  /// Seasonal spotlight card title
+  ///
+  /// In en, this message translates to:
+  /// **'Seasonal Spotlight'**
+  String get seasonalSpotlight;
+
   /// Subtitle for seasonal recommendations
   ///
   /// In en, this message translates to:
@@ -781,6 +787,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close'**
   String get close;
+
+  /// Button text to view recipes
+  ///
+  /// In en, this message translates to:
+  /// **'View Recipes'**
+  String get viewRecipes;
 }
 
 class _AppLocalizationsDelegate

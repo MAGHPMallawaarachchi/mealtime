@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../domain/models/seasonal_ingredient.dart';
@@ -11,7 +12,9 @@ class SeasonalSpotlightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final locale = Localizations.localeOf(context).languageCode;
+    final localizedName = ingredient.getLocalizedName(locale);
+    return SizedBox(
       height: 280,
       child: Stack(
         children: [
@@ -44,9 +47,9 @@ class SeasonalSpotlightCard extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Seasonal Spotlight',
-                              style: TextStyle(
+                            Text(
+                              AppLocalizations.of(context)!.seasonalSpotlight,
+                              style: const TextStyle(
                                 fontSize: 12,
                                 color: AppColors.white,
                                 fontWeight: FontWeight.w400,
@@ -54,7 +57,7 @@ class SeasonalSpotlightCard extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              ingredient.name,
+                              localizedName,
                               style: const TextStyle(
                                 fontSize: 24,
                                 color: AppColors.white,
@@ -75,8 +78,8 @@ class SeasonalSpotlightCard extends StatelessWidget {
                             color: AppColors.primary,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Text(
-                            'View Recipes',
+                          child: Text(
+                            AppLocalizations.of(context)!.viewRecipes,
                             style: TextStyle(
                               fontSize: 12,
                               color: AppColors.white,
@@ -97,15 +100,6 @@ class SeasonalSpotlightCard extends StatelessWidget {
   }
 
   void _navigateToRecipes(BuildContext context) {
-    final encodedName = Uri.encodeComponent(ingredient.name);
-    final encodedImageUrl = Uri.encodeComponent(ingredient.imageUrl);
-    final encodedDescription = Uri.encodeComponent(ingredient.description);
-    
-    context.push(
-      '/seasonal-recipes/$encodedName'
-      '?id=${ingredient.id}'
-      '&imageUrl=$encodedImageUrl'
-      '&description=$encodedDescription'
-    );
+    context.push('/seasonal-recipes/${ingredient.id}');
   }
 }

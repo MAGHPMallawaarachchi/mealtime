@@ -18,7 +18,7 @@ class AppLocalizationsSi extends AppLocalizations {
   String get seeAll => 'සියල්ල බලන්න';
 
   @override
-  String get noMealsPlanned => 'තවම ආහාර සැලසුම් නැත';
+  String get noMealsPlanned => 'තවම ආහාර සැලසුම් කර නැත';
 
   @override
   String get startPlanningMeals =>
@@ -128,6 +128,9 @@ class AppLocalizationsSi extends AppLocalizations {
   String get seasonalFavorites => 'කාලීන ප්‍රියතම';
 
   @override
+  String get seasonalSpotlight => 'කාලීන අමුද්‍රව්‍ය';
+
+  @override
   String get perfectForTimeOfYear => 'වර්ෂයේ මෙම කාලයට සුදුසු';
 
   @override
@@ -181,7 +184,7 @@ class AppLocalizationsSi extends AppLocalizations {
   String get goodMorning => 'සුභ උදෑසනක්';
 
   @override
-  String get goodAfternoon => 'සුභ දවලක්';
+  String get goodAfternoon => 'සුභ දවහලක්';
 
   @override
   String get goodEvening => 'සුභ සන්ධ්‍යාවක්';
@@ -383,4 +386,7 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get close => 'වසන්න';
+
+  @override
+  String get viewRecipes => 'වට්ටෝරු බලන්න';
 }

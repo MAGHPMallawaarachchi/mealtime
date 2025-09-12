@@ -202,9 +202,12 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
               ),
             ),
             const SizedBox(height: 4),
-            Text(
-              AppLocalizations.of(context)!.startPlanningMeals,
-              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            Padding(
+              padding: const EdgeInsets.only(left: 24),
+              child: Text(
+                AppLocalizations.of(context)!.startPlanningMeals,
+                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              ),
             ),
           ],
         ),

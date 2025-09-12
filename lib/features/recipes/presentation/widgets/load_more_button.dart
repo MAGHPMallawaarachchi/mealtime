@@ -30,13 +30,17 @@ class LoadMoreButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: isLoading ? null : onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: isLoading ? AppColors.background : AppColors.primary,
-            foregroundColor: isLoading ? AppColors.textSecondary : AppColors.white,
+            backgroundColor: isLoading
+                ? AppColors.background
+                : AppColors.primary,
+            foregroundColor: isLoading
+                ? AppColors.textSecondary
+                : AppColors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
               side: BorderSide(
-                color: isLoading 
+                color: isLoading
                     ? AppColors.textSecondary.withOpacity(0.3)
                     : AppColors.primary,
                 width: 1,

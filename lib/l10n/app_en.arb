@@ -196,6 +196,11 @@
   "@seasonalFavorites": {
     "description": "Seasonal recommendations title"
   },
+
+  "seasonalSpotlight": "Seasonal Spotlight",
+  "@seasonalSpotlight": {
+    "description": "Seasonal spotlight card title"
+  },
   
   "perfectForTimeOfYear": "Perfect for this time of year",
   "@perfectForTimeOfYear": {
@@ -634,5 +639,10 @@
   "close": "Close",
   "@close": {
     "description": "Close button text"
+  },
+
+  "viewRecipes": "View Recipes",
+  "@viewRecipes": {
+    "description": "Button text to view recipes"
   }
 }

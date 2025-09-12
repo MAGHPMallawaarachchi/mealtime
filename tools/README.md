@@ -1,6 +1,10 @@
-# Recipe Import Tool
+# Data Import Tools
 
-This tool allows you to bulk import recipes to your Firebase Firestore database for the Mealtime app.
+This directory contains tools to bulk import data to your Firebase Firestore database for the Mealtime app.
+
+## Available Tools
+- `import_recipes.js` - Import recipes from JSON files
+- `import_seasonal_ingredients.js` - Import seasonal ingredients data
 
 ## Setup
 
@@ -40,6 +44,18 @@ node import_recipes.js /path/to/your/recipes.json
 # Validate recipes without importing
 npm run validate
 node import_recipes.js --validate-only
+```
+
+### Import Seasonal Ingredients
+```bash
+# Import the seasonal ingredients sample
+node import_seasonal_ingredients.js
+
+# Import custom seasonal ingredients file
+node import_seasonal_ingredients.js /path/to/your/seasonal_ingredients.json
+
+# Validate seasonal ingredients without importing
+node import_seasonal_ingredients.js --validate-only
 ```
 
 ## Recipe JSON Format
@@ -92,8 +108,37 @@ Each recipe must follow this structure:
 - **Count**: `pieces`, `whole`
 - **Other**: `pinch`, `dash`, `toTaste`
 
+## Seasonal Ingredients JSON Format
+
+Each seasonal ingredient must follow this structure:
+
+```json
+{
+  "id": "SI001",
+  "name": "Ingredient Name",
+  "imageUrl": "https://example.com/image.jpg",
+  "description": "Ingredient description in English",
+  "seasonalMonths": [3, 4, 5, 6],
+  "peakSeason": "April–June",
+  "localizedNames": {
+    "en": "Ingredient Name",
+    "si": "සිංහල නම"
+  },
+  "localizedDescriptions": {
+    "en": "English description",
+    "si": "සිංහල විස්තරය"
+  }
+}
+```
+
+### Seasonal Data Requirements
+- **seasonalMonths**: Array of month numbers (1-12) when ingredient is available
+- **peakSeason**: Human-readable peak season description
+- **Localization**: Both English (`en`) and Sinhala (`si`) names and descriptions are required
+
 ## Sample Data
 
+### Recipes
 The `data/sample_recipes.json` file contains 5 authentic Sri Lankan recipes:
 1. Traditional Sri Lankan Chicken Curry
 2. Parippu (Sri Lankan Lentil Curry)
@@ -101,7 +146,13 @@ The `data/sample_recipes.json` file contains 5 authentic Sri Lankan recipes:
 4. Sri Lankan Fish Curry
 5. Pol Sambol (Coconut Relish)
 
-These recipes are properly formatted and can be imported directly to get you started.
+### Seasonal Ingredients
+The `data/seasonal_ingredient_sample.json` file contains 20 Sri Lankan seasonal ingredients including:
+- Tropical fruits (Rambutan, Mangosteen, Durian)
+- Common vegetables (Okra, Bitter Gourd, Pumpkin)
+- Seasonal specialties (Wood Apple, Cashew Apple, Rose Apple)
+
+All sample data files are properly formatted and can be imported directly to get you started.
 
 ## Adding More Recipes
 
