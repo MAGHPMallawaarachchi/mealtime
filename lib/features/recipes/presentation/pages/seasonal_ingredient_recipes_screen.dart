@@ -452,12 +452,10 @@ class _SeasonalIngredientRecipesScreenState
         background: Stack(
           children: [
             // Background image
-            SizedBox(
-              width: double.infinity,
-              height: double.infinity,
+            Positioned.fill(
               child: ingredient.imageUrl.isNotEmpty
-                  ? OptimizedCachedImage(
-                      imageUrl: ingredient.imageUrl,
+                  ? Image.network(
+                      ingredient.imageUrl, 
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
