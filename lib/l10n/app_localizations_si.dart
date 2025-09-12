@@ -97,6 +97,9 @@ class AppLocalizationsSi extends AppLocalizations {
   String get settingsSavedSuccessfully => 'සැකසුම් සාර්ථකව සුරකින ලදී';
 
   @override
+  String get inSeason => 'මේ කාලේ බහුල';
+
+  @override
   String failedToSaveSettings(String error) {
     return 'සැකසුම් සුරැකීම අසාර්ථක විය: $error';
   }
@@ -389,4 +392,71 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get viewRecipes => 'වට්ටෝරු බලන්න';
+
+  @override
+  String get failedToLoadMoreRecipes => 'තවත් වට්ටෝරු පූරණය කිරීම අසාර්ථක විය';
+
+  @override
+  String get youHaveSeenAllRecipes => 'ඔබ සියලුම වට්ටෝරු දැක්කා';
+
+  @override
+  String get checkBackLaterForNewRecipes =>
+      'නව වට්ටෝරු සඳහා පසුව නැවත පරීක්ෂා කරන්න';
+
+  @override
+  String get loadingMoreRecipes => 'තවත් වට්ටෝරු පූරණය වෙමින්...';
+
+  @override
+  String get loadMoreRecipes => 'තවත් වට්ටෝරු පූරණය කරන්න';
+
+  @override
+  String get noRecipesFoundForThisIngredient =>
+      'මෙම අමුද්‍රව්‍ය සඳහා වට්ටෝරු හමු නොවීය';
+
+  @override
+  String get checkBackLater =>
+      'අපගේ එකතුවට තවත් සෘතුමය වට්ටෝරු එකතු කරන බැවින් පසුව නැවත පරීක්ෂා කරන්න.';
+
+  @override
+  String get refresh => 'නැවුම් කරන්න';
+
+  @override
+  String get recipeNotFound => 'වට්ටෝරුව හමු නොවීය';
+
+  @override
+  String get failedToLoad => 'පූරණය කිරීම අසාර්ථක විය';
+
+  @override
+  String perfectForYourItems(String items) {
+    return 'ඔබේ $items සඳහා සුදුසුයි';
+  }
+
+  @override
+  String get usesIngredientsFromPantry => 'ඔබේ ගබඩාවේ අමුද්‍රව්‍ය භාවිතා කරයි';
+
+  @override
+  String get basedOnYourPreferences => 'ඔබේ මනාපයන් මත පදනම් වූ';
+
+  @override
+  String get similarToPreferences => 'ඔබේ මනාපයන්ට සමාන';
+
+  @override
+  String get perfectForThisSeason => 'මේ කාලයට සුදුසුයි';
+
+  @override
+  String get quickAndEasy => 'ඉක්මන් සහ පහසු';
+
+  @override
+  String get similarToEnjoyedRecipes => 'ඔබ රස විඳින වට්ටෝරුවලට සමාන';
+
+  @override
+  String get perfectMatch => 'සම්පූර්ණ ගැලපීමක්!';
+
+  @override
+  String get greatMatch => 'විශිෂ්ට ගැලපීමක්!';
+
+  @override
+  String usesPantryIngredients(int count) {
+    return 'ඔබේ ගබඩාවේ අමුද්‍රව්‍ය $countක් භාවිතා කරයි';
+  }
 }

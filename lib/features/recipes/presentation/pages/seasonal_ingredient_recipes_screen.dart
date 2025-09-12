@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../home/domain/models/seasonal_ingredient.dart';
 import '../../../home/domain/usecases/get_seasonal_ingredients_usecase.dart';
@@ -319,7 +318,7 @@ class _SeasonalIngredientRecipesScreenState
             ),
             const SizedBox(height: 16),
             Text(
-              'No recipes found for this ingredient',
+              AppLocalizations.of(context)!.noRecipesFoundForThisIngredient,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 18,
@@ -328,8 +327,8 @@ class _SeasonalIngredientRecipesScreenState
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Check back later as we add more seasonal recipes to our collection.',
+            Text(
+              AppLocalizations.of(context)!.checkBackLater,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
@@ -360,8 +359,8 @@ class _SeasonalIngredientRecipesScreenState
                     color: AppColors.white,
                   ),
                   const SizedBox(width: 8),
-                  const Text(
-                    'Refresh',
+                  Text(
+                    AppLocalizations.of(context)!.refresh,
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                 ],
@@ -394,7 +393,7 @@ class _SeasonalIngredientRecipesScreenState
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Failed to load more recipes',
+                  AppLocalizations.of(context)!.failedToLoadMoreRecipes,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -455,7 +454,7 @@ class _SeasonalIngredientRecipesScreenState
             Positioned.fill(
               child: ingredient.imageUrl.isNotEmpty
                   ? Image.network(
-                      ingredient.imageUrl, 
+                      ingredient.imageUrl,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
@@ -522,8 +521,8 @@ class _SeasonalIngredientRecipesScreenState
                           color: Colors.white,
                         ),
                         const SizedBox(width: 6),
-                        const Text(
-                          'In Season',
+                        Text(
+                          AppLocalizations.of(context)!.inSeason,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,

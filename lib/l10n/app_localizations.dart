@@ -266,6 +266,12 @@ abstract class AppLocalizations {
   /// **'Settings saved successfully'**
   String get settingsSavedSuccessfully;
 
+  /// In-season tag
+  ///
+  /// In en, this message translates to:
+  /// **'In Season'**
+  String get inSeason;
+
   /// Error message when settings fail to save
   ///
   /// In en, this message translates to:
@@ -793,6 +799,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View Recipes'**
   String get viewRecipes;
+
+  /// Error message when failed to load more recipes
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load more recipes'**
+  String get failedToLoadMoreRecipes;
+
+  /// Message when all recipes have been viewed
+  ///
+  /// In en, this message translates to:
+  /// **'You have seen all recipes'**
+  String get youHaveSeenAllRecipes;
+
+  /// Instruction to check back later for new recipes
+  ///
+  /// In en, this message translates to:
+  /// **'Check back later for new recipes featuring this ingredient.'**
+  String get checkBackLaterForNewRecipes;
+
+  /// Loading message when more recipes are being fetched
+  ///
+  /// In en, this message translates to:
+  /// **'Loading more recipes...'**
+  String get loadingMoreRecipes;
+
+  /// Button text to load more recipes
+  ///
+  /// In en, this message translates to:
+  /// **'Load More Recipes'**
+  String get loadMoreRecipes;
+
+  /// Message when no recipes are found for a specific ingredient
+  ///
+  /// In en, this message translates to:
+  /// **'No recipes found for this ingredient'**
+  String get noRecipesFoundForThisIngredient;
+
+  /// Instruction to check back later for seasonal recipes
+  ///
+  /// In en, this message translates to:
+  /// **'Check back later as we add more seasonal recipes to our collection.'**
+  String get checkBackLater;
+
+  /// Button text to refresh content
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh;
+
+  /// Placeholder text when a recipe cannot be found
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe Not Found'**
+  String get recipeNotFound;
+
+  /// Generic error message when something fails to load
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load'**
+  String get failedToLoad;
+
+  /// Recommendation reason when recipe matches pantry items
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect for your {items}'**
+  String perfectForYourItems(String items);
+
+  /// Recommendation reason for pantry-based recipes
+  ///
+  /// In en, this message translates to:
+  /// **'Uses ingredients from your pantry'**
+  String get usesIngredientsFromPantry;
+
+  /// Recommendation reason for content-based recommendations
+  ///
+  /// In en, this message translates to:
+  /// **'Based on your preferences'**
+  String get basedOnYourPreferences;
+
+  /// Recommendation reason for similar content
+  ///
+  /// In en, this message translates to:
+  /// **'Similar to your preferences'**
+  String get similarToPreferences;
+
+  /// Recommendation reason for seasonal recipes
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect for this season'**
+  String get perfectForThisSeason;
+
+  /// Recommendation reason for quick meals
+  ///
+  /// In en, this message translates to:
+  /// **'Quick and easy'**
+  String get quickAndEasy;
+
+  /// Recommendation reason for similar recipes
+  ///
+  /// In en, this message translates to:
+  /// **'Similar to recipes you\'ve enjoyed'**
+  String get similarToEnjoyedRecipes;
+
+  /// Recommendation reason for perfect matches
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect match!'**
+  String get perfectMatch;
+
+  /// Recommendation reason for great matches
+  ///
+  /// In en, this message translates to:
+  /// **'Great match!'**
+  String get greatMatch;
+
+  /// Recommendation reason showing number of matched pantry ingredients
+  ///
+  /// In en, this message translates to:
+  /// **'Uses {count} {count, plural, =1{ingredient} other{ingredients}} from your pantry'**
+  String usesPantryIngredients(int count);
 }
 
 class _AppLocalizationsDelegate

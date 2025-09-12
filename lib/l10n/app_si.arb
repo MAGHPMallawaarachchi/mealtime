@@ -140,6 +140,11 @@
     "description": "Success message when settings are saved"
   },
 
+  "inSeason": "මේ කාලේ බහුල",
+  "@inSeason": {
+    "description": "In-season tag"
+  },
+
   "failedToSaveSettings": "සැකසුම් සුරැකීම අසාර්ථක විය: {error}",
   "@failedToSaveSettings": {
     "description": "Error message when settings fail to save",
@@ -644,5 +649,117 @@
   "viewRecipes": "වට්ටෝරු බලන්න",
   "@viewRecipes": {
     "description": "Button text to view recipes"
+  },
+
+  "failedToLoadMoreRecipes": "තවත් වට්ටෝරු පූරණය කිරීම අසාර්ථක විය",
+  "@failedToLoadMoreRecipes": {
+    "description": "Error message when failed to load more recipes"
+  },
+
+  "youHaveSeenAllRecipes": "ඔබ සියලුම වට්ටෝරු දැක්කා",
+  "@youHaveSeenAllRecipes": {
+    "description": "Message when all recipes have been viewed"
+  },
+
+  "checkBackLaterForNewRecipes": "නව වට්ටෝරු සඳහා පසුව නැවත පරීක්ෂා කරන්න",
+  "@checkBackLaterForNewRecipes": {
+    "description": "Instruction to check back later for new recipes"
+  },
+
+  "loadingMoreRecipes": "තවත් වට්ටෝරු පූරණය වෙමින්...",
+  "@loadingMoreRecipes": {
+    "description": "Loading message when loading more recipes"
+  },
+
+  "loadMoreRecipes": "තවත් වට්ටෝරු පූරණය කරන්න",
+  "@loadMoreRecipes": {
+    "description": "Button text to load more recipes"
+  },
+
+  "noRecipesFoundForThisIngredient": "මෙම අමුද්‍රව්‍ය සඳහා වට්ටෝරු හමු නොවීය",
+  "@noRecipesFoundForThisIngredient": {
+    "description": "Message when no recipes are found for a seasonal ingredient"
+  },
+
+  "checkBackLater": "අපගේ එකතුවට තවත් සෘතුමය වට්ටෝරු එකතු කරන බැවින් පසුව නැවත පරීක්ෂා කරන්න.",
+  "@checkBackLater": {
+    "description": "Instruction to check back later for new recipes"
+  },
+
+  "refresh": "නැවුම් කරන්න",
+  "@refresh": {
+    "description": "Refresh button text"
+  },
+
+  "recipeNotFound": "වට්ටෝරුව හමු නොවීය",
+  "@recipeNotFound": {
+    "description": "Placeholder text when a recipe cannot be found"
+  },
+
+  "failedToLoad": "පූරණය කිරීම අසාර්ථක විය",
+  "@failedToLoad": {
+    "description": "Generic error message when something fails to load"
+  },
+
+  "perfectForYourItems": "ඔබේ {items} සඳහා සුදුසුයි",
+  "@perfectForYourItems": {
+    "description": "Recommendation reason when recipe matches pantry items",
+    "placeholders": {
+      "items": {
+        "type": "String",
+        "description": "Comma-separated list of matched items"
+      }
+    }
+  },
+
+  "usesIngredientsFromPantry": "ඔබේ ගබඩාවේ අමුද්‍රව්‍ය භාවිතා කරයි",
+  "@usesIngredientsFromPantry": {
+    "description": "Recommendation reason for pantry-based recipes"
+  },
+
+  "basedOnYourPreferences": "ඔබේ මනාපයන් මත පදනම් වූ",
+  "@basedOnYourPreferences": {
+    "description": "Recommendation reason for content-based recommendations"
+  },
+
+  "similarToPreferences": "ඔබේ මනාපයන්ට සමාන",
+  "@similarToPreferences": {
+    "description": "Recommendation reason for similar content"
+  },
+
+  "perfectForThisSeason": "මේ කාලයට සුදුසුයි",
+  "@perfectForThisSeason": {
+    "description": "Recommendation reason for seasonal recipes"
+  },
+
+  "quickAndEasy": "ඉක්මන් සහ පහසු",
+  "@quickAndEasy": {
+    "description": "Recommendation reason for quick meals"
+  },
+
+  "similarToEnjoyedRecipes": "ඔබ රස විඳින වට්ටෝරුවලට සමාන",
+  "@similarToEnjoyedRecipes": {
+    "description": "Recommendation reason for similar recipes"
+  },
+
+  "perfectMatch": "සම්පූර්ණ ගැලපීමක්!",
+  "@perfectMatch": {
+    "description": "Recommendation reason for perfect matches"
+  },
+
+  "greatMatch": "විශිෂ්ට ගැලපීමක්!",
+  "@greatMatch": {
+    "description": "Recommendation reason for great matches"
+  },
+
+  "usesPantryIngredients": "ඔබේ ගබඩාවේ අමුද්‍රව්‍ය {count}ක් භාවිතා කරයි",
+  "@usesPantryIngredients": {
+    "description": "Recommendation reason showing number of matched pantry ingredients",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of matched ingredients"
+      }
+    }
   }
 }

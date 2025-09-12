@@ -97,6 +97,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSavedSuccessfully => 'Settings saved successfully';
 
   @override
+  String get inSeason => 'In Season';
+
+  @override
   String failedToSaveSettings(String error) {
     return 'Failed to save settings: $error';
   }
@@ -388,4 +391,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewRecipes => 'View Recipes';
+
+  @override
+  String get failedToLoadMoreRecipes => 'Failed to load more recipes';
+
+  @override
+  String get youHaveSeenAllRecipes => 'You have seen all recipes';
+
+  @override
+  String get checkBackLaterForNewRecipes =>
+      'Check back later for new recipes featuring this ingredient.';
+
+  @override
+  String get loadingMoreRecipes => 'Loading more recipes...';
+
+  @override
+  String get loadMoreRecipes => 'Load More Recipes';
+
+  @override
+  String get noRecipesFoundForThisIngredient =>
+      'No recipes found for this ingredient';
+
+  @override
+  String get checkBackLater =>
+      'Check back later as we add more seasonal recipes to our collection.';
+
+  @override
+  String get refresh => 'Refresh';
+
+  @override
+  String get recipeNotFound => 'Recipe Not Found';
+
+  @override
+  String get failedToLoad => 'Failed to load';
+
+  @override
+  String perfectForYourItems(String items) {
+    return 'Perfect for your $items';
+  }
+
+  @override
+  String get usesIngredientsFromPantry => 'Uses ingredients from your pantry';
+
+  @override
+  String get basedOnYourPreferences => 'Based on your preferences';
+
+  @override
+  String get similarToPreferences => 'Similar to your preferences';
+
+  @override
+  String get perfectForThisSeason => 'Perfect for this season';
+
+  @override
+  String get quickAndEasy => 'Quick and easy';
+
+  @override
+  String get similarToEnjoyedRecipes => 'Similar to recipes you\'ve enjoyed';
+
+  @override
+  String get perfectMatch => 'Perfect match!';
+
+  @override
+  String get greatMatch => 'Great match!';
+
+  @override
+  String usesPantryIngredients(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ingredients',
+      one: 'ingredient',
+    );
+    return 'Uses $count $_temp0 from your pantry';
+  }
 }

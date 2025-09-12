@@ -84,6 +84,8 @@
   "@vegan": {
     "description": "Vegan diet option"
   },
+
+  
   
   "pescatarian": "Pescatarian",
   "@pescatarian": {
@@ -139,7 +141,12 @@
   "@settingsSavedSuccessfully": {
     "description": "Success message when settings are saved"
   },
-  
+
+  "inSeason": "In Season",
+  "@inSeason": {
+    "description": "In-season tag"
+  },
+
   "failedToSaveSettings": "Failed to save settings: {error}",
   "@failedToSaveSettings": {
     "description": "Error message when settings fail to save",
@@ -644,5 +651,118 @@
   "viewRecipes": "View Recipes",
   "@viewRecipes": {
     "description": "Button text to view recipes"
+  },
+
+  "failedToLoadMoreRecipes": "Failed to load more recipes",
+  "@failedToLoadMoreRecipes": {
+    "description": "Error message when failed to load more recipes"
+  },
+
+  "youHaveSeenAllRecipes": "You have seen all recipes",
+  "@youHaveSeenAllRecipes": {
+    "description": "Message when all recipes have been viewed"
+  },
+
+  "checkBackLaterForNewRecipes": "Check back later for new recipes featuring this ingredient.",
+  "@checkBackLaterForNewRecipes": {
+    "description": "Instruction to check back later for new recipes"
+  },
+
+  "loadingMoreRecipes": "Loading more recipes...",
+  "@loadingMoreRecipes": {
+    "description": "Loading message when more recipes are being fetched"
+  },
+
+  "loadMoreRecipes": "Load More Recipes",
+  "@loadMoreRecipes": {
+    "description": "Button text to load more recipes"
+  },
+
+  "noRecipesFoundForThisIngredient": "No recipes found for this ingredient",
+  "@noRecipesFoundForThisIngredient": {
+    "description": "Message when no recipes are found for a specific ingredient"
+  },
+
+  "checkBackLater": "Check back later as we add more seasonal recipes to our collection.",
+  "@checkBackLater": {
+    "description": "Instruction to check back later for seasonal recipes"
+  },
+
+  "refresh": "Refresh",
+  "@refresh": {
+    "description": "Button text to refresh content"
+  },
+
+  "recipeNotFound": "Recipe Not Found",
+  "@recipeNotFound": {
+    "description": "Placeholder text when a recipe cannot be found"
+  },
+
+  "failedToLoad": "Failed to load",
+  "@failedToLoad": {
+    "description": "Generic error message when something fails to load"
+  },
+
+  "perfectForYourItems": "Perfect for your {items}",
+  "@perfectForYourItems": {
+    "description": "Recommendation reason when recipe matches pantry items",
+    "placeholders": {
+      "items": {
+        "type": "String",
+        "description": "Comma-separated list of matched items"
+      }
+    }
+  },
+
+  "usesIngredientsFromPantry": "Uses ingredients from your pantry",
+  "@usesIngredientsFromPantry": {
+    "description": "Recommendation reason for pantry-based recipes"
+  },
+
+  "basedOnYourPreferences": "Based on your preferences",
+  "@basedOnYourPreferences": {
+    "description": "Recommendation reason for content-based recommendations"
+  },
+
+  "similarToPreferences": "Similar to your preferences",
+  "@similarToPreferences": {
+    "description": "Recommendation reason for similar content"
+  },
+
+  "perfectForThisSeason": "Perfect for this season",
+  "@perfectForThisSeason": {
+    "description": "Recommendation reason for seasonal recipes"
+  },
+
+  "quickAndEasy": "Quick and easy",
+  "@quickAndEasy": {
+    "description": "Recommendation reason for quick meals"
+  },
+
+  "similarToEnjoyedRecipes": "Similar to recipes you've enjoyed",
+  "@similarToEnjoyedRecipes": {
+    "description": "Recommendation reason for similar recipes"
+  },
+
+  "perfectMatch": "Perfect match!",
+  "@perfectMatch": {
+    "description": "Recommendation reason for perfect matches"
+  },
+
+  "greatMatch": "Great match!",
+  "@greatMatch": {
+    "description": "Recommendation reason for great matches"
+  },
+
+  "usesPantryIngredients": "Uses {count} {count, plural, =1{ingredient} other{ingredients}} from your pantry",
+  "@usesPantryIngredients": {
+    "description": "Recommendation reason showing number of matched pantry ingredients",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of matched ingredients"
+      }
+    }
   }
+
 }
