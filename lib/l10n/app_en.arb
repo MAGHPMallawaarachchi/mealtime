@@ -84,8 +84,6 @@
   "@vegan": {
     "description": "Vegan diet option"
   },
-
-  
   
   "pescatarian": "Pescatarian",
   "@pescatarian": {
@@ -145,6 +143,26 @@
   "inSeason": "In Season",
   "@inSeason": {
     "description": "In-season tag"
+  },
+
+  "perfect": "Perfect",
+  "@perfect": {
+    "description": "Perfect tag"
+  },
+
+  "good": "Good",
+  "@good": {
+    "description": "Good tag"
+  },
+
+  "item": "Item",
+  "@item": {
+    "description": "Item label"
+  },
+  
+  "items": "Items",
+  "@items": {
+    "description": "Items label"
   },
 
   "failedToSaveSettings": "Failed to save settings: {error}",
@@ -347,6 +365,11 @@
   "tryAgain": "Try Again",
   "@tryAgain": {
     "description": "Button text to retry an action"
+  },
+
+  "recipes": "Recipes",
+  "@recipes": {
+    "description": "Recipes section title"
   },
 
   "addedToFavorites": "{recipeName} added to favorites!",
@@ -873,11 +896,6 @@
     }
   },
 
-  "checkBackLaterForNewRecipes": "Check back later for new recipes",
-  "@checkBackLaterForNewRecipes": {
-    "description": "Empty state instruction for category recipes"
-  },
-
   "noRecipesAvailableYet": "No recipes available yet",
   "@noRecipesAvailableYet": {
     "description": "Empty state message when no recipes available"
@@ -896,11 +914,6 @@
   "loadingRecipes": "Loading recipes...",
   "@loadingRecipes": {
     "description": "Loading message for initial recipe load"
-  },
-
-  "noRecipesFound": "No recipes found",
-  "@noRecipesFound": {
-    "description": "Message when no recipes match search criteria"
   },
 
   "recipesFoundCount": "{count, plural, =1{1 recipe} other{{count} recipes}} found",
@@ -927,6 +940,994 @@
         "description": "Total number of recipes"
       }
     }
+  },
+
+  "recipeDoesNotExist": "The recipe you are looking for does not exist.",
+  "@recipeDoesNotExist": {
+    "description": "Message when recipe is not found"
+  },
+
+  "viewLess": "View Less",
+  "@viewLess": {
+    "description": "Button to collapse expanded text"
+  },
+
+  "viewMore": "View More",
+  "@viewMore": {
+    "description": "Button to expand collapsed text"
+  },
+
+  "instructions": "Instructions",
+  "@instructions": {
+    "description": "Instructions tab label"
+  },
+
+  "servings": "Servings",
+  "@servings": {
+    "description": "Servings label"
+  },
+
+  "cups": "Cups",
+  "@cups": {
+    "description": "Cups unit system"
+  },
+
+  "metric": "Metric",
+  "@metric": {
+    "description": "Metric unit system"
+  },
+
+  "calories": "Calories",
+  "@calories": {
+    "description": "Calories nutrition label"
+  },
+
+  "protein": "Protein",
+  "@protein": {
+    "description": "Protein nutrition label"
+  },
+
+  "carbs": "Carbs",
+  "@carbs": {
+    "description": "Carbs nutrition label"
+  },
+
+  "fat": "Fat",
+  "@fat": {
+    "description": "Fat nutrition label"
+  },
+
+  "addToMealPlan": "Add to Meal Plan",
+  "@addToMealPlan": {
+    "description": "Button to add recipe to meal plan"
+  },
+
+  "addRecipeToMealPlan": "Add \"{recipeTitle}\" to Meal Plan",
+  "@addRecipeToMealPlan": {
+    "description": "Modal title for adding recipe to meal plan",
+    "placeholders": {
+      "recipeTitle": {
+        "type": "String",
+        "description": "Title of the recipe"
+      }
+    }
+  },
+
+  "goToMealPlanner": "Go to Meal Planner",
+  "@goToMealPlanner": {
+    "description": "Option to navigate to meal planner"
+  },
+
+  "chooseSpecificDayAndMeal": "Choose specific day and meal time",
+  "@chooseSpecificDayAndMeal": {
+    "description": "Subtitle for meal planner option"
+  },
+
+  "addToToday": "Add to Today",
+  "@addToToday": {
+    "description": "Option to add recipe to today's meals"
+  },
+
+  "quickAddToTodayMeal": "Quick add to next available meal today",
+  "@quickAddToTodayMeal": {
+    "description": "Subtitle for add to today option"
+  },
+
+  "whichMealToAdd": "Which meal would you like to add \"{recipeTitle}\" to?",
+  "@whichMealToAdd": {
+    "description": "Question for selecting meal time",
+    "placeholders": {
+      "recipeTitle": {
+        "type": "String",
+        "description": "Title of the recipe"
+      }
+    }
+  },
+
+  "addedToTodayMeal": "Added to today's {mealType}!",
+  "@addedToTodayMeal": {
+    "description": "Success message when recipe is added to today's meal",
+    "placeholders": {
+      "mealType": {
+        "type": "String",
+        "description": "Type of meal (breakfast, lunch, dinner)"
+      }
+    }
+  },
+
+  "breakfastTime": "8:30 AM",
+  "@breakfastTime": {
+    "description": "Default breakfast time"
+  },
+
+  "lunchTime": "12:30 PM",
+  "@lunchTime": {
+    "description": "Default lunch time"
+  },
+
+  "dinnerTime": "7:00 PM",
+  "@dinnerTime": {
+    "description": "Default dinner time"
+  },
+
+  "pleaseLoginToViewMealPlans": "Please login to view your meal plans",
+  "@pleaseLoginToViewMealPlans": {
+    "description": "Error message when user is not logged in"
+  },
+
+  "failedToLoadMealPlan": "Failed to load meal plan",
+  "@failedToLoadMealPlan": {
+    "description": "Generic error message when meal plan fails to load"
+  },
+
+  "youDoNotHavePermission": "You do not have permission to access meal plans",
+  "@youDoNotHavePermission": {
+    "description": "Permission denied error message"
+  },
+
+  "networkError": "Network error. Please check your connection",
+  "@networkError": {
+    "description": "Network error message"
+  },
+
+  "serviceUnavailable": "Service is currently unavailable",
+  "@serviceUnavailable": {
+    "description": "Service unavailable error message"
+  },
+
+  "autoFillWeek": "Auto-fill Week",
+  "@autoFillWeek": {
+    "description": "Auto-fill week dialog title"
+  },
+
+  "autoFillWeekDescription": "Automatically fill empty meal slots with suggestions based on your pantry, leftovers, and seasonal recipes?",
+  "@autoFillWeekDescription": {
+    "description": "Auto-fill week dialog description"
+  },
+
+  "autoFillFeatureComingSoon": "Auto-fill feature coming soon!",
+  "@autoFillFeatureComingSoon": {
+    "description": "Auto-fill feature coming soon message"
+  },
+
+  "viewPreviousWeeks": "View Previous Weeks",
+  "@viewPreviousWeeks": {
+    "description": "Menu option to view previous weeks"
+  },
+
+  "duplicateWeek": "Duplicate Week",
+  "@duplicateWeek": {
+    "description": "Menu option to duplicate current week"
+  },
+
+  "clearAllMeals": "Clear All Meals",
+  "@clearAllMeals": {
+    "description": "Menu option to clear all meals"
+  },
+
+  "pleaseLoginToAddMeals": "Please login to add meals",
+  "@pleaseLoginToAddMeals": {
+    "description": "Error message when trying to add meals without login"
+  },
+
+  "mealCategoryRequired": "Meal category is required",
+  "@mealCategoryRequired": {
+    "description": "Validation error for meal category"
+  },
+
+  "pleaseLoginToUpdateMeals": "Please login to update meals",
+  "@pleaseLoginToUpdateMeals": {
+    "description": "Error message when trying to update meals without login"
+  },
+
+  "failedToUpdateMeal": "Failed to update meal: {error}",
+  "@failedToUpdateMeal": {
+    "description": "Error message when meal update fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+
+  "pleaseLoginToDeleteMeals": "Please login to delete meals",
+  "@pleaseLoginToDeleteMeals": {
+    "description": "Error message when trying to delete meals without login"
+  },
+
+  "failedToDeleteMeal": "Failed to delete meal: {error}",
+  "@failedToDeleteMeal": {
+    "description": "Error message when meal deletion fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+
+  "failedToOpenRecipe": "Failed to open recipe. Please try again.",
+  "@failedToOpenRecipe": {
+    "description": "Error message when recipe fails to open"
+  },
+
+  "youDoNotHavePermissionToAddMeals": "You do not have permission to add meals",
+  "@youDoNotHavePermissionToAddMeals": {
+    "description": "Permission denied error for adding meals"
+  },
+
+  "networkErrorCheckConnection": "Network error. Please check your connection and try again",
+  "@networkErrorCheckConnection": {
+    "description": "Network error message for meal operations"
+  },
+
+  "serviceUnavailableTryLater": "Service is currently unavailable. Please try again later",
+  "@serviceUnavailableTryLater": {
+    "description": "Service unavailable message for meal operations"
+  },
+
+  "noMealPlanAvailable": "No meal plan available",
+  "@noMealPlanAvailable": {
+    "description": "Error when no meal plan is available for grocery list"
+  },
+
+  "addMealsWithRecipes": "Please add meals with recipes to generate a grocery list.",
+  "@addMealsWithRecipes": {
+    "description": "Instruction to add meals with recipes"
+  },
+
+  "noMealsPlannedForGrocery": "No meals planned",
+  "@noMealsPlannedForGrocery": {
+    "description": "Error when no meals are planned for grocery list"
+  },
+
+  "addMealsToMealPlan": "Add meals to your meal plan first, then generate a grocery list.",
+  "@addMealsToMealPlan": {
+    "description": "Instruction to add meals to meal plan"
+  },
+
+  "noRecipeBasedMeals": "No recipe-based meals",
+  "@noRecipeBasedMeals": {
+    "description": "Error when no recipe-based meals exist"
+  },
+
+  "addMealsWithRecipesForGrocery": "Add meals with recipes to generate ingredients for your grocery list.",
+  "@addMealsWithRecipesForGrocery": {
+    "description": "Instruction to add recipe-based meals"
+  },
+
+  "generatingGroceryList": "Generating grocery list...",
+  "@generatingGroceryList": {
+    "description": "Loading message when generating grocery list"
+  },
+
+  "analyzingMealPlan": "Analyzing your meal plan and calculating ingredients",
+  "@analyzingMealPlan": {
+    "description": "Detailed loading message for grocery list generation"
+  },
+
+  "groceryListGenerationFailed": "Grocery List Generation Failed",
+  "@groceryListGenerationFailed": {
+    "description": "Error dialog title when grocery list generation fails"
+  },
+
+  "thisWeek": "This Week",
+  "@thisWeek": {
+    "description": "Label for current week in meal planner"
+  },
+
+  "mealsPlanned": "{count} meals planned",
+  "@mealsPlanned": {
+    "description": "Number of meals planned in a week",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of planned meals"
+      }
+    }
+  },
+
+  "mondayShort": "M",
+  "@mondayShort": {
+    "description": "Short abbreviation for Monday"
+  },
+
+  "tuesdayShort": "T",
+  "@tuesdayShort": {
+    "description": "Short abbreviation for Tuesday"
+  },
+
+  "wednesdayShort": "W",
+  "@wednesdayShort": {
+    "description": "Short abbreviation for Wednesday"
+  },
+
+  "thursdayShort": "T",
+  "@thursdayShort": {
+    "description": "Short abbreviation for Thursday"
+  },
+
+  "fridayShort": "F",
+  "@fridayShort": {
+    "description": "Short abbreviation for Friday"
+  },
+
+  "saturdayShort": "S",
+  "@saturdayShort": {
+    "description": "Short abbreviation for Saturday"
+  },
+
+  "sundayShort": "S",
+  "@sundayShort": {
+    "description": "Short abbreviation for Sunday"
+  },
+
+  "today": "Today",
+  "@today": {
+    "description": "Today badge text"
+  },
+
+  "monday": "Monday",
+  "@monday": {
+    "description": "Monday day name"
+  },
+
+  "tuesday": "Tuesday",
+  "@tuesday": {
+    "description": "Tuesday day name"
+  },
+
+  "wednesday": "Wednesday",
+  "@wednesday": {
+    "description": "Wednesday day name"
+  },
+
+  "thursday": "Thursday",
+  "@thursday": {
+    "description": "Thursday day name"
+  },
+
+  "friday": "Friday",
+  "@friday": {
+    "description": "Friday day name"
+  },
+
+  "saturday": "Saturday",
+  "@saturday": {
+    "description": "Saturday day name"
+  },
+
+  "sunday": "Sunday",
+  "@sunday": {
+    "description": "Sunday day name"
+  },
+
+  "unknown": "Unknown",
+  "@unknown": {
+    "description": "Unknown fallback text"
+  },
+
+  "meals": "meals",
+  "@meals": {
+    "description": "Meals count suffix"
+  },
+
+  "noMealsPlannedEmpty": "No meals planned",
+  "@noMealsPlannedEmpty": {
+    "description": "Empty state message when no meals are planned for the day"
+  },
+
+  "tapPlusButtonToAddMeal": "Tap the + button in navigation to add your first meal",
+  "@tapPlusButtonToAddMeal": {
+    "description": "Instruction to add first meal"
+  },
+
+  "selectTime": "Select Time",
+  "@selectTime": {
+    "description": "Time picker modal header"
+  },
+
+  "selectNewTimeForMeal": "Select new time for your meal",
+  "@selectNewTimeForMeal": {
+    "description": "Time picker subtitle for edit mode"
+  },
+
+  "chooseTimeForMeal": "Choose time for {mealCategory}",
+  "@chooseTimeForMeal": {
+    "description": "Time picker subtitle for add mode",
+    "placeholders": {
+      "mealCategory": {
+        "type": "String",
+        "description": "The meal category (e.g., breakfast, lunch)"
+      }
+    }
+  },
+
+  "selectedTime": "Selected Time",
+  "@selectedTime": {
+    "description": "Label for currently selected time display"
+  },
+
+  "quickSelect": "Quick Select",
+  "@quickSelect": {
+    "description": "Label for preset time selection section"
+  },
+
+  "customTime": "Custom Time",
+  "@customTime": {
+    "description": "Button text for custom time picker"
+  },
+
+  "next": "Next",
+  "@next": {
+    "description": "Next button text"
+  },
+
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Confirm button text"
+  },
+
+  "selectRecipe": "Select Recipe",
+  "@selectRecipe": {
+    "description": "Recipe selection modal title"
+  },
+
+  "chooseRecipeForMeal": "Choose a recipe for your meal",
+  "@chooseRecipeForMeal": {
+    "description": "Recipe selection modal subtitle"
+  },
+
+  "loadingRecipesEllipsis": "Loading recipes...",
+  "@loadingRecipesEllipsis": {
+    "description": "Loading message in recipe selection modal"
+  },
+
+  "searchFailed": "Search failed. Please try again.",
+  "@searchFailed": {
+    "description": "Error message when recipe search fails"
+  },
+
+  "failedToLoadRecipesPleaseTryAgain": "Failed to load recipes. Please try again.",
+  "@failedToLoadRecipesPleaseTryAgain": {
+    "description": "Error message when recipe loading fails in selection modal"
+  },
+
+  "noRecipesFoundEmpty": "No recipes found",
+  "@noRecipesFoundEmpty": {
+    "description": "Empty state title when no recipes are found in selection modal"
+  },
+
+  "trySearchingWithDifferentKeywords": "Try searching with different keywords",
+  "@trySearchingWithDifferentKeywords": {
+    "description": "Empty state description for search results in selection modal"
+  },
+
+  "noRecipesAvailable": "No recipes available",
+  "@noRecipesAvailable": {
+    "description": "Empty state title when no recipes are available in selection modal"
+  },
+
+  "pleaseCheckBackLater": "Please check back later",
+  "@pleaseCheckBackLater": {
+    "description": "Empty state description when no recipes are available in selection modal"
+  },
+
+  "clearSearch": "Clear search",
+  "@clearSearch": {
+    "description": "Button text to clear search in recipe selection modal"
+  },
+
+  "confirmMeal": "Confirm Meal",
+  "@confirmMeal": {
+    "description": "Meal confirmation modal title"
+  },
+
+  "reviewMealDetails": "Review your meal details",
+  "@reviewMealDetails": {
+    "description": "Meal confirmation modal subtitle"
+  },
+
+  "scheduledTime": "Scheduled Time",
+  "@scheduledTime": {
+    "description": "Label for scheduled time section in meal confirmation"
+  },
+
+  "change": "Change",
+  "@change": {
+    "description": "Button text to change scheduled time"
+  },
+
+  "numberOfServings": "Number of Servings",
+  "@numberOfServings": {
+    "description": "Label for servings selector in meal confirmation"
+  },
+
+  "servingsLabel": "Servings:",
+  "@servingsLabel": {
+    "description": "Servings prefix label"
+  },
+
+  "mealCategory": "Meal Category",
+  "@mealCategory": {
+    "description": "Label for meal category selector"
+  },
+
+  "backToRecipes": "Back to Recipes",
+  "@backToRecipes": {
+    "description": "Button text to go back to recipe selection"
+  },
+
+  "addToMealPlanAction": "Add to Meal Plan",
+  "@addToMealPlanAction": {
+    "description": "Button text to confirm adding meal to plan"
+  },
+
+  "addMealCategory": "Add {category}",
+  "@addMealCategory": {
+    "description": "Add meal category text in empty compact meal card",
+    "placeholders": {
+      "category": {
+        "type": "String",
+        "description": "The meal category to add"
+      }
+    }
+  },
+
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Generic loading text"
+  },
+
+  "unknownRecipe": "Unknown Recipe",
+  "@unknownRecipe": {
+    "description": "Text shown when recipe name is unknown"
+  },
+
+  "leftoverMeal": "Leftover Meal",
+  "@leftoverMeal": {
+    "description": "Text shown for leftover meals"
+  },
+
+  "groceryList": "Grocery List",
+  "@groceryList": {
+    "description": "Grocery list title"
+  },
+
+  "weekOf": "Week of {dateRange}",
+  "@weekOf": {
+    "description": "Week date range display",
+    "placeholders": {
+      "dateRange": {
+        "type": "String",
+        "description": "Date range for the week"
+      }
+    }
+  },
+
+  "noGroceryItemsGenerated": "No Grocery Items Generated",
+  "@noGroceryItemsGenerated": {
+    "description": "Empty state title when no grocery items are generated"
+  },
+
+  "mealPlanNoIngredientsInfo": "Your meal plan doesn't contain meals with\ningredient information that can generate grocery items",
+  "@mealPlanNoIngredientsInfo": {
+    "description": "Empty state description when no grocery items can be generated"
+  },
+
+  "addRecipeBasedMeals": "Add recipe-based meals",
+  "@addRecipeBasedMeals": {
+    "description": "Step title for adding recipe-based meals"
+  },
+
+  "addRecipeBasedMealsDescription": "Use the + button to add meals from your recipe collection",
+  "@addRecipeBasedMealsDescription": {
+    "description": "Step description for adding recipe-based meals"
+  },
+
+  "ensureRecipesHaveIngredients": "Ensure recipes have ingredients",
+  "@ensureRecipesHaveIngredients": {
+    "description": "Step title for ensuring recipes have ingredients"
+  },
+
+  "ensureRecipesHaveIngredientsDescription": "Only recipes with ingredient lists can generate grocery items",
+  "@ensureRecipesHaveIngredientsDescription": {
+    "description": "Step description for ensuring recipes have ingredients"
+  },
+
+  "generateYourList": "Generate your list",
+  "@generateYourList": {
+    "description": "Step title for generating grocery list"
+  },
+
+  "generateYourListDescription": "Once you have recipe-based meals, try generating again",
+  "@generateYourListDescription": {
+    "description": "Step description for generating grocery list"
+  },
+
+  "itemsAcrossCategories": "{totalItems} items across {categoriesCount} categories",
+  "@itemsAcrossCategories": {
+    "description": "Summary of grocery items and categories",
+    "placeholders": {
+      "totalItems": {
+        "type": "int",
+        "description": "Total number of grocery items"
+      },
+      "categoriesCount": {
+        "type": "int",
+        "description": "Number of categories"
+      }
+    }
+  },
+
+  "export": "Export",
+  "@export": {
+    "description": "Export button text"
+  },
+
+  "exporting": "Exporting...",
+  "@exporting": {
+    "description": "Export button text when in progress"
+  },
+
+  "itemName": "Item Name",
+  "@itemName": {
+    "description": "Item name input label"
+  },
+
+  "quantity": "Quantity",
+  "@quantity": {
+    "description": "Quantity input label"
+  },
+
+  "unit": "Unit",
+  "@unit": {
+    "description": "Unit input label"
+  },
+
+  "category": "Category",
+  "@category": {
+    "description": "Category input label"
+  },
+
+  "save": "Save",
+  "@save": {
+    "description": "Save button text"
+  },
+
+  "groceryListExportedSuccessfully": "Grocery list exported successfully!",
+  "@groceryListExportedSuccessfully": {
+    "description": "Success message when grocery list is exported"
+  },
+
+  "failedToExport": "Failed to export: {error}",
+  "@failedToExport": {
+    "description": "Error message when export fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+
+  "itemRemoved": "{itemName} removed",
+  "@itemRemoved": {
+    "description": "Message when item is removed from grocery list",
+    "placeholders": {
+      "itemName": {
+        "type": "String",
+        "description": "Name of the removed item"
+      }
+    }
+  },
+
+  "vegetables": "Vegetables",
+  "@vegetables": {
+    "description": "Vegetables category"
+  },
+
+  "fruits": "Fruits",
+  "@fruits": {
+    "description": "Fruits category"
+  },
+
+  "meatFish": "Meat & Fish",
+  "@meatFish": {
+    "description": "Meat & Fish category"
+  },
+
+  "dairy": "Dairy",
+  "@dairy": {
+    "description": "Dairy category"
+  },
+
+  "grainsRice": "Grains & Rice",
+  "@grainsRice": {
+    "description": "Grains & Rice category"
+  },
+
+  "oilsCondiments": "Oils & Condiments",
+  "@oilsCondiments": {
+    "description": "Oils & Condiments category"
+  },
+
+  "spices": "Spices",
+  "@spices": {
+    "description": "Spices category"
+  },
+
+  "other": "Other",
+  "@other": {
+    "description": "Other category"
+  },
+
+  "recipeImage": "Recipe Image",
+  "@recipeImage": {
+    "description": "Placeholder text for recipe image"
+  },
+
+  "availableIngredientsCount": "{available}/{total} ingredients",
+  "@availableIngredientsCount": {
+    "description": "Count of available vs total ingredients",
+    "placeholders": {
+      "available": {
+        "type": "int",
+        "description": "Number of available ingredients"
+      },
+      "total": {
+        "type": "int",
+        "description": "Total number of ingredients"
+      }
+    }
+  },
+
+  "missingIngredients": "Missing: {ingredients}",
+  "@missingIngredients": {
+    "description": "Text showing missing ingredients",
+    "placeholders": {
+      "ingredients": {
+        "type": "String",
+        "description": "Comma-separated list of missing ingredients"
+      }
+    }
+  },
+
+  "editItem": "Edit {itemType}",
+  "@editItem": {
+    "description": "Edit item modal title",
+    "placeholders": {
+      "itemType": {
+        "type": "String",
+        "description": "Type of item being edited"
+      }
+    }
+  },
+
+  "addItem": "Add {itemType}",
+  "@addItem": {
+    "description": "Add item modal title",
+    "placeholders": {
+      "itemType": {
+        "type": "String",
+        "description": "Type of item being added"
+      }
+    }
+  },
+
+  "itemType": "Item Type",
+  "@itemType": {
+    "description": "Item type selection label"
+  },
+
+  "ingredient": "Ingredient",
+  "@ingredient": {
+    "description": "Ingredient item type"
+  },
+
+  "leftover": "Leftover",
+  "@leftover": {
+    "description": "Leftover item type"
+  },
+
+  "itemNameLabel": "{itemType} Name",
+  "@itemNameLabel": {
+    "description": "Item name input label",
+    "placeholders": {
+      "itemType": {
+        "type": "String",
+        "description": "Type of item"
+      }
+    }
+  },
+
+  "enterItemName": "Enter {itemType} name...",
+  "@enterItemName": {
+    "description": "Item name input hint",
+    "placeholders": {
+      "itemType": {
+        "type": "String",
+        "description": "Type of item (lowercase)"
+      }
+    }
+  },
+
+  "pleaseEnterItemName": "Please enter an ingredient name",
+  "@pleaseEnterItemName": {
+    "description": "Validation error for empty item name"
+  },
+
+  "updateItem": "Update {itemType}",
+  "@updateItem": {
+    "description": "Update button text",
+    "placeholders": {
+      "itemType": {
+        "type": "String",
+        "description": "Type of item being updated"
+      }
+    }
+  },
+
+  "addItemAction": "Add {itemType}",
+  "@addItemAction": {
+    "description": "Add button text",
+    "placeholders": {
+      "itemType": {
+        "type": "String",
+        "description": "Type of item being added"
+      }
+    }
+  },
+
+  "findingRecipesEllipsis": "Finding recipes...",
+  "@findingRecipesEllipsis": {
+    "description": "Loading message when finding recipes for leftovers"
+  },
+
+  "recipesAvailable": "{count, plural, =1{1 recipe} other{{count} recipes}} available",
+  "@recipesAvailable": {
+    "description": "Count of available recipes",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of available recipes"
+      }
+    }
+  },
+
+  "recipeSuggestions": "Recipe Suggestions",
+  "@recipeSuggestions": {
+    "description": "Title for recipe suggestions section"
+  },
+
+  "failedToLoadRecipeSuggestions": "Failed to load recipe suggestions",
+  "@failedToLoadRecipeSuggestions": {
+    "description": "Error message when recipe suggestions fail to load"
+  },
+
+  "noMatchingRecipesFound": "No matching recipes found for this leftover",
+  "@noMatchingRecipesFound": {
+    "description": "Empty state message when no recipes match the leftover"
+  },
+
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit action text"
+  },
+
+  "findingRecipesForLeftover": "Finding recipes...",
+  "@findingRecipesForLeftover": {
+    "description": "Loading message when searching for leftover recipes"
+  },
+
+  "recipeSuggestionsCount": "Recipe suggestions ({count})",
+  "@recipeSuggestionsCount": {
+    "description": "Recipe suggestions title with count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of recipe suggestions"
+      }
+    }
+  },
+
+  "noRecipesFound": "No recipes found",
+  "@noRecipesFound": {
+    "description": "Message when no recipes are found for leftover"
+  },
+
+  "tapToViewRecipes": "Tap to view recipes",
+  "@tapToViewRecipes": {
+    "description": "Instruction to tap to view recipes"
+  },
+
+  "tapToHideRecipes": "Tap to hide recipes",
+  "@tapToHideRecipes": {
+    "description": "Instruction to tap to hide recipes"
+  },
+
+  "failedToLoadSuggestions": "Failed to load suggestions",
+  "@failedToLoadSuggestions": {
+    "description": "Error message when suggestions fail to load"
+  },
+
+  "noMatchingRecipesFoundForLeftover": "No matching recipes found for this leftover",
+  "@noMatchingRecipesFoundForLeftover": {
+    "description": "Empty state message when no recipes match the leftover item"
+  },
+
+  "recipesYouCanMake": "Recipes You Can Make",
+  "@recipesYouCanMake": {
+    "description": "Title for recipes you can make section"
+  },
+
+  "recipesCountText": "{count} recipes",
+  "@recipesCountText": {
+    "description": "Count of recipes text",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of recipes"
+      }
+    }
+  },
+
+  "perfectCount": "{count} perfect",
+  "@perfectCount": {
+    "description": "Count of perfect matches",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of perfect matches"
+      }
+    }
+  },
+
+  "goodCount": "{count} good",
+  "@goodCount": {
+    "description": "Count of good matches",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of good matches"
+      }
+    }
+  },
+
+  "addMoreIngredients": "Add More Ingredients",
+  "@addMoreIngredients": {
+    "description": "Title for add more ingredients prompt"
+  },
+
+  "addMoreIngredientsDescription": "We'll find recipes that match what you have! Add a few more ingredients to see recipe suggestions.",
+  "@addMoreIngredientsDescription": {
+    "description": "Description for add more ingredients prompt"
+  },
+
+  "tryAddingSuggestion": "Try adding: Rice, Onions, Garlic",
+  "@tryAddingSuggestion": {
+    "description": "Suggestion for ingredients to add"
   }
 
 }

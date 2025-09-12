@@ -100,6 +100,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inSeason => 'In Season';
 
   @override
+  String get perfect => 'Perfect';
+
+  @override
+  String get good => 'Good';
+
+  @override
+  String get item => 'Item';
+
+  @override
+  String get items => 'Items';
+
+  @override
   String failedToSaveSettings(String error) {
     return 'Failed to save settings: $error';
   }
@@ -221,6 +233,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tryAgain => 'Try Again';
+
+  @override
+  String get recipes => 'Recipes';
 
   @override
   String addedToFavorites(String recipeName) {
@@ -399,7 +414,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get youHaveSeenAllRecipes => 'You have seen all recipes';
 
   @override
-  String get checkBackLaterForNewRecipes => 'Check back later for new recipes';
+  String get checkBackLaterForNewRecipes =>
+      'Check back later for new recipes featuring this ingredient.';
 
   @override
   String get loadingMoreRecipes => 'Loading more recipes...';
@@ -541,9 +557,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingRecipes => 'Loading recipes...';
 
   @override
-  String get noRecipesFound => 'No recipes found';
-
-  @override
   String recipesFoundCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -564,4 +577,581 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return 'Showing $displayed of $_temp0';
   }
+
+  @override
+  String get recipeDoesNotExist =>
+      'The recipe you are looking for does not exist.';
+
+  @override
+  String get viewLess => 'View Less';
+
+  @override
+  String get viewMore => 'View More';
+
+  @override
+  String get instructions => 'Instructions';
+
+  @override
+  String get servings => 'Servings';
+
+  @override
+  String get cups => 'Cups';
+
+  @override
+  String get metric => 'Metric';
+
+  @override
+  String get calories => 'Calories';
+
+  @override
+  String get protein => 'Protein';
+
+  @override
+  String get carbs => 'Carbs';
+
+  @override
+  String get fat => 'Fat';
+
+  @override
+  String get addToMealPlan => 'Add to Meal Plan';
+
+  @override
+  String addRecipeToMealPlan(String recipeTitle) {
+    return 'Add \"$recipeTitle\" to Meal Plan';
+  }
+
+  @override
+  String get goToMealPlanner => 'Go to Meal Planner';
+
+  @override
+  String get chooseSpecificDayAndMeal => 'Choose specific day and meal time';
+
+  @override
+  String get addToToday => 'Add to Today';
+
+  @override
+  String get quickAddToTodayMeal => 'Quick add to next available meal today';
+
+  @override
+  String whichMealToAdd(String recipeTitle) {
+    return 'Which meal would you like to add \"$recipeTitle\" to?';
+  }
+
+  @override
+  String addedToTodayMeal(String mealType) {
+    return 'Added to today\'s $mealType!';
+  }
+
+  @override
+  String get breakfastTime => '8:30 AM';
+
+  @override
+  String get lunchTime => '12:30 PM';
+
+  @override
+  String get dinnerTime => '7:00 PM';
+
+  @override
+  String get pleaseLoginToViewMealPlans =>
+      'Please login to view your meal plans';
+
+  @override
+  String get failedToLoadMealPlan => 'Failed to load meal plan';
+
+  @override
+  String get youDoNotHavePermission =>
+      'You do not have permission to access meal plans';
+
+  @override
+  String get networkError => 'Network error. Please check your connection';
+
+  @override
+  String get serviceUnavailable => 'Service is currently unavailable';
+
+  @override
+  String get autoFillWeek => 'Auto-fill Week';
+
+  @override
+  String get autoFillWeekDescription =>
+      'Automatically fill empty meal slots with suggestions based on your pantry, leftovers, and seasonal recipes?';
+
+  @override
+  String get autoFillFeatureComingSoon => 'Auto-fill feature coming soon!';
+
+  @override
+  String get viewPreviousWeeks => 'View Previous Weeks';
+
+  @override
+  String get duplicateWeek => 'Duplicate Week';
+
+  @override
+  String get clearAllMeals => 'Clear All Meals';
+
+  @override
+  String get pleaseLoginToAddMeals => 'Please login to add meals';
+
+  @override
+  String get mealCategoryRequired => 'Meal category is required';
+
+  @override
+  String get pleaseLoginToUpdateMeals => 'Please login to update meals';
+
+  @override
+  String failedToUpdateMeal(String error) {
+    return 'Failed to update meal: $error';
+  }
+
+  @override
+  String get pleaseLoginToDeleteMeals => 'Please login to delete meals';
+
+  @override
+  String failedToDeleteMeal(String error) {
+    return 'Failed to delete meal: $error';
+  }
+
+  @override
+  String get failedToOpenRecipe => 'Failed to open recipe. Please try again.';
+
+  @override
+  String get youDoNotHavePermissionToAddMeals =>
+      'You do not have permission to add meals';
+
+  @override
+  String get networkErrorCheckConnection =>
+      'Network error. Please check your connection and try again';
+
+  @override
+  String get serviceUnavailableTryLater =>
+      'Service is currently unavailable. Please try again later';
+
+  @override
+  String get noMealPlanAvailable => 'No meal plan available';
+
+  @override
+  String get addMealsWithRecipes =>
+      'Please add meals with recipes to generate a grocery list.';
+
+  @override
+  String get noMealsPlannedForGrocery => 'No meals planned';
+
+  @override
+  String get addMealsToMealPlan =>
+      'Add meals to your meal plan first, then generate a grocery list.';
+
+  @override
+  String get noRecipeBasedMeals => 'No recipe-based meals';
+
+  @override
+  String get addMealsWithRecipesForGrocery =>
+      'Add meals with recipes to generate ingredients for your grocery list.';
+
+  @override
+  String get generatingGroceryList => 'Generating grocery list...';
+
+  @override
+  String get analyzingMealPlan =>
+      'Analyzing your meal plan and calculating ingredients';
+
+  @override
+  String get groceryListGenerationFailed => 'Grocery List Generation Failed';
+
+  @override
+  String get thisWeek => 'This Week';
+
+  @override
+  String mealsPlanned(int count) {
+    return '$count meals planned';
+  }
+
+  @override
+  String get mondayShort => 'M';
+
+  @override
+  String get tuesdayShort => 'T';
+
+  @override
+  String get wednesdayShort => 'W';
+
+  @override
+  String get thursdayShort => 'T';
+
+  @override
+  String get fridayShort => 'F';
+
+  @override
+  String get saturdayShort => 'S';
+
+  @override
+  String get sundayShort => 'S';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get monday => 'Monday';
+
+  @override
+  String get tuesday => 'Tuesday';
+
+  @override
+  String get wednesday => 'Wednesday';
+
+  @override
+  String get thursday => 'Thursday';
+
+  @override
+  String get friday => 'Friday';
+
+  @override
+  String get saturday => 'Saturday';
+
+  @override
+  String get sunday => 'Sunday';
+
+  @override
+  String get unknown => 'Unknown';
+
+  @override
+  String get meals => 'meals';
+
+  @override
+  String get noMealsPlannedEmpty => 'No meals planned';
+
+  @override
+  String get tapPlusButtonToAddMeal =>
+      'Tap the + button in navigation to add your first meal';
+
+  @override
+  String get selectTime => 'Select Time';
+
+  @override
+  String get selectNewTimeForMeal => 'Select new time for your meal';
+
+  @override
+  String chooseTimeForMeal(String mealCategory) {
+    return 'Choose time for $mealCategory';
+  }
+
+  @override
+  String get selectedTime => 'Selected Time';
+
+  @override
+  String get quickSelect => 'Quick Select';
+
+  @override
+  String get customTime => 'Custom Time';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get selectRecipe => 'Select Recipe';
+
+  @override
+  String get chooseRecipeForMeal => 'Choose a recipe for your meal';
+
+  @override
+  String get loadingRecipesEllipsis => 'Loading recipes...';
+
+  @override
+  String get searchFailed => 'Search failed. Please try again.';
+
+  @override
+  String get failedToLoadRecipesPleaseTryAgain =>
+      'Failed to load recipes. Please try again.';
+
+  @override
+  String get noRecipesFoundEmpty => 'No recipes found';
+
+  @override
+  String get trySearchingWithDifferentKeywords =>
+      'Try searching with different keywords';
+
+  @override
+  String get noRecipesAvailable => 'No recipes available';
+
+  @override
+  String get pleaseCheckBackLater => 'Please check back later';
+
+  @override
+  String get clearSearch => 'Clear search';
+
+  @override
+  String get confirmMeal => 'Confirm Meal';
+
+  @override
+  String get reviewMealDetails => 'Review your meal details';
+
+  @override
+  String get scheduledTime => 'Scheduled Time';
+
+  @override
+  String get change => 'Change';
+
+  @override
+  String get numberOfServings => 'Number of Servings';
+
+  @override
+  String get servingsLabel => 'Servings:';
+
+  @override
+  String get mealCategory => 'Meal Category';
+
+  @override
+  String get backToRecipes => 'Back to Recipes';
+
+  @override
+  String get addToMealPlanAction => 'Add to Meal Plan';
+
+  @override
+  String addMealCategory(String category) {
+    return 'Add $category';
+  }
+
+  @override
+  String get loading => 'Loading...';
+
+  @override
+  String get unknownRecipe => 'Unknown Recipe';
+
+  @override
+  String get leftoverMeal => 'Leftover Meal';
+
+  @override
+  String get groceryList => 'Grocery List';
+
+  @override
+  String weekOf(String dateRange) {
+    return 'Week of $dateRange';
+  }
+
+  @override
+  String get noGroceryItemsGenerated => 'No Grocery Items Generated';
+
+  @override
+  String get mealPlanNoIngredientsInfo =>
+      'Your meal plan doesn\'t contain meals with\ningredient information that can generate grocery items';
+
+  @override
+  String get addRecipeBasedMeals => 'Add recipe-based meals';
+
+  @override
+  String get addRecipeBasedMealsDescription =>
+      'Use the + button to add meals from your recipe collection';
+
+  @override
+  String get ensureRecipesHaveIngredients => 'Ensure recipes have ingredients';
+
+  @override
+  String get ensureRecipesHaveIngredientsDescription =>
+      'Only recipes with ingredient lists can generate grocery items';
+
+  @override
+  String get generateYourList => 'Generate your list';
+
+  @override
+  String get generateYourListDescription =>
+      'Once you have recipe-based meals, try generating again';
+
+  @override
+  String itemsAcrossCategories(int totalItems, int categoriesCount) {
+    return '$totalItems items across $categoriesCount categories';
+  }
+
+  @override
+  String get export => 'Export';
+
+  @override
+  String get exporting => 'Exporting...';
+
+  @override
+  String get itemName => 'Item Name';
+
+  @override
+  String get quantity => 'Quantity';
+
+  @override
+  String get unit => 'Unit';
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get groceryListExportedSuccessfully =>
+      'Grocery list exported successfully!';
+
+  @override
+  String failedToExport(String error) {
+    return 'Failed to export: $error';
+  }
+
+  @override
+  String itemRemoved(String itemName) {
+    return '$itemName removed';
+  }
+
+  @override
+  String get vegetables => 'Vegetables';
+
+  @override
+  String get fruits => 'Fruits';
+
+  @override
+  String get meatFish => 'Meat & Fish';
+
+  @override
+  String get dairy => 'Dairy';
+
+  @override
+  String get grainsRice => 'Grains & Rice';
+
+  @override
+  String get oilsCondiments => 'Oils & Condiments';
+
+  @override
+  String get spices => 'Spices';
+
+  @override
+  String get other => 'Other';
+
+  @override
+  String get recipeImage => 'Recipe Image';
+
+  @override
+  String availableIngredientsCount(int available, int total) {
+    return '$available/$total ingredients';
+  }
+
+  @override
+  String missingIngredients(String ingredients) {
+    return 'Missing: $ingredients';
+  }
+
+  @override
+  String editItem(String itemType) {
+    return 'Edit $itemType';
+  }
+
+  @override
+  String addItem(String itemType) {
+    return 'Add $itemType';
+  }
+
+  @override
+  String get itemType => 'Item Type';
+
+  @override
+  String get ingredient => 'Ingredient';
+
+  @override
+  String get leftover => 'Leftover';
+
+  @override
+  String itemNameLabel(String itemType) {
+    return '$itemType Name';
+  }
+
+  @override
+  String enterItemName(String itemType) {
+    return 'Enter $itemType name...';
+  }
+
+  @override
+  String get pleaseEnterItemName => 'Please enter an ingredient name';
+
+  @override
+  String updateItem(String itemType) {
+    return 'Update $itemType';
+  }
+
+  @override
+  String addItemAction(String itemType) {
+    return 'Add $itemType';
+  }
+
+  @override
+  String get findingRecipesEllipsis => 'Finding recipes...';
+
+  @override
+  String recipesAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count recipes',
+      one: '1 recipe',
+    );
+    return '$_temp0 available';
+  }
+
+  @override
+  String get recipeSuggestions => 'Recipe Suggestions';
+
+  @override
+  String get failedToLoadRecipeSuggestions =>
+      'Failed to load recipe suggestions';
+
+  @override
+  String get noMatchingRecipesFound =>
+      'No matching recipes found for this leftover';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get findingRecipesForLeftover => 'Finding recipes...';
+
+  @override
+  String recipeSuggestionsCount(int count) {
+    return 'Recipe suggestions ($count)';
+  }
+
+  @override
+  String get noRecipesFound => 'No recipes found';
+
+  @override
+  String get tapToViewRecipes => 'Tap to view recipes';
+
+  @override
+  String get tapToHideRecipes => 'Tap to hide recipes';
+
+  @override
+  String get failedToLoadSuggestions => 'Failed to load suggestions';
+
+  @override
+  String get noMatchingRecipesFoundForLeftover =>
+      'No matching recipes found for this leftover';
+
+  @override
+  String get recipesYouCanMake => 'Recipes You Can Make';
+
+  @override
+  String recipesCountText(int count) {
+    return '$count recipes';
+  }
+
+  @override
+  String perfectCount(int count) {
+    return '$count perfect';
+  }
+
+  @override
+  String goodCount(int count) {
+    return '$count good';
+  }
+
+  @override
+  String get addMoreIngredients => 'Add More Ingredients';
+
+  @override
+  String get addMoreIngredientsDescription =>
+      'We\'ll find recipes that match what you have! Add a few more ingredients to see recipe suggestions.';
+
+  @override
+  String get tryAddingSuggestion => 'Try adding: Rice, Onions, Garlic';
 }

@@ -1,10 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum PantryItemType {
-  ingredient,
-  leftover,
-}
+enum PantryItemType { ingredient, leftover }
 
 enum PantryCategory {
   vegetables,
@@ -84,9 +81,7 @@ class PantryItem {
       name: json['name'] as String? ?? '',
       category: _parsePantryCategory(json['category']),
       type: _parsePantryItemType(json['type']),
-      tags: json['tags'] != null 
-          ? List<String>.from(json['tags'] as List)
-          : [],
+      tags: json['tags'] != null ? List<String>.from(json['tags'] as List) : [],
       createdAt: _parseDateTime(json['createdAt']),
       updatedAt: _parseDateTime(json['updatedAt']),
       userId: json['userId'] as String? ?? '',
@@ -95,9 +90,9 @@ class PantryItem {
 
   static PantryCategory _parsePantryCategory(dynamic categoryValue) {
     if (categoryValue == null) return PantryCategory.other;
-    
+
     final categoryString = categoryValue.toString().toLowerCase();
-    
+
     try {
       return PantryCategory.values.firstWhere(
         (category) => category.name.toLowerCase() == categoryString,
@@ -109,9 +104,9 @@ class PantryItem {
 
   static PantryItemType _parsePantryItemType(dynamic typeValue) {
     if (typeValue == null) return PantryItemType.ingredient;
-    
+
     final typeString = typeValue.toString().toLowerCase();
-    
+
     try {
       return PantryItemType.values.firstWhere(
         (type) => type.name.toLowerCase() == typeString,
@@ -123,12 +118,12 @@ class PantryItem {
 
   static DateTime _parseDateTime(dynamic dateValue) {
     if (dateValue == null) return DateTime.now();
-    
+
     // Handle Firestore Timestamp
     if (dateValue is Timestamp) {
       return dateValue.toDate();
     }
-    
+
     // Handle String (ISO format)
     if (dateValue is String) {
       try {
@@ -137,24 +132,24 @@ class PantryItem {
         return DateTime.now();
       }
     }
-    
+
     // Handle DateTime (already parsed)
     if (dateValue is DateTime) {
       return dateValue;
     }
-    
+
     return DateTime.now();
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is PantryItem && 
-           other.id == id &&
-           other.name == name &&
-           other.category == category &&
-           other.type == type &&
-           listEquals(other.tags, tags);
+    return other is PantryItem &&
+        other.id == id &&
+        other.name == name &&
+        other.category == category &&
+        other.type == type &&
+        listEquals(other.tags, tags);
   }
 
   @override
@@ -223,29 +218,29 @@ extension PantryCategoryExtension on PantryCategory {
   String get emoji {
     switch (this) {
       case PantryCategory.vegetables:
-        return '🥬';
+        return '🥦';
       case PantryCategory.fruits:
         return '🍎';
       case PantryCategory.grains:
-        return '🌾';
+        return '🍞';
       case PantryCategory.proteins:
-        return '🥩';
+        return '🍗';
       case PantryCategory.dairy:
-        return '🥛';
+        return '🧀';
       case PantryCategory.spices:
-        return '🌶️';
+        return '🧂';
       case PantryCategory.condiments:
-        return '🍯';
+        return '🍶';
       case PantryCategory.oils:
-        return '🫒';
+        return '🥥';
       case PantryCategory.herbs:
         return '🌿';
       case PantryCategory.pantryStaples:
-        return '🏺';
+        return '🥫';
       case PantryCategory.frozen:
-        return '❄️';
+        return '🧊';
       case PantryCategory.beverages:
-        return '🥤';
+        return '🍹';
       case PantryCategory.other:
         return '📦';
     }

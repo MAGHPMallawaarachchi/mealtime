@@ -100,6 +100,18 @@ class AppLocalizationsSi extends AppLocalizations {
   String get inSeason => 'මේ කාලේ බහුල';
 
   @override
+  String get perfect => 'පරිපූර්ණයි';
+
+  @override
+  String get good => 'හොඳයි';
+
+  @override
+  String get item => 'අයිතමය';
+
+  @override
+  String get items => 'අයිතම';
+
+  @override
   String failedToSaveSettings(String error) {
     return 'සැකසුම් සුරැකීම අසාර්ථක විය: $error';
   }
@@ -223,6 +235,9 @@ class AppLocalizationsSi extends AppLocalizations {
   String get tryAgain => 'නැවත උත්සාහ කරන්න';
 
   @override
+  String get recipes => 'වට්ටෝරු';
+
+  @override
   String addedToFavorites(String recipeName) {
     return '$recipeName ප්‍රියතමයන්ට එක් කරන ලදී!';
   }
@@ -306,8 +321,7 @@ class AppLocalizationsSi extends AppLocalizations {
   String get commonLeftoversToTrack => 'ට්‍රැක් කිරීමට පොදු ඉතිරි ආහාර:';
 
   @override
-  String get planYourMealsFlexibility =>
-      'නම්‍යශීලීභාවයකින් ඔබේ ආහාර සැලසුම් කරන්න';
+  String get planYourMealsFlexibility => 'ඔබේ ආහාර සැලසුම් කරන්න';
 
   @override
   String get addMeal => 'ආහාරය එක් කරන්න';
@@ -537,9 +551,6 @@ class AppLocalizationsSi extends AppLocalizations {
   String get loadingRecipes => 'වට්ටෝරු පූරණය වෙමින්...';
 
   @override
-  String get noRecipesFound => 'වට්ටෝරු හමු නොවීය';
-
-  @override
   String recipesFoundCount(int count) {
     return 'වට්ටෝරු $countක් හමු විය';
   }
@@ -548,4 +559,578 @@ class AppLocalizationsSi extends AppLocalizations {
   String showingRecipesCount(int displayed, int total) {
     return 'වට්ටෝරු $totalන් $displayedක් පෙන්වමින්';
   }
+
+  @override
+  String get recipeDoesNotExist => 'ඔබ සොයන වට්ටෝරුව නොමැත.';
+
+  @override
+  String get viewLess => 'අඩුවෙන් බලන්න';
+
+  @override
+  String get viewMore => 'තවත් බලන්න';
+
+  @override
+  String get instructions => 'උපදෙස්';
+
+  @override
+  String get servings => 'සේවා කිරීම්';
+
+  @override
+  String get cups => 'කෝප්ප';
+
+  @override
+  String get metric => 'මෙට්‍රික්';
+
+  @override
+  String get calories => 'කැලරි';
+
+  @override
+  String get protein => 'ප්‍රෝටීන්';
+
+  @override
+  String get carbs => 'කාබෝ';
+
+  @override
+  String get fat => 'මේදය';
+
+  @override
+  String get addToMealPlan => 'ආහාර සැලැස්මට එක් කරන්න';
+
+  @override
+  String addRecipeToMealPlan(String recipeTitle) {
+    return '\"$recipeTitle\" ආහාර සැලැස්මට එක් කරන්න';
+  }
+
+  @override
+  String get goToMealPlanner => 'ආහාර සැලසුම්කරුවට යන්න';
+
+  @override
+  String get chooseSpecificDayAndMeal => 'නිශ්චිත දිනය සහ ආහාර වේලාව තෝරන්න';
+
+  @override
+  String get addToToday => 'අදට එක් කරන්න';
+
+  @override
+  String get quickAddToTodayMeal => 'අදට ඉක්මනින් ලබා ගත හැකි ආහාරයට එක් කරන්න';
+
+  @override
+  String whichMealToAdd(String recipeTitle) {
+    return '\"$recipeTitle\" කුමන ආහාරයට එක් කිරීමට ඔබට අවශ්‍යද?';
+  }
+
+  @override
+  String addedToTodayMeal(String mealType) {
+    return 'අදේ $mealTypeට එක් කරන ලදී!';
+  }
+
+  @override
+  String get breakfastTime => 'උදේ 8:30ට';
+
+  @override
+  String get lunchTime => 'දවල් 12:30ට';
+
+  @override
+  String get dinnerTime => 'සවස 7:00ට';
+
+  @override
+  String get pleaseLoginToViewMealPlans =>
+      'ආහාර සැලැස්ම බැලීමට කරුණාකර ඇතුළු වන්න';
+
+  @override
+  String get failedToLoadMealPlan => 'ආහාර සැලැස්ම පූරණය කිරීම අසාර්ථක විය';
+
+  @override
+  String get youDoNotHavePermission =>
+      'ඔබට ආහාර සැලැස්ම වෙත ප්‍රවේශ වීමට අවසර නැත';
+
+  @override
+  String get networkError => 'ජාල දෝෂයකි. කරුණාකර ඔබේ සම්බන්ධතාව පරීක්ෂා කරන්න';
+
+  @override
+  String get serviceUnavailable => 'සේවාව දැනට ලබා ගත නොහැකිය';
+
+  @override
+  String get autoFillWeek => 'සතිය ස්වයංක්‍රීයව පුරන්න';
+
+  @override
+  String get autoFillWeekDescription =>
+      'ඔබේ ගබඩාව, ඉතිරි ආහාර සහ සෘතුමය වට්ටෝරු මත පදනම්ව හිස් ආහාර කාල සඳහා ස්වයංක්‍රීයව යෝජනා පුරවන්නද?';
+
+  @override
+  String get autoFillFeatureComingSoon =>
+      'ස්වයංක්‍රීය පිරවීමේ විශේෂාංගය ඉක්මනින් පැමිණේ!';
+
+  @override
+  String get viewPreviousWeeks => 'පෙර සති බලන්න';
+
+  @override
+  String get duplicateWeek => 'සතිය අනුපිටපත් කරන්න';
+
+  @override
+  String get clearAllMeals => 'සියලුම ආහාර මකන්න';
+
+  @override
+  String get pleaseLoginToAddMeals => 'ආහාර එක් කිරීමට කරුණාකර ඇතුළු වන්න';
+
+  @override
+  String get mealCategoryRequired => 'ආහාර කාණ්ඩය අවශ්‍ය වේ';
+
+  @override
+  String get pleaseLoginToUpdateMeals =>
+      'ආහාර යාවත්කාලීන කිරීමට කරුණාකර ඇතුළු වන්න';
+
+  @override
+  String failedToUpdateMeal(String error) {
+    return 'ආහාරය යාවත්කාලීන කිරීම අසාර්ථක විය: $error';
+  }
+
+  @override
+  String get pleaseLoginToDeleteMeals => 'ආහාර මකා දැමීමට කරුණාකර ඇතුළු වන්න';
+
+  @override
+  String failedToDeleteMeal(String error) {
+    return 'ආහාරය මකා දැමීම අසාර්ථක විය: $error';
+  }
+
+  @override
+  String get failedToOpenRecipe =>
+      'වට්ටෝරුව විවෘත කිරීම අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න.';
+
+  @override
+  String get youDoNotHavePermissionToAddMeals => 'ඔබට ආහාර එක් කිරීමට අවසර නැත';
+
+  @override
+  String get networkErrorCheckConnection =>
+      'ජාල දෝෂයකි. කරුණාකර ඔබේ සම්බන්ධතාව පරීක්ෂා කර නැවත උත්සාහ කරන්න';
+
+  @override
+  String get serviceUnavailableTryLater =>
+      'සේවාව දැනට ලබා ගත නොහැකිය. කරුණාකර පසුව නැවත උත්සාහ කරන්න';
+
+  @override
+  String get noMealPlanAvailable => 'ආහාර සැලැස්මක් නොමැත';
+
+  @override
+  String get addMealsWithRecipes =>
+      'සිල්ලර ලැයිස්තුවක් ජනනය කිරීමට කරුණාකර වට්ටෝරු සහිත ආහාර එක් කරන්න.';
+
+  @override
+  String get noMealsPlannedForGrocery => 'ආහාර සැලසුම් කර නැත';
+
+  @override
+  String get addMealsToMealPlan =>
+      'මුලින්ම ඔබේ ආහාර සැලැස්මට ආහාර එක් කරන්න, පසුව සිල්ලර ලැයිස්තුවක් ජනනය කරන්න.';
+
+  @override
+  String get noRecipeBasedMeals => 'වට්ටෝරු මත පදනම් වූ ආහාර නැත';
+
+  @override
+  String get addMealsWithRecipesForGrocery =>
+      'ඔබේ සිල්ලර ලැයිස්තුව සඳහා අමුද්‍රව්‍ය ජනනය කිරීමට වට්ටෝරු සහිත ආහාර එක් කරන්න.';
+
+  @override
+  String get generatingGroceryList => 'සිල්ලර ලැයිස්තුව ජනනය කරමින්...';
+
+  @override
+  String get analyzingMealPlan =>
+      'ඔබේ ආහාර සැලැස්ම විශ්ලේෂණය කර අමුද්‍රව්‍ය ගණනය කරමින්';
+
+  @override
+  String get groceryListGenerationFailed => 'සිල්ලර ලැයිස්තු ජනනය අසාර්ථක විය';
+
+  @override
+  String get thisWeek => 'මෙම සතිය';
+
+  @override
+  String mealsPlanned(int count) {
+    return 'ආහාර $countක් සැලසුම් කර ඇත';
+  }
+
+  @override
+  String get mondayShort => 'ස';
+
+  @override
+  String get tuesdayShort => 'අ';
+
+  @override
+  String get wednesdayShort => 'බ';
+
+  @override
+  String get thursdayShort => 'බ්‍ර';
+
+  @override
+  String get fridayShort => 'සි';
+
+  @override
+  String get saturdayShort => 'සෙ';
+
+  @override
+  String get sundayShort => 'ඉ';
+
+  @override
+  String get today => 'අද';
+
+  @override
+  String get monday => 'සඳුදා';
+
+  @override
+  String get tuesday => 'අඟහරුවාදා';
+
+  @override
+  String get wednesday => 'බදාදා';
+
+  @override
+  String get thursday => 'බ්‍රහස්පතින්දා';
+
+  @override
+  String get friday => 'සිකුරාදා';
+
+  @override
+  String get saturday => 'සෙනසුරාදා';
+
+  @override
+  String get sunday => 'ඉරිදා';
+
+  @override
+  String get unknown => 'නොදන්නා';
+
+  @override
+  String get meals => 'ආහාර';
+
+  @override
+  String get noMealsPlannedEmpty => 'ආහාර සැලසුම් කර නැත';
+
+  @override
+  String get tapPlusButtonToAddMeal =>
+      'ඔබේ පළමු ආහාරය එක් කිරීමට නාවිකයේ + බොත්තම ක්ලික් කරන්න';
+
+  @override
+  String get selectTime => 'වේලාව තෝරන්න';
+
+  @override
+  String get selectNewTimeForMeal => 'ඔබේ ආහාරය සඳහා නව වේලාවක් තෝරන්න';
+
+  @override
+  String chooseTimeForMeal(String mealCategory) {
+    return '$mealCategory සඳහා වේලාව තෝරන්න';
+  }
+
+  @override
+  String get selectedTime => 'තෝරාගත් වේලාව';
+
+  @override
+  String get quickSelect => 'ඉක්මන් තේරීම';
+
+  @override
+  String get customTime => 'අභිරුචි වේලාව';
+
+  @override
+  String get next => 'ඊළඟ';
+
+  @override
+  String get confirm => 'තහවුරු කරන්න';
+
+  @override
+  String get selectRecipe => 'වට්ටෝරුව තෝරන්න';
+
+  @override
+  String get chooseRecipeForMeal => 'ඔබේ ආහාරය සඳහා වට්ටෝරුවක් තෝරන්න';
+
+  @override
+  String get loadingRecipesEllipsis => 'වට්ටෝරු පූරණය වෙමින්...';
+
+  @override
+  String get searchFailed => 'සෙවීම අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න.';
+
+  @override
+  String get failedToLoadRecipesPleaseTryAgain =>
+      'වට්ටෝරු පූරණය කිරීම අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න.';
+
+  @override
+  String get noRecipesFoundEmpty => 'වට්ටෝරු හමු නොවීය';
+
+  @override
+  String get trySearchingWithDifferentKeywords =>
+      'වෙනත් මූල පද සමඟ සෙවීම උත්සාහ කරන්න';
+
+  @override
+  String get noRecipesAvailable => 'වට්ටෝරු නොමැත';
+
+  @override
+  String get pleaseCheckBackLater => 'කරුණාකර පසුව නැවත පරීක්ෂා කරන්න';
+
+  @override
+  String get clearSearch => 'සෙවීම මකන්න';
+
+  @override
+  String get confirmMeal => 'ආහාරය තහවුරු කරන්න';
+
+  @override
+  String get reviewMealDetails => 'ඔබේ ආහාර විස්තර සමාලෝචනය කරන්න';
+
+  @override
+  String get scheduledTime => 'නියමිත වේලාව';
+
+  @override
+  String get change => 'වෙනස් කරන්න';
+
+  @override
+  String get numberOfServings => 'සේවා කිරීම් ගණන';
+
+  @override
+  String get servingsLabel => 'සේවා කිරීම්:';
+
+  @override
+  String get mealCategory => 'ආහාර කාණ්ඩය';
+
+  @override
+  String get backToRecipes => 'ආපසු';
+
+  @override
+  String get addToMealPlanAction => 'ආහාර සැලැස්මට එක් කරන්න';
+
+  @override
+  String addMealCategory(String category) {
+    return '$category එක් කරන්න';
+  }
+
+  @override
+  String get loading => 'පූරණය වෙමින්...';
+
+  @override
+  String get unknownRecipe => 'නොදන්නා වට්ටෝරුව';
+
+  @override
+  String get leftoverMeal => 'ඉතිරි ආහාරය';
+
+  @override
+  String get groceryList => 'සිල්ලර ගනුදෙනු ලැයිස්තුව';
+
+  @override
+  String weekOf(String dateRange) {
+    return '$dateRange සතිය';
+  }
+
+  @override
+  String get noGroceryItemsGenerated => 'සිල්ලර ගනුදෙනු අයිතම උත්පාදනය වී නැත';
+
+  @override
+  String get mealPlanNoIngredientsInfo =>
+      'ඔබගේ ආහාර සැලැස්ම සිල්ලර අයිතම\nඋත්පාදනය කළ හැකි අමුද්‍රව්‍ය තොරතුරු සහිත ආහාර අඩංගු නොවේ';
+
+  @override
+  String get addRecipeBasedMeals => 'වට්ටෝරු පාදක ආහාර එක් කරන්න';
+
+  @override
+  String get addRecipeBasedMealsDescription =>
+      'ඔබගේ වට්ටෝරු එකතුවෙන් ආහාර එක් කිරීමට + බොත්තම භාවිතා කරන්න';
+
+  @override
+  String get ensureRecipesHaveIngredients =>
+      'වට්ටෝරුවලට අමුද්‍රව්‍ය ඇති බව සහතික කරන්න';
+
+  @override
+  String get ensureRecipesHaveIngredientsDescription =>
+      'අමුද්‍රව්‍ය ලැයිස්තු සහිත වට්ටෝරුවලට පමණක් සිල්ලර අයිතම උත්පාදනය කළ හැකිය';
+
+  @override
+  String get generateYourList => 'ඔබගේ ලැයිස්තුව උත්පාදනය කරන්න';
+
+  @override
+  String get generateYourListDescription =>
+      'ඔබට වට්ටෝරු පාදක ආහාර ලැබුණු පසු, නැවත උත්පාදනය කිරීමට උත්සාහ කරන්න';
+
+  @override
+  String itemsAcrossCategories(int totalItems, int categoriesCount) {
+    return 'කාණ්ඩ $categoriesCount කිහිපයක් පුරා අයිතම $totalItems';
+  }
+
+  @override
+  String get export => 'නිර්යාත කරන්න';
+
+  @override
+  String get exporting => 'නිර්යාත කරමින්...';
+
+  @override
+  String get itemName => 'අයිතම නම';
+
+  @override
+  String get quantity => 'ප්‍රමාණය';
+
+  @override
+  String get unit => 'ඒකකය';
+
+  @override
+  String get category => 'කාණ්ඩය';
+
+  @override
+  String get save => 'සුරකින්න';
+
+  @override
+  String get groceryListExportedSuccessfully =>
+      'සිල්ලර ගනුදෙනු ලැයිස්තුව සාර්ථකව නිර්යාත කරන ලදී!';
+
+  @override
+  String failedToExport(String error) {
+    return 'නිර්යාත කිරීමට අසමත් වීම: $error';
+  }
+
+  @override
+  String itemRemoved(String itemName) {
+    return '$itemName ඉවත් කරන ලදී';
+  }
+
+  @override
+  String get vegetables => 'එළවළු';
+
+  @override
+  String get fruits => 'පලතුරු';
+
+  @override
+  String get meatFish => 'මස් සහ මාළු';
+
+  @override
+  String get dairy => 'කිරි නිෂ්පාදන';
+
+  @override
+  String get grainsRice => 'ධාන්‍ය සහ බත්';
+
+  @override
+  String get oilsCondiments => 'තෙල් සහ කුළුබඩු';
+
+  @override
+  String get spices => 'කුළුබඩු';
+
+  @override
+  String get other => 'වෙනත්';
+
+  @override
+  String get recipeImage => 'වට්ටෝරුවේ පින්තූරය';
+
+  @override
+  String availableIngredientsCount(int available, int total) {
+    return 'අමුද්‍රව්‍ය $available/$total';
+  }
+
+  @override
+  String missingIngredients(String ingredients) {
+    return 'නොමැති: $ingredients';
+  }
+
+  @override
+  String editItem(String itemType) {
+    return '$itemType සංස්කරණය කරන්න';
+  }
+
+  @override
+  String addItem(String itemType) {
+    return '$itemType එකතු කරන්න';
+  }
+
+  @override
+  String get itemType => 'අයිතම වර්ගය';
+
+  @override
+  String get ingredient => 'අමුද්‍රව්‍ය';
+
+  @override
+  String get leftover => 'ඉතුරු ආහාර';
+
+  @override
+  String itemNameLabel(String itemType) {
+    return '$itemType නාමය';
+  }
+
+  @override
+  String enterItemName(String itemType) {
+    return '$itemType නාමය ඇතුළත් කරන්න...';
+  }
+
+  @override
+  String get pleaseEnterItemName => 'කරුණාකර අමුද්‍රව්‍ය නාමයක් ඇතුළත් කරන්න';
+
+  @override
+  String updateItem(String itemType) {
+    return '$itemType යාවත්කාලීන කරන්න';
+  }
+
+  @override
+  String addItemAction(String itemType) {
+    return '$itemType එකතු කරන්න';
+  }
+
+  @override
+  String get findingRecipesEllipsis => 'වට්ටෝරු සොයමින්...';
+
+  @override
+  String recipesAvailable(int count) {
+    return 'වට්ටෝරු $countක් ලබා ගත හැකිය';
+  }
+
+  @override
+  String get recipeSuggestions => 'වට්ටෝරු යෝජනා';
+
+  @override
+  String get failedToLoadRecipeSuggestions =>
+      'වට්ටෝරු යෝජනා පූරණය කිරීම අසාර්ථක විය';
+
+  @override
+  String get noMatchingRecipesFound =>
+      'මෙම ඉතිරි ආහාරය සඳහා ගැලපෙන වට්ටෝරු හමු නොවීය';
+
+  @override
+  String get edit => 'සංස්කරණය කරන්න';
+
+  @override
+  String get findingRecipesForLeftover => 'වට්ටෝරු සොයමින්...';
+
+  @override
+  String recipeSuggestionsCount(int count) {
+    return 'වට්ටෝරු යෝජනා ($count)';
+  }
+
+  @override
+  String get noRecipesFound => 'වට්ටෝරු හමු නොවීය';
+
+  @override
+  String get tapToViewRecipes => 'වට්ටෝරු බැලීමට ක්ලික් කරන්න';
+
+  @override
+  String get tapToHideRecipes => 'වට්ටෝරු සැඟවීමට ක්ලික් කරන්න';
+
+  @override
+  String get failedToLoadSuggestions => 'යෝජනා පූරණය කිරීම අසාර්ථක විය';
+
+  @override
+  String get noMatchingRecipesFoundForLeftover =>
+      'මෙම ඉතිරි ආහාරය සඳහා ගැලපෙන වට්ටෝරු හමු නොවීය';
+
+  @override
+  String get recipesYouCanMake => 'ඔබට සාදා ගත හැකි වට්ටෝරු';
+
+  @override
+  String recipesCountText(int count) {
+    return 'වට්ටෝරු $countක්';
+  }
+
+  @override
+  String perfectCount(int count) {
+    return 'සම්පූර්ණ $countක්';
+  }
+
+  @override
+  String goodCount(int count) {
+    return 'හොඳ $countක්';
+  }
+
+  @override
+  String get addMoreIngredients => 'තවත් අමුද්‍රව්‍ය එක් කරන්න';
+
+  @override
+  String get addMoreIngredientsDescription =>
+      'ඔබ සතුව ඇති දේට ගැලපෙන වට්ටෝරු අපි සොයා ගන්නෙමු! වට්ටෝරු යෝජනා බැලීමට තවත් අමුද්‍රව්‍ය කිහිපයක් එක් කරන්න.';
+
+  @override
+  String get tryAddingSuggestion =>
+      'මේ එක් කිරීමට උත්සාහ කරන්න: බත්, ළූණු, සුදුළූණු';
 }

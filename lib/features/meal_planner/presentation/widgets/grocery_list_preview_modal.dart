@@ -84,16 +84,18 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Grocery List',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.groceryList,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
                       ),
                     ),
                     Text(
-                      'Week of ${groceryList.dateRange}',
+                      AppLocalizations.of(
+                        context,
+                      )!.weekOf(groceryList.dateRange),
                       style: const TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
@@ -128,19 +130,22 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
               color: AppColors.textSecondary.withOpacity(0.5),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'No Grocery Items Generated',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.noGroceryItemsGenerated,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textSecondary,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Your meal plan doesn\'t contain meals with\ningredient information that can generate grocery items',
+            Text(
+              AppLocalizations.of(context)!.mealPlanNoIngredientsInfo,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 24),
             _buildEmptyStateSteps(),
@@ -157,23 +162,26 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
         children: [
           _buildEmptyStateStep(
             icon: PhosphorIcons.plus(),
-            title: 'Add recipe-based meals',
-            description:
-                'Use the + button to add meals from your recipe collection',
+            title: AppLocalizations.of(context)!.addRecipeBasedMeals,
+            description: AppLocalizations.of(
+              context,
+            )!.addRecipeBasedMealsDescription,
           ),
           const SizedBox(height: 16),
           _buildEmptyStateStep(
             icon: PhosphorIcons.cookingPot(),
-            title: 'Ensure recipes have ingredients',
-            description:
-                'Only recipes with ingredient lists can generate grocery items',
+            title: AppLocalizations.of(context)!.ensureRecipesHaveIngredients,
+            description: AppLocalizations.of(
+              context,
+            )!.ensureRecipesHaveIngredientsDescription,
           ),
           const SizedBox(height: 16),
           _buildEmptyStateStep(
             icon: PhosphorIcons.shoppingCart(),
-            title: 'Generate your list',
-            description:
-                'Once you have recipe-based meals, try generating again',
+            title: AppLocalizations.of(context)!.generateYourList,
+            description: AppLocalizations.of(
+              context,
+            )!.generateYourListDescription,
           ),
         ],
       ),
@@ -262,7 +270,10 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
           ),
           const SizedBox(width: 12),
           Text(
-            '${groceryList.totalItems} items across ${groceryList.categories.length} categories',
+            AppLocalizations.of(context)!.itemsAcrossCategories(
+              groceryList.totalItems,
+              groceryList.categories.length,
+            ),
             style: const TextStyle(
               fontSize: 14,
               color: AppColors.textPrimary,
@@ -402,7 +413,7 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
             child: OutlinedButton.icon(
               onPressed: _addCustomItem,
               icon: PhosphorIcon(PhosphorIcons.plus()),
-              label: const Text('Add Item'),
+              label: Text(AppLocalizations.of(context)!.addItem as String),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 side: const BorderSide(color: AppColors.primary),
@@ -424,7 +435,11 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
                       ),
                     )
                   : PhosphorIcon(PhosphorIcons.export()),
-              label: Text(_isExporting ? 'Exporting...' : 'Export'),
+              label: Text(
+                _isExporting
+                    ? AppLocalizations.of(context)!.exporting
+                    : AppLocalizations.of(context)!.export,
+              ),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 backgroundColor: AppColors.primary,
@@ -458,7 +473,7 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${item.name} removed'),
+        content: Text(AppLocalizations.of(context)!.itemRemoved(item.name)),
         action: SnackBarAction(
           label: AppLocalizations.of(context)!.undo,
           onPressed: () {
@@ -512,7 +527,9 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
                   size: 20,
                 ),
                 const SizedBox(width: 8),
-                const Text('Grocery list exported successfully!'),
+                Text(
+                  AppLocalizations.of(context)!.groceryListExportedSuccessfully,
+                ),
               ],
             ),
             backgroundColor: AppColors.success,
@@ -527,7 +544,9 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to export: $e'),
+            content: Text(
+              AppLocalizations.of(context)!.failedToExport(e.toString()),
+            ),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
@@ -562,7 +581,7 @@ class _EditItemDialogState extends State<_EditItemDialog> {
   late TextEditingController _unitController;
   String _selectedCategory = '';
 
-  static const List<String> _categories = [
+  static const List<String> _categoryKeys = [
     'Vegetables',
     'Fruits',
     'Meat & Fish',
@@ -573,6 +592,27 @@ class _EditItemDialogState extends State<_EditItemDialog> {
     'Other',
   ];
 
+  List<String> get _localizedCategories => [
+    AppLocalizations.of(context)!.vegetables,
+    AppLocalizations.of(context)!.fruits,
+    AppLocalizations.of(context)!.meatFish,
+    AppLocalizations.of(context)!.dairy,
+    AppLocalizations.of(context)!.grainsRice,
+    AppLocalizations.of(context)!.oilsCondiments,
+    AppLocalizations.of(context)!.spices,
+    AppLocalizations.of(context)!.other,
+  ];
+
+  String _getLocalizedCategory(String key) {
+    final index = _categoryKeys.indexOf(key);
+    return index >= 0 ? _localizedCategories[index] : key;
+  }
+
+  String _getCategoryKey(String localizedCategory) {
+    final index = _localizedCategories.indexOf(localizedCategory);
+    return index >= 0 ? _categoryKeys[index] : localizedCategory;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -581,19 +621,21 @@ class _EditItemDialogState extends State<_EditItemDialog> {
       text: widget.item.quantity.toString(),
     );
     _unitController = TextEditingController(text: widget.item.unit);
-    _selectedCategory = widget.item.category;
+    _selectedCategory = _getLocalizedCategory(widget.item.category);
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Edit Item'),
+      title: Text(AppLocalizations.of(context)!.editItem as String),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: _nameController,
-            decoration: const InputDecoration(labelText: 'Item Name'),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.itemName,
+            ),
           ),
           const SizedBox(height: 16),
           Row(
@@ -602,7 +644,9 @@ class _EditItemDialogState extends State<_EditItemDialog> {
                 flex: 2,
                 child: TextField(
                   controller: _quantityController,
-                  decoration: const InputDecoration(labelText: 'Quantity'),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.quantity,
+                  ),
                   keyboardType: TextInputType.number,
                 ),
               ),
@@ -610,7 +654,9 @@ class _EditItemDialogState extends State<_EditItemDialog> {
               Expanded(
                 child: TextField(
                   controller: _unitController,
-                  decoration: const InputDecoration(labelText: 'Unit'),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.unit,
+                  ),
                 ),
               ),
             ],
@@ -618,8 +664,10 @@ class _EditItemDialogState extends State<_EditItemDialog> {
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             value: _selectedCategory,
-            decoration: const InputDecoration(labelText: 'Category'),
-            items: _categories
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.category,
+            ),
+            items: _localizedCategories
                 .map(
                   (category) =>
                       DropdownMenuItem(value: category, child: Text(category)),
@@ -636,9 +684,12 @@ class _EditItemDialogState extends State<_EditItemDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
-        ElevatedButton(onPressed: _saveItem, child: const Text('Save')),
+        ElevatedButton(
+          onPressed: _saveItem,
+          child: Text(AppLocalizations.of(context)!.save),
+        ),
       ],
     );
   }
@@ -659,7 +710,7 @@ class _EditItemDialogState extends State<_EditItemDialog> {
       ingredientName: _nameController.text.trim(),
       quantity: quantity,
       unit: _unitController.text.trim(),
-      category: _selectedCategory,
+      category: _getCategoryKey(_selectedCategory),
       displayName: _nameController.text.trim(),
     );
 
@@ -689,9 +740,9 @@ class _AddItemDialogState extends State<_AddItemDialog> {
   final _nameController = TextEditingController();
   final _quantityController = TextEditingController(text: '1');
   final _unitController = TextEditingController(text: 'item');
-  String _selectedCategory = 'Other';
+  late String _selectedCategory;
 
-  static const List<String> _categories = [
+  static const List<String> _categoryKeys = [
     'Vegetables',
     'Fruits',
     'Meat & Fish',
@@ -702,16 +753,45 @@ class _AddItemDialogState extends State<_AddItemDialog> {
     'Other',
   ];
 
+  List<String> get _localizedCategories => [
+    AppLocalizations.of(context)!.vegetables,
+    AppLocalizations.of(context)!.fruits,
+    AppLocalizations.of(context)!.meatFish,
+    AppLocalizations.of(context)!.dairy,
+    AppLocalizations.of(context)!.grainsRice,
+    AppLocalizations.of(context)!.oilsCondiments,
+    AppLocalizations.of(context)!.spices,
+    AppLocalizations.of(context)!.other,
+  ];
+
+  String _getLocalizedCategory(String key) {
+    final index = _categoryKeys.indexOf(key);
+    return index >= 0 ? _localizedCategories[index] : key;
+  }
+
+  String _getCategoryKey(String localizedCategory) {
+    final index = _localizedCategories.indexOf(localizedCategory);
+    return index >= 0 ? _categoryKeys[index] : localizedCategory;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedCategory = _getLocalizedCategory('Other');
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Item'),
+      title: Text(AppLocalizations.of(context)!.addItem as String),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: _nameController,
-            decoration: const InputDecoration(labelText: 'Item Name'),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.itemName,
+            ),
             autofocus: true,
           ),
           const SizedBox(height: 16),
@@ -721,7 +801,9 @@ class _AddItemDialogState extends State<_AddItemDialog> {
                 flex: 2,
                 child: TextField(
                   controller: _quantityController,
-                  decoration: const InputDecoration(labelText: 'Quantity'),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.quantity,
+                  ),
                   keyboardType: TextInputType.number,
                 ),
               ),
@@ -729,7 +811,9 @@ class _AddItemDialogState extends State<_AddItemDialog> {
               Expanded(
                 child: TextField(
                   controller: _unitController,
-                  decoration: const InputDecoration(labelText: 'Unit'),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.unit,
+                  ),
                 ),
               ),
             ],
@@ -737,8 +821,10 @@ class _AddItemDialogState extends State<_AddItemDialog> {
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             value: _selectedCategory,
-            decoration: const InputDecoration(labelText: 'Category'),
-            items: _categories
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.category,
+            ),
+            items: _localizedCategories
                 .map(
                   (category) =>
                       DropdownMenuItem(value: category, child: Text(category)),
@@ -755,9 +841,12 @@ class _AddItemDialogState extends State<_AddItemDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
-        ElevatedButton(onPressed: _addItem, child: const Text('Add')),
+        ElevatedButton(
+          onPressed: _addItem,
+          child: Text(AppLocalizations.of(context)!.add),
+        ),
       ],
     );
   }
@@ -778,7 +867,7 @@ class _AddItemDialogState extends State<_AddItemDialog> {
       ingredientName: _nameController.text.trim(),
       quantity: quantity,
       unit: _unitController.text.trim(),
-      category: _selectedCategory,
+      category: _getCategoryKey(_selectedCategory),
       displayName: _nameController.text.trim(),
     );
 

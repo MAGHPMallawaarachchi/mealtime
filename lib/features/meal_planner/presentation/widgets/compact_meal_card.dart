@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
@@ -7,6 +6,7 @@ import '../../domain/models/meal_slot.dart';
 import '../../../recipes/domain/models/recipe.dart';
 import '../../../recipes/domain/repositories/recipes_repository.dart';
 import '../../../recipes/data/repositories/recipes_repository_impl.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class CompactMealCard extends StatefulWidget {
   final MealSlot mealSlot;
@@ -47,7 +47,6 @@ class _CompactMealCardState extends State<CompactMealCard> {
     // Check if the meal slot changed
     if (oldWidget.mealSlot.id != widget.mealSlot.id ||
         oldWidget.mealSlot.recipeId != widget.mealSlot.recipeId) {
-
       // Reset recipe state
       _recipe = null;
       _isLoadingRecipe = false;
@@ -63,7 +62,6 @@ class _CompactMealCardState extends State<CompactMealCard> {
     final recipeId = widget.mealSlot.recipeId;
     if (recipeId == null) return;
 
-
     setState(() {
       _isLoadingRecipe = true;
     });
@@ -78,8 +76,7 @@ class _CompactMealCardState extends State<CompactMealCard> {
           _recipe = recipe;
           _isLoadingRecipe = false;
         });
-      } else {
-      }
+      } else {}
     } catch (e) {
       // Only update error state if still relevant
       if (mounted && widget.mealSlot.recipeId == recipeId) {
@@ -144,7 +141,9 @@ class _CompactMealCardState extends State<CompactMealCard> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Add ${widget.mealSlot.category}',
+                      AppLocalizations.of(
+                        context,
+                      )!.addMealCategory(_getLocalizedCategory()),
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -251,7 +250,7 @@ class _CompactMealCardState extends State<CompactMealCard> {
                           children: [
                             Expanded(
                               child: Text(
-                                widget.mealSlot.category,
+                                _getLocalizedCategory(),
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: AppColors.textSecondary,
@@ -339,16 +338,18 @@ class _CompactMealCardState extends State<CompactMealCard> {
 
     if (widget.mealSlot.recipeId != null) {
       if (_isLoadingRecipe) {
-        return 'Loading...';
+        return AppLocalizations.of(context)!.loading;
       }
-      return _recipe?.title ?? 'Unknown Recipe';
+      return _recipe?.title ?? AppLocalizations.of(context)!.unknownRecipe;
     }
 
     if (widget.mealSlot.leftoverId != null) {
-      return 'Leftover Meal'; // Would fetch actual leftover data
+      return AppLocalizations.of(
+        context,
+      )!.leftoverMeal; // Would fetch actual leftover data
     }
 
-    return widget.mealSlot.category;
+    return _getLocalizedCategory();
   }
 
   String? _getMealImageUrl() {
@@ -358,5 +359,28 @@ class _CompactMealCardState extends State<CompactMealCard> {
 
     // Could add leftover images or category-based default images
     return null;
+  }
+
+  String _getLocalizedCategory() {
+    final localizations = AppLocalizations.of(context)!;
+    final category = widget.mealSlot.category.toLowerCase();
+
+    switch (category) {
+      case 'breakfast':
+        return localizations.breakfast;
+      case 'lunch':
+        return localizations.lunch;
+      case 'dinner':
+        return localizations.dinner;
+      case 'snack':
+        return localizations.snack;
+      case 'brunch':
+        return localizations.brunch;
+      case 'late night':
+        return localizations.lateNight;
+      default:
+        // Fallback to original category if no translation found
+        return widget.mealSlot.category;
+    }
   }
 }

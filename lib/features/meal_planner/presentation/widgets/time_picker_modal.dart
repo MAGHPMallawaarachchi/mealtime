@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class TimePickerModal extends StatefulWidget {
   final TimeOfDay initialTime;
@@ -108,9 +109,9 @@ class _TimePickerModalState extends State<TimePickerModal> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Select Time',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.selectTime,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
@@ -118,8 +119,8 @@ class _TimePickerModalState extends State<TimePickerModal> {
               ),
               Text(
                 widget.isEditMode
-                    ? 'Select new time for your meal'
-                    : 'Choose time for ${widget.mealCategory.toLowerCase()}',
+                    ? AppLocalizations.of(context)!.selectNewTimeForMeal
+                    : AppLocalizations.of(context)!.chooseTimeForMeal(widget.mealCategory.toLowerCase()),
                 style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
@@ -153,9 +154,9 @@ class _TimePickerModalState extends State<TimePickerModal> {
       ),
       child: Column(
         children: [
-          const Text(
-            'Selected Time',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.selectedTime,
+            style: const TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary,
               fontWeight: FontWeight.w500,
@@ -179,9 +180,9 @@ class _TimePickerModalState extends State<TimePickerModal> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Quick Select',
-          style: TextStyle(
+        Text(
+          AppLocalizations.of(context)!.quickSelect,
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
@@ -232,7 +233,7 @@ class _TimePickerModalState extends State<TimePickerModal> {
     return OutlinedButton.icon(
       onPressed: _showCustomTimePicker,
       icon: Icon(PhosphorIcons.gear()),
-      label: const Text('Custom Time'),
+      label: Text(AppLocalizations.of(context)!.customTime),
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -254,7 +255,7 @@ class _TimePickerModalState extends State<TimePickerModal> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: Text(widget.isEditMode ? 'Cancel' : 'Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
         ),
         const SizedBox(width: 12),
@@ -271,7 +272,7 @@ class _TimePickerModalState extends State<TimePickerModal> {
               ),
             ),
             child: Text(
-              widget.isEditMode ? 'Confirm' : 'Next',
+              widget.isEditMode ? AppLocalizations.of(context)!.confirm : AppLocalizations.of(context)!.next,
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),

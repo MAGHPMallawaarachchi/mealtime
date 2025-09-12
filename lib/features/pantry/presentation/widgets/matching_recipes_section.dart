@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../domain/models/ingredient_recipe_match.dart';
@@ -64,9 +65,9 @@ class MatchingRecipesSection extends ConsumerWidget {
                 color: AppColors.primary,
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'Recipes You Can Make',
+                  AppLocalizations.of(context)!.recipesYouCanMake,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -81,7 +82,7 @@ class MatchingRecipesSection extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  '${matches.length} recipes',
+                  '${matches.length} ${AppLocalizations.of(context)!.recipes}',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -98,7 +99,8 @@ class MatchingRecipesSection extends ConsumerWidget {
                 if (perfectMatches > 0) ...[
                   _buildMatchChip(
                     icon: PhosphorIcons.checkCircle(),
-                    label: '$perfectMatches perfect',
+                    label:
+                        '$perfectMatches ${AppLocalizations.of(context)!.perfect}',
                     color: AppColors.success,
                   ),
                   if (goodMatches > 0) const SizedBox(width: 8),
@@ -106,7 +108,7 @@ class MatchingRecipesSection extends ConsumerWidget {
                 if (goodMatches > 0) ...[
                   _buildMatchChip(
                     icon: PhosphorIcons.star(),
-                    label: '$goodMatches good',
+                    label: '$goodMatches ${AppLocalizations.of(context)!.good}',
                     color: AppColors.primary,
                   ),
                 ],
@@ -181,9 +183,9 @@ class MatchingRecipesSection extends ConsumerWidget {
                 color: AppColors.textSecondary,
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'Recipes You Can Make',
+                  AppLocalizations.of(context)!.recipesYouCanMake,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

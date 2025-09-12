@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/models/daily_meal_plan.dart';
 import '../../domain/models/meal_slot.dart';
 import 'compact_meal_card.dart';
@@ -26,10 +27,10 @@ class DayTimelineView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _buildDayHeader(),
+        _buildDayHeader(context),
         const SizedBox(height: 16),
         if (sortedMeals.isEmpty) ...[
-          _buildEmptyState(),
+          _buildEmptyState(context),
         ] else ...[
           Expanded(
             child: ListView.separated(
@@ -47,7 +48,7 @@ class DayTimelineView extends StatelessWidget {
     );
   }
 
-  Widget _buildDayHeader() {
+  Widget _buildDayHeader(BuildContext context) {
     final today = DateTime.now();
     final displayDate = selectedDate ?? dayPlan.date;
     final isToday =
@@ -55,7 +56,7 @@ class DayTimelineView extends StatelessWidget {
         displayDate.month == today.month &&
         displayDate.day == today.day;
 
-    final dayName = _getDayName(displayDate.weekday);
+    final dayName = _getDayName(displayDate.weekday, context);
     final dateStr = '${displayDate.day}/${displayDate.month}';
 
     return Container(
@@ -86,9 +87,9 @@ class DayTimelineView extends StatelessWidget {
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text(
-                        'Today',
-                        style: TextStyle(
+                      child: Text(
+                        AppLocalizations.of(context)!.today,
+                        style: const TextStyle(
                           fontSize: 12,
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
@@ -109,13 +110,13 @@ class DayTimelineView extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          _buildDayStats(),
+          _buildDayStats(context),
         ],
       ),
     );
   }
 
-  Widget _buildDayStats() {
+  Widget _buildDayStats(BuildContext context) {
     final plannedMeals = dayPlan.scheduledMeals.length;
     final totalServings = dayPlan.scheduledMeals.fold<int>(
       0,
@@ -126,7 +127,7 @@ class DayTimelineView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          '$plannedMeals meals',
+          '$plannedMeals ${AppLocalizations.of(context)!.meals}',
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
@@ -135,14 +136,14 @@ class DayTimelineView extends StatelessWidget {
         ),
         const SizedBox(height: 2),
         Text(
-          '$totalServings servings',
+          '$totalServings ${AppLocalizations.of(context)!.servings}',
           style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
         ),
       ],
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return Expanded(
       child: Center(
         child: Column(
@@ -162,8 +163,8 @@ class DayTimelineView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'No meals planned',
+            Text(
+              AppLocalizations.of(context)!.noMealsPlannedEmpty,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -171,8 +172,8 @@ class DayTimelineView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Tap the + button in navigation to add your first meal',
+            Text(
+              AppLocalizations.of(context)!.tapPlusButtonToAddMeal,
               style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
@@ -226,24 +227,25 @@ class DayTimelineView extends StatelessWidget {
     );
   }
 
-  String _getDayName(int weekday) {
+  String _getDayName(int weekday, BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     switch (weekday) {
       case 1:
-        return 'Monday';
+        return l10n!.monday;
       case 2:
-        return 'Tuesday';
+        return l10n!.tuesday;
       case 3:
-        return 'Wednesday';
+        return l10n!.wednesday;
       case 4:
-        return 'Thursday';
+        return l10n!.thursday;
       case 5:
-        return 'Friday';
+        return l10n!.friday;
       case 6:
-        return 'Saturday';
+        return l10n!.saturday;
       case 7:
-        return 'Sunday';
+        return l10n!.sunday;
       default:
-        return 'Unknown';
+        return l10n!.unknown;
     }
   }
 }

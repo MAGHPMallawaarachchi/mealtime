@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../domain/models/pantry_item.dart';
@@ -9,10 +10,7 @@ import '../../data/sri_lankan_ingredients.dart';
 class AddIngredientModal extends ConsumerStatefulWidget {
   final PantryItem? editingItem;
 
-  const AddIngredientModal({
-    super.key,
-    this.editingItem,
-  });
+  const AddIngredientModal({super.key, this.editingItem});
 
   @override
   ConsumerState<AddIngredientModal> createState() => _AddIngredientModalState();
@@ -21,7 +19,7 @@ class AddIngredientModal extends ConsumerStatefulWidget {
 class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
   final TextEditingController _nameController = TextEditingController();
   final FocusNode _nameFocusNode = FocusNode();
-  
+
   PantryCategory _selectedCategory = PantryCategory.other;
   PantryItemType _selectedType = PantryItemType.ingredient;
   List<String> _tags = [];
@@ -33,7 +31,7 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
   @override
   void initState() {
     super.initState();
-    
+
     if (widget.editingItem != null) {
       _nameController.text = widget.editingItem!.name;
       _selectedCategory = widget.editingItem!.category;
@@ -68,8 +66,9 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
     try {
       final searchUseCase = ref.read(searchIngredientsUseCaseProvider);
       final suggestions = await searchUseCase.execute(query, limit: 8);
-      
-      if (mounted && _nameController.text.trim().toLowerCase() == query.toLowerCase()) {
+
+      if (mounted &&
+          _nameController.text.trim().toLowerCase() == query.toLowerCase()) {
         setState(() {
           _suggestions = suggestions;
           _showSuggestions = suggestions.isNotEmpty;
@@ -92,7 +91,9 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
 
   void _autoSelectCategory(String ingredientName) {
     // Use Sri Lankan ingredients database for smart categorization
-    final category = SriLankanIngredients.getCategoryForIngredient(ingredientName);
+    final category = SriLankanIngredients.getCategoryForIngredient(
+      ingredientName,
+    );
     if (category != null) {
       setState(() {
         _selectedCategory = category;
@@ -100,11 +101,56 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
     }
   }
 
+  String _getItemTypeDisplayName(BuildContext context, PantryItemType type) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (type) {
+      case PantryItemType.ingredient:
+        return l10n.ingredient;
+      case PantryItemType.leftover:
+        return l10n.leftover;
+    }
+  }
+
+  String _getCategoryDisplayName(
+    BuildContext context,
+    PantryCategory category,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (category) {
+      case PantryCategory.vegetables:
+        return l10n.vegetables;
+      case PantryCategory.fruits:
+        return l10n.fruits;
+      case PantryCategory.grains:
+        return l10n.grainsRice;
+      case PantryCategory.proteins:
+        return l10n.meatFish;
+      case PantryCategory.dairy:
+        return l10n.dairy;
+      case PantryCategory.spices:
+        return l10n.spices;
+      case PantryCategory.condiments:
+        return l10n.oilsCondiments;
+      case PantryCategory.oils:
+        return l10n.oilsCondiments;
+      case PantryCategory.herbs:
+        return l10n.spices;
+      case PantryCategory.pantryStaples:
+        return l10n.other;
+      case PantryCategory.frozen:
+        return l10n.other;
+      case PantryCategory.beverages:
+        return l10n.beverages;
+      case PantryCategory.other:
+        return l10n.other;
+    }
+  }
 
   Future<void> _saveIngredient() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_nameController.text.trim().isEmpty) {
       setState(() {
-        _errorMessage = 'Please enter an ingredient name';
+        _errorMessage = l10n.pleaseEnterItemName;
       });
       return;
     }
@@ -126,7 +172,7 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
           tags: _tags,
           updatedAt: DateTime.now(),
         );
-        
+
         await pantryNotifier.updatePantryItem(updatedItem);
       } else {
         // Add new item
@@ -154,6 +200,7 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isEditing = widget.editingItem != null;
 
     return Container(
@@ -169,19 +216,23 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
             padding: const EdgeInsets.all(20),
             decoration: const BoxDecoration(
               border: Border(
-                bottom: BorderSide(
-                  color: AppColors.border,
-                  width: 0.5,
-                ),
+                bottom: BorderSide(color: AppColors.border, width: 0.5),
               ),
             ),
             child: Row(
               children: [
                 Expanded(
                   child: Text(
-                    isEditing 
-                        ? 'Edit ${widget.editingItem!.type.displayName}' 
-                        : 'Add ${_selectedType.displayName}',
+                    isEditing
+                        ? l10n.editItem(
+                            _getItemTypeDisplayName(
+                              context,
+                              widget.editingItem!.type,
+                            ),
+                          )
+                        : l10n.addItem(
+                            _getItemTypeDisplayName(context, _selectedType),
+                          ),
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
@@ -239,8 +290,8 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                   ],
 
                   // Type selection
-                  const Text(
-                    'Item Type',
+                  Text(
+                    l10n.itemType,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -248,7 +299,7 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: AppColors.border),
@@ -257,8 +308,10 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                     child: Row(
                       children: PantryItemType.values.map((type) {
                         final isSelected = type == _selectedType;
-                        final color = type == PantryItemType.leftover ? AppColors.leftover : AppColors.primary;
-                        
+                        final color = type == PantryItemType.leftover
+                            ? AppColors.leftover
+                            : AppColors.primary;
+
                         return Expanded(
                           child: GestureDetector(
                             onTap: () {
@@ -285,9 +338,11 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    type.displayName,
+                                    _getItemTypeDisplayName(context, type),
                                     style: TextStyle(
-                                      color: isSelected ? Colors.white : AppColors.textPrimary,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : AppColors.textPrimary,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
                                     ),
@@ -300,12 +355,14 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                       }).toList(),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
 
                   // Item name
                   Text(
-                    '${_selectedType.displayName} Name',
+                    l10n.itemNameLabel(
+                      _getItemTypeDisplayName(context, _selectedType),
+                    ),
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -313,28 +370,37 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   Stack(
                     children: [
                       TextField(
                         controller: _nameController,
                         focusNode: _nameFocusNode,
                         decoration: InputDecoration(
-                          hintText: 'Enter ${_selectedType.displayName.toLowerCase()} name...',
+                          hintText: l10n.enterItemName(
+                            _getItemTypeDisplayName(
+                              context,
+                              _selectedType,
+                            ).toLowerCase(),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: AppColors.border),
+                            borderSide: const BorderSide(
+                              color: AppColors.border,
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: AppColors.primary),
+                            borderSide: const BorderSide(
+                              color: AppColors.primary,
+                            ),
                           ),
                           contentPadding: const EdgeInsets.all(16),
                         ),
                         textCapitalization: TextCapitalization.words,
                         onSubmitted: (_) => _saveIngredient(),
                       ),
-                      
+
                       // Suggestions dropdown
                       if (_showSuggestions && _suggestions.isNotEmpty)
                         Positioned(
@@ -371,13 +437,13 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                         ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 24),
 
                   // Category selection (only for ingredients)
                   if (_selectedType == PantryItemType.ingredient) ...[
-                    const Text(
-                      'Category',
+                    Text(
+                      l10n.category,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -385,7 +451,7 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    
+
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
@@ -403,12 +469,12 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                               vertical: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: isSelected 
+                              color: isSelected
                                   ? AppColors.primary
                                   : Colors.white,
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: isSelected 
+                                color: isSelected
                                     ? AppColors.primary
                                     : AppColors.border,
                               ),
@@ -422,9 +488,9 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
-                                  category.displayName,
+                                  _getCategoryDisplayName(context, category),
                                   style: TextStyle(
-                                    color: isSelected 
+                                    color: isSelected
                                         ? Colors.white
                                         : AppColors.textPrimary,
                                     fontWeight: FontWeight.w500,
@@ -438,7 +504,7 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                       }).toList(),
                     ),
                   ],
-                  
+
                   const SizedBox(height: 32),
                 ],
               ),
@@ -450,10 +516,7 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
             padding: const EdgeInsets.all(20),
             decoration: const BoxDecoration(
               border: Border(
-                top: BorderSide(
-                  color: AppColors.border,
-                  width: 0.5,
-                ),
+                top: BorderSide(color: AppColors.border, width: 0.5),
               ),
             ),
             child: SizedBox(
@@ -479,9 +542,16 @@ class _AddIngredientModalState extends ConsumerState<AddIngredientModal> {
                         ),
                       )
                     : Text(
-                        isEditing 
-                            ? 'Update ${widget.editingItem!.type.displayName}' 
-                            : 'Add ${_selectedType.displayName}',
+                        isEditing
+                            ? l10n.updateItem(
+                                _getItemTypeDisplayName(
+                                  context,
+                                  widget.editingItem!.type,
+                                ),
+                              )
+                            : l10n.addItemAction(
+                                _getItemTypeDisplayName(context, _selectedType),
+                              ),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

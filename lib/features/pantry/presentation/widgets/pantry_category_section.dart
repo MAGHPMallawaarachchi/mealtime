@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../domain/models/pantry_item.dart';
@@ -80,7 +81,7 @@ class PantryCategorySection extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '${items.length} ${items.length == 1 ? 'item' : 'items'}',
+                            '${items.length} ${items.length == 1 ? AppLocalizations.of(context)!.item : AppLocalizations.of(context)!.items}',
                             style: const TextStyle(
                               fontSize: 13,
                               color: AppColors.textSecondary,

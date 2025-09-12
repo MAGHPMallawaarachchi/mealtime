@@ -1,29 +1,35 @@
 [
 {
 "id": "R001",
-"title": "Aggala (Leftover Rice Balls)",
+"title": {
+    "en": "Aggala (Leftover Rice Balls)",
+    "si": "අග්ගලා"
+},
 "time": "45 min",
 "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435545/Mealtime/R001.jpg",
 "calories": 228,
 "macros": { "protein": 4, "carbs": 35, "fats": 8, "fiber": 3 },
 "dietaryType": "vegan",
-"description": "Sweet coconut–jaggery balls made with leftover cooked rice, a thrifty Sri Lankan teatime classic.",
+"description": {
+    "en": "Sweet rice and coconut balls made from leftover cooked rice, jaggery, and sesame seeds for a nostalgic Sri Lankan treat.",
+    "si": "ඉතිරි වූ පිසූ බත්, හකුරු සහ තල ඇට වලින් සාදන ලද පැණිරස බත් සහ පොල් බෝල, ශ්‍රී ලාංකික සංග්‍රහයක් සඳහා."
+},
 "defaultServings": 4,
 "ingredientSections": [
 {
 "id": "1",
 "title": null,
 "ingredients": [
-{ "id": "1", "metricQuantity": 300, "metricUnit": "grams", "name": "cooked rice", "quantity": 2, "unit": "cups" },
-{ "id": "2", "metricQuantity": 150, "metricUnit": "grams", "name": "grated coconut", "quantity": 1.5, "unit": "cups" },
-{ "id": "3", "metricQuantity": 180, "metricUnit": "grams", "name": "jaggery", "quantity": 1, "unit": "cups" },
-{ "id": "4", "metricQuantity": 30, "metricUnit": "milliliters", "name": "coconut treacle", "quantity": 2, "unit": "tablespoons" },
-{ "id": "5", "metricQuantity": 2, "metricUnit": "grams", "name": "cardamom powder", "quantity": 0.5, "unit": "teaspoons" },
-{ "id": "6", "metricQuantity": 20, "metricUnit": "grams", "name": "rice flour", "quantity": 2, "unit": "tablespoons" },
-{ "id": "7", "metricQuantity": 15, "metricUnit": "grams", "name": "sesame seed", "quantity": 1, "unit": "tablespoons" },
-{ "id": "8", "metricQuantity": null, "metricUnit": null, "name": "salt", "quantity": null, "unit": "toTaste" },
-{ "id": "9", "metricQuantity": 10, "metricUnit": "milliliters", "name": "coconut oil", "quantity": 2, "unit": "teaspoons" },
-{ "id": "10", "metricQuantity": 30, "metricUnit": "milliliters", "name": "water", "quantity": 2, "unit": "tablespoons" }
+    { "id": "1", "metricQuantity": 300, "metricUnit": "grams", "name": {"en":"cooked rice", "si":"පිසූ බත්"}, "quantity": 2, "unit": "cups" },
+    { "id": "2", "metricQuantity": 150, "metricUnit": "grams", "name": {"en":"grated coconut", "si":"ගාන ලද පොල්"}, "quantity": 1.5, "unit": "cups" },
+    { "id": "3", "metricQuantity": 180, "metricUnit": "grams", "name": {"en":"jaggery", "si":"හකුරු"}, "quantity": 1, "unit": "cups" },
+    { "id": "4", "metricQuantity": 30, "metricUnit": "milliliters", "name": {"en":"coconut treacle", "si":"පොල් පැණි"}, "quantity": 2, "unit": "tablespoons" },
+    { "id": "5", "metricQuantity": 2, "metricUnit": "grams", "name": {"en":"cardamom powder", "si":"එනසාල් කුඩු"}, "quantity": 0.5, "unit": "teaspoons" },
+    { "id": "6", "metricQuantity": 20, "metricUnit": "grams", "name": {"en":"rice flour", "si":"සහල් පිටි"}, "quantity": 2, "unit": "tablespoons" },
+    { "id": "7", "metricQuantity": 15, "metricUnit": "grams", "name": {"en":"sesame seed", "si":"තල ඇට"}, "quantity": 1, "unit": "tablespoons" },
+    { "id": "8", "metricQuantity": null, "metricUnit": null, "name": {"en":"salt", "si":"ලුණු"}, "quantity": null, "unit": "toTaste" },
+    { "id": "9", "metricQuantity": 10, "metricUnit": "milliliters", "name": {"en":"coconut oil", "si":"පොල් තෙල්"}, "quantity": 2, "unit": "teaspoons" },
+    { "id": "10", "metricQuantity": 30, "metricUnit": "milliliters", "name": {"en":"water", "si":"ජලය"}, "quantity": 2, "unit": "tablespoons" }
 ]
 }
 ],
@@ -32,14 +38,30 @@
 "id": "1",
 "title": null,
 "steps": [
-"Reheat leftovers to 74 °C/165 °F; do not keep cooked rice at room temperature >2 hrs; refrigerate ≤4 °C/40 °F.",
-"Warm ghee in a pan over low heat for 1 min; toast sesame seed until fragrant, 2–3 min, and set aside.",
-"Melt palm jaggery with coconut treacle and water over low heat, stirring until a thick syrup forms, 4–5 min.",
-"Mash cooked rice in a bowl until slightly sticky; fold in grated coconut, cardamom powder, and a pinch of salt.",
-"Pour warm jaggery syrup into the rice mixture; mix thoroughly, then knead in rice flour until it holds together.",
-"Grease palms; shape 16 equal balls, 3–4 cm each, pressing firmly to bind.",
-"Roll each ball in toasted sesame seed to coat evenly.",
-"Rest at room temperature 10 min, then chill 20 min to set before serving."
+    {"en":"Reheat leftovers to 74 °C/165 °F; do not keep cooked rice at room temperature >2 hrs; refrigerate ≤4 °C/40 °F.",
+    "si":"ඉතිරි වූ බත් 74 °C/165 °F දක්වා නැවත උණුසුම් කරන්න; පිසූ බත් කාමර උෂ්ණත්වයේදී පැය 2කට වඩා වැඩි කාලයක් තබා නොගන්න; ශීතකරණය කරන්න ≤4 °C/40 °F."
+    },
+    {"en": "Warm coconut oil in a pan over low heat for 1 min; toast sesame seed until fragrant, 2–3 min, and set aside.",
+    "si": "පොල්තෙල් පෑන් එකක දමා අඩු ගින්දරේ විනාඩි 1ක් රත් කරන්න; තල ඇට සුවඳ එනතුරු විනාඩි 2-3ක් බැදගෙන පසෙකින් තබන්න."
+    },
+    {"en": "Melt palm jaggery with coconut treacle and water over low heat, stirring until a thick syrup forms, 4–5 min.",
+    "si": "පොල් පැණි සහ ජලය සමග තල් හකුරු උණු කර, ඝන සිරප් එකක් සෑදෙන තුරු විනාඩි 4-5ක් අඩු ගින්දරේ කලවම් කරන්න."
+    },
+    {"en": "Mash cooked rice in a bowl until slightly sticky; fold in grated coconut, cardamom powder, and a pinch of salt.",
+    "si": "පිසූ බත් බඳුනක තරමක් ඇලෙන තුරු පොඩි කරන්න; ගාන ලද පොල්, එනසාල් කුඩු සහ ලුණු ස්වල්පයක් එකතු කරන්න."
+    },
+    {"en": "Pour warm jaggery syrup into the rice mixture; mix thoroughly, then knead in rice flour until it holds together.",
+    "si": "සහල් මිශ්‍රණයට උණුසුම් හකුරු සිරප් වත් කරන්න; හොඳින් මිශ්‍ර කරන්න, පසුව සහල් පිටි එකට තද වන තුරු අනා ගන්න."
+    },
+    {"en": "Grease palms; shape 16 equal balls, 3–4 cm each, pressing firmly to bind.",
+    "si": "අත්ලෙහි තෙල් ආලේප කරන්න; එකිනෙක සෙ.මී. 3-4 ක් පමණ වන සමාන බෝල 16 ක් හැඩගස්වා, බැඳීමට තදින් තද කරන්න."
+    },
+    {"en": "Roll each ball in toasted sesame seed to coat evenly.",
+    "si": "සෑම බෝලයක්ම ඒකාකාරව ආලේප කිරීම සඳහා බැදපු තල ඇටවල රෝල් කරන්න."
+    },
+    {"en":  "Chill aggala 20 min to firm up.",
+    "si": "තදින් තද වීමට අග්ගලා විනාඩි 20ක් සිසිල් කරන්න."
+    }
 ]
 }
 ],
@@ -48,34 +70,34 @@
 },
 {
 "id": "R002",
-"title": "String Hopper Kottu (Idiyappam Kottu)",
+"title": {"en": "String Hopper Kottu (Idiyappam Kottu)", "si": "ඉඳි ආප්ප කොත්තු"},
 "time": "35 min",
 "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435544/Mealtime/R002.jpg",
 "calories": 392,
 "macros": { "protein": 14, "carbs": 48, "fats": 16, "fiber": 5 },
 "dietaryType": "vegetarian",
-"description": "A wok-tossed stir-fry of leftover string hoppers with vegetables, egg, and aromatics for a quick street-style meal.",
+"description": {"en": "A wok-tossed stir-fry of leftover string hoppers with vegetables, egg, and aromatics for a quick street-style meal.", "si": "ඉතිරි ඉඳිආප්ප, එළවළු, බිත්තර සහ සුවඳ ද්‍රව්‍ය සමඟ වොක්-ටෝස් කර බැදපු, වීදි විලාසිතාවේ ඉක්මන් ආහාර වේලක් සඳහා."},
 "defaultServings": 4,
 "ingredientSections": [
 {
 "id": "1",
 "title": null,
 "ingredients": [
-{ "id": "1", "metricQuantity": 500, "metricUnit": "grams", "name": "string hoppers", "quantity": 10, "unit": "pieces" },
-{ "id": "2", "metricQuantity": 2, "metricUnit": "pieces", "name": "egg", "quantity": 2, "unit": "pieces" },
-{ "id": "3", "metricQuantity": 150, "metricUnit": "grams", "name": "carrot", "quantity": 1, "unit": "cups" },
-{ "id": "4", "metricQuantity": 120, "metricUnit": "grams", "name": "leek", "quantity": 1, "unit": "cups" },
-{ "id": "5", "metricQuantity": 100, "metricUnit": "grams", "name": "cabbage", "quantity": 1, "unit": "cups" },
-{ "id": "6", "metricQuantity": 80, "metricUnit": "grams", "name": "onion", "quantity": 0.75, "unit": "cups" },
-{ "id": "7", "metricQuantity": 10, "metricUnit": "grams", "name": "green chili", "quantity": 2, "unit": "pieces" },
-{ "id": "8", "metricQuantity": 10, "metricUnit": "grams", "name": "garlic", "quantity": 3, "unit": "pieces" },
-{ "id": "9", "metricQuantity": 200, "metricUnit": "milliliters", "name": "coconut milk", "quantity": 0.75, "unit": "cups" },
-{ "id": "10", "metricQuantity": 10, "metricUnit": "grams", "name": "roasted curry powder", "quantity": 2, "unit": "teaspoons" },
-{ "id": "11", "metricQuantity": 5, "metricUnit": "grams", "name": "chili flakes", "quantity": 1, "unit": "teaspoons" },
-{ "id": "12", "metricQuantity": 6, "metricUnit": "grams", "name": "soy sauce", "quantity": 1, "unit": "tablespoons" },
-{ "id": "13", "metricQuantity": 20, "metricUnit": "milliliters", "name": "coconut oil", "quantity": 1.5, "unit": "tablespoons" },
-{ "id": "14", "metricQuantity": 10, "metricUnit": "grams", "name": "curry leaf", "quantity": 12, "unit": "pieces" },
-{ "id": "15", "metricQuantity": null, "metricUnit": null, "name": "salt", "quantity": null, "unit": "toTaste" }
+{ "id": "1", "metricQuantity": 500, "metricUnit": "grams", "name": {"en":"string hoppers", "si":"ඉඳි ආප්ප"}, "quantity": 10, "unit": "pieces" },
+{ "id": "2", "metricQuantity": 2, "metricUnit": "pieces", "name": {"en":"egg","si":"බිත්තර"}, "quantity": 2, "unit": "pieces" },
+{ "id": "3", "metricQuantity": 150, "metricUnit": "grams", "name": {"en":"carrot","si":"කැරට්"}, "quantity": 1, "unit": "cups" },
+{ "id": "4", "metricQuantity": 120, "metricUnit": "grams", "name": {"en":"leek","si":"ලීක්ස්"}, "quantity": 1, "unit": "cups" },
+{ "id": "5", "metricQuantity": 100, "metricUnit": "grams", "name": {"en":"cabbage","si":"ගෝවා"}, "quantity": 1, "unit": "cups" },
+{ "id": "6", "metricQuantity": 80, "metricUnit": "grams", "name": {"en":"onion","si":"ලූනු"}, "quantity": 0.75, "unit": "cups" },
+{ "id": "7", "metricQuantity": 10, "metricUnit": "grams", "name": {"en":"green chili","si":"අමු මිරිස්"}, "quantity": 2, "unit": "pieces" },
+{ "id": "8", "metricQuantity": 10, "metricUnit": "grams", "name": {"en":"garlic","si":"සුදුළුනු"}, "quantity": 3, "unit": "pieces" },
+{ "id": "9", "metricQuantity": 200, "metricUnit": "milliliters", "name": {"en":"coconut milk","si":"පොල් කිරි"}, "quantity": 0.75, "unit": "cups" },
+{ "id": "10", "metricQuantity": 10, "metricUnit": "grams", "name": {"en":"roasted curry powder","si":"බැදපු තුනපහ"}, "quantity": 2, "unit": "teaspoons" },
+{ "id": "11", "metricQuantity": 5, "metricUnit": "grams", "name": {"en":"chili flakes","si":"කෑලි මිරිස්"}, "quantity": 1, "unit": "teaspoons" },
+{ "id": "12", "metricQuantity": 6, "metricUnit": "grams", "name": {"en":"soy sauce","si":"සෝයා සෝස්"}, "quantity": 1, "unit": "tablespoons" },
+{ "id": "13", "metricQuantity": 20, "metricUnit": "milliliters", "name": {"en":"coconut oil","si":"පොල්තෙල්"}, "quantity": 1.5, "unit": "tablespoons" },
+{ "id": "14", "metricQuantity": 10, "metricUnit": "grams", "name": {"en":"curry leaf","si":"කරපිංචා"}, "quantity": 12, "unit": "pieces" },
+{ "id": "15", "metricQuantity": null, "metricUnit": null, "name": {"en":"salt","si":"ලුණු"}, "quantity": null, "unit": "toTaste" }
 ]
 }
 ],
@@ -84,14 +106,21 @@
 "id": "1",
 "title": null,
 "steps": [
-"Reheat leftovers to 74 °C/165 °F; do not keep cooked rice noodles at room temperature >2 hrs; refrigerate ≤4 °C/40 °F.",
-"Break string hoppers into strands; set aside.",
-"Heat coconut oil in a wok on medium-high 2 min; add onion, garlic, green chili, and curry leaf; stir-fry 2–3 min.",
-"Add carrot, leek, and cabbage; cook 3–4 min until crisp-tender.",
-"Push vegetables aside; scramble egg 1–2 min until just set.",
-"Sprinkle roasted curry powder and chili flakes; toss 30 sec.",
-"Add string hoppers; drizzle soy sauce and coconut milk; toss vigorously 3–4 min until hot and coated.",
-"Season with salt; serve immediately."
+{"en":"Break string hoppers into strands; set aside.",
+"si":"ඉඳි ආප්ප කෙලින් කෑලි වලට බිඳ; පසෙකින් තබන්න."},
+{"en":"Heat coconut oil in a wok on medium-high 2 min; add onion, garlic, green chili, and curry leaf; stir-fry 2–3 min.",
+"si":"පොල්තෙල් වෝක් එකක මධ්‍යම ප්‍රමාණයේ තාපය මත විනාඩි 2ක් රත් කරන්න; ළූණු, සුදුළූණු, අමු මිරිස් සහ කරපිංචා එකතු කරන්න; කලවම් කර විනාඩි 2-3ක් බැදගන්න."},
+{"en":"Add carrot, leek, and cabbage; cook 3–4 min until crisp-tender.",
+"si":"කැරට්, ලීක්ස් සහ ගෝවා එකතු කරන්න; හැපෙනසුළු මෘදු වන තෙක් මිනිත්තු 3-4 ක් උයන්න."},
+{"en":"Push vegetables aside; scramble egg 1–2 min until just set.",
+"si":"එළවළු පසෙකට දමන්න; බිත්තරය හොඳින් සෙට් වන තුරු මිනිත්තු 1-2ක් ස්ක්‍රැම්බල් කරන්න."},
+{"en":"Sprinkle roasted curry powder and chili flakes; toss 30 sec.",
+"si":"බැදපු තුනපහ සහ කෑලි මිරිස් දමා; 30 තත්පරයක් හොඳින් මිශ්‍ර කරන්න."},
+{"en":"Add string hoppers; drizzle soy sauce and coconut milk; toss vigorously 3–4 min until hot and coated.",
+"si":"ඉඳි ආප්ප එකතු කරන්න; සෝයා සෝස් සහ පොල් කිරි වත් කරන්න; රත් වී ආලේප කරන තෙක් මිනිත්තු 3-4ක් තදින් කලවම් කරන්න."},
+{"en":"Season with salt; serve immediately.",
+"si":"ලුණු දමා රස කර වහාම පිළිගන්වන්න."
+}
 ]
 }
 ],
@@ -100,31 +129,31 @@
 },
 {
 "id": "R003",
-"title": "Bread Kottu",
+"title": {"en": "Bread Kottu", "si": "පාන් කොත්තු"},
 "time": "30 min",
 "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435544/Mealtime/R003.jpg",
 "calories": 405,
 "macros": { "protein": 13, "carbs": 50, "fats": 17, "fiber": 5 },
 "dietaryType": "vegetarian",
-"description": "A quick kottu using chopped day-old bread stir-fried with eggs, vegetables, and spices for a hearty snack or dinner.",
+"description": {"en": "A quick kottu using chopped day-old bread stir-fried with eggs, vegetables, and spices for a hearty snack or dinner.", "si": "හෘදයාංගම කෙටි ආහාරයක් හෝ රාත්‍රී ආහාරයක් සඳහා බිත්තර, එළවළු සහ කුළුබඩු සමඟ බැදපු දිනක් පැරණි පාන් භාවිතා කර සාදන ලද ඉක්මන් කොත්තුවක්."},
 "defaultServings": 4,
 "ingredientSections": [
 {
 "id": "1",
 "title": null,
 "ingredients": [
-{ "id": "1", "metricQuantity": 400, "metricUnit": "grams", "name": "bread", "quantity": 6, "unit": "pieces" },
-{ "id": "2", "metricQuantity": 2, "metricUnit": "pieces", "name": "egg", "quantity": 2, "unit": "pieces" },
-{ "id": "3", "metricQuantity": 100, "metricUnit": "grams", "name": "onion", "quantity": 1, "unit": "cups" },
-{ "id": "4", "metricQuantity": 120, "metricUnit": "grams", "name": "tomato", "quantity": 1, "unit": "cups" },
-{ "id": "5", "metricQuantity": 120, "metricUnit": "grams", "name": "capsicum", "quantity": 1, "unit": "cups" },
-{ "id": "6", "metricQuantity": 10, "metricUnit": "grams", "name": "green chili", "quantity": 2, "unit": "pieces" },
-{ "id": "7", "metricQuantity": 12, "metricUnit": "grams", "name": "roasted curry powder", "quantity": 2, "unit": "teaspoons" },
-{ "id": "8", "metricQuantity": 6, "metricUnit": "grams", "name": "chili powder", "quantity": 1, "unit": "teaspoons" },
-{ "id": "9", "metricQuantity": 20, "metricUnit": "milliliters", "name": "soy sauce", "quantity": 1.5, "unit": "tablespoons" },
-{ "id": "10", "metricQuantity": 25, "metricUnit": "milliliters", "name": "coconut oil", "quantity": 2, "unit": "tablespoons" },
-{ "id": "11", "metricQuantity": 8, "metricUnit": "grams", "name": "curry leaf", "quantity": 10, "unit": "pieces" },
-{ "id": "12", "metricQuantity": null, "metricUnit": null, "name": "salt", "quantity": null, "unit": "toTaste" }
+{ "id": "1", "metricQuantity": 400, "metricUnit": "grams", "name": {"en":"bread","si":"පාන්"}, "quantity": 6, "unit": "pieces" },
+{ "id": "2", "metricQuantity": 2, "metricUnit": "pieces", "name": {"en":"egg","si":"බිත්තර"}, "quantity": 2, "unit": "pieces" },
+{ "id": "3", "metricQuantity": 100, "metricUnit": "grams", "name": {"en":"onion","si":"ළූණු"}, "quantity": 1, "unit": "cups" },
+{ "id": "4", "metricQuantity": 120, "metricUnit": "grams", "name": {"en":"tomato","si":"තක්කාලි"}, "quantity": 1, "unit": "cups" },
+{ "id": "5", "metricQuantity": 120, "metricUnit": "grams", "name": {"en":"capsicum","si":"කැප්සික්ම්"}, "quantity": 1, "unit": "cups" },
+{ "id": "6", "metricQuantity": 10, "metricUnit": "grams", "name": {"en":"green chili","si":"අමු මිරිස්"}, "quantity": 2, "unit": "pieces" },
+{ "id": "7", "metricQuantity": 12, "metricUnit": "grams", "name": {"en":"roasted curry powder","si":"බැදපු තුනපහ"}, "quantity": 2, "unit": "teaspoons" },
+{ "id": "8", "metricQuantity": 6, "metricUnit": "grams", "name": {"en":"chili powder","si":"කෑලි මිරිස්"}, "quantity": 1, "unit": "teaspoons" },
+{ "id": "9", "metricQuantity": 20, "metricUnit": "milliliters", "name": {"en":"soy sauce","si":"සෝයා සෝස්"}, "quantity": 1.5, "unit": "tablespoons" },
+{ "id": "10", "metricQuantity": 25, "metricUnit": "milliliters", "name": {"en":"coconut oil","si":"පොල්තෙල්"}, "quantity": 2, "unit": "tablespoons" },
+{ "id": "11", "metricQuantity": 8, "metricUnit": "grams", "name": {"en":"curry leaf","si":"කරපිංචා"}, "quantity": 10, "unit": "pieces" },
+{ "id": "12", "metricQuantity": null, "metricUnit": null, "name": {"en":"salt","si":"ලුණු"}, "quantity": null, "unit": "toTaste" }
 ]
 }
 ],
@@ -133,14 +162,13 @@
 "id": "1",
 "title": null,
 "steps": [
-"Reheat leftovers to 74 °C/165 °F; do not keep cooked foods at room temperature >2 hrs; refrigerate ≤4 °C/40 °F.",
-"Cube bread into 2 cm pieces; set aside.",
-"Heat coconut oil in a wok on medium-high; add onion, green chili, and curry leaf; sauté 2–3 min.",
-"Add capsicum and tomato; cook 2 min until softened.",
-"Push to the side; scramble egg 1–2 min until just set.",
-"Add bread; sprinkle roasted curry powder and chili powder; toss 3–4 min until bread is hot and lightly crisp.",
-"Drizzle soy sauce; stir-fry 1 min; season with salt.",
-"Serve hot."
+{"en":"Cube bread into 2 cm pieces; set aside.","si":"පාන් සෙන්ටිමීටර 2 ක කැබලිවලට කපා පසෙකින් තබන්න."},
+{"en":"Heat coconut oil in a wok on medium-high; add onion, green chili, and curry leaf; sauté 2–3 min.","si":"පොල්තෙල් වෝක් එකක මධ්‍යම ප්‍රමාණයේ රත් කරන්න; ළූණු, අමු මිරිස් සහ කරපිංචා එකතු කරන්න; විනාඩි 2-3ක් බැදගන්න."},
+{"en":"Add capsicum and tomato; cook 2 min until softened.","si":"කැප්සිකම් සහ තක්කාලි එකතු කරන්න; මෘදු වන තුරු මිනිත්තු 2 ක් උයන්න."},
+{"en":"Push to the side; scramble egg 1–2 min until just set.","si":"පැත්තට තල්ලු කරන්න; බිත්තරය හරියටම සෙට් වන තුරු මිනිත්තු 1-2ක් ස්ක්‍රැම්බල් කරන්න."},
+{"en":"Add bread; sprinkle roasted curry powder and chili powder; toss 3–4 min until bread is hot and lightly crisp.","si":"පාන් එකතු කරන්න; බැදපු කරපිංචා කුඩු සහ මිරිස් කුඩු ඉසිය යුතු ය; පාන් උණුසුම් හා සැහැල්ලුවෙන් හැපෙන තුරු මිනිත්තු 3-4 ක් බැදගන්න."},
+{"en":"Drizzle soy sauce; stir-fry 1 min; season with salt.","si":"සෝයා සෝස් ස්වල්පයක් වත් කරන්න; විනාඩි 1ක් බැදගන්න; ලුණු එකතු කරන්න."},
+{"en":"Serve hot.","si":"උණුසුම් සේවය කරන්න."}
 ]
 }
 ],
@@ -149,29 +177,29 @@
 },
 {
 "id": "R004",
-"title": "Bread Pudding",
+"title": {"en":"Bread Pudding","si":"පාන් පුඩින්"},
 "time": "1 hr",
 "imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435544/Mealtime/R004.jpg",
 "calories": 316,
 "macros": { "protein": 7, "carbs": 45, "fats": 12, "fiber": 2 },
 "dietaryType": "vegetarian",
-"description": "A custardy baked pudding scented with cardamom and nutmeg, perfect for using up stale bread.",
+"description": {"en":"A custardy baked pudding scented with cardamom and nutmeg, perfect for using up stale bread.","si":"එනසාල් සහ සාදික්කා සුවඳින් යුත් කස්ටඩ් බේක් කළ පුඩිං, පරණ පාන් භාවිතා කිරීමට හොඳයි."},
 "defaultServings": 6,
 "ingredientSections": [
 {
 "id": "1",
 "title": null,
 "ingredients": [
-{ "id": "1", "metricQuantity": 300, "metricUnit": "grams", "name": "bread", "quantity": 8, "unit": "pieces" },
-{ "id": "2", "metricQuantity": 500, "metricUnit": "milliliters", "name": "milk", "quantity": 2, "unit": "cups" },
-{ "id": "3", "metricQuantity": 100, "metricUnit": "grams", "name": "sugar", "quantity": 0.5, "unit": "cups" },
-{ "id": "4", "metricQuantity": 50, "metricUnit": "grams", "name": "raisins", "quantity": 0.33, "unit": "cups" },
-{ "id": "5", "metricQuantity": 30, "metricUnit": "grams", "name": "butter", "quantity": 2, "unit": "tablespoons" },
-{ "id": "6", "metricQuantity": 2, "metricUnit": "pieces", "name": "egg", "quantity": 2, "unit": "pieces" },
-{ "id": "7", "metricQuantity": 2, "metricUnit": "grams", "name": "cardamom powder", "quantity": 0.5, "unit": "teaspoons" },
-{ "id": "8", "metricQuantity": 1, "metricUnit": "grams", "name": "nutmeg powder", "quantity": 0.25, "unit": "teaspoons" },
-{ "id": "9", "metricQuantity": 5, "metricUnit": "grams", "name": "vanilla extract", "quantity": 1, "unit": "teaspoons" },
-{ "id": "10", "metricQuantity": null, "metricUnit": null, "name": "salt", "quantity": null, "unit": "toTaste" }
+{ "id": "1", "metricQuantity": 300, "metricUnit": "grams", "name": {"en":"bread","si":"පාන්"}, "quantity": 8, "unit": "pieces" },
+{ "id": "2", "metricQuantity": 500, "metricUnit": "milliliters", "name": {"en":"milk","si":"කිරි"}, "quantity": 2, "unit": "cups" },
+{ "id": "3", "metricQuantity": 100, "metricUnit": "grams", "name": {"en":"sugar","si":"සීනි"}, "quantity": 0.5, "unit": "cups" },
+{ "id": "4", "metricQuantity": 50, "metricUnit": "grams", "name": {"en":"raisins","si":"මුද්දරප්පලම්"}, "quantity": 0.33, "unit": "cups" },
+{ "id": "5", "metricQuantity": 30, "metricUnit": "grams", "name": {"en":"butter","si":"බටර්"}, "quantity": 2, "unit": "tablespoons" },
+{ "id": "6", "metricQuantity": 2, "metricUnit": "pieces", "name": {"en":"egg","si":"බිත්තර"}, "quantity": 2, "unit": "pieces" },
+{ "id": "7", "metricQuantity": 2, "metricUnit": "grams", "name": {"en":"cardamom powder","si":"එනසාල් කුඩු"}, "quantity": 0.5, "unit": "teaspoons" },
+{ "id": "8", "metricQuantity": 1, "metricUnit": "grams", "name": {"en":"nutmeg powder","si":"සාදික්කා කුඩු"}, "quantity": 0.25, "unit": "teaspoons" },
+{ "id": "9", "metricQuantity": 5, "metricUnit": "grams", "name": {"en":"vanilla extract","si":"වැනිලා"}, "quantity": 1, "unit": "teaspoons" },
+{ "id": "10", "metricQuantity": null, "metricUnit": null, "name": {"en":"salt","si":"ලුණු"}, "quantity": null, "unit": "toTaste" }
 ]
 }
 ],
@@ -180,13 +208,13 @@
 "id": "1",
 "title": null,
 "steps": [
-"Reheat leftovers to 74 °C/165 °F; do not keep dairy and cooked bread at room temperature >2 hrs; refrigerate ≤4 °C/40 °F.",
-"Preheat oven to 180 °C; grease a 20 cm baking dish with butter.",
-"Warm milk, sugar, cardamom powder, nutmeg powder, and salt over low heat until sugar dissolves; cool 5 min.",
-"Whisk eggs with vanilla extract; slowly whisk in warm milk mixture.",
-"Tear bread into pieces; mix with raisins; pour custard over; rest 10 min to soak.",
-"Dot top with butter; bake 30–35 min until set and golden at the edges.",
-"Cool 10 min before slicing and serving."
+{"en":"Preheat oven to 180 °C; grease a 20 cm baking dish with butter.","si":"උඳුන 180°C දක්වා රත් කරන්න; සෙන්ටිමීටර 20ක් උස ෙබ්කිං පිඟානක් බටර් සමග ආලේප කරන්න."},
+{"en":"Tear bread into bite-size pieces; spread in the baking dish.","si":"පාන් කුඩා කැබලිවලට ඉරා, ෙබ්කිං පිඟානේ තබන්න."},
+{"en":"Warm milk, sugar, cardamom powder, nutmeg powder, and salt over low heat until sugar dissolves; cool 5 min.","si":"කිරි, සීනි, එනසාල් කුඩු, සාදික්කා කුඩු සහ ලුණු දමා සීනි දියවන තුරු අඩු ගින්දරේ රත් කරන්න; විනාඩි 5ක් සිසිල් කරන්න."},
+{"en":"Whisk eggs with vanilla extract; slowly whisk in warm milk mixture.","si":"වැනිලා සාරය සමඟ බිත්තර ගසන්න; උණුසුම් කිරි මිශ්‍රණය සෙමින් ගසන්න."},
+{"en":"Tear bread into pieces; mix with raisins; pour custard over; rest 10 min to soak.","si":"පාන් කැබලිවලට ඉරා දමන්න; මුද්දරප්පලම් සමඟ මිශ්‍ර කරන්න; කස්ටඩ් වත් කරන්න; පොඟවා ගැනීමට විනාඩි 10 ක් තබන්න."},
+{"en":"Dot top with butter; bake 30–35 min until set and golden at the edges.","si":"උඩින් බටර් තවරන්න; සෙට් වන තුරු සහ දාර රන්වන් පැහැ වන තුරු මිනිත්තු 30-35ක් බේක් කරන්න."},
+{"en":"Cool 10 min before slicing and serving.","si":"කපා පිළිගැන්වීමට පෙර මිනිත්තු 10 ක් ශීතල කරන්න."}
 ]
 }
 ],

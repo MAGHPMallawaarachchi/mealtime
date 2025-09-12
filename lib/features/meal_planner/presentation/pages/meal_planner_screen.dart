@@ -142,7 +142,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final user = _authService.currentUser;
     if (user == null) {
       setState(() {
-        _errorMessage = 'Please login to view your meal plans';
+        _errorMessage = AppLocalizations.of(
+          context,
+        )!.pleaseLoginToViewMealPlans;
         _isLoading = false;
       });
       return;
@@ -184,13 +186,13 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         return;
       }
 
-      String errorMessage = 'Failed to load meal plan';
+      String errorMessage = AppLocalizations.of(context)!.failedToLoadMealPlan;
       if (e.toString().contains('permission-denied')) {
-        errorMessage = 'You do not have permission to access meal plans';
+        errorMessage = AppLocalizations.of(context)!.youDoNotHavePermission;
       } else if (e.toString().contains('network')) {
-        errorMessage = 'Network error. Please check your connection';
+        errorMessage = AppLocalizations.of(context)!.networkError;
       } else if (e.toString().contains('unavailable')) {
-        errorMessage = 'Service is currently unavailable';
+        errorMessage = AppLocalizations.of(context)!.serviceUnavailable;
       }
 
       setState(() {
@@ -275,7 +277,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _loadWeekPlan,
-              child: const Text('Retry'),
+              child: Text(AppLocalizations.of(context)!.retry),
             ),
           ],
         ),
@@ -408,7 +410,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'Opening ${mealSlot.displayName}...',
+                AppLocalizations.of(context)!.openingMeal(mealSlot.displayName),
                 style: const TextStyle(fontSize: 14),
               ),
             ),
@@ -458,7 +460,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             ),
             ListTile(
               leading: PhosphorIcon(PhosphorIcons.plus()),
-              title: const Text('Custom Meal'),
+              title: Text(AppLocalizations.of(context)!.customMeal),
               onTap: () {
                 Navigator.pop(context);
                 _showCustomMealDialog(date);
@@ -502,19 +504,19 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add Custom Meal'),
+        title: Text(AppLocalizations.of(context)!.addCustomMeal),
         content: TextField(
           onChanged: (value) => mealName = value,
-          decoration: const InputDecoration(
-            labelText: 'Meal Name',
-            hintText: 'Enter meal name',
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.mealName,
+            hintText: AppLocalizations.of(context)!.enterMealName,
           ),
           autofocus: true,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -523,7 +525,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 _addQuickMeal(date, mealName);
               }
             },
-            child: const Text('Add'),
+            child: Text(AppLocalizations.of(context)!.add),
           ),
         ],
       ),
@@ -543,7 +545,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           children: [
             ListTile(
               leading: PhosphorIcon(PhosphorIcons.pencil()),
-              title: const Text('Edit Meal'),
+              title: Text(AppLocalizations.of(context)!.editMeal),
               onTap: () {
                 Navigator.pop(context);
                 showMealDetailExpandedView(
@@ -560,7 +562,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             if (!mealSlot.isLocked)
               ListTile(
                 leading: PhosphorIcon(PhosphorIcons.lock()),
-                title: const Text('Lock Meal'),
+                title: Text(AppLocalizations.of(context)!.lockMeal),
                 onTap: () {
                   Navigator.pop(context);
                   // TODO: Implement lock functionality
@@ -569,7 +571,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             else
               ListTile(
                 leading: PhosphorIcon(PhosphorIcons.lockOpen()),
-                title: const Text('Unlock Meal'),
+                title: Text(AppLocalizations.of(context)!.unlockMeal),
                 onTap: () {
                   Navigator.pop(context);
                   // TODO: Implement unlock functionality
@@ -577,7 +579,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               ),
             ListTile(
               leading: PhosphorIcon(PhosphorIcons.trash()),
-              title: const Text('Remove Meal'),
+              title: Text(AppLocalizations.of(context)!.removeMeal),
               textColor: AppColors.error,
               iconColor: AppColors.error,
               onTap: () {
@@ -684,7 +686,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please login to add meals'),
+          content: Text(AppLocalizations.of(context)!.pleaseLoginToAddMeals),
           backgroundColor: AppColors.error,
         ),
       );
@@ -695,7 +697,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     if (mealSlot.category.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Meal category is required'),
+          content: Text(AppLocalizations.of(context)!.mealCategoryRequired),
           backgroundColor: AppColors.error,
         ),
       );
@@ -716,7 +718,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               ),
             ),
             const SizedBox(width: 16),
-            const Text('Adding meal...'),
+            Text(AppLocalizations.of(context)!.addingMeal),
           ],
         ),
         duration: const Duration(
@@ -746,7 +748,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: Text('${mealSlot.displayName} added successfully!'),
+                child: Text(
+                  AppLocalizations.of(
+                    context,
+                  )!.mealAddedSuccessfully(mealSlot.displayName),
+                ),
               ),
             ],
           ),
@@ -762,15 +768,17 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       // Dismiss loading snackbar
       ScaffoldMessenger.of(context).clearSnackBars();
 
-      String errorMessage = 'Failed to add meal';
+      String errorMessage = AppLocalizations.of(context)!.failedToLoadMealPlan;
       if (e.toString().contains('permission-denied')) {
-        errorMessage = 'You do not have permission to add meals';
+        errorMessage = AppLocalizations.of(
+          context,
+        )!.youDoNotHavePermissionToAddMeals;
       } else if (e.toString().contains('network')) {
-        errorMessage =
-            'Network error. Please check your connection and try again';
+        errorMessage = AppLocalizations.of(
+          context,
+        )!.networkErrorCheckConnection;
       } else if (e.toString().contains('unavailable')) {
-        errorMessage =
-            'Service is currently unavailable. Please try again later';
+        errorMessage = AppLocalizations.of(context)!.serviceUnavailableTryLater;
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -807,7 +815,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please login to update meals'),
+          content: Text(AppLocalizations.of(context)!.pleaseLoginToUpdateMeals),
           backgroundColor: AppColors.error,
         ),
       );
@@ -822,7 +830,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Meal updated successfully!'),
+          content: Text(AppLocalizations.of(context)!.mealUpdatedSuccessfully),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -833,7 +841,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to update meal: ${e.toString()}'),
+          content: Text(
+            AppLocalizations.of(context)!.failedToUpdateMeal(e.toString()),
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -845,7 +855,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please login to delete meals'),
+          content: Text(AppLocalizations.of(context)!.pleaseLoginToDeleteMeals),
           backgroundColor: AppColors.error,
         ),
       );
@@ -860,7 +870,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Meal deleted'),
+          content: Text(AppLocalizations.of(context)!.mealDeleted),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -871,7 +881,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to delete meal: ${e.toString()}'),
+          content: Text(
+            AppLocalizations.of(context)!.failedToDeleteMeal(e.toString()),
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -941,8 +953,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               size: 20,
             ),
             const SizedBox(width: 8),
-            const Expanded(
-              child: Text('Failed to open recipe. Please try again.'),
+            Expanded(
+              child: Text(AppLocalizations.of(context)!.failedToOpenRecipe),
             ),
           ],
         ),
@@ -960,7 +972,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           children: [
             PhosphorIcon(PhosphorIcons.info(), color: Colors.white, size: 20),
             const SizedBox(width: 8),
-            const Expanded(child: Text('No recipe available for this meal')),
+            Expanded(
+              child: Text(AppLocalizations.of(context)!.noRecipeAvailable),
+            ),
           ],
         ),
         backgroundColor: AppColors.textSecondary,
@@ -975,14 +989,14 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Remove Meal'),
+        title: Text(AppLocalizations.of(context)!.removeMeal),
         content: Text(
-          'Are you sure you want to remove "${mealSlot.displayName}"?',
+          AppLocalizations.of(context)!.confirmRemoveMeal(mealSlot.displayName),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -993,7 +1007,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               backgroundColor: AppColors.error,
               foregroundColor: Colors.white,
             ),
-            child: const Text('Remove'),
+            child: Text(AppLocalizations.of(context)!.remove),
           ),
         ],
       ),
@@ -1023,27 +1037,27 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Auto-fill Week'),
-        content: const Text(
-          'Automatically fill empty meal slots with suggestions based on your pantry, leftovers, and seasonal recipes?',
-        ),
+        title: Text(AppLocalizations.of(context)!.autoFillWeek),
+        content: Text(AppLocalizations.of(context)!.autoFillWeekDescription),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               // TODO: Implement auto-fill functionality
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Auto-fill feature coming soon!'),
+                SnackBar(
+                  content: Text(
+                    AppLocalizations.of(context)!.autoFillFeatureComingSoon,
+                  ),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
             },
-            child: const Text('Auto-fill'),
+            child: Text(AppLocalizations.of(context)!.autoFillWeek),
           ),
         ],
       ),
@@ -1063,7 +1077,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           children: [
             ListTile(
               leading: PhosphorIcon(PhosphorIcons.clockCounterClockwise()),
-              title: const Text('View Previous Weeks'),
+              title: Text(AppLocalizations.of(context)!.viewPreviousWeeks),
               onTap: () {
                 Navigator.pop(context);
                 // TODO: Show week history
@@ -1071,7 +1085,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             ),
             ListTile(
               leading: PhosphorIcon(PhosphorIcons.copy()),
-              title: const Text('Duplicate Week'),
+              title: Text(AppLocalizations.of(context)!.duplicateWeek),
               onTap: () {
                 Navigator.pop(context);
                 // TODO: Implement week duplication
@@ -1079,7 +1093,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             ),
             ListTile(
               leading: PhosphorIcon(PhosphorIcons.trash()),
-              title: const Text('Clear All Meals'),
+              title: Text(AppLocalizations.of(context)!.clearAllMeals),
               textColor: AppColors.error,
               iconColor: AppColors.error,
               onTap: () {
@@ -1099,8 +1113,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
     if (currentWeekPlan == null) {
       _showErrorSnackBar(
-        'No meal plan available',
-        'Please add meals with recipes to generate a grocery list.',
+        AppLocalizations.of(context)!.noMealPlanAvailable,
+        AppLocalizations.of(context)!.addMealsWithRecipes,
       );
       return;
     }
@@ -1113,16 +1127,16 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
     if (totalMeals == 0) {
       _showErrorSnackBar(
-        'No meals planned',
-        'Add meals to your meal plan first, then generate a grocery list.',
+        AppLocalizations.of(context)!.noMealsPlannedForGrocery,
+        AppLocalizations.of(context)!.addMealsToMealPlan,
       );
       return;
     }
 
     if (mealsWithRecipes == 0) {
       _showErrorSnackBar(
-        'No recipe-based meals',
-        'Add meals with recipes to generate ingredients for your grocery list.',
+        AppLocalizations.of(context)!.noRecipeBasedMeals,
+        AppLocalizations.of(context)!.addMealsWithRecipesForGrocery,
       );
       return;
     }
@@ -1155,7 +1169,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       Navigator.of(context).pop();
 
       // Show detailed error message in a scrollable dialog
-      _showDetailedErrorDialog('Grocery List Generation Failed', e.toString());
+      _showDetailedErrorDialog(
+        AppLocalizations.of(context)!.groceryListGenerationFailed,
+        e.toString(),
+      );
     }
   }
 
@@ -1235,14 +1252,14 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            child: Text(AppLocalizations.of(context)!.close),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).pop();
               _generateGroceryList();
             },
-            child: const Text('Retry'),
+            child: Text(AppLocalizations.of(context)!.retry),
           ),
         ],
       ),
@@ -1268,13 +1285,13 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Generating grocery list...',
+              Text(
+                AppLocalizations.of(context)!.generatingGroceryList,
                 style: TextStyle(fontSize: 16, color: AppColors.textPrimary),
               ),
               const SizedBox(height: 8),
               Text(
-                'Analyzing your meal plan and calculating ingredients',
+                AppLocalizations.of(context)!.analyzingMealPlan,
                 style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),

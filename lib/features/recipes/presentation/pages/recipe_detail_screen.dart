@@ -164,8 +164,8 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
               color: AppColors.textSecondary,
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Recipe not found',
+            Text(
+              AppLocalizations.of(context)!.recipeNotFound,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -173,8 +173,8 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'The recipe you are looking for does not exist.',
+            Text(
+              AppLocalizations.of(context)!.recipeDoesNotExist,
               style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
@@ -395,7 +395,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                   ],
                   const SizedBox(height: 32),
                   PrimaryButton(
-                    text: 'Add to Meal Plan',
+                    text: AppLocalizations.of(context)!.addToMealPlan,
                     onPressed: () => _addToMealPlan(recipe),
                     height: 56,
                   ),
@@ -435,7 +435,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
             });
           },
           child: Text(
-            isDescriptionExpanded ? 'View Less' : 'View More',
+            isDescriptionExpanded ? AppLocalizations.of(context)!.viewLess : AppLocalizations.of(context)!.viewMore,
             style: const TextStyle(
               fontSize: 14,
               color: AppColors.primary,
@@ -474,7 +474,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                 ),
                 child: Center(
                   child: Text(
-                    'Ingredients',
+                    AppLocalizations.of(context)!.ingredients,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -505,7 +505,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                 ),
                 child: Center(
                   child: Text(
-                    'Instructions',
+                    AppLocalizations.of(context)!.instructions,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -527,8 +527,8 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text(
-          'Servings',
+        Text(
+          AppLocalizations.of(context)!.servings,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -636,7 +636,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
               ),
               child: Center(
                 child: Text(
-                  'Cups',
+                  AppLocalizations.of(context)!.cups,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -666,7 +666,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
               ),
               child: Center(
                 child: Text(
-                  'Metric',
+                  AppLocalizations.of(context)!.metric,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -710,22 +710,22 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
           _buildNutritionCard(
             PhosphorIcons.fire(),
             '$caloriesPerServing',
-            'Calories',
+            AppLocalizations.of(context)!.calories,
           ),
           _buildNutritionCard(
             PhosphorIcons.shrimp(),
             '${proteinPerServing.toStringAsFixed(0)} g',
-            'Protein',
+            AppLocalizations.of(context)!.protein,
           ),
           _buildNutritionCard(
             PhosphorIcons.grains(),
             '${carbsPerServing.toStringAsFixed(0)} g',
-            'Carbs',
+            AppLocalizations.of(context)!.carbs,
           ),
           _buildNutritionCard(
             PhosphorIcons.avocado(),
             '${fatsPerServing.toStringAsFixed(1)} g',
-            'Fat',
+            AppLocalizations.of(context)!.fat,
           ),
         ],
       ),
@@ -1063,7 +1063,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Add "${recipe.title}" to Meal Plan',
+                  AppLocalizations.of(context)!.addRecipeToMealPlan(recipe.title),
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -1074,8 +1074,8 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
             const SizedBox(height: 20),
             ListTile(
               leading: PhosphorIcon(PhosphorIcons.calendar()),
-              title: const Text('Go to Meal Planner'),
-              subtitle: const Text('Choose specific day and meal time'),
+              title: Text(AppLocalizations.of(context)!.goToMealPlanner),
+              subtitle: Text(AppLocalizations.of(context)!.chooseSpecificDayAndMeal),
               onTap: () {
                 Navigator.pop(context);
                 context.go('/meal-planner');
@@ -1083,8 +1083,8 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
             ),
             ListTile(
               leading: PhosphorIcon(PhosphorIcons.clockCounterClockwise()),
-              title: const Text('Add to Today'),
-              subtitle: const Text('Quick add to next available meal today'),
+              title: Text(AppLocalizations.of(context)!.addToToday),
+              subtitle: Text(AppLocalizations.of(context)!.quickAddToTodayMeal),
               onTap: () {
                 Navigator.pop(context);
                 _addToTodaysMeals(recipe);
@@ -1101,21 +1101,21 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add to Today'),
+        title: Text(AppLocalizations.of(context)!.addToToday),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Which meal would you like to add "${recipe.title}" to?'),
+            Text(AppLocalizations.of(context)!.whichMealToAdd(recipe.title)),
             const SizedBox(height: 16),
-            _buildMealTimeOption('Breakfast', '8:30 AM'),
-            _buildMealTimeOption('Lunch', '12:30 PM'),
-            _buildMealTimeOption('Dinner', '7:00 PM'),
+            _buildMealTimeOption(AppLocalizations.of(context)!.breakfast, AppLocalizations.of(context)!.breakfastTime),
+            _buildMealTimeOption(AppLocalizations.of(context)!.lunch, AppLocalizations.of(context)!.lunchTime),
+            _buildMealTimeOption(AppLocalizations.of(context)!.dinner, AppLocalizations.of(context)!.dinnerTime),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
         ],
       ),
@@ -1142,7 +1142,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Added to today\'s $mealType!',
+                    AppLocalizations.of(context)!.addedToTodayMeal(mealType),
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
