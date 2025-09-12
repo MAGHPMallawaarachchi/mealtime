@@ -3,6 +3,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/widgets/primary_button.dart';
 import '../../domain/models/recipe.dart';
 import '../../domain/usecases/get_recipe_by_id_usecase.dart';
@@ -17,7 +18,7 @@ class RecipeDetailScreen extends ConsumerStatefulWidget {
   final MealPlannerReturnContext? returnContext;
 
   const RecipeDetailScreen({
-    super.key, 
+    super.key,
     required this.recipeId,
     this.returnContext,
   });
@@ -96,10 +97,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
       // Navigate back to meal planner with context preservation
       final context = widget.returnContext!;
       final queryParams = context.toQueryParameters();
-      final uri = Uri(
-        path: '/meal-planner',
-        queryParameters: queryParams,
-      );
+      final uri = Uri(path: '/meal-planner', queryParameters: queryParams);
       this.context.go(uri.toString());
     } else {
       // Default back navigation
@@ -212,9 +210,9 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                 color: AppColors.textSecondary,
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Something went wrong',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.somethingWentWrong,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
@@ -236,7 +234,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                   backgroundColor: AppColors.primary,
                   foregroundColor: AppColors.white,
                 ),
-                child: const Text('Try Again'),
+                child: Text(AppLocalizations.of(context)!.tryAgain),
               ),
             ],
           ),
@@ -281,8 +279,10 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                 ),
                 child: Consumer(
                   builder: (context, ref, child) {
-                    final isFavorited = ref.watch(isFavoriteProvider(widget.recipeId));
-                    
+                    final isFavorited = ref.watch(
+                      isFavoriteProvider(widget.recipeId),
+                    );
+
                     return IconButton(
                       icon: PhosphorIcon(
                         size: 22,
@@ -295,7 +295,9 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                         fill: isFavorited ? 1.0 : 0.0,
                       ),
                       onPressed: () {
-                        ref.read(favoritesProvider.notifier).toggleFavorite(widget.recipeId);
+                        ref
+                            .read(favoritesProvider.notifier)
+                            .toggleFavorite(widget.recipeId);
                       },
                     );
                   },

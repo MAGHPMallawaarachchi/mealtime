@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/D:\\Developments\\mealtime\\lib\\features\\explore\\presentation\\widgets/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -97,6 +97,15 @@ class SeasonalSpotlightCard extends StatelessWidget {
   }
 
   void _navigateToRecipes(BuildContext context) {
-    context.push('/recipes?ingredient=${ingredient.name}');
+    final encodedName = Uri.encodeComponent(ingredient.name);
+    final encodedImageUrl = Uri.encodeComponent(ingredient.imageUrl);
+    final encodedDescription = Uri.encodeComponent(ingredient.description);
+    
+    context.push(
+      '/seasonal-recipes/$encodedName'
+      '?id=${ingredient.id}'
+      '&imageUrl=$encodedImageUrl'
+      '&description=$encodedDescription'
+    );
   }
 }

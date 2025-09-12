@@ -1,0 +1,638 @@
+{
+  "@@locale": "en",
+  "appTitle": "MealTime",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  
+  "todaysMealPlan": "Today's Meal Plan",
+  "@todaysMealPlan": {
+    "description": "Title for today's meal plan section"
+  },
+  
+  "seeAll": "See All",
+  "@seeAll": {
+    "description": "Button text to view all items"
+  },
+  
+  "noMealsPlanned": "No meals planned yet",
+  "@noMealsPlanned": {
+    "description": "Message shown when no meals are planned"
+  },
+  
+  "startPlanningMeals": "Tap \"See All\" to start planning your meals",
+  "@startPlanningMeals": {
+    "description": "Instruction to start planning meals"
+  },
+  
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings page title"
+  },
+  
+  "language": "Language",
+  "@language": {
+    "description": "Language setting label"
+  },
+  
+  "appLanguage": "App Language",
+  "@appLanguage": {
+    "description": "App language setting title"
+  },
+  
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+  
+  "sinhala": "Sinhala",
+  "@sinhala": {
+    "description": "Sinhala language option"
+  },
+  
+  "household": "Household",
+  "@household": {
+    "description": "Household section title"
+  },
+  
+  "householdSize": "Household Size",
+  "@householdSize": {
+    "description": "Household size setting"
+  },
+  
+  "dietaryPreferences": "Dietary Preferences",
+  "@dietaryPreferences": {
+    "description": "Dietary preferences section title"
+  },
+  
+  "dietaryPreference": "Dietary Preference",
+  "@dietaryPreference": {
+    "description": "Single dietary preference setting"
+  },
+  
+  "nonVegetarian": "Non-Vegetarian",
+  "@nonVegetarian": {
+    "description": "Non-vegetarian diet option"
+  },
+  
+  "vegetarian": "Vegetarian",
+  "@vegetarian": {
+    "description": "Vegetarian diet option"
+  },
+  
+  "vegan": "Vegan",
+  "@vegan": {
+    "description": "Vegan diet option"
+  },
+  
+  "pescatarian": "Pescatarian",
+  "@pescatarian": {
+    "description": "Pescatarian diet option"
+  },
+  
+  "recipeRecommendations": "Recipe Recommendations",
+  "@recipeRecommendations": {
+    "description": "Recipe recommendations section title"
+  },
+  
+  "prioritizePantryItems": "Prioritize Pantry Items",
+  "@prioritizePantryItems": {
+    "description": "Setting to prioritize pantry items"
+  },
+  
+  "prioritizePantryDescription": "When enabled, recipes using ingredients from your pantry will be prioritized in recommendations",
+  "@prioritizePantryDescription": {
+    "description": "Description for prioritize pantry items setting"
+  },
+  
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notifications section title"
+  },
+  
+  "mealPlanReminders": "Meal Plan Reminders",
+  "@mealPlanReminders": {
+    "description": "Meal plan reminders setting"
+  },
+  
+  "mealPlanRemindersDescription": "Get reminded about your planned meals",
+  "@mealPlanRemindersDescription": {
+    "description": "Description for meal plan reminders"
+  },
+  
+  "shoppingListUpdates": "Shopping List Updates",
+  "@shoppingListUpdates": {
+    "description": "Shopping list updates setting"
+  },
+  
+  "shoppingListUpdatesDescription": "Get notified when shopping list changes",
+  "@shoppingListUpdatesDescription": {
+    "description": "Description for shopping list updates"
+  },
+  
+  "saveSettings": "Save Settings",
+  "@saveSettings": {
+    "description": "Button text to save settings"
+  },
+  
+  "settingsSavedSuccessfully": "Settings saved successfully",
+  "@settingsSavedSuccessfully": {
+    "description": "Success message when settings are saved"
+  },
+  
+  "failedToSaveSettings": "Failed to save settings: {error}",
+  "@failedToSaveSettings": {
+    "description": "Error message when settings fail to save",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+  
+  "errorLoadingPreferences": "Error loading preferences: {error}",
+  "@errorLoadingPreferences": {
+    "description": "Error message when preferences fail to load",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+  
+  "perfectForYourPantry": "Perfect for Your Pantry",
+  "@perfectForYourPantry": {
+    "description": "Recommendation section title for pantry-based recipes"
+  },
+  
+  "useUpPantryItems": "Use up your pantry items",
+  "@useUpPantryItems": {
+    "description": "Subtitle for pantry-based recommendations"
+  },
+  
+  "justForYou": "Just for You",
+  "@justForYou": {
+    "description": "Personalized recommendations title"
+  },
+  
+  "basedOnPreferences": "Based on your preferences",
+  "@basedOnPreferences": {
+    "description": "Subtitle for personalized recommendations"
+  },
+  
+  "quickWeeknightMeals": "Quick Weeknight Meals",
+  "@quickWeeknightMeals": {
+    "description": "Quick meals recommendation title"
+  },
+  
+  "readyInMinutes": "Ready in 30 minutes or less",
+  "@readyInMinutes": {
+    "description": "Subtitle for quick meals"
+  },
+  
+  "seasonalFavorites": "Seasonal Favorites",
+  "@seasonalFavorites": {
+    "description": "Seasonal recommendations title"
+  },
+  
+  "perfectForTimeOfYear": "Perfect for this time of year",
+  "@perfectForTimeOfYear": {
+    "description": "Subtitle for seasonal recommendations"
+  },
+  
+  "noPantryMatchesFound": "No pantry matches found",
+  "@noPantryMatchesFound": {
+    "description": "Empty state for pantry recommendations"
+  },
+  
+  "addItemsToGetSuggestions": "Add items to your pantry to get recipe suggestions",
+  "@addItemsToGetSuggestions": {
+    "description": "Empty state description for pantry recommendations"
+  },
+  
+  "buildingYourPreferences": "Building your preferences",
+  "@buildingYourPreferences": {
+    "description": "Empty state for personalized recommendations"
+  },
+  
+  "interactToGetSuggestions": "Interact with recipes to get personalized suggestions",
+  "@interactToGetSuggestions": {
+    "description": "Empty state description for personalized recommendations"
+  },
+  
+  "noQuickMealsAvailable": "No quick meals available",
+  "@noQuickMealsAvailable": {
+    "description": "Empty state for quick meals"
+  },
+  
+  "quickMealSuggestions": "Quick meal suggestions will appear here",
+  "@quickMealSuggestions": {
+    "description": "Empty state description for quick meals"
+  },
+  
+  "noSeasonalRecipesFound": "No seasonal recipes found",
+  "@noSeasonalRecipesFound": {
+    "description": "Empty state for seasonal recommendations"
+  },
+  
+  "seasonalRecommendations": "Seasonal recommendations based on current time of year",
+  "@seasonalRecommendations": {
+    "description": "Empty state description for seasonal recommendations"
+  },
+  
+  "personalizedRecommendations": "Personalized recommendations",
+  "@personalizedRecommendations": {
+    "description": "Title for personalized recommendations section"
+  },
+  
+  "addItemsAndSetPreferences": "Add items to your pantry and set your preferences to get personalized recipe recommendations.",
+  "@addItemsAndSetPreferences": {
+    "description": "Description for personalized recommendations setup"
+  },
+  
+  "unableToLoadRecommendations": "Unable to load recommendations",
+  "@unableToLoadRecommendations": {
+    "description": "Error message for failed recommendations"
+  },
+  
+  "checkConnectionAndRetry": "Please check your connection and try again.",
+  "@checkConnectionAndRetry": {
+    "description": "Error description for connection issues"
+  },
+  
+  "retry": "Retry",
+  "@retry": {
+    "description": "Button text to retry an action"
+  },
+  
+  "noImage": "No Image",
+  "@noImage": {
+    "description": "Placeholder text when no image is available"
+  },
+
+  "goodMorning": "Good Morning",
+  "@goodMorning": {
+    "description": "Morning greeting"
+  },
+
+  "goodAfternoon": "Good Afternoon",
+  "@goodAfternoon": {
+    "description": "Afternoon greeting"
+  },
+
+  "goodEvening": "Good Evening",
+  "@goodEvening": {
+    "description": "Evening greeting"
+  },
+
+  "guestUser": "Guest User",
+  "@guestUser": {
+    "description": "Default text for guest users"
+  },
+
+  "notificationsComingSoon": "Notifications coming soon!",
+  "@notificationsComingSoon": {
+    "description": "Notification placeholder message"
+  },
+
+  "home": "Home",
+  "@home": {
+    "description": "Home tab label"
+  },
+
+  "explore": "Explore",
+  "@explore": {
+    "description": "Explore tab label"
+  },
+
+  "pantry": "Pantry",
+  "@pantry": {
+    "description": "Pantry tab label"
+  },
+
+  "mealPlanner": "Meal Planner",
+  "@mealPlanner": {
+    "description": "Meal Planner tab label"
+  },
+
+  "profile": "Profile",
+  "@profile": {
+    "description": "Profile tab label"
+  },
+
+  "searchRecipesIngredients": "Search recipes, ingredients...",
+  "@searchRecipesIngredients": {
+    "description": "Search bar placeholder text"
+  },
+
+  "somethingWentWrong": "Something went wrong",
+  "@somethingWentWrong": {
+    "description": "Generic error title"
+  },
+
+  "tryAgain": "Try Again",
+  "@tryAgain": {
+    "description": "Button text to retry an action"
+  },
+
+  "addedToFavorites": "{recipeName} added to favorites!",
+  "@addedToFavorites": {
+    "description": "Message when recipe is added to favorites",
+    "placeholders": {
+      "recipeName": {
+        "type": "String",
+        "description": "Name of the recipe"
+      }
+    }
+  },
+
+  "removedFromFavorites": "{recipeName} removed from favorites",
+  "@removedFromFavorites": {
+    "description": "Message when recipe is removed from favorites",
+    "placeholders": {
+      "recipeName": {
+        "type": "String",
+        "description": "Name of the recipe"
+      }
+    }
+  },
+
+  "undo": "Undo",
+  "@undo": {
+    "description": "Undo action button text"
+  },
+
+  "addedToMealPlan": "{recipeName} added to meal plan",
+  "@addedToMealPlan": {
+    "description": "Message when recipe is added to meal plan",
+    "placeholders": {
+      "recipeName": {
+        "type": "String",
+        "description": "Name of the recipe"
+      }
+    }
+  },
+
+  "myPantry": "My Pantry",
+  "@myPantry": {
+    "description": "Pantry screen title"
+  },
+
+  "ingredients": "Ingredients",
+  "@ingredients": {
+    "description": "Ingredients label"
+  },
+
+  "leftovers": "Leftovers",
+  "@leftovers": {
+    "description": "Leftovers label"
+  },
+
+  "ingredientsCount": "{count} ingredients",
+  "@ingredientsCount": {
+    "description": "Count of ingredients",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of ingredients"
+      }
+    }
+  },
+
+  "leftoversCount": "{count} leftovers",
+  "@leftoversCount": {
+    "description": "Count of leftovers",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of leftovers"
+      }
+    }
+  },
+
+  "deleteIngredient": "Delete Ingredient",
+  "@deleteIngredient": {
+    "description": "Delete ingredient dialog title"
+  },
+
+  "confirmDeleteIngredient": "Are you sure you want to remove \"{itemName}\" from your pantry?",
+  "@confirmDeleteIngredient": {
+    "description": "Delete ingredient confirmation message",
+    "placeholders": {
+      "itemName": {
+        "type": "String",
+        "description": "Name of the item to delete"
+      }
+    }
+  },
+
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button text"
+  },
+
+  "loadingYourPantry": "Loading your pantry...",
+  "@loadingYourPantry": {
+    "description": "Loading message for pantry"
+  },
+
+  "failedToLoadPantry": "Failed to Load Pantry",
+  "@failedToLoadPantry": {
+    "description": "Error title when pantry fails to load"
+  },
+
+  "noIngredientsYet": "No Ingredients Yet",
+  "@noIngredientsYet": {
+    "description": "Empty state title for ingredients"
+  },
+
+  "addFreshIngredientsDiscover": "Add fresh ingredients to discover recipes you can make!",
+  "@addFreshIngredientsDiscover": {
+    "description": "Empty state description for ingredients"
+  },
+
+  "addIngredient": "Add Ingredient",
+  "@addIngredient": {
+    "description": "Add ingredient button text"
+  },
+
+  "quickAddPopularItems": "Quick Add Popular Items:",
+  "@quickAddPopularItems": {
+    "description": "Quick add section title"
+  },
+
+  "noLeftoversYet": "No Leftovers Yet",
+  "@noLeftoversYet": {
+    "description": "Empty state title for leftovers"
+  },
+
+  "addLeftoverFoodItems": "Add leftover food items to find creative ways to use them up!",
+  "@addLeftoverFoodItems": {
+    "description": "Empty state description for leftovers"
+  },
+
+  "addLeftover": "Add Leftover",
+  "@addLeftover": {
+    "description": "Add leftover button text"
+  },
+
+  "commonLeftoversToTrack": "Common leftovers to track:",
+  "@commonLeftoversToTrack": {
+    "description": "Common leftovers section title"
+  },
+
+  "planYourMealsFlexibility": "Plan your meals with flexibility",
+  "@planYourMealsFlexibility": {
+    "description": "Meal planner subtitle"
+  },
+
+  "addMeal": "Add Meal",
+  "@addMeal": {
+    "description": "Add meal button text"
+  },
+
+  "customMeal": "Custom Meal",
+  "@customMeal": {
+    "description": "Custom meal option text"
+  },
+
+  "addCustomMeal": "Add Custom Meal",
+  "@addCustomMeal": {
+    "description": "Add custom meal dialog title"
+  },
+
+  "mealName": "Meal Name",
+  "@mealName": {
+    "description": "Meal name input label"
+  },
+
+  "enterMealName": "Enter meal name",
+  "@enterMealName": {
+    "description": "Meal name input hint"
+  },
+
+  "add": "Add",
+  "@add": {
+    "description": "Add button text"
+  },
+
+  "editMeal": "Edit Meal",
+  "@editMeal": {
+    "description": "Edit meal option text"
+  },
+
+  "lockMeal": "Lock Meal",
+  "@lockMeal": {
+    "description": "Lock meal option text"
+  },
+
+  "unlockMeal": "Unlock Meal",
+  "@unlockMeal": {
+    "description": "Unlock meal option text"
+  },
+
+  "removeMeal": "Remove Meal",
+  "@removeMeal": {
+    "description": "Remove meal option text"
+  },
+
+  "confirmRemoveMeal": "Are you sure you want to remove \"{mealName}\"?",
+  "@confirmRemoveMeal": {
+    "description": "Remove meal confirmation message",
+    "placeholders": {
+      "mealName": {
+        "type": "String",
+        "description": "Name of the meal to remove"
+      }
+    }
+  },
+
+  "remove": "Remove",
+  "@remove": {
+    "description": "Remove button text"
+  },
+
+  "breakfast": "Breakfast",
+  "@breakfast": {
+    "description": "Breakfast meal category"
+  },
+
+  "lunch": "Lunch",
+  "@lunch": {
+    "description": "Lunch meal category"
+  },
+
+  "dinner": "Dinner",
+  "@dinner": {
+    "description": "Dinner meal category"
+  },
+
+  "snack": "Snack",
+  "@snack": {
+    "description": "Snack meal category"
+  },
+
+  "brunch": "Brunch",
+  "@brunch": {
+    "description": "Brunch meal category"
+  },
+
+  "lateNight": "Late Night",
+  "@lateNight": {
+    "description": "Late night meal category"
+  },
+
+  "addingMeal": "Adding meal...",
+  "@addingMeal": {
+    "description": "Loading message when adding meal"
+  },
+
+  "mealAddedSuccessfully": "{mealName} added successfully!",
+  "@mealAddedSuccessfully": {
+    "description": "Success message when meal is added",
+    "placeholders": {
+      "mealName": {
+        "type": "String",
+        "description": "Name of the added meal"
+      }
+    }
+  },
+
+  "mealUpdatedSuccessfully": "Meal updated successfully!",
+  "@mealUpdatedSuccessfully": {
+    "description": "Success message when meal is updated"
+  },
+
+  "mealDeleted": "Meal deleted",
+  "@mealDeleted": {
+    "description": "Message when meal is deleted"
+  },
+
+  "openingMeal": "Opening {mealName}...",
+  "@openingMeal": {
+    "description": "Message when opening meal details",
+    "placeholders": {
+      "mealName": {
+        "type": "String",
+        "description": "Name of the meal being opened"
+      }
+    }
+  },
+
+  "noRecipeAvailable": "No recipe available for this meal",
+  "@noRecipeAvailable": {
+    "description": "Message when meal has no recipe"
+  },
+
+  "close": "Close",
+  "@close": {
+    "description": "Close button text"
+  }
+}

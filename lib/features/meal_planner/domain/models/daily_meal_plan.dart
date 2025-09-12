@@ -137,7 +137,7 @@ class DailyMealPlan {
 
   factory DailyMealPlan.fromJson(Map<String, dynamic> json) {
     return DailyMealPlan(
-      date: _parseDateTime(json['date']),
+      date: _parseDateTime(json['date'], fallback: DateTime.now()),
       meals: (json['meals'] as List<dynamic>? ?? [])
           .map((mealJson) => MealSlot.fromJson(mealJson as Map<String, dynamic>))
           .toList(),
@@ -147,16 +147,28 @@ class DailyMealPlan {
   }
 
   /// Helper method to parse DateTime from either String or Timestamp
-  static DateTime _parseDateTime(dynamic value) {
-    if (value == null) throw ArgumentError('DateTime value cannot be null');
+  static DateTime _parseDateTime(dynamic value, {DateTime? fallback}) {
+    if (value == null) {
+      if (fallback != null) {
+        return fallback;
+      }
+      throw ArgumentError('DateTime value cannot be null and no fallback provided');
+    }
     
-    if (value is String) {
-      return DateTime.parse(value);
-    } else if (value.runtimeType.toString() == 'Timestamp') {
-      // Handle Firebase Timestamp
-      return (value as dynamic).toDate();
-    } else {
-      throw ArgumentError('Expected String or Timestamp, got ${value.runtimeType}');
+    try {
+      if (value is String) {
+        return DateTime.parse(value);
+      } else if (value.runtimeType.toString() == 'Timestamp') {
+        // Handle Firebase Timestamp
+        return (value as dynamic).toDate();
+      } else {
+        throw ArgumentError('Expected String or Timestamp, got ${value.runtimeType}');
+      }
+    } catch (e) {
+      if (fallback != null) {
+        return fallback;
+      }
+      rethrow;
     }
   }
 

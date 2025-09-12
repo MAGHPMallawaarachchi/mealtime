@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
@@ -215,7 +216,7 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
             fontWeight: FontWeight.w400,
           ),
           decoration: InputDecoration(
-            hintText: 'Search recipes, ingredients...',
+            hintText: AppLocalizations.of(context)!.searchRecipesIngredients,
             hintStyle: const TextStyle(
               fontSize: 16,
               color: AppColors.textSecondary,
@@ -285,7 +286,7 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Something went wrong',
+            AppLocalizations.of(context)!.somethingWentWrong,
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -325,7 +326,7 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 0.9,
+        childAspectRatio: 0.85,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
       ),

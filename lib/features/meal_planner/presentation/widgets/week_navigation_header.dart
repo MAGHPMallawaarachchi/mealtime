@@ -56,7 +56,6 @@ class WeekNavigationHeader extends StatelessWidget {
             PhosphorIcons.caretLeft(),
             color: AppColors.textPrimary,
           ),
-          tooltip: 'Previous week',
         ),
         Expanded(
           child: Column(
@@ -103,7 +102,6 @@ class WeekNavigationHeader extends StatelessWidget {
             PhosphorIcons.caretRight(),
             color: AppColors.textPrimary,
           ),
-          tooltip: 'Next week',
         ),
       ],
     );

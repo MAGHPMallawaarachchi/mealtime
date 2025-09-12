@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../domain/models/meal_slot.dart';
 import '../../domain/models/daily_meal_plan.dart';
@@ -10,6 +10,7 @@ import '../../domain/models/weekly_meal_plan.dart';
 import '../../domain/usecases/get_weekly_meal_plan_usecase.dart';
 import '../../domain/usecases/save_meal_slot_usecase.dart';
 import '../../domain/usecases/delete_meal_slot_usecase.dart';
+import '../../domain/usecases/generate_grocery_list_usecase.dart';
 import '../../data/repositories/meal_planner_repository_impl.dart';
 import '../../domain/models/meal_planner_return_context.dart';
 import '../widgets/day_timeline_view.dart';
@@ -18,14 +19,16 @@ import '../widgets/meal_detail_expanded_view.dart';
 import '../widgets/time_picker_modal.dart';
 import '../widgets/recipe_selection_modal.dart';
 import '../widgets/meal_confirmation_modal.dart';
+import '../widgets/grocery_list_preview_modal.dart';
 import '../../../recipes/domain/models/recipe.dart';
+import '../../../recipes/data/repositories/recipes_repository_impl.dart';
 
 class MealPlannerScreen extends StatefulWidget {
   final Function(VoidCallback)? onRegisterAddMealCallback;
   final MealPlannerReturnContext? returnContext;
 
   const MealPlannerScreen({
-    super.key, 
+    super.key,
     this.onRegisterAddMealCallback,
     this.returnContext,
   });
@@ -46,9 +49,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   // Dependencies
   late final AuthService _authService;
   late final MealPlannerRepositoryImpl _mealPlannerRepository;
+  late final RecipesRepositoryImpl _recipesRepository;
   late final GetWeeklyMealPlanUseCase _getWeeklyMealPlanUseCase;
   late final SaveMealSlotUseCase _saveMealSlotUseCase;
   late final DeleteMealSlotUseCase _deleteMealSlotUseCase;
+  late final GenerateGroceryListUseCase _generateGroceryListUseCase;
 
   @override
   void initState() {
@@ -56,7 +61,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     _initializeDependencies();
     final today = DateTime.now();
     _todayNormalized = _normalizeDate(today);
-    
+
     // Initialize state from return context or use defaults
     if (widget.returnContext != null) {
       _restoreStateFromContext(widget.returnContext!);
@@ -65,7 +70,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       currentWeekStart = _getWeekStart(_todayNormalized);
       selectedDate = _todayNormalized;
     }
-    
+
     _loadWeekPlan();
 
     // Register our add meal callback with the parent
@@ -76,10 +81,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     // Restore the exact state from when user left
     currentWeekStart = _normalizeDate(context.weekStart);
     selectedDate = _normalizeDate(context.selectedDate);
-    
+
     // Validate that the selected date is within the current week
     final weekEnd = currentWeekStart.add(const Duration(days: 6));
-    if (selectedDate.isBefore(currentWeekStart) || selectedDate.isAfter(weekEnd)) {
+    if (selectedDate.isBefore(currentWeekStart) ||
+        selectedDate.isAfter(weekEnd)) {
       // If selected date is outside the week, adjust it to be within the week
       selectedDate = currentWeekStart;
     }
@@ -88,11 +94,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   void _initializeDependencies() {
     _authService = AuthService();
     _mealPlannerRepository = MealPlannerRepositoryImpl();
+    _recipesRepository = RecipesRepositoryImpl();
     _getWeeklyMealPlanUseCase = GetWeeklyMealPlanUseCase(
       _mealPlannerRepository,
     );
     _saveMealSlotUseCase = SaveMealSlotUseCase(_mealPlannerRepository);
     _deleteMealSlotUseCase = DeleteMealSlotUseCase(_mealPlannerRepository);
+    _generateGroceryListUseCase = GenerateGroceryListUseCase(
+      _recipesRepository,
+    );
   }
 
   @override
@@ -170,8 +180,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
       // Ignore stale errors from outdated requests
       if (currentRequestId != _loadRequestId ||
-          !_isSameDay(requestedWeekStart, currentWeekStart))
+          !_isSameDay(requestedWeekStart, currentWeekStart)) {
         return;
+      }
 
       String errorMessage = 'Failed to load meal plan';
       if (e.toString().contains('permission-denied')) {
@@ -287,32 +298,34 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Meal Planner',
-                style: TextStyle(
+                AppLocalizations.of(context)!.mealPlanner,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
               ),
               Text(
-                'Plan your meals with flexibility',
-                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                AppLocalizations.of(context)!.planYourMealsFlexibility,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                ),
               ),
             ],
           ),
           Row(
             children: [
               IconButton(
-                onPressed: _showAutoFillDialog,
+                onPressed: _generateGroceryList,
                 icon: PhosphorIcon(
-                  PhosphorIcons.magicWand(),
+                  PhosphorIcons.shoppingCart(),
                   color: AppColors.primary,
                 ),
-                tooltip: 'Auto-fill meals',
               ),
               IconButton(
                 onPressed: _showMealPlanOptions,
@@ -320,7 +333,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   PhosphorIcons.dotsThreeVertical(),
                   color: AppColors.textPrimary,
                 ),
-                tooltip: 'More options',
               ),
             ],
           ),
@@ -404,9 +416,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         ),
         backgroundColor: AppColors.primary,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         duration: const Duration(milliseconds: 800),
       ),
     );
@@ -431,15 +441,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Add Meal',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              AppLocalizations.of(context)!.addMeal,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             ...MealCategory.predefined.map(
               (category) => ListTile(
                 leading: PhosphorIcon(_getCategoryIcon(category)),
-                title: Text(category),
+                title: Text(_getLocalizedCategory(context, category)),
                 onTap: () {
                   Navigator.pop(context);
                   _addQuickMeal(date, category);
@@ -572,7 +582,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               iconColor: AppColors.error,
               onTap: () {
                 Navigator.pop(context);
-                // TODO: Implement remove functionality
+                _showRemoveMealConfirmation(mealSlot, date);
               },
             ),
           ],
@@ -883,23 +893,26 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         selectedDate: selectedDate,
         weekStart: currentWeekStart,
       );
-      
+
       // Build URL with context parameters
       final uri = Uri(
         path: '/recipe/$recipeId',
         queryParameters: returnContext.toQueryParameters(),
       );
-      
+
       // Show subtle loading feedback
       _showNavigationFeedback(true);
-      
-      context.push(uri.toString()).then((_) {
-        // Hide loading feedback when returning
-        _hideNavigationFeedback();
-      }).catchError((e) {
-        _hideNavigationFeedback();
-        _showNavigationError();
-      });
+
+      context
+          .push(uri.toString())
+          .then((_) {
+            // Hide loading feedback when returning
+            _hideNavigationFeedback();
+          })
+          .catchError((e) {
+            _hideNavigationFeedback();
+            _showNavigationError();
+          });
     } catch (e) {
       _showNavigationError();
     }
@@ -935,9 +948,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         ),
         backgroundColor: AppColors.error,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -956,6 +967,35 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showRemoveMealConfirmation(MealSlot mealSlot, DateTime date) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remove Meal'),
+        content: Text(
+          'Are you sure you want to remove "${mealSlot.displayName}"?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _deleteMeal(mealSlot, date);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Remove'),
+          ),
+        ],
       ),
     );
   }
@@ -1022,14 +1062,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: PhosphorIcon(PhosphorIcons.shoppingCart()),
-              title: const Text('Generate Shopping List'),
-              onTap: () {
-                Navigator.pop(context);
-                // TODO: Navigate to shopping list generation
-              },
-            ),
-            ListTile(
               leading: PhosphorIcon(PhosphorIcons.clockCounterClockwise()),
               title: const Text('View Previous Weeks'),
               onTap: () {
@@ -1059,5 +1091,217 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _generateGroceryList() async {
+    // First ensure we have the correct week loaded
+    await _ensureCorrectWeekLoaded();
+
+    if (currentWeekPlan == null) {
+      _showErrorSnackBar(
+        'No meal plan available',
+        'Please add meals with recipes to generate a grocery list.',
+      );
+      return;
+    }
+
+    // Check if there are any meals with recipes
+    final totalMeals = currentWeekPlan!.allScheduledMeals.length;
+    final mealsWithRecipes = currentWeekPlan!.allScheduledMeals
+        .where((m) => m.recipeId != null)
+        .length;
+
+    if (totalMeals == 0) {
+      _showErrorSnackBar(
+        'No meals planned',
+        'Add meals to your meal plan first, then generate a grocery list.',
+      );
+      return;
+    }
+
+    if (mealsWithRecipes == 0) {
+      _showErrorSnackBar(
+        'No recipe-based meals',
+        'Add meals with recipes to generate ingredients for your grocery list.',
+      );
+      return;
+    }
+
+    // Show loading state
+    _showGroceryListLoadingDialog();
+
+    try {
+      final groceryList = await _generateGroceryListUseCase.execute(
+        currentWeekPlan!,
+      );
+
+      if (!mounted) return;
+
+      // Hide loading dialog
+      Navigator.of(context).pop();
+
+      // Show grocery list preview modal
+      await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) =>
+            GroceryListPreviewModal(initialGroceryList: groceryList),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      // Hide loading dialog
+      Navigator.of(context).pop();
+
+      // Show detailed error message in a scrollable dialog
+      _showDetailedErrorDialog('Grocery List Generation Failed', e.toString());
+    }
+  }
+
+  /// Ensures the correct week plan is loaded for the currently selected date
+  Future<void> _ensureCorrectWeekLoaded() async {
+    final selectedWeekStart = _getWeekStart(selectedDate);
+    final currentPlanWeekStart = currentWeekPlan?.weekStartDate;
+
+    // Check if we need to load a different week
+    if (currentPlanWeekStart == null ||
+        !_isSameDay(selectedWeekStart, currentPlanWeekStart)) {
+      // Update to the correct week and reload the plan
+      setState(() {
+        currentWeekStart = selectedWeekStart;
+      });
+      await _loadWeekPlan();
+    }
+  }
+
+  void _showErrorSnackBar(String title, String description) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                PhosphorIcon(
+                  PhosphorIcons.info(),
+                  color: Colors.white,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(description, style: const TextStyle(fontSize: 13)),
+          ],
+        ),
+        backgroundColor: AppColors.primary,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 4),
+      ),
+    );
+  }
+
+  void _showDetailedErrorDialog(String title, String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            PhosphorIcon(
+              PhosphorIcons.warning(),
+              color: AppColors.error,
+              size: 24,
+            ),
+            const SizedBox(width: 8),
+            Expanded(child: Text(title, style: const TextStyle(fontSize: 18))),
+          ],
+        ),
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 400),
+          child: SingleChildScrollView(
+            child: Text(
+              errorMessage.replaceFirst('GenerateGroceryListException: ', ''),
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _generateGroceryList();
+            },
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showGroceryListLoadingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Generating grocery list...',
+                style: TextStyle(fontSize: 16, color: AppColors.textPrimary),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Analyzing your meal plan and calculating ingredients',
+                style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _getLocalizedCategory(BuildContext context, String category) {
+    final localizations = AppLocalizations.of(context);
+    switch (category) {
+      case MealCategory.breakfast:
+        return localizations!.breakfast;
+      case MealCategory.lunch:
+        return localizations!.lunch;
+      case MealCategory.dinner:
+        return localizations!.dinner;
+      case MealCategory.snack:
+        return localizations!.snack;
+      case MealCategory.brunch:
+        return localizations!.brunch;
+      case MealCategory.lateNight:
+        return localizations!.lateNight;
+      default:
+        return category;
+    }
   }
 }

@@ -8,6 +8,11 @@ class AppColors {
   static const Color primaryLight = Color(0xFFFF9F40);
   static const Color primaryDark = Color(0xFFBF6500);
 
+  // Leftover colors
+  static const Color leftover = Color(0xFFFF8C00);
+  static const Color leftoverLight = Color(0xFFFFA500);
+  static const Color leftoverDark = Color(0xFFFF6B00);
+
   // Basic colors
   static const Color white = Colors.white;
   static const Color black = Colors.black;
@@ -20,6 +25,7 @@ class AppColors {
 
   // Background colors
   static const Color background = Colors.white;
+  static const Color surface = Color(0xFFF5F5F5);
 
   // Border colors
   static const Color border = Color(0xFFE0E0E0);

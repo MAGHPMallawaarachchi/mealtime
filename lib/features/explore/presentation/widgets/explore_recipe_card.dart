@@ -50,13 +50,22 @@ class ExploreRecipeCard extends ConsumerWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: SizedBox(
-                      height: 140,
-                      width: double.infinity,
-                      child: OptimizedCachedImage(
-                        imageUrl: recipe.imageUrl,
-                        fit: BoxFit.cover,
-                        preload: true,
+                    child: AspectRatio(
+                      aspectRatio:
+                          15 / 11, // Consistent 15:11 aspect ratio for images
+                      child: Container(
+                        width: double.infinity,
+                        color: Colors.grey.shade300,
+                        child: recipe.imageUrl.isNotEmpty
+                            ? OptimizedCachedImage(
+                                imageUrl: recipe.imageUrl,
+                                fit: BoxFit.cover,
+                                borderRadius: BorderRadius
+                                    .zero, // Already clipped by parent
+                                errorWidget: (context, url, error) =>
+                                    _buildImagePlaceholder(),
+                              )
+                            : _buildImagePlaceholder(),
                       ),
                     ),
                   ),
@@ -67,7 +76,9 @@ class ExploreRecipeCard extends ConsumerWidget {
                   right: 16,
                   child: GestureDetector(
                     onTap: () {
-                      ref.read(favoritesProvider.notifier).toggleFavorite(recipe.id);
+                      ref
+                          .read(favoritesProvider.notifier)
+                          .toggleFavorite(recipe.id);
                     },
                     child: Container(
                       padding: const EdgeInsets.all(6),
@@ -104,33 +115,57 @@ class ExploreRecipeCard extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        PhosphorIcon(
-                          PhosphorIcons.clock(),
-                          size: 14,
-                          color: AppColors.textSecondary,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          recipe.time,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textSecondary,
-                            fontWeight: FontWeight.w400,
+                        // Time section - flexible to take available space
+                        Expanded(
+                          flex: 3,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              PhosphorIcon(
+                                PhosphorIcons.clock(),
+                                size: 14,
+                                color: AppColors.textSecondary,
+                              ),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  recipe.time,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        PhosphorIcon(
-                          PhosphorIcons.fire(),
-                          size: 14,
-                          color: AppColors.textSecondary,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${recipe.calories} cal',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textSecondary,
-                            fontWeight: FontWeight.w400,
+                        const SizedBox(width: 0),
+                        // Calorie section - flexible to fit content
+                        Expanded(
+                          flex: 3,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              PhosphorIcon(
+                                PhosphorIcons.fire(),
+                                size: 14,
+                                color: AppColors.textSecondary,
+                              ),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  '${recipe.calories} cal',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -155,6 +190,29 @@ class ExploreRecipeCard extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildImagePlaceholder() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: Colors.grey.shade300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          PhosphorIcon(
+            PhosphorIcons.forkKnife(),
+            size: 32,
+            color: Colors.grey.shade500,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Recipe Image',
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+          ),
+        ],
       ),
     );
   }

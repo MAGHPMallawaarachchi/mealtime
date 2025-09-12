@@ -191,20 +191,81 @@ class RecipeIngredient {
   static IngredientUnit? _parseIngredientUnit(dynamic unitValue) {
     if (unitValue == null) return null;
 
-    final unitString = unitValue.toString().toLowerCase();
+    final unitString = unitValue.toString().toLowerCase().trim();
+    
+    // Try exact match first
     try {
       return IngredientUnit.values.firstWhere(
         (e) => e.name.toLowerCase() == unitString,
       );
     } catch (e) {
-      debugPrint(
-        'RecipeIngredient: Unknown unit "$unitValue" (normalized: "$unitString"), returning null',
-      );
-      debugPrint(
-        'RecipeIngredient: Available units: ${IngredientUnit.values.map((e) => e.name).join(', ')}',
-      );
-      return null;
+      // Exact match failed, try normalized variations
     }
+
+    // Handle common unit variations and abbreviations
+    final normalized = _normalizeUnit(unitString);
+    if (normalized != null) {
+      try {
+        return IngredientUnit.values.firstWhere(
+          (e) => e.name.toLowerCase() == normalized,
+        );
+      } catch (e) {
+        // Still no match
+      }
+    }
+
+    return null;
+  }
+
+  static String? _normalizeUnit(String unit) {
+    final unitLower = unit.toLowerCase().trim();
+    
+    // Handle plural/singular variations
+    final pluralToSingular = {
+      'cup': 'cups',
+      'teaspoon': 'teaspoons',
+      'tablespoon': 'tablespoons',
+      'milliliter': 'milliliters',
+      'liter': 'liters',
+      'gram': 'grams',
+      'kilogram': 'kilograms',
+      'ounce': 'ounces',
+      'pound': 'pounds',
+      'piece': 'pieces',
+      'centimeter': 'centimeter',
+    };
+
+    // Handle abbreviations
+    final abbreviations = {
+      'tsp': 'teaspoons',
+      'tbsp': 'tablespoons',
+      'tbsps': 'tablespoons',
+      'ml': 'milliliters',
+      'l': 'liters',
+      'g': 'grams',
+      'kg': 'kilograms',
+      'oz': 'ounces',
+      'lb': 'pounds',
+      'lbs': 'pounds',
+      'cm': 'centimeter',
+    };
+
+    // Check abbreviations first
+    if (abbreviations.containsKey(unitLower)) {
+      return abbreviations[unitLower];
+    }
+
+    // Check plural to singular mapping
+    if (pluralToSingular.containsKey(unitLower)) {
+      return pluralToSingular[unitLower];
+    }
+
+    // Check if it's already in the correct plural form
+    if (IngredientUnit.values.any((e) => e.name.toLowerCase() == unitLower)) {
+      return unitLower;
+    }
+
+    return null;
   }
 
   @override
@@ -334,6 +395,7 @@ class Recipe {
   final int defaultServings;
   final List<String> tags;
   final String? source;
+  final String? dietaryType;
 
   const Recipe({
     required this.id,
@@ -351,6 +413,7 @@ class Recipe {
     this.legacyInstructions = const [],
     this.tags = const [],
     this.source,
+    this.dietaryType,
   });
 
   Recipe copyWith({
@@ -369,6 +432,7 @@ class Recipe {
     List<String>? legacyInstructions,
     List<String>? tags,
     String? source,
+    String? dietaryType,
   }) {
     return Recipe(
       id: id ?? this.id,
@@ -386,6 +450,7 @@ class Recipe {
       legacyInstructions: legacyInstructions ?? this.legacyInstructions,
       tags: tags ?? this.tags,
       source: source ?? this.source,
+      dietaryType: dietaryType ?? this.dietaryType,
     );
   }
 
@@ -410,6 +475,7 @@ class Recipe {
       'legacyInstructions': legacyInstructions,
       'tags': tags,
       'source': source,
+      'dietaryType': dietaryType,
     };
   }
 
@@ -432,7 +498,6 @@ class Recipe {
             .map((e) => IngredientSection.fromJson(e as Map<String, dynamic>))
             .toList();
       } catch (e) {
-        debugPrint('Recipe.fromJson: Error parsing ingredient sections: $e');
         ingredientSections = [];
       }
     }
@@ -451,7 +516,6 @@ class Recipe {
           legacyIngredients = List<String>.from(ingredientsList);
         }
       } catch (e) {
-        debugPrint('Recipe.fromJson: Error parsing ingredients: $e');
         // Fall back to empty lists
         ingredients = [];
         legacyIngredients = [];
@@ -474,7 +538,6 @@ class Recipe {
         legacyInstructions = List<String>.from(instructionsList);
       }
     } catch (e) {
-      debugPrint('Recipe.fromJson: Error parsing instructions: $e');
       // Fall back to empty lists
       instructionSections = [];
       legacyInstructions = [];
@@ -495,9 +558,6 @@ class Recipe {
       description: json['description'] as String?,
       defaultServings: () {
         final servings = (json['defaultServings'] as num?)?.toInt() ?? 4;
-        debugPrint(
-          'Recipe ${json['id']}: defaultServings from JSON = ${json['defaultServings']}, parsed = $servings',
-        );
         return servings;
       }(),
       legacyIngredients: legacyIngredients,
@@ -506,6 +566,7 @@ class Recipe {
           ? List<String>.from(json['tags'] as List)
           : const [],
       source: json['source'] as String?,
+      dietaryType: json['dietaryType'] as String?,
     );
   }
 
@@ -539,6 +600,62 @@ class Recipe {
     return ingredients
         .map((ingredient) => ingredient.getDisplayText(UnitSystem.cups))
         .toList();
+  }
+
+  /// Check if this recipe has valid ingredients for grocery list generation
+  bool get hasValidIngredientsForGroceryList {
+    // Check structured ingredients
+    if (ingredients.isNotEmpty) {
+      return ingredients.any((ingredient) => 
+        ingredient.name.trim().isNotEmpty && ingredient.quantity > 0
+      );
+    }
+    
+    // Check legacy ingredients
+    if (legacyIngredients.isNotEmpty) {
+      return legacyIngredients.any((ingredient) => ingredient.trim().isNotEmpty);
+    }
+    
+    // Check ingredient sections (for recipes that use sectioned ingredients)
+    if (ingredientSections.isNotEmpty) {
+      return ingredientSections.any((section) =>
+        section.ingredients.any((ingredient) =>
+          ingredient.name.trim().isNotEmpty && ingredient.quantity > 0
+        )
+      );
+    }
+    
+    return false;
+  }
+
+  /// Get count of valid ingredients that can be used for grocery lists
+  int get validIngredientsCount {
+    int count = 0;
+    
+    // Count structured ingredients
+    for (final ingredient in ingredients) {
+      if (ingredient.name.trim().isNotEmpty && ingredient.quantity > 0) {
+        count++;
+      }
+    }
+    
+    // Count legacy ingredients
+    for (final ingredient in legacyIngredients) {
+      if (ingredient.trim().isNotEmpty) {
+        count++;
+      }
+    }
+    
+    // Count ingredients in sections
+    for (final section in ingredientSections) {
+      for (final ingredient in section.ingredients) {
+        if (ingredient.name.trim().isNotEmpty && ingredient.quantity > 0) {
+          count++;
+        }
+      }
+    }
+    
+    return count;
   }
 
   @override

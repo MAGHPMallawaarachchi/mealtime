@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../constants/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   final int currentIndex;
   final Function(int) onTap;
-  final VoidCallback? onCenterButtonTap; // Custom callback for center button when on meal planner
+  final VoidCallback?
+  onCenterButtonTap; // Custom callback for center button when on meal planner
 
   const CustomBottomNavBar({
     super.key,
@@ -131,11 +133,13 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                     icon: PhosphorIcons.house(),
                     activeIcon: PhosphorIcons.house(PhosphorIconsStyle.fill),
                     index: 0,
+                    context: context,
                   ),
                   _buildAnimatedNavItem(
                     icon: PhosphorIcons.magnifyingGlass(),
                     activeIcon: PhosphorIcons.magnifyingGlass(),
                     index: 1,
+                    context: context,
                   ),
                   // Empty space for floating button
                   const SizedBox(width: 80),
@@ -143,11 +147,13 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                     icon: PhosphorIcons.jarLabel(),
                     activeIcon: PhosphorIcons.jarLabel(PhosphorIconsStyle.fill),
                     index: 3,
+                    context: context,
                   ),
                   _buildAnimatedNavItem(
                     icon: PhosphorIcons.user(),
                     activeIcon: PhosphorIcons.user(PhosphorIconsStyle.fill),
                     index: 4,
+                    context: context,
                   ),
                 ],
               ),
@@ -167,82 +173,95 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     required IconData icon,
     required IconData activeIcon,
     required int index,
+    required BuildContext context,
   }) {
     final isActive = widget.currentIndex == index;
 
-    return GestureDetector(
-      onTap: () => widget.onTap(index),
-      child: AnimatedBuilder(
-        animation: _controllers[index],
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimations[index].value,
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              child: PhosphorIcon(
-                isActive ? activeIcon : icon,
-                size: 28,
-                color: _colorAnimations[index].value,
+    return Semantics(
+      label: _getSemanticLabel(context, index),
+      button: true,
+      selected: isActive,
+      child: GestureDetector(
+        onTap: () => widget.onTap(index),
+        child: AnimatedBuilder(
+          animation: _controllers[index],
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _scaleAnimations[index].value,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                child: PhosphorIcon(
+                  isActive ? activeIcon : icon,
+                  size: 28,
+                  color: _colorAnimations[index].value,
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
 
   Widget _buildFloatingCenterButton(Color primaryColor) {
     final bool isOnMealPlanner = widget.currentIndex == 2;
-    final IconData iconData = isOnMealPlanner ? PhosphorIcons.plus() : PhosphorIcons.chefHat();
-    
-    return GestureDetector(
-      onTap: () {
-        if (isOnMealPlanner && widget.onCenterButtonTap != null) {
-          // If on meal planner and custom callback is provided, use it
-          widget.onCenterButtonTap!();
-        } else {
-          // Otherwise use normal navigation
-          widget.onTap(2);
-        }
-      },
-      child: AnimatedBuilder(
-        animation: _controllers[2],
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimations[2].value,
-            child: Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: primaryColor,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  // Clean drop shadow only
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                    spreadRadius: 0,
-                  ),
-                ],
-              ),
-              child: Center(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  transitionBuilder: (child, animation) {
-                    return ScaleTransition(scale: animation, child: child);
-                  },
-                  child: PhosphorIcon(
-                    iconData,
-                    key: ValueKey(iconData.codePoint),
-                    size: 32,
-                    color: AppColors.background,
+    final IconData iconData = isOnMealPlanner
+        ? PhosphorIcons.plus()
+        : PhosphorIcons.chefHat();
+
+    return Semantics(
+      label: AppLocalizations.of(context)?.mealPlanner,
+      button: true,
+      selected: isOnMealPlanner,
+      child: GestureDetector(
+        onTap: () {
+          if (isOnMealPlanner && widget.onCenterButtonTap != null) {
+            // If on meal planner and custom callback is provided, use it
+            widget.onCenterButtonTap!();
+          } else {
+            // Otherwise use normal navigation
+            widget.onTap(2);
+          }
+        },
+        child: AnimatedBuilder(
+          animation: _controllers[2],
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _scaleAnimations[2].value,
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    // Clean drop shadow only
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.15),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                      spreadRadius: 0,
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    transitionBuilder: (child, animation) {
+                      return ScaleTransition(scale: animation, child: child);
+                    },
+                    child: PhosphorIcon(
+                      iconData,
+                      key: ValueKey(iconData.codePoint),
+                      size: 32,
+                      color: AppColors.background,
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -299,4 +318,24 @@ class _BottomNavBarClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+extension on _CustomBottomNavBarState {
+  String _getSemanticLabel(BuildContext context, int index) {
+    final localizations = AppLocalizations.of(context);
+    switch (index) {
+      case 0:
+        return localizations!.home;
+      case 1:
+        return localizations!.explore;
+      case 2:
+        return localizations!.mealPlanner;
+      case 3:
+        return localizations!.pantry;
+      case 4:
+        return localizations!.profile;
+      default:
+        return '';
+    }
+  }
 }

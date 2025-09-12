@@ -27,8 +27,18 @@ class MealPlannerFirebaseDataSource implements MealPlannerDataSource {
         return null;
       }
 
-      return WeeklyMealPlan.fromJson(data);
+      try {
+        return WeeklyMealPlan.fromJson(data);
+      } catch (e) {
+        if (kDebugMode) {
+          print('❌ MealPlanRepository: Error parsing week plan $weekId: $e, returning null');
+        }
+        return null; // Return null instead of throwing to allow graceful degradation
+      }
     } catch (e) {
+      if (kDebugMode) {
+        print('❌ MealPlanRepository: Failed to fetch week plan: $e');
+      }
       throw MealPlannerDataSourceException(
         'Failed to fetch weekly meal plan: ${e.toString()}',
       );
@@ -41,15 +51,40 @@ class MealPlannerFirebaseDataSource implements MealPlannerDataSource {
       final weekId = _generateWeekId(weekStartDate);
       final docPath = _buildDocumentPath(userId, weekId);
       
+      if (kDebugMode) {
+        print('✅ MealPlanRepository: Watching week plan $weekId');
+      }
+      
       return _firestoreService.getDocumentStream(_usersCollection, docPath)
-          .map((data) => data != null ? WeeklyMealPlan.fromJson(data) : null)
+          .map((data) {
+            if (data != null) {
+              try {
+                final weekPlan = WeeklyMealPlan.fromJson(data);
+                if (kDebugMode) {
+                  print('✅ MealPlanRepository: Found real meal plan data for week $weekId.');
+                }
+                return weekPlan;
+              } catch (e) {
+                if (kDebugMode) {
+                  print('❌ MealPlanRepository: Error parsing week plan $weekId: $e, returning null');
+                }
+                return null;
+              }
+            }
+            return null;
+          })
           .handleError((error) {
-        debugPrint('MealPlannerFirebaseDataSource: Stream error: $error');
-        throw MealPlannerDataSourceException(
-          'Failed to stream weekly meal plan: ${error.toString()}',
-        );
-      });
+            if (kDebugMode) {
+              print('❌ MealPlanRepository: Stream error for week $weekId: $error');
+            }
+            throw MealPlannerDataSourceException(
+              'Failed to stream weekly meal plan: ${error.toString()}',
+            );
+          });
     } catch (e) {
+      if (kDebugMode) {
+        print('❌ MealPlanRepository: Failed to create stream for week: $e');
+      }
       throw MealPlannerDataSourceException(
         'Failed to create weekly meal plan stream: ${e.toString()}',
       );
@@ -199,7 +234,6 @@ class MealPlannerFirebaseDataSource implements MealPlannerDataSource {
       return weekPlan != null;
     } catch (e) {
       // If there's an error fetching, assume it doesn't exist
-      debugPrint('Error checking if meal plan exists: $e');
       return false;
     }
   }

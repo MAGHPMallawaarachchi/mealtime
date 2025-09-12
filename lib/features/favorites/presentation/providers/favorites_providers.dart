@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/foundation.dart';
 import '../../../../core/services/auth_service.dart';
+import '../../../../core/models/user_interaction.dart';
+import '../../../recommendations/presentation/providers/recommendation_provider.dart';
 import '../../data/repositories/favorites_repository_impl.dart';
 import '../../domain/usecases/add_to_favorites_usecase.dart';
 import '../../domain/usecases/remove_from_favorites_usecase.dart';
@@ -73,12 +74,14 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
   final AddToFavoritesUseCase _addToFavoritesUseCase;
   final RemoveFromFavoritesUseCase _removeFromFavoritesUseCase;
   final AuthService _authService;
+  final Ref _ref;
 
   FavoritesNotifier(
     this._getUserFavoritesUseCase,
     this._addToFavoritesUseCase,
     this._removeFromFavoritesUseCase,
     this._authService,
+    this._ref,
   ) : super(const FavoritesState());
 
   String? get _currentUserId => _authService.currentUser?.uid;
@@ -86,7 +89,6 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
   Future<void> loadUserFavorites() async {
     final userId = _currentUserId;
     if (userId == null) {
-      debugPrint('FavoritesNotifier: No authenticated user, clearing favorites');
       state = state.copyWith(favoriteRecipeIds: {}, error: null);
       return;
     }
@@ -103,9 +105,7 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
         error: null,
       );
       
-      debugPrint('FavoritesNotifier: Loaded ${favoriteIds.length} favorites');
     } catch (e) {
-      debugPrint('FavoritesNotifier: Error loading favorites: $e');
       state = state.copyWith(
         isLoading: false,
         error: e.toString(),
@@ -116,7 +116,6 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
   Future<void> toggleFavorite(String recipeId) async {
     final userId = _currentUserId;
     if (userId == null) {
-      debugPrint('FavoritesNotifier: No authenticated user for toggle');
       return;
     }
 
@@ -135,13 +134,30 @@ class FavoritesNotifier extends StateNotifier<FavoritesState> {
     try {
       if (wasAlreadyFavorite) {
         await _removeFromFavoritesUseCase.execute(userId, recipeId);
-        debugPrint('FavoritesNotifier: Removed $recipeId from favorites');
+        // Record unfavorite interaction
+        await _ref.read(recommendationProvider.notifier).recordInteraction(
+          UserInteraction(
+            id: '${DateTime.now().millisecondsSinceEpoch}_unfavorite_$recipeId',
+            userId: userId,
+            recipeId: recipeId,
+            type: InteractionType.unfavorite,
+            timestamp: DateTime.now(),
+          ),
+        );
       } else {
         await _addToFavoritesUseCase.execute(userId, recipeId);
-        debugPrint('FavoritesNotifier: Added $recipeId to favorites');
+        // Record favorite interaction
+        await _ref.read(recommendationProvider.notifier).recordInteraction(
+          UserInteraction(
+            id: '${DateTime.now().millisecondsSinceEpoch}_favorite_$recipeId',
+            userId: userId,
+            recipeId: recipeId,
+            type: InteractionType.favorite,
+            timestamp: DateTime.now(),
+          ),
+        );
       }
     } catch (e) {
-      debugPrint('FavoritesNotifier: Error toggling favorite: $e');
       
       // Revert optimistic update on error
       state = state.copyWith(favoriteRecipeIds: state.favoriteRecipeIds);
@@ -168,6 +184,7 @@ final favoritesProvider = StateNotifierProvider<FavoritesNotifier, FavoritesStat
     addToFavoritesUseCase,
     removeFromFavoritesUseCase,
     authService,
+    ref,
   );
 });
 

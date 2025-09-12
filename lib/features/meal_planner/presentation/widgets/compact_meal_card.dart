@@ -47,9 +47,6 @@ class _CompactMealCardState extends State<CompactMealCard> {
     // Check if the meal slot changed
     if (oldWidget.mealSlot.id != widget.mealSlot.id ||
         oldWidget.mealSlot.recipeId != widget.mealSlot.recipeId) {
-      debugPrint(
-        'CompactMealCard: Meal slot changed from ${oldWidget.mealSlot.id} (recipe: ${oldWidget.mealSlot.recipeId}) to ${widget.mealSlot.id} (recipe: ${widget.mealSlot.recipeId})',
-      );
 
       // Reset recipe state
       _recipe = null;
@@ -66,9 +63,6 @@ class _CompactMealCardState extends State<CompactMealCard> {
     final recipeId = widget.mealSlot.recipeId;
     if (recipeId == null) return;
 
-    debugPrint(
-      'CompactMealCard: Loading recipe $recipeId for meal slot ${widget.mealSlot.id}',
-    );
 
     setState(() {
       _isLoadingRecipe = true;
@@ -80,20 +74,13 @@ class _CompactMealCardState extends State<CompactMealCard> {
       // Only update state if the widget still needs this recipe
       // This prevents stale updates when the widget changes during loading
       if (mounted && widget.mealSlot.recipeId == recipeId) {
-        debugPrint(
-          'CompactMealCard: Successfully loaded recipe ${recipe?.title} for meal slot ${widget.mealSlot.id}',
-        );
         setState(() {
           _recipe = recipe;
           _isLoadingRecipe = false;
         });
       } else {
-        debugPrint(
-          'CompactMealCard: Discarding stale recipe load for $recipeId',
-        );
       }
     } catch (e) {
-      debugPrint('CompactMealCard: Error loading recipe $recipeId: $e');
       // Only update error state if still relevant
       if (mounted && widget.mealSlot.recipeId == recipeId) {
         setState(() {

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../recommendations/presentation/widgets/personalized_recommendations_section.dart';
 import '../widgets/todays_meal_plan_section.dart';
-import '../widgets/category_section.dart';
 import '../widgets/seasonal_spotlight_section.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -39,7 +40,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                _getGreeting(),
+                                _getGreeting(context),
                                 style: const TextStyle(
                                   fontSize: 14,
                                   color: AppColors.textPrimary,
@@ -49,7 +50,8 @@ class HomeScreen extends StatelessWidget {
                             ],
                           ),
                           Text(
-                            user?.displayName ?? 'Guest User',
+                            user?.displayName ??
+                                AppLocalizations.of(context)!.guestUser,
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -62,8 +64,12 @@ class HomeScreen extends StatelessWidget {
                     IconButton(
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Notifications coming soon!'),
+                          SnackBar(
+                            content: Text(
+                              AppLocalizations.of(
+                                context,
+                              )!.notificationsComingSoon,
+                            ),
                           ),
                         );
                       },
@@ -81,8 +87,8 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 20),
               const TodaysMealPlanSection(),
               const SizedBox(height: 20),
-              const CategorySection(),
-              const SizedBox(height: 20),
+              const PersonalizedRecommendationsSection(),
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -90,14 +96,15 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  String _getGreeting() {
+  String _getGreeting(BuildContext context) {
     final hour = DateTime.now().hour;
+    final localizations = AppLocalizations.of(context);
     if (hour < 12) {
-      return 'Good Morning';
+      return localizations!.goodMorning;
     } else if (hour < 17) {
-      return 'Good Afternoon';
+      return localizations!.goodAfternoon;
     } else {
-      return 'Good Evening';
+      return localizations!.goodEvening;
     }
   }
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import '../../features/recipes/data/datasources/recipes_local_datasource.dart';
 import '../../features/home/data/datasources/seasonal_ingredients_local_datasource.dart';
@@ -51,9 +50,18 @@ class CacheManagerService extends WidgetsBindingObserver {
 
   Future<void> clearImageCache() async {
     try {
-      await CachedNetworkImage.evictFromCache('');
+      // Clear the default cache
       await DefaultCacheManager().emptyCache();
-      debugPrint('Image cache cleared successfully');
+      
+      // Clear custom image cache
+      final customCacheManager = CacheManager(
+        Config(
+          'customImageCache',
+          stalePeriod: const Duration(days: 30),
+          maxNrOfCacheObjects: 200,
+        ),
+      );
+      await customCacheManager.emptyCache();
     } catch (e) {
       debugPrint('Error clearing image cache: $e');
     }
@@ -65,9 +73,7 @@ class CacheManagerService extends WidgetsBindingObserver {
         _recipesLocalDataSource.clearCache(),
         _seasonalIngredientsLocalDataSource.clearCache(),
       ]);
-      debugPrint('Data cache cleared successfully');
     } catch (e) {
-      debugPrint('Error clearing data cache: $e');
     }
   }
 
@@ -77,19 +83,30 @@ class CacheManagerService extends WidgetsBindingObserver {
         clearImageCache(),
         clearDataCache(),
       ]);
-      debugPrint('All caches cleared successfully');
     } catch (e) {
-      debugPrint('Error clearing all caches: $e');
     }
   }
 
   Future<void> preloadImage(String imageUrl) async {
     try {
+      // Validate URL before preloading
+      if (imageUrl.isEmpty || (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://'))) {
+        return;
+      }
+      
       // Preload image by adding it to cache manager
       await DefaultCacheManager().downloadFile(imageUrl);
-      debugPrint('Image preloaded successfully: $imageUrl');
     } catch (e) {
-      debugPrint('Error preloading image: $e');
+      debugPrint('Error preloading image: $imageUrl, Error: $e');
+    }
+  }
+
+  Future<void> clearCorruptedCache() async {
+    try {
+      // Clear the entire cache to remove any corrupted files
+      await DefaultCacheManager().emptyCache();
+    } catch (e) {
+      debugPrint('Error clearing corrupted cache: $e');
     }
   }
 }

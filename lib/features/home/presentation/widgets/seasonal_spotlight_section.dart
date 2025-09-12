@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../domain/models/seasonal_ingredient.dart';
@@ -21,7 +22,7 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
   List<SeasonalIngredient> _seasonalIngredients = [];
   bool _isLoading = true;
   String? _errorMessage;
-  final GetSeasonalIngredientsUseCase _getSeasonalIngredientsUseCase = 
+  final GetSeasonalIngredientsUseCase _getSeasonalIngredientsUseCase =
       GetSeasonalIngredientsUseCase();
 
   @override
@@ -46,7 +47,7 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
       });
 
       final ingredients = await _getSeasonalIngredientsUseCase.call();
-      
+
       if (mounted) {
         setState(() {
           _seasonalIngredients = ingredients;
@@ -61,7 +62,8 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _errorMessage = 'Failed to load seasonal ingredients. Please try again.';
+          _errorMessage =
+              'Failed to load seasonal ingredients. Please try again.';
         });
       }
     }
@@ -178,17 +180,11 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(
-              color: AppColors.primary,
-              strokeWidth: 2,
-            ),
+            CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2),
             SizedBox(height: 16),
             Text(
               'Loading seasonal ingredients...',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
             ),
           ],
         ),
@@ -228,9 +224,9 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
               const SizedBox(height: 16),
               TextButton(
                 onPressed: _loadSeasonalIngredients,
-                child: const Text(
-                  'Try Again',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.tryAgain,
+                  style: const TextStyle(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w600,
                   ),
@@ -267,10 +263,7 @@ class _SeasonalSpotlightSectionState extends State<SeasonalSpotlightSection> {
               const Text(
                 'No seasonal ingredients available at the moment.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
               ),
               const SizedBox(height: 16),
               TextButton(

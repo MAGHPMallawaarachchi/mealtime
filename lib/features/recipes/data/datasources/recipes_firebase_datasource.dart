@@ -15,26 +15,69 @@ class RecipesFirebaseDataSource implements RecipesDataSource {
   @override
   Future<List<Recipe>> getRecipes() async {
     try {
+      if (kDebugMode) {
+        print('📚 [Firebase Recipes] Fetching recipes from collection: $_collectionPath');
+      }
+      
       final rawData = await _firestoreService.getCollection(_collectionPath);
 
+      if (kDebugMode) {
+        print('📚 [Firebase Recipes] Raw data received: ${rawData.length} documents');
+      }
+
       if (rawData.isEmpty) {
+        if (kDebugMode) {
+          print('⚠️  [Firebase Recipes] No recipe documents found in Firestore!');
+        }
         return [];
       }
 
       final recipes = <Recipe>[];
+      int successfullyParsed = 0;
+      int failedToParse = 0;
       
       for (final data in rawData) {
         try {
           final recipe = Recipe.fromJson(data);
           if (recipe.id.isNotEmpty) {
             recipes.add(recipe);
+            successfullyParsed++;
+            
+            // Log first few recipes and any banana-related recipes for debugging
+            if (kDebugMode && (successfullyParsed <= 3 || recipe.title.toLowerCase().contains('banana'))) {
+              final ingredientCount = recipe.ingredients.isNotEmpty 
+                  ? recipe.ingredients.length 
+                  : recipe.legacyIngredients.length;
+              print('🍽️  [Firebase Recipes] Recipe: "${recipe.title}" ($ingredientCount ingredients)');
+              
+              // Log ingredients for banana-related recipes
+              if (recipe.title.toLowerCase().contains('banana')) {
+                final recipeIngredients = recipe.ingredients.isNotEmpty 
+                    ? recipe.ingredients.map((i) => i.name).toList()
+                    : recipe.legacyIngredients;
+                print('   └─ Ingredients: ${recipeIngredients.take(8).join(", ")}${recipeIngredients.length > 8 ? "..." : ""}');
+              }
+            }
           }
         } catch (e) {
-          debugPrint('RecipesFirebaseDataSource: Skipping invalid recipe: $e');
-          debugPrint('Recipe data keys: ${data.keys}');
-          debugPrint('Recipe ID: ${data['id']}');
-          debugPrint('Recipe title: ${data['title']}');
-          // Skip invalid recipes and continue
+          failedToParse++;
+          if (kDebugMode && failedToParse <= 3) {
+            print('❌ [Firebase Recipes] Failed to parse recipe: $e');
+          }
+        }
+      }
+      
+      if (kDebugMode) {
+        print('📊 [Firebase Recipes] Summary: $successfullyParsed parsed successfully, $failedToParse failed');
+        
+        // Check for banana recipes specifically
+        final bananaRecipes = recipes.where((r) => r.title.toLowerCase().contains('banana')).toList();
+        print('🍌 [Firebase Recipes] Found ${bananaRecipes.length} banana-related recipes');
+        
+        if (bananaRecipes.isNotEmpty) {
+          for (final recipe in bananaRecipes.take(3)) {
+            print('   • "${recipe.title}"');
+          }
         }
       }
       

@@ -32,7 +32,6 @@ class RecipesLocalDataSource {
 
       return [];
     } catch (e) {
-      debugPrint('RecipesLocalDataSource: Error reading cache: $e');
       return [];
     }
   }
@@ -48,17 +47,13 @@ class RecipesLocalDataSource {
       // Try to store in shared preferences first
       try {
         await prefs.setString(_cacheKey, jsonString);
-        debugPrint('RecipesLocalDataSource: Cached ${recipes.length} recipes in SharedPreferences');
       } catch (e) {
         // If shared preferences fails (data too large), use file storage
-        debugPrint('RecipesLocalDataSource: SharedPreferences failed, using file storage: $e');
         final cacheFile = await _getCacheFile();
         await cacheFile.writeAsString(jsonString);
         await prefs.remove(_cacheKey); // Remove from shared prefs to avoid confusion
-        debugPrint('RecipesLocalDataSource: Cached ${recipes.length} recipes in file storage');
       }
     } catch (e) {
-      debugPrint('RecipesLocalDataSource: Error caching recipes: $e');
       throw RecipesLocalDataSourceException('Failed to cache recipes: ${e.toString()}');
     }
   }
@@ -75,10 +70,8 @@ class RecipesLocalDataSource {
       final difference = now.difference(cacheDate).inMinutes;
       
       final isValid = difference < _cacheValidityMinutes;
-      debugPrint('RecipesLocalDataSource: Cache is ${isValid ? 'valid' : 'expired'} (${difference}min old)');
       return isValid;
     } catch (e) {
-      debugPrint('RecipesLocalDataSource: Error checking cache validity: $e');
       return false;
     }
   }
@@ -89,7 +82,6 @@ class RecipesLocalDataSource {
       final matchingRecipes = recipes.where((recipe) => recipe.id == id);
       return matchingRecipes.isEmpty ? null : matchingRecipes.first;
     } catch (e) {
-      debugPrint('RecipesLocalDataSource: Error getting recipe by id: $e');
       return null;
     }
   }
@@ -105,9 +97,7 @@ class RecipesLocalDataSource {
         await cacheFile.delete();
       }
       
-      debugPrint('RecipesLocalDataSource: Cache cleared');
     } catch (e) {
-      debugPrint('RecipesLocalDataSource: Error clearing cache: $e');
     }
   }
 

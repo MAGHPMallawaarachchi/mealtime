@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mealtime/core/guards/auth_guard.dart';
+import 'package:mealtime/core/navigation/main_scaffold.dart';
+import 'package:mealtime/core/services/auth_service.dart';
+import 'package:mealtime/features/user_recipes/presentation/pages/user_recipe_detail_screen.dart';
 import '../../features/onboarding/presentation/pages/splash_screen.dart';
 import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 import '../../features/auth/presentation/pages/login_screen.dart';
@@ -10,10 +14,12 @@ import '../../features/meal_planner/presentation/pages/meal_planner_screen.dart'
 import '../../features/pantry/presentation/pages/pantry_screen.dart';
 import '../../features/auth/presentation/pages/profile_screen.dart';
 import '../../features/recipes/presentation/pages/recipe_detail_screen.dart';
+import '../../features/recipes/presentation/pages/seasonal_ingredient_recipes_screen.dart';
 import '../../features/meal_planner/domain/models/meal_planner_return_context.dart';
-import '../guards/auth_guard.dart';
-import '../services/auth_service.dart';
-import 'main_scaffold.dart';
+import '../../features/settings/presentation/pages/settings_screen.dart';
+import '../../features/user_recipes/presentation/pages/create_recipe_screen.dart';
+import '../../features/user_recipes/presentation/pages/edit_recipe_screen.dart';
+import '../../features/home/domain/models/seasonal_ingredient.dart';
 
 class AuthNotifier extends ChangeNotifier {
   final AuthService _authService;
@@ -45,7 +51,12 @@ class AppRouter {
         '/pantry',
         '/profile',
       ];
-      mainAppRoutes.contains(state.uri.path);
+      final isMainAppRoute =
+          mainAppRoutes.contains(state.uri.path) ||
+          state.uri.path.startsWith('/settings') ||
+          state.uri.path.startsWith('/create-recipe') ||
+          state.uri.path.startsWith('/edit-recipe') ||
+          state.uri.path.startsWith('/user-recipe');
 
       if (!isLoggedIn &&
           !isAuthRoute &&
@@ -108,7 +119,10 @@ class AppRouter {
           GoRoute(
             path: '/profile',
             name: 'profile',
-            builder: (context, state) => const ProfileScreen(),
+            builder: (context, state) {
+              final tabIndex = int.tryParse(state.uri.queryParameters['tab'] ?? '0') ?? 0;
+              return ProfileScreen(initialTabIndex: tabIndex);
+            },
           ),
         ],
       ),
@@ -128,6 +142,52 @@ class AppRouter {
                   )
                 : null,
           );
+        },
+      ),
+      GoRoute(
+        path: '/settings',
+        name: 'settings',
+        builder: (context, state) => AuthGuard(child: const SettingsScreen()),
+      ),
+      GoRoute(
+        path: '/create-recipe',
+        name: 'create-recipe',
+        builder: (context, state) =>
+            AuthGuard(child: const CreateRecipeScreen()),
+      ),
+      GoRoute(
+        path: '/edit-recipe/:recipeId',
+        name: 'edit-recipe',
+        builder: (context, state) {
+          final recipeId = state.pathParameters['recipeId']!;
+          return AuthGuard(child: EditRecipeScreen(recipeId: recipeId));
+        },
+      ),
+      GoRoute(
+        path: '/user-recipe/:recipeId',
+        name: 'user-recipe-detail',
+        builder: (context, state) {
+          final recipeId = state.pathParameters['recipeId']!;
+          return AuthGuard(child: UserRecipeDetailScreen(recipeId: recipeId));
+        },
+      ),
+      GoRoute(
+        path: '/seasonal-recipes/:ingredientName',
+        name: 'seasonal-ingredient-recipes',
+        builder: (context, state) {
+          final ingredientName = state.pathParameters['ingredientName']!;
+          final ingredientId = state.uri.queryParameters['id'] ?? '';
+          final ingredientImageUrl = state.uri.queryParameters['imageUrl'] ?? '';
+          final ingredientDescription = state.uri.queryParameters['description'] ?? '';
+          
+          final ingredient = SeasonalIngredient(
+            id: ingredientId,
+            name: Uri.decodeComponent(ingredientName),
+            imageUrl: Uri.decodeComponent(ingredientImageUrl),
+            description: Uri.decodeComponent(ingredientDescription),
+          );
+          
+          return SeasonalIngredientRecipesScreen(ingredient: ingredient);
         },
       ),
     ],

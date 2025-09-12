@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/models/weekly_meal_plan.dart';
 import '../../domain/repositories/meal_plan_repository.dart';
-import '../../utils/meal_plan_test_utils.dart';
 
 class FirebaseMealPlanRepository implements MealPlanRepository {
   final FirebaseFirestore _firestore;
@@ -46,36 +45,24 @@ class FirebaseMealPlanRepository implements MealPlanRepository {
         return weekPlan;
       }
 
-      // Fallback to cached data if no server data
+      // Only try cached data, no sample data
       final cachedPlan = await getCachedWeekPlan(weekId);
       if (cachedPlan != null) {
+        print('📱 MealPlanRepository: Using cached data for week $weekId');
         return cachedPlan;
       }
 
-      // If no cached data and user is authenticated, create and save a sample plan
-      final samplePlan = MealPlanTestUtils.createSampleWeekPlan(userId: userId);
-      if (samplePlan.id == weekId) {
-        await cacheWeekPlan(samplePlan);
-        return samplePlan;
-      }
-
+      print('🔍 MealPlanRepository: No data found for week $weekId');
       return null;
     } catch (e) {
-      // Silent failure - return cached data or sample data
+      // Silent failure - only return cached data, no sample data
       final cachedPlan = await getCachedWeekPlan(weekId);
       if (cachedPlan != null) {
+        print('📱 MealPlanRepository: Error occurred, using cached data for week $weekId');
         return cachedPlan;
       }
 
-      // Provide sample data for testing
-      final samplePlan = MealPlanTestUtils.createSampleWeekPlan(
-        userId: _currentUserId,
-      );
-      if (samplePlan.id == weekId) {
-        await cacheWeekPlan(samplePlan);
-        return samplePlan;
-      }
-
+      print('❌ MealPlanRepository: Error and no cached data for week $weekId: $e');
       return null;
     }
   }
@@ -169,10 +156,12 @@ class FirebaseMealPlanRepository implements MealPlanRepository {
   Stream<WeeklyMealPlan?> watchWeekPlan(String weekId) {
     final userId = _currentUserId;
     if (userId == null) {
-      // Return cached or sample data as a stream when not authenticated
-      return Stream.fromFuture(_getFallbackWeekPlan(weekId, userId));
+      print('🔍 MealPlanRepository: User not authenticated, returning null for week $weekId');
+      // Return null when not authenticated - no sample data
+      return Stream.value(null);
     }
 
+    print('🔍 MealPlanRepository: Watching week plan $weekId for user $userId');
     return _firestore
         .collection('users')
         .doc(userId)
@@ -181,40 +170,23 @@ class FirebaseMealPlanRepository implements MealPlanRepository {
         .snapshots()
         .asyncMap((snapshot) async {
           if (snapshot.exists && snapshot.data() != null) {
+            print('✅ MealPlanRepository: Found real meal plan data for week $weekId');
             final weekPlan = WeeklyMealPlan.fromJson(snapshot.data()!);
             // Cache in background
             await cacheWeekPlan(weekPlan);
             return weekPlan;
           }
-          // Return fallback data if no Firebase data exists
-          return await _getFallbackWeekPlan(weekId, userId);
+          // Return null if no Firebase data exists - no sample data
+          print('⚠️ MealPlanRepository: No real data found for week $weekId, returning null');
+          return null;
         })
         .handleError((error) async {
-          // Silent failure - return fallback data
-          return await _getFallbackWeekPlan(weekId, userId);
+          print('❌ MealPlanRepository: Error watching week plan $weekId: $error, returning null');
+          // Return null on error - no sample data
+          return null;
         });
   }
 
-  /// Get fallback data (cached or sample) for a week plan
-  Future<WeeklyMealPlan?> _getFallbackWeekPlan(
-    String weekId,
-    String? userId,
-  ) async {
-    // Try cached data first
-    final cachedPlan = await getCachedWeekPlan(weekId);
-    if (cachedPlan != null) {
-      return cachedPlan;
-    }
-
-    // Provide sample data for testing
-    final samplePlan = MealPlanTestUtils.createSampleWeekPlan(userId: userId);
-    if (samplePlan.id == weekId) {
-      await cacheWeekPlan(samplePlan);
-      return samplePlan;
-    }
-
-    return null;
-  }
 
   /// Generate week ID in YYYYWW format
   String _generateWeekId(DateTime weekStart) {
