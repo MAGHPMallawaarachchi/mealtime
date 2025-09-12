@@ -3,9 +3,10 @@
 "id": "R001",
 "title": "Aggala (Leftover Rice Balls)",
 "time": "45 min",
-"imageUrl": "https://thefoodsnaps.com/wp-content/uploads/2021/06/Photo-6-28-21-08-35-51-scaled.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435545/Mealtime/R001.jpg",
 "calories": 228,
 "macros": { "protein": 4, "carbs": 35, "fats": 8, "fiber": 3 },
+"dietaryType": "vegan",
 "description": "Sweet coconut–jaggery balls made with leftover cooked rice, a thrifty Sri Lankan teatime classic.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -15,13 +16,13 @@
 "ingredients": [
 { "id": "1", "metricQuantity": 300, "metricUnit": "grams", "name": "cooked rice", "quantity": 2, "unit": "cups" },
 { "id": "2", "metricQuantity": 150, "metricUnit": "grams", "name": "grated coconut", "quantity": 1.5, "unit": "cups" },
-{ "id": "3", "metricQuantity": 180, "metricUnit": "grams", "name": "palm jaggery", "quantity": 1, "unit": "cups" },
+{ "id": "3", "metricQuantity": 180, "metricUnit": "grams", "name": "jaggery", "quantity": 1, "unit": "cups" },
 { "id": "4", "metricQuantity": 30, "metricUnit": "milliliters", "name": "coconut treacle", "quantity": 2, "unit": "tablespoons" },
 { "id": "5", "metricQuantity": 2, "metricUnit": "grams", "name": "cardamom powder", "quantity": 0.5, "unit": "teaspoons" },
 { "id": "6", "metricQuantity": 20, "metricUnit": "grams", "name": "rice flour", "quantity": 2, "unit": "tablespoons" },
 { "id": "7", "metricQuantity": 15, "metricUnit": "grams", "name": "sesame seed", "quantity": 1, "unit": "tablespoons" },
 { "id": "8", "metricQuantity": null, "metricUnit": null, "name": "salt", "quantity": null, "unit": "toTaste" },
-{ "id": "9", "metricQuantity": 10, "metricUnit": "grams", "name": "ghee", "quantity": 2, "unit": "teaspoons" },
+{ "id": "9", "metricQuantity": 10, "metricUnit": "milliliters", "name": "coconut oil", "quantity": 2, "unit": "teaspoons" },
 { "id": "10", "metricQuantity": 30, "metricUnit": "milliliters", "name": "water", "quantity": 2, "unit": "tablespoons" }
 ]
 }
@@ -49,9 +50,10 @@
 "id": "R002",
 "title": "String Hopper Kottu (Idiyappam Kottu)",
 "time": "35 min",
-"imageUrl": "https://i.ytimg.com/vi/2bRrEJ6Yy3A/maxresdefault.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435544/Mealtime/R002.jpg",
 "calories": 392,
 "macros": { "protein": 14, "carbs": 48, "fats": 16, "fiber": 5 },
+"dietaryType": "vegetarian",
 "description": "A wok-tossed stir-fry of leftover string hoppers with vegetables, egg, and aromatics for a quick street-style meal.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -100,9 +102,10 @@
 "id": "R003",
 "title": "Bread Kottu",
 "time": "30 min",
-"imageUrl": "https://www.islandsmile.org/wp-content/uploads/2019/02/IMG_8893-2.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435544/Mealtime/R003.jpg",
 "calories": 405,
 "macros": { "protein": 13, "carbs": 50, "fats": 17, "fiber": 5 },
+"dietaryType": "vegetarian",
 "description": "A quick kottu using chopped day-old bread stir-fried with eggs, vegetables, and spices for a hearty snack or dinner.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -148,9 +151,10 @@
 "id": "R004",
 "title": "Bread Pudding",
 "time": "1 hr",
-"imageUrl": "https://www.allrecipes.com/thmb/NDzgJ1x6qWxJ_M-VYWULFzM-jl8=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/658615_Bread-Pudding-II-4x3-bc7dce39c1984a12bd1a38fe3c3ea42d.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435544/Mealtime/R004.jpg",
 "calories": 316,
 "macros": { "protein": 7, "carbs": 45, "fats": 12, "fiber": 2 },
+"dietaryType": "vegetarian",
 "description": "A custardy baked pudding scented with cardamom and nutmeg, perfect for using up stale bread.",
 "defaultServings": 6,
 "ingredientSections": [
@@ -193,9 +197,10 @@
 "id": "R005",
 "title": "String Hopper Aasmi",
 "time": "1 hr 15 min",
-"imageUrl": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi_vkjv6fdHGoCtCkAw8d2M0Lz-7OANIyNBMcDhFn793BrUIaUbf9H7agK06wiwNJcL2ZcYEEXZ8K5mHWzix9MlRckSkVfcaO4j91YK4TyCA9pCH0UmLzFPFS94a_j1MqwxwhDBa-4Sh50V/w1200-h630-p-k-no-nu/stringhopperaasmi.JPG",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435545/Mealtime/R005.jpg",
 "calories": 342,
 "macros": { "protein": 5, "carbs": 40, "fats": 18, "fiber": 2 },
+"dietaryType": "vegan",
 "description": "Crisp, lacy coils made from leftover string hoppers, finished with sweet treacle drizzle.",
 "defaultServings": 5,
 "ingredientSections": [
@@ -234,9 +239,10 @@
 "id": "R006",
 "title": "Fried Rice (Sri Lankan Style)",
 "time": "25 min",
-"imageUrl": "https://www.onceuponachef.com/images/2023/12/Fried-Rice-Hero-12.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R006.jpg",
 "calories": 394,
 "macros": { "protein": 15, "carbs": 52, "fats": 14, "fiber": 3 },
+"dietaryType": "vegetarian",
 "description": "Wok-fried day-old rice tossed with vegetables, egg, and Sri Lankan aromatics for a fast meal.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -253,7 +259,7 @@
 { "id": "7", "metricQuantity": 12, "metricUnit": "grams", "name": "garlic", "quantity": 4, "unit": "pieces" },
 { "id": "8", "metricQuantity": 10, "metricUnit": "grams", "name": "ginger", "quantity": 2, "unit": "teaspoons" },
 { "id": "9", "metricQuantity": 20, "metricUnit": "milliliters", "name": "soy sauce", "quantity": 1.5, "unit": "tablespoons" },
-{ "id": "10", "metricQuantity": 6, "metricUnit": "grams", "name": "white pepper powder", "quantity": 1, "unit": "teaspoons" },
+{ "id": "10", "metricQuantity": 6, "metricUnit": "grams", "name": "pepper", "quantity": 1, "unit": "teaspoons" },
 { "id": "11", "metricQuantity": 20, "metricUnit": "milliliters", "name": "coconut oil", "quantity": 1.5, "unit": "tablespoons" },
 { "id": "12", "metricQuantity": 8, "metricUnit": "grams", "name": "curry leaf", "quantity": 10, "unit": "pieces" },
 { "id": "13", "metricQuantity": null, "metricUnit": null, "name": "salt", "quantity": null, "unit": "toTaste" }
@@ -282,9 +288,10 @@
 "id": "R007",
 "title": "Fish Cutlets",
 "time": "50 min",
-"imageUrl": "https://www.kannammacooks.com/wp-content/uploads/srilankan-jaffna-fish-cutlets-recipe-1.jpg",
-"calories": 286,
+    "imageUrl": "https://www.kannammacooks.com/wp-content/uploads/srilankan-jaffna-fish-cutlets-recipe-1.jpg",
+    "calories": 286,
 "macros": { "protein": 16, "carbs": 24, "fats": 14, "fiber": 3 },
+"dietaryType": "pescatarian",
 "description": "Crisp, spiced fish cutlets bound with potato and chilies, perfect for tea-time or parties.",
 "defaultServings": 5,
 "ingredientSections": [
@@ -329,9 +336,10 @@
 "id": "R008",
 "title": "Rice Pudding",
 "time": "35 min",
-"imageUrl": "https://www.allrecipes.com/thmb/DzRDzQ4wiiV9dWWdCsn5sdXekuw=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/AR-24059-creamy-rice-pudding-DDMFS-4x3-a47c1f5ad9d449c582d62e6e42da28ac.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R008.jpg",
 "calories": 282,
 "macros": { "protein": 6, "carbs": 42, "fats": 10, "fiber": 1 },
+"dietaryType": "vegan",
 "description": "Creamy cardamom rice pudding simmered in coconut milk to transform day-old rice into dessert.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -371,9 +379,10 @@
 "id": "R009",
 "title": "Sri Lankan Spiced Banana Bread",
 "time": "1 hr 10 min",
-"imageUrl": "https://www.allrecipes.com/thmb/fAkQn-FhjF89oTJ5JXpgwvwNf34=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/20144-banana-banana-bread-VAT-009-4x3-B-78f1cfc64bfa451e8a0fead814719b9f.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435545/Mealtime/R009.jpg",
 "calories": 328,
 "macros": { "protein": 5, "carbs": 50, "fats": 12, "fiber": 3 },
+"dietaryType": "vegetarian",
 "description": "Moist banana bread infused with cardamom and cloves, ideal for using overripe bananas.",
 "defaultServings": 6,
 "ingredientSections": [
@@ -417,9 +426,10 @@
 "id": "R010",
 "title": "Spicy Sweet Potato Hummus",
 "time": "35 min",
-"imageUrl": "https://images.immediate.co.uk/production/volatile/sites/30/2022/02/Sweet-Potato-Hummus-daa7201.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R010.jpg",
 "calories": 226,
 "macros": { "protein": 6, "carbs": 28, "fats": 10, "fiber": 6 },
+"dietaryType": "vegan",
 "description": "A creamy hummus with roasted sweet potato, chili, and lime for a Lankan twist on a dip.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -460,9 +470,10 @@
 "id": "R011",
 "title": "Fridge-Raid Vegetable Soup",
 "time": "40 min",
-"imageUrl": "https://images.immediate.co.uk/production/volatile/sites/30/2021/06/Fridge-raid-soup-da48228.jpg?resize=768,713",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R011.jpg",
 "calories": 180,
 "macros": { "protein": 7, "carbs": 20, "fats": 8, "fiber": 5 },
+"dietaryType": "vegan",
 "description": "A warming soup using assorted leftover vegetables with Lankan spices and coconut milk.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -504,9 +515,10 @@
 "id": "R012",
 "title": "Creamy Curried Chicken & Rice Soup",
 "time": "35 min",
-"imageUrl": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/creamy-curried-chicken-rice-soup--0f5ea22.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435544/Mealtime/R012.jpg",
 "calories": 292,
 "macros": { "protein": 18, "carbs": 28, "fats": 12, "fiber": 2 },
+"dietaryType": "non-vegetarian",
 "description": "Comforting soup using leftover chicken and rice simmered in a lightly spiced coconut broth.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -521,7 +533,7 @@
 { "id": "5", "metricQuantity": 100, "metricUnit": "grams", "name": "onion", "quantity": 1, "unit": "cups" },
 { "id": "6", "metricQuantity": 10, "metricUnit": "grams", "name": "garlic", "quantity": 3, "unit": "pieces" },
 { "id": "7", "metricQuantity": 8, "metricUnit": "grams", "name": "ginger", "quantity": 1.5, "unit": "teaspoons" },
-{ "id": "8", "metricQuantity": 8, "metricUnit": "grams", "name": "mild curry powder", "quantity": 1.5, "unit": "teaspoons" },
+{ "id": "8", "metricQuantity": 8, "metricUnit": "grams", "name": "curry powder", "quantity": 1.5, "unit": "teaspoons" },
 { "id": "9", "metricQuantity": 500, "metricUnit": "milliliters", "name": "chicken stock", "quantity": 2, "unit": "cups" },
 { "id": "10", "metricQuantity": 200, "metricUnit": "milliliters", "name": "coconut milk", "quantity": 0.75, "unit": "cups" },
 { "id": "11", "metricQuantity": 15, "metricUnit": "milliliters", "name": "coconut oil", "quantity": 1, "unit": "tablespoons" },
@@ -551,9 +563,10 @@
 "id": "R014",
 "title": "Parippu (Red Lentil Dhal Curry)",
 "time": "35 min",
-"imageUrl": "https://saltedmint.com/wp-content/uploads/2024/01/red-lentil-curry-dhal-6.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R014.jpg",
 "calories": 226,
 "macros": { "protein": 12, "carbs": 22, "fats": 10, "fiber": 6 },
+"dietaryType": "vegan",
 "description": "Creamy masoor dhal tempered with mustard, curry leaves, and coconut milk, a staple side.",
 "defaultServings": 5,
 "ingredientSections": [
@@ -594,9 +607,10 @@
 "id": "R015",
 "title": "Pol Sambol (Coconut Sambol)",
 "time": "15 min",
-"imageUrl": "https://media-cdn2.greatbritishchefs.com/media/etbpfsnk/img86979.whqc_768x512q90.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R015.jpg",
 "calories": 162,
 "macros": { "protein": 3, "carbs": 6, "fats": 14, "fiber": 3 },
+"dietaryType": "pescatarian",
 "description": "Fresh grated coconut mixed with chili, onion, and lime; the essential island relish.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -631,9 +645,10 @@
 "id": "R016",
 "title": "Seeni Sambol (Caramelized Onion Relish)",
 "time": "45 min",
-"imageUrl": "https://www.hungrylankan.com/wp-content/uploads/2023/03/Pineapple-fried-rice-3.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R016.jpg",
 "calories": 134,
 "macros": { "protein": 2, "carbs": 18, "fats": 6, "fiber": 2 },
+"dietaryType": "pescatarian",
 "description": "Slow-cooked onions with chili, tamarind, and spices until sticky-sweet; a breakfast favorite.",
 "defaultServings": 6,
 "ingredientSections": [
@@ -672,9 +687,10 @@
 "id": "R017",
 "title": "Kiri Hodi (Coconut Gravy)",
 "time": "20 min",
-"imageUrl": "https://www.theroute2roots.com/wp-content/uploads/2017/05/Kiri-Hoddi-1-1-of-1.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R017.jpg",
 "calories": 144,
 "macros": { "protein": 3, "carbs": 6, "fats": 12, "fiber": 1 },
+"dietaryType": "vegetarian",
 "description": "A mild, golden coconut gravy tempered with mustard and curry leaves; ideal with hoppers or string hoppers.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -714,9 +730,10 @@
 "id": "R018",
 "title": "Plain Hoppers (Appa)",
 "time": "12 hr",
-"imageUrl": "https://blog.cinnamonhotels.com/wp-content/uploads/2022/03/Capture10.png",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R018.jpg",
 "calories": 226,
 "macros": { "protein": 5, "carbs": 38, "fats": 6, "fiber": 2 },
+"dietaryType": "vegan",
 "description": "Fermented rice-flour bowls with crisp edges and soft centers, cooked in a hopper pan.",
 "defaultServings": 6,
 "ingredientSections": [
@@ -754,9 +771,10 @@
 "id": "R019",
 "title": "Egg Hoppers (Biththara Appa)",
 "time": "12 hr 15 min",
-"imageUrl": "https://i0.wp.com/www.lavenderandlovage.com/wp-content/uploads/2016/05/Sri-Lankan-Egg-Hoppers-for-Breakfast.jpg?fit=1200%2C901&ssl=1",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R019.jpg",
 "calories": 274,
 "macros": { "protein": 10, "carbs": 36, "fats": 10, "fiber": 2 },
+"dietaryType": "vegetarian",
 "description": "Crisp-edged hoppers finished with a soft-set egg and a sprinkle of pepper.",
 "defaultServings": 5,
 "ingredientSections": [
@@ -796,9 +814,10 @@
 "id": "R020",
 "title": "String Hoppers (Idiyappam)",
 "time": "1 hr",
-"imageUrl": "https://www.harischandramills.com/wp-content/uploads/2018/06/3-2.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R020.jpg",
 "calories": 211,
 "macros": { "protein": 6, "carbs": 40, "fats": 3, "fiber": 2 },
+"dietaryType": "vegan",
 "description": "Delicate steamed rice-flour noodles pressed into nests, perfect with kiri hodi and sambols.",
 "defaultServings": 6,
 "ingredientSections": [
@@ -833,9 +852,10 @@
 "id": "R021",
 "title": "Chicken Kottu Roti",
 "time": "40 min",
-"imageUrl": "https://www.theflavorbender.com/wp-content/uploads/2018/03/Chicken-Kottu-Roti-The-Flavor-Bender-Featured-Image-SQ-8-500x500.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R021.jpg",
 "calories": 424,
 "macros": { "protein": 22, "carbs": 48, "fats": 16, "fiber": 5 },
+"dietaryType": "non-vegetarian",
 "description": "Street-style chopped godhamba roti tossed with chicken, egg, vegetables, and spice.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -880,9 +900,10 @@
 "id": "R022",
 "title": "Vegetable Kottu Roti",
 "time": "35 min",
-"imageUrl": "https://cheapandcheerfulcooking.com/wp-content/uploads/2023/02/vegan-kottu-roti-4.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R022.jpg",
 "calories": 382,
 "macros": { "protein": 12, "carbs": 52, "fats": 14, "fiber": 6 },
+"dietaryType": "vegetarian",
 "description": "Chopped roti stir-fried with mixed vegetables, egg, and spice for a satisfying vegetarian kottu.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -925,9 +946,10 @@
 "id": "R023",
 "title": "Devilled Chicken",
 "time": "30 min",
-"imageUrl": "https://www.grandchancellor.lk/wp-content/uploads/2021/11/020.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R023.jpg",
 "calories": 294,
 "macros": { "protein": 24, "carbs": 18, "fats": 14, "fiber": 2 },
+"dietaryType": "non-vegetarian",
 "description": "A sweet, sour, and spicy stir-fry of chicken with onions and peppers in a glossy sauce.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -968,9 +990,10 @@
 "id": "R024",
 "title": "Devilled Prawns",
 "time": "25 min",
-"imageUrl": "https://www.grandchancellor.lk/wp-content/uploads/2021/11/007-1024x683.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R024.jpg",
 "calories": 230,
 "macros": { "protein": 23, "carbs": 12, "fats": 10, "fiber": 1 },
+"dietaryType": "pescatarian",
 "description": "Juicy prawns tossed in a fiery sweet-sour glaze with onions and chilies.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -1011,9 +1034,10 @@
 "id": "R025",
 "title": "Fish Curry (Thuna Paha)",
 "time": "45 min",
-"imageUrl": "https://www.loveandotherspices.com/wp-content/uploads/2015/10/sri-lankan-fish-curry-spicy-featured.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R025.jpg",
 "calories": 240,
 "macros": { "protein": 25, "carbs": 8, "fats": 12, "fiber": 2 },
+"dietaryType": "pescatarian",
 "description": "A robust fish curry with the classic roasted three-spice blend, coconut, and fragrant leaves.",
 "defaultServings": 5,
 "ingredientSections": [
@@ -1057,9 +1081,10 @@
 "id": "R026",
 "title": "Fish Ambul Thiyal (Sour Fish Curry)",
 "time": "1 hr",
-"imageUrl": "https://gcookingbakingcom.wordpress.com/wp-content/uploads/2020/12/dsc01411.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R026.jpg",
 "calories": 210,
 "macros": { "protein": 26, "carbs": 4, "fats": 10, "fiber": 1 },
+"dietaryType": "pescatarian",
 "description": "Dry-style sour fish curry with goraka and pepper, simmered until the gravy clings.",
 "defaultServings": 5,
 "ingredientSections": [
@@ -1100,9 +1125,10 @@
 "id": "R027",
 "title": "Polos Curry (Young Jackfruit)",
 "time": "1 hr 20 min",
-"imageUrl": "https://foodcoma111.wordpress.com/wp-content/uploads/2017/11/polos_ambula.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R027.jpg",
 "calories": 236,
 "macros": { "protein": 6, "carbs": 26, "fats": 12, "fiber": 7 },
+"dietaryType": "vegan",
 "description": "Tender young jackfruit simmered with roasted spices and coconut for a meaty, vegan curry.",
 "defaultServings": 5,
 "ingredientSections": [
@@ -1146,9 +1172,10 @@
 "id": "R028",
 "title": "Beetroot Curry",
 "time": "30 min",
-"imageUrl": "https://images.sbs.com.au/dims4/default/66286a1/2147483647/strip/true/crop/1500x844+0+79/resize/1280x720!/quality/90/?url=http%3A%2F%2Fsbs-au-brightspot.s3.amazonaws.com%2Fdrupal%2Ffood%2Fpublic%2Frx083_curry_4_of_6.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R028.jpg",
 "calories": 168,
 "macros": { "protein": 4, "carbs": 20, "fats": 8, "fiber": 5 },
+"dietaryType": "vegetarian",
 "description": "Julienned beetroot cooked with mustard, coconut, and mild spice for a vibrant side dish.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -1188,9 +1215,10 @@
 "id": "R029",
 "title": "Cashew & Green Pea Curry",
 "time": "35 min",
-"imageUrl": "https://d1wvfb9o4f1cvo.cloudfront.net/2021/09/Cashew-Curry.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R029.jpg",
 "calories": 256,
 "macros": { "protein": 10, "carbs": 18, "fats": 16, "fiber": 4 },
+"dietaryType": "vegan",
 "description": "Rich cashews and peas simmered in a spiced coconut gravy, a festive vegetarian favorite.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -1228,11 +1256,12 @@
 },
 {
 "id": "R030",
-"title": "Wambatu Moju (Brinjal/Eggplant Pickle)",
+"title": "Brinjal Moju (Eggplant Pickle)",
 "time": "1 hr",
-"imageUrl": "https://rakskitchen.net/wp-content/uploads/2021/12/brinjal-moju-feat.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R030.jpg",
 "calories": 206,
 "macros": { "protein": 4, "carbs": 16, "fats": 14, "fiber": 4 },
+"dietaryType": "vegan",
 "description": "Tangy-sweet fried eggplant pickle tempered with mustard, chili, and vinegar; keeps well.",
 "defaultServings": 8,
 "ingredientSections": [
@@ -1272,9 +1301,10 @@
 "id": "R031",
 "title": "Gotukola Sambol",
 "time": "15 min",
-"imageUrl": "https://ichef.bbc.co.uk/ace/standard/1600/food/recipes/gotu_kola_sambol_27863_16x9.jpg.webp",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R031.jpg",
 "calories": 90,
 "macros": { "protein": 3, "carbs": 6, "fats": 6, "fiber": 3 },
+"dietaryType": "vegan",
 "description": "Bright herb salad of finely chopped gotukola with coconut, onion, and lime.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -1309,9 +1339,10 @@
 "id": "R032",
 "title": "Mukunuwenna Mallung (Leafy Greens Stir-Fry)",
 "time": "20 min",
-"imageUrl": "https://www.dailyfoodrecipes.com/wp-content/uploads/2017/10/MUKUNUWENNA-MALLUM-3.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R032.jpg",
 "calories": 120,
 "macros": { "protein": 4, "carbs": 8, "fats": 8, "fiber": 3 },
+"dietaryType": "vegan",
 "description": "Quick sauté of chopped amaranth greens with coconut and mild spice.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -1349,9 +1380,10 @@
 "id": "R033",
 "title": "Pol Roti (Coconut Flatbread)",
 "time": "40 min",
-"imageUrl": "https://images.sbs.com.au/dims4/default/522e6f9/2147483647/strip/true/crop/2000x1125+0+43/resize/1280x720!/quality/90/?url=http%3A%2F%2Fsbs-au-brightspot.s3.amazonaws.com%2Fdrupal%2Ffood%2Fpublic%2Frx076-tcu-s4-home-cooked-o-tama-carey-pol-roti-with-pol-sambal-l.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R033.jpg",
 "calories": 248,
 "macros": { "protein": 5, "carbs": 30, "fats": 12, "fiber": 3 },
+"dietaryType": "vegan",
 "description": "Thick coconut flatbreads cooked on a griddle; great with lunu miris or seeni sambol.",
 "defaultServings": 6,
 "ingredientSections": [
@@ -1387,11 +1419,12 @@
 },
 {
 "id": "R034",
-"title": "Kaha Bath (Sri Lankan Yellow Rice)",
+"title": "Turmeric Rice (Yellow Rice)",
 "time": "45 min",
-"imageUrl": "https://www.allrecipes.com/thmb/5vQSEyiifeToohETCYys_q19M-c=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/237593-cindys-yellow-rice-ddmfs-3X4-0529-9e808a720c52413580b0ecb129cd0b1d.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R034.jpg",
 "calories": 264,
 "macros": { "protein": 6, "carbs": 42, "fats": 8, "fiber": 2 },
+"dietaryType": "vegan",
 "description": "Fragrant turmeric rice cooked with ghee, pandan, and spices; a festive centerpiece.",
 "defaultServings": 6,
 "ingredientSections": [
@@ -1400,7 +1433,7 @@
 "title": null,
 "ingredients": [
 { "id": "1", "metricQuantity": 600, "metricUnit": "grams", "name": "rice", "quantity": 3, "unit": "cups" },
-{ "id": "2", "metricQuantity": 20, "metricUnit": "grams", "name": "ghee", "quantity": 1.5, "unit": "tablespoons" },
+{ "id": "2", "metricQuantity": 20, "metricUnit": "milliliters", "name": "coconut oil", "quantity": 1.5, "unit": "tablespoons" },
 { "id": "3", "metricQuantity": 4, "metricUnit": "grams", "name": "turmeric powder", "quantity": 0.75, "unit": "teaspoons" },
 { "id": "4", "metricQuantity": 2, "metricUnit": "pieces", "name": "pandan leaf", "quantity": 2, "unit": "pieces" },
 { "id": "5", "metricQuantity": 1, "metricUnit": "pieces", "name": "cinnamon stick", "quantity": 1, "unit": "pieces" },
@@ -1430,9 +1463,10 @@
 "id": "R035",
 "title": "Sri Lankan Chicken Biryani",
 "time": "1 hr 30 min",
-"imageUrl": "https://celloindia.co.in/cdn/shop/articles/da2592e0d25f079cbf9aedf436cabf6f_564x.jpg?v=1727334879",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R035.jpg",
 "calories": 466,
 "macros": { "protein": 24, "carbs": 52, "fats": 18, "fiber": 3 },
+"dietaryType": "non-vegetarian",
 "description": "Layered spiced rice and chicken baked with ghee-fried onions and raisins; served with raita.",
 "defaultServings": 6,
 "ingredientSections": [
@@ -1484,9 +1518,10 @@
 "id": "R036",
 "title": "Lamprais (Dutch-Burgher Lump Rice)",
 "time": "3 hr",
-"imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Lamprais_%282%29.jpg/960px-Lamprais_%282%29.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R036.jpg",
 "calories": 484,
 "macros": { "protein": 22, "carbs": 54, "fats": 20, "fiber": 3 },
+"dietaryType": "non-vegetarian",
 "description": "Banana leaf–wrapped rice with mixed meat curry, frikkadels, seeni sambol, and ash plantain; baked for aroma.",
 "defaultServings": 6,
 "ingredientSections": [
@@ -1526,11 +1561,12 @@
 },
 {
 "id": "R037",
-"title": "Kaju Maluwa (Creamy Cashew Curry)",
+"title": "Creamy Cashew Curry (Kaju Curry)",
 "time": "45 min",
-"imageUrl": "https://static.independent.co.uk/2022/08/10/11/veggies-8f1fadd6-0146-11ed-9282-2a7e062f9565.jpg",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435540/Mealtime/R037.jpg",
 "calories": 268,
 "macros": { "protein": 8, "carbs": 14, "fats": 20, "fiber": 2 },
+"dietaryType": "vegan",
 "description": "Luxurious cashew curry simmered with coconut milk, cardamom, and aromatics.",
 "defaultServings": 4,
 "ingredientSections": [
@@ -1561,6 +1597,159 @@
 }
 ],
 "tags": ["sri lankan", "curry", "vegetarian", "creamy"],
+"source": "ai-generated"
+},
+{
+"id": "R038",
+"title": "Mango Curry",
+"time": "35 min",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435545/Mealtime/R038.jpg",
+"calories": 185,
+"macros": { "protein": 2, "carbs": 28, "fats": 8, "fiber": 4 },
+"dietaryType": "vegan",
+"description": "Traditional Sri Lankan sour mango curry with aromatic spices, perfect with rice and curry.",
+"defaultServings": 6,
+"ingredientSections": [
+{
+"id": "1",
+"title": null,
+"ingredients": [
+{ "id": "1", "metricQuantity": 600, "metricUnit": "grams", "name": "green mango, cubed", "quantity": 2, "unit": "large" },
+{ "id": "2", "metricQuantity": 30, "metricUnit": "milliliters", "name": "coconut oil", "quantity": 2, "unit": "tablespoons" },
+{ "id": "3", "metricQuantity": 80, "metricUnit": "grams", "name": "red onion, sliced", "quantity": 1, "unit": "medium" },
+{ "id": "4", "metricQuantity": 12, "metricUnit": "grams", "name": "garlic, minced", "quantity": 6, "unit": "cloves" },
+{ "id": "5", "metricQuantity": 15, "metricUnit": "grams", "name": "ginger, minced", "quantity": 1, "unit": "tablespoons" },
+{ "id": "6", "metricQuantity": 10, "metricUnit": "pieces", "name": "curry leaves", "quantity": 10, "unit": "pieces" },
+{ "id": "7", "metricQuantity": 15, "metricUnit": "grams", "name": "curry powder", "quantity": 1, "unit": "tablespoons" },
+{ "id": "8", "metricQuantity": 5, "metricUnit": "grams", "name": "turmeric powder", "quantity": 1, "unit": "teaspoons" },
+{ "id": "9", "metricQuantity": 5, "metricUnit": "grams", "name": "chili powder", "quantity": 1, "unit": "teaspoons" },
+{ "id": "10", "metricQuantity": 400, "metricUnit": "milliliters", "name": "coconut milk", "quantity": 1.5, "unit": "cups" },
+{ "id": "11", "metricQuantity": 30, "metricUnit": "milliliters", "name": "tamarind juice", "quantity": 2, "unit": "tablespoons" },
+{ "id": "12", "metricQuantity": null, "metricUnit": null, "name": "salt", "quantity": null, "unit": "toTaste" },
+{ "id": "13", "metricQuantity": 10, "metricUnit": "grams", "name": "jaggery", "quantity": 2, "unit": "teaspoons" }
+]
+}
+],
+"instructionSections": [
+{
+"id": "1",
+"title": null,
+"steps": [
+"Cut green mango into 2 cm cubes; set aside.",
+"Heat coconut oil in heavy-bottomed pan over medium heat.",
+"Add curry leaves; let them splutter for 30 seconds.",
+"Sauté onion until translucent, about 5 min.",
+"Add garlic and ginger; cook until fragrant, 2 min.",
+"Stir in curry powder, turmeric, and chili powder; cook 1 min.",
+"Add mango cubes; gently mix with spices, cook 3–4 min.",
+"Pour in coconut milk and tamarind juice; bring to gentle boil.",
+"Reduce heat to low; simmer uncovered 15–20 min until mango is tender.",
+"Season with salt and jaggery; adjust sourness with more tamarind if needed.",
+"Simmer 2–3 min more; remove from heat when curry thickens slightly."
+]
+}
+],
+"tags": ["sri lankan", "curry", "vegan", "traditional", "sour", "mango"],
+"source": "ai-generated"
+},
+{
+"id": "R039",
+"title": "Mango Achcharu",
+"time": "20 min",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435545/Mealtime/R039.jpg",
+"calories": 95,
+"macros": { "protein": 1, "carbs": 22, "fats": 1, "fiber": 3 },
+"dietaryType": "vegan",
+"description": "Refreshing Sri Lankan street food salad with green mango, chili, and lime - perfect appetizer or snack.",
+"defaultServings": 4,
+"ingredientSections": [
+{
+"id": "1",
+"title": null,
+"ingredients": [
+{ "id": "1", "metricQuantity": 400, "metricUnit": "grams", "name": "green mango, julienned", "quantity": 2, "unit": "medium" },
+{ "id": "2", "metricQuantity": 50, "metricUnit": "grams", "name": "red onion, thinly sliced", "quantity": 0.5, "unit": "medium" },
+{ "id": "3", "metricQuantity": 20, "metricUnit": "grams", "name": "green chili, sliced", "quantity": 2, "unit": "pieces" },
+{ "id": "4", "metricQuantity": 30, "metricUnit": "milliliters", "name": "lime juice", "quantity": 2, "unit": "tablespoons" },
+{ "id": "5", "metricQuantity": 5, "metricUnit": "grams", "name": "salt", "quantity": 1, "unit": "teaspoons" },
+{ "id": "6", "metricQuantity": 10, "metricUnit": "grams", "name": "sugar", "quantity": 2, "unit": "teaspoons" },
+{ "id": "7", "metricQuantity": 5, "metricUnit": "grams", "name": "chili powder", "quantity": 1, "unit": "teaspoons" },
+{ "id": "8", "metricQuantity": 15, "metricUnit": "pieces", "name": "curry leaves, chopped", "quantity": 15, "unit": "pieces" },
+{ "id": "9", "metricQuantity": 30, "metricUnit": "grams", "name": "fresh coconut, grated", "quantity": 3, "unit": "tablespoons" },
+{ "id": "10", "metricQuantity": 15, "metricUnit": "grams", "name": "fresh coriander, chopped", "quantity": 2, "unit": "tablespoons" }
+]
+}
+],
+"instructionSections": [
+{
+"id": "1",
+"title": null,
+"steps": [
+"Wash and peel green mango; cut into thin julienne strips, 5 cm long.",
+"Place mango strips in large bowl; sprinkle with salt and mix well.",
+"Let stand 10 min to draw out excess moisture; drain and rinse briefly.",
+"Add sliced red onion and green chili to drained mango.",
+"In small bowl, whisk together lime juice, sugar, and chili powder until sugar dissolves.",
+"Pour dressing over mango mixture; toss thoroughly to coat.",
+"Add chopped curry leaves, grated coconut, and fresh coriander.",
+"Mix gently but thoroughly; taste and adjust salt, lime, or chili as desired.",
+"Let salad rest 5 min for flavors to meld before serving.",
+"Serve immediately as appetizer or side dish with rice and curry."
+]
+}
+],
+"tags": ["sri lankan", "salad", "vegan", "street food", "spicy", "mango", "appetizer"],
+"source": "ai-generated"
+},
+{
+"id": "R040",
+"title": "Mango Dessert",
+"time": "30 min",
+"imageUrl": "https://res.cloudinary.com/dlrckvh4h/image/upload/v1757435545/Mealtime/R041.jpg",
+"calories": 245,
+"macros": { "protein": 4, "carbs": 45, "fats": 7, "fiber": 2 },
+"dietaryType": "vegetarian",
+"description": "Creamy Sri Lankan mango pudding with coconut milk and jaggery - a heavenly tropical dessert.",
+"defaultServings": 6,
+"ingredientSections": [
+{
+"id": "1",
+"title": null,
+"ingredients": [
+{ "id": "1", "metricQuantity": 600, "metricUnit": "grams", "name": "ripe mango, cubed", "quantity": 3, "unit": null },
+{ "id": "2", "metricQuantity": 400, "metricUnit": "milliliters", "name": "thick coconut milk", "quantity": 1.5, "unit": "cups" },
+{ "id": "3", "metricQuantity": 120, "metricUnit": "grams", "name": "jaggery, grated", "quantity": 0.75, "unit": "cups" },
+{ "id": "4", "metricQuantity": 45, "metricUnit": "grams", "name": "rice flour", "quantity": 3, "unit": "tablespoons" },
+{ "id": "5", "metricQuantity": 3, "metricUnit": "grams", "name": "cardamom powder", "quantity": 0.75, "unit": "teaspoons" },
+{ "id": "6", "metricQuantity": 250, "metricUnit": "milliliters", "name": "water", "quantity": 1, "unit": "cups" },
+{ "id": "7", "metricQuantity": null, "metricUnit": null, "name": "salt", "quantity": null, "unit": "pinch" },
+{ "id": "8", "metricQuantity": 30, "metricUnit": "grams", "name": "cashew nuts, chopped", "quantity": 3, "unit": "tablespoons" },
+{ "id": "9", "metricQuantity": 15, "metricUnit": "grams", "name": "ghee", "quantity": 1, "unit": "tablespoons" }
+]
+}
+],
+"instructionSections": [
+{
+"id": "1",
+"title": null,
+"steps": [
+"Peel ripe mango and cut into small cubes; reserve 100g for garnish.",
+"Blend remaining mango with 100ml water until smooth puree; strain if desired.",
+"Mix rice flour with 150ml water to form smooth slurry; set aside.",
+"Heat ghee in heavy-bottomed pan; lightly fry cashew nuts until golden, 2 min; remove and set aside.",
+"In same pan, add grated jaggery with 50ml water; cook on medium heat until melted and syrupy, 5 min.",
+"Add mango puree to jaggery syrup; cook on medium heat, stirring frequently, 8–10 min.",
+"Slowly add rice flour slurry while stirring continuously to prevent lumps.",
+"Cook mixture on low heat, stirring constantly, until it thickens like custard, 10–12 min.",
+"Add coconut milk and cardamom powder; simmer gently 5 min, stirring frequently.",
+"Add pinch of salt; taste and adjust sweetness with more jaggery if needed.",
+"Remove from heat; fold in reserved mango cubes and half the fried cashews.",
+"Pour into serving bowls; garnish with remaining cashews.",
+"Chill in refrigerator 2–3 hours before serving; serve cold."
+]
+}
+],
+"tags": ["sri lankan", "dessert", "mango", "coconut", "sweet", "traditional", "pudding"],
 "source": "ai-generated"
 }
 ]
