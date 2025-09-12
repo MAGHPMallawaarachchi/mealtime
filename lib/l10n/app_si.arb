@@ -786,5 +786,144 @@
   "noIngredientsInPeakSeason": "දැන් කිසිදු අමුද්‍රව්‍යයක් පිරිමුළුන් කාලයේ නොමැත. පසුව නැවත පරීක්ෂා කරන්න!",
   "@noIngredientsInPeakSeason": {
     "description": "Message when no seasonal ingredients are available"
+  },
+
+  "unknownErrorOccurred": "නොදන්නා දෝෂයක් සිදු වී ඇත",
+  "@unknownErrorOccurred": {
+    "description": "Generic fallback error message when no specific error is provided"
+  },
+
+  "categories": "වර්ග",
+  "@categories": {
+    "description": "Categories section title"
+  },
+
+  "all": "සියල්ල",
+  "@all": {
+    "description": "All categories filter option"
+  },
+
+  "beverages": "පාන",
+  "@beverages": {
+    "description": "Beverages category"
+  },
+
+  "snacks": "කෙටි ආහාර",
+  "@snacks": {
+    "description": "Snacks category"
+  },
+
+  "desserts": "අමුළු කෑම",
+  "@desserts": {
+    "description": "Desserts category"
+  },
+
+  "allRecipes": "සියලුම වට්ටෝරු",
+  "@allRecipes": {
+    "description": "All recipes section title"
+  },
+
+  "personalized": "පුද්ගලීකරණය",
+  "@personalized": {
+    "description": "Personalized recommendations badge"
+  },
+
+  "loadingMoreRecipesEllipsis": "තවත් වට්ටෝරු පූරණය වෙමින්...",
+  "@loadingMoreRecipesEllipsis": {
+    "description": "Loading message when fetching more recipes"
+  },
+
+  "failedToLoadRecipes": "වට්ටෝරු පූරණය කිරීම අසාර්ථක විය",
+  "@failedToLoadRecipes": {
+    "description": "Error message when recipes fail to load"
+  },
+
+  "recipesSortedByPreferences": "වට්ටෝරු {count}ක්, ඔබේ මනාපයන්ට අනුව සකසන ලද",
+  "@recipesSortedByPreferences": {
+    "description": "Status text for personalized recipes",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of recipes"
+      }
+    }
+  },
+
+  "recipesFound": "වට්ටෝරු {count}ක් හමු විය",
+  "@recipesFound": {
+    "description": "Status text for found recipes",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of recipes found"
+      }
+    }
+  },
+
+  "noCategoryRecipesYet": "{category} වට්ටෝරු තවම නැත",
+  "@noCategoryRecipesYet": {
+    "description": "Empty state message for category recipes",
+    "placeholders": {
+      "category": {
+        "type": "String",
+        "description": "Category name"
+      }
+    }
+  },
+
+  "checkBackLaterForNewRecipes": "නව වට්ටෝරු සඳහා පසුව නැවත පරීක්ෂා කරන්න",
+  "@checkBackLaterForNewRecipes": {
+    "description": "Empty state instruction for category recipes"
+  },
+
+  "noRecipesAvailableYet": "තවම වට්ටෝරු නොමැත",
+  "@noRecipesAvailableYet": {
+    "description": "Empty state message when no recipes available"
+  },
+
+  "checkBackLaterForDeliciousRecipes": "රසවත් වට්ටෝරු සඳහා පසුව නැවත පරීක්ෂා කරන්න",
+  "@checkBackLaterForDeliciousRecipes": {
+    "description": "Empty state instruction for general recipes"
+  },
+
+  "errorLoadingRecipes": "වට්ටෝරු පූරණය කිරීමේ දෝෂය",
+  "@errorLoadingRecipes": {
+    "description": "Error message for recipe loading failure"
+  },
+
+  "loadingRecipes": "වට්ටෝරු පූරණය වෙමින්...",
+  "@loadingRecipes": {
+    "description": "Loading message for initial recipe load"
+  },
+
+  "noRecipesFound": "වට්ටෝරු හමු නොවීය",
+  "@noRecipesFound": {
+    "description": "Message when no recipes match search criteria"
+  },
+
+  "recipesFoundCount": "වට්ටෝරු {count}ක් හමු විය",
+  "@recipesFoundCount": {
+    "description": "Count of total recipes found",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of recipes found"
+      }
+    }
+  },
+
+  "showingRecipesCount": "වට්ටෝරු {total}න් {displayed}ක් පෙන්වමින්",
+  "@showingRecipesCount": {
+    "description": "Status showing displayed vs total recipes",
+    "placeholders": {
+      "displayed": {
+        "type": "int",
+        "description": "Number of displayed recipes"
+      },
+      "total": {
+        "type": "int", 
+        "description": "Total number of recipes"
+      }
+    }
   }
 }

@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import '../../../recipes/domain/models/recipe.dart';
 import '../../../../core/models/recommendation_score.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class PaginationUtils {
   static const int defaultItemsPerPage = 20;
@@ -136,33 +138,36 @@ class PaginationUtils {
   }
 
   /// Gets a human-readable status for pagination state
-  static String getPaginationStatus({
+  static String getPaginationStatus(
+    BuildContext context, {
     required int displayedCount,
     required int totalCount,
     required bool isLoading,
     required bool hasError,
   }) {
+    final localizations = AppLocalizations.of(context)!;
+    
     if (hasError) {
-      return 'Error loading recipes';
+      return localizations.errorLoadingRecipes;
     }
     
     if (isLoading && displayedCount == 0) {
-      return 'Loading recipes...';
+      return localizations.loadingRecipes;
     }
     
     if (isLoading) {
-      return 'Loading more recipes...';
+      return localizations.loadingMoreRecipesEllipsis;
     }
     
     if (displayedCount == 0) {
-      return 'No recipes found';
+      return localizations.noRecipesFound;
     }
     
     if (displayedCount >= totalCount) {
-      return '$totalCount recipe${totalCount == 1 ? '' : 's'} found';
+      return localizations.recipesFoundCount(totalCount);
     }
     
-    return 'Showing $displayedCount of $totalCount recipe${totalCount == 1 ? '' : 's'}';
+    return localizations.showingRecipesCount(displayedCount, totalCount);
   }
 
   /// Debounces search queries to prevent excessive filtering operations

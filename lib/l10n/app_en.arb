@@ -788,6 +788,145 @@
   "noIngredientsInPeakSeason": "No ingredients are in peak season right now. Check back later!",
   "@noIngredientsInPeakSeason": {
     "description": "Message when no seasonal ingredients are available"
+  },
+
+  "unknownErrorOccurred": "Unknown error occurred",
+  "@unknownErrorOccurred": {
+    "description": "Generic fallback error message when no specific error is provided"
+  },
+
+  "categories": "Categories",
+  "@categories": {
+    "description": "Categories section title"
+  },
+
+  "all": "All",
+  "@all": {
+    "description": "All categories filter option"
+  },
+
+  "beverages": "Beverages",
+  "@beverages": {
+    "description": "Beverages category"
+  },
+
+  "snacks": "Snacks",
+  "@snacks": {
+    "description": "Snacks category"
+  },
+
+  "desserts": "Desserts",
+  "@desserts": {
+    "description": "Desserts category"
+  },
+
+  "allRecipes": "All Recipes",
+  "@allRecipes": {
+    "description": "All recipes section title"
+  },
+
+  "personalized": "Personalized",
+  "@personalized": {
+    "description": "Personalized recommendations badge"
+  },
+
+  "loadingMoreRecipesEllipsis": "Loading more recipes...",
+  "@loadingMoreRecipesEllipsis": {
+    "description": "Loading message when fetching more recipes"
+  },
+
+  "failedToLoadRecipes": "Failed to load recipes",
+  "@failedToLoadRecipes": {
+    "description": "Error message when recipes fail to load"
+  },
+
+  "recipesSortedByPreferences": "{count} recipes, sorted by your preferences",
+  "@recipesSortedByPreferences": {
+    "description": "Status text for personalized recipes",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of recipes"
+      }
+    }
+  },
+
+  "recipesFound": "{count} recipes found",
+  "@recipesFound": {
+    "description": "Status text for found recipes",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of recipes found"
+      }
+    }
+  },
+
+  "noCategoryRecipesYet": "No {category} recipes yet",
+  "@noCategoryRecipesYet": {
+    "description": "Empty state message for category recipes",
+    "placeholders": {
+      "category": {
+        "type": "String",
+        "description": "Category name"
+      }
+    }
+  },
+
+  "checkBackLaterForNewRecipes": "Check back later for new recipes",
+  "@checkBackLaterForNewRecipes": {
+    "description": "Empty state instruction for category recipes"
+  },
+
+  "noRecipesAvailableYet": "No recipes available yet",
+  "@noRecipesAvailableYet": {
+    "description": "Empty state message when no recipes available"
+  },
+
+  "checkBackLaterForDeliciousRecipes": "Check back later for delicious recipes",
+  "@checkBackLaterForDeliciousRecipes": {
+    "description": "Empty state instruction for general recipes"
+  },
+
+  "errorLoadingRecipes": "Error loading recipes",
+  "@errorLoadingRecipes": {
+    "description": "Error message for recipe loading failure"
+  },
+
+  "loadingRecipes": "Loading recipes...",
+  "@loadingRecipes": {
+    "description": "Loading message for initial recipe load"
+  },
+
+  "noRecipesFound": "No recipes found",
+  "@noRecipesFound": {
+    "description": "Message when no recipes match search criteria"
+  },
+
+  "recipesFoundCount": "{count, plural, =1{1 recipe} other{{count} recipes}} found",
+  "@recipesFoundCount": {
+    "description": "Count of total recipes found",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of recipes found"
+      }
+    }
+  },
+
+  "showingRecipesCount": "Showing {displayed} of {total, plural, =1{1 recipe} other{{total} recipes}}",
+  "@showingRecipesCount": {
+    "description": "Status showing displayed vs total recipes",
+    "placeholders": {
+      "displayed": {
+        "type": "int",
+        "description": "Number of displayed recipes"
+      },
+      "total": {
+        "type": "int", 
+        "description": "Total number of recipes"
+      }
+    }
   }
 
 }

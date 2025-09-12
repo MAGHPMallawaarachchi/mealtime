@@ -812,10 +812,10 @@ abstract class AppLocalizations {
   /// **'You have seen all recipes'**
   String get youHaveSeenAllRecipes;
 
-  /// Instruction to check back later for new recipes
+  /// Empty state instruction for category recipes
   ///
   /// In en, this message translates to:
-  /// **'Check back later for new recipes featuring this ingredient.'**
+  /// **'Check back later for new recipes'**
   String get checkBackLaterForNewRecipes;
 
   /// Loading message when more recipes are being fetched
@@ -949,6 +949,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No ingredients are in peak season right now. Check back later!'**
   String get noIngredientsInPeakSeason;
+
+  /// Generic fallback error message when no specific error is provided
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown error occurred'**
+  String get unknownErrorOccurred;
+
+  /// Categories section title
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories;
+
+  /// All categories filter option
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// Beverages category
+  ///
+  /// In en, this message translates to:
+  /// **'Beverages'**
+  String get beverages;
+
+  /// Snacks category
+  ///
+  /// In en, this message translates to:
+  /// **'Snacks'**
+  String get snacks;
+
+  /// Desserts category
+  ///
+  /// In en, this message translates to:
+  /// **'Desserts'**
+  String get desserts;
+
+  /// All recipes section title
+  ///
+  /// In en, this message translates to:
+  /// **'All Recipes'**
+  String get allRecipes;
+
+  /// Personalized recommendations badge
+  ///
+  /// In en, this message translates to:
+  /// **'Personalized'**
+  String get personalized;
+
+  /// Loading message when fetching more recipes
+  ///
+  /// In en, this message translates to:
+  /// **'Loading more recipes...'**
+  String get loadingMoreRecipesEllipsis;
+
+  /// Error message when recipes fail to load
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load recipes'**
+  String get failedToLoadRecipes;
+
+  /// Status text for personalized recipes
+  ///
+  /// In en, this message translates to:
+  /// **'{count} recipes, sorted by your preferences'**
+  String recipesSortedByPreferences(int count);
+
+  /// Status text for found recipes
+  ///
+  /// In en, this message translates to:
+  /// **'{count} recipes found'**
+  String recipesFound(int count);
+
+  /// Empty state message for category recipes
+  ///
+  /// In en, this message translates to:
+  /// **'No {category} recipes yet'**
+  String noCategoryRecipesYet(String category);
+
+  /// Empty state message when no recipes available
+  ///
+  /// In en, this message translates to:
+  /// **'No recipes available yet'**
+  String get noRecipesAvailableYet;
+
+  /// Empty state instruction for general recipes
+  ///
+  /// In en, this message translates to:
+  /// **'Check back later for delicious recipes'**
+  String get checkBackLaterForDeliciousRecipes;
+
+  /// Error message for recipe loading failure
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading recipes'**
+  String get errorLoadingRecipes;
+
+  /// Loading message for initial recipe load
+  ///
+  /// In en, this message translates to:
+  /// **'Loading recipes...'**
+  String get loadingRecipes;
+
+  /// Message when no recipes match search criteria
+  ///
+  /// In en, this message translates to:
+  /// **'No recipes found'**
+  String get noRecipesFound;
+
+  /// Count of total recipes found
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 recipe} other{{count} recipes}} found'**
+  String recipesFoundCount(int count);
+
+  /// Status showing displayed vs total recipes
+  ///
+  /// In en, this message translates to:
+  /// **'Showing {displayed} of {total, plural, =1{1 recipe} other{{total} recipes}}'**
+  String showingRecipesCount(int displayed, int total);
 }
 
 class _AppLocalizationsDelegate

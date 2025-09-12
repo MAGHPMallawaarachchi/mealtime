@@ -399,8 +399,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get youHaveSeenAllRecipes => 'You have seen all recipes';
 
   @override
-  String get checkBackLaterForNewRecipes =>
-      'Check back later for new recipes featuring this ingredient.';
+  String get checkBackLaterForNewRecipes => 'Check back later for new recipes';
 
   @override
   String get loadingMoreRecipes => 'Loading more recipes...';
@@ -482,4 +481,87 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noIngredientsInPeakSeason =>
       'No ingredients are in peak season right now. Check back later!';
+
+  @override
+  String get unknownErrorOccurred => 'Unknown error occurred';
+
+  @override
+  String get categories => 'Categories';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get beverages => 'Beverages';
+
+  @override
+  String get snacks => 'Snacks';
+
+  @override
+  String get desserts => 'Desserts';
+
+  @override
+  String get allRecipes => 'All Recipes';
+
+  @override
+  String get personalized => 'Personalized';
+
+  @override
+  String get loadingMoreRecipesEllipsis => 'Loading more recipes...';
+
+  @override
+  String get failedToLoadRecipes => 'Failed to load recipes';
+
+  @override
+  String recipesSortedByPreferences(int count) {
+    return '$count recipes, sorted by your preferences';
+  }
+
+  @override
+  String recipesFound(int count) {
+    return '$count recipes found';
+  }
+
+  @override
+  String noCategoryRecipesYet(String category) {
+    return 'No $category recipes yet';
+  }
+
+  @override
+  String get noRecipesAvailableYet => 'No recipes available yet';
+
+  @override
+  String get checkBackLaterForDeliciousRecipes =>
+      'Check back later for delicious recipes';
+
+  @override
+  String get errorLoadingRecipes => 'Error loading recipes';
+
+  @override
+  String get loadingRecipes => 'Loading recipes...';
+
+  @override
+  String get noRecipesFound => 'No recipes found';
+
+  @override
+  String recipesFoundCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count recipes',
+      one: '1 recipe',
+    );
+    return '$_temp0 found';
+  }
+
+  @override
+  String showingRecipesCount(int displayed, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$total recipes',
+      one: '1 recipe',
+    );
+    return 'Showing $displayed of $_temp0';
+  }
 }

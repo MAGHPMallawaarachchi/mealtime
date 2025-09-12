@@ -477,4 +477,75 @@ class AppLocalizationsSi extends AppLocalizations {
   @override
   String get noIngredientsInPeakSeason =>
       'දැන් කිසිදු අමුද්‍රව්‍යයක් පිරිමුළුන් කාලයේ නොමැත. පසුව නැවත පරීක්ෂා කරන්න!';
+
+  @override
+  String get unknownErrorOccurred => 'නොදන්නා දෝෂයක් සිදු වී ඇත';
+
+  @override
+  String get categories => 'වර්ග';
+
+  @override
+  String get all => 'සියල්ල';
+
+  @override
+  String get beverages => 'පාන';
+
+  @override
+  String get snacks => 'කෙටි ආහාර';
+
+  @override
+  String get desserts => 'අමුළු කෑම';
+
+  @override
+  String get allRecipes => 'සියලුම වට්ටෝරු';
+
+  @override
+  String get personalized => 'පුද්ගලීකරණය';
+
+  @override
+  String get loadingMoreRecipesEllipsis => 'තවත් වට්ටෝරු පූරණය වෙමින්...';
+
+  @override
+  String get failedToLoadRecipes => 'වට්ටෝරු පූරණය කිරීම අසාර්ථක විය';
+
+  @override
+  String recipesSortedByPreferences(int count) {
+    return 'වට්ටෝරු $countක්, ඔබේ මනාපයන්ට අනුව සකසන ලද';
+  }
+
+  @override
+  String recipesFound(int count) {
+    return 'වට්ටෝරු $countක් හමු විය';
+  }
+
+  @override
+  String noCategoryRecipesYet(String category) {
+    return '$category වට්ටෝරු තවම නැත';
+  }
+
+  @override
+  String get noRecipesAvailableYet => 'තවම වට්ටෝරු නොමැත';
+
+  @override
+  String get checkBackLaterForDeliciousRecipes =>
+      'රසවත් වට්ටෝරු සඳහා පසුව නැවත පරීක්ෂා කරන්න';
+
+  @override
+  String get errorLoadingRecipes => 'වට්ටෝරු පූරණය කිරීමේ දෝෂය';
+
+  @override
+  String get loadingRecipes => 'වට්ටෝරු පූරණය වෙමින්...';
+
+  @override
+  String get noRecipesFound => 'වට්ටෝරු හමු නොවීය';
+
+  @override
+  String recipesFoundCount(int count) {
+    return 'වට්ටෝරු $countක් හමු විය';
+  }
+
+  @override
+  String showingRecipesCount(int displayed, int total) {
+    return 'වට්ටෝරු $totalන් $displayedක් පෙන්වමින්';
+  }
 }
