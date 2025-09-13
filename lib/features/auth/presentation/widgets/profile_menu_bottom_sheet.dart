@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -6,10 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 class ProfileMenuBottomSheet extends StatelessWidget {
   final VoidCallback onSignOut;
 
-  const ProfileMenuBottomSheet({
-    super.key,
-    required this.onSignOut,
-  });
+  const ProfileMenuBottomSheet({super.key, required this.onSignOut});
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +39,10 @@ class ProfileMenuBottomSheet extends StatelessWidget {
                 _buildMenuItem(
                   context,
                   icon: PhosphorIcons.gear(),
-                  title: 'Settings & Preferences',
-                  subtitle: 'Manage your account settings',
+                  title: AppLocalizations.of(context)!.settingsAndPreferences,
+                  subtitle: AppLocalizations.of(
+                    context,
+                  )!.manageYourAccountSettings,
                   onTap: () {
                     Navigator.of(context).pop();
                     context.push('/settings');
@@ -52,54 +52,24 @@ class ProfileMenuBottomSheet extends StatelessWidget {
                 _buildMenuItem(
                   context,
                   icon: PhosphorIcons.plus(),
-                  title: 'Create New Recipe',
-                  subtitle: 'Share your culinary creation',
+                  title: AppLocalizations.of(context)!.createNewRecipe,
+                  subtitle: AppLocalizations.of(
+                    context,
+                  )!.shareYourCulinaryCreation,
                   onTap: () {
                     Navigator.of(context).pop();
                     context.push('/create-recipe');
                   },
                 ),
-                const SizedBox(height: 4),
-                _buildMenuItem(
-                  context,
-                  icon: PhosphorIcons.shareNetwork(),
-                  title: 'Share Profile',
-                  subtitle: 'Let others discover your recipes',
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Row(
-                          children: [
-                            PhosphorIcon(
-                              PhosphorIcons.info(),
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            const Text('Share profile feature coming soon'),
-                          ],
-                        ),
-                        backgroundColor: AppColors.primary,
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+
                 const SizedBox(height: 16),
-                Container(
-                  height: 1,
-                  color: Colors.grey.withOpacity(0.2),
-                ),
+                Container(height: 1, color: Colors.grey.withOpacity(0.2)),
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
                   icon: PhosphorIcons.signOut(),
-                  title: 'Sign Out',
-                  subtitle: 'Sign out of your account',
+                  title: AppLocalizations.of(context)!.signOut,
+                  subtitle: AppLocalizations.of(context)!.signOutOfYourAccount,
                   onTap: () {
                     Navigator.of(context).pop();
                     onSignOut();
@@ -144,11 +114,7 @@ class ProfileMenuBottomSheet extends StatelessWidget {
                       : AppColors.primary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: PhosphorIcon(
-                  icon,
-                  size: 24,
-                  color: iconColor,
-                ),
+                child: PhosphorIcon(icon, size: 24, color: iconColor),
               ),
               const SizedBox(width: 16),
               Expanded(

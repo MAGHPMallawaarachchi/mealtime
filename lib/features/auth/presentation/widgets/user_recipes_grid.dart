@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -23,7 +24,7 @@ class UserRecipesGrid extends ConsumerWidget {
     }
 
     if (userRecipesState.error != null) {
-      return _buildErrorState(userRecipesState.error!);
+      return _buildErrorState(userRecipesState.error!, context);
     }
 
     if (userRecipesState.recipes.isEmpty) {
@@ -73,7 +74,7 @@ class UserRecipesGrid extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'No Recipes Yet',
+            AppLocalizations.of(context)!.noRecipesYet,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -82,7 +83,7 @@ class UserRecipesGrid extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Create your first recipe to get started',
+            AppLocalizations.of(context)!.createYourFirstRecipe,
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary.withOpacity(0.8),
@@ -93,7 +94,7 @@ class UserRecipesGrid extends ConsumerWidget {
           ElevatedButton.icon(
             onPressed: () => context.push('/create-recipe'),
             icon: PhosphorIcon(PhosphorIcons.plus()),
-            label: const Text('Create Recipe'),
+            label: Text(AppLocalizations.of(context)!.createRecipe),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
@@ -108,7 +109,7 @@ class UserRecipesGrid extends ConsumerWidget {
     );
   }
 
-  Widget _buildErrorState(String error) {
+  Widget _buildErrorState(String error, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Column(
@@ -128,7 +129,7 @@ class UserRecipesGrid extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Error Loading Recipes',
+            AppLocalizations.of(context)!.errorLoadingRecipes,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -159,14 +160,16 @@ class UserRecipesGrid extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         icon: PhosphorIcon(PhosphorIcons.trash(), size: 24, color: Colors.red),
-        title: const Text('Delete Recipe'),
+        title: Text(AppLocalizations.of(context)!.deleteRecipe),
         content: Text(
-          'Are you sure you want to delete "$recipeTitle"? This action cannot be undone.',
+          AppLocalizations.of(
+            context,
+          )!.areYouSureWantToDeleteRecipe(recipeTitle),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -183,7 +186,9 @@ class UserRecipesGrid extends ConsumerWidget {
                         size: 20,
                       ),
                       const SizedBox(width: 8),
-                      const Text('Recipe deleted successfully'),
+                      Text(
+                        AppLocalizations.of(context)!.recipeDeletedSuccessfully,
+                      ),
                     ],
                   ),
                   backgroundColor: Colors.green,
@@ -198,7 +203,7 @@ class UserRecipesGrid extends ConsumerWidget {
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
             ),
-            child: const Text('Delete'),
+            child: Text(AppLocalizations.of(context)!.delete),
           ),
         ],
       ),

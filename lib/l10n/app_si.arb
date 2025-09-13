@@ -1928,6 +1928,463 @@
   "tryAddingSuggestion": "මේ එක් කිරීමට උත්සාහ කරන්න: බත්, ළූණු, සුදුළූණු",
   "@tryAddingSuggestion": {
     "description": "Suggestion for ingredients to add"
+  },
+
+  "user": "පරිශීලකයා",
+  "@user": {
+    "description": "Default user name"
+  },
+
+  "signOut": "ඉවත් වන්න",
+  "@signOut": {
+    "description": "Sign out action text"
+  },
+
+  "areYouSureWantToSignOut": "ඔබට ඉවත් වීමට අවශ්‍ය බව ඇත්තද?",
+  "@areYouSureWantToSignOut": {
+    "description": "Sign out confirmation message"
+  },
+
+  "errorSigningOut": "ඉවත් වීමේ දෝෂයකි: {error}",
+  "@errorSigningOut": {
+    "description": "Error message when sign out fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+
+  "updateProfilePicture": "පැතිකඩ පින්තූරය යාවත්කාලීන කරන්න",
+  "@updateProfilePicture": {
+    "description": "Update profile picture dialog title"
+  },
+
+  "chooseWhereToGetPhoto": "ඔබේ පැතිකඩ පින්තූරය ලබා ගන්නා තැන තෝරන්න:",
+  "@chooseWhereToGetPhoto": {
+    "description": "Profile picture source selection description"
+  },
+
+  "camera": "කැමරාව",
+  "@camera": {
+    "description": "Camera option for profile picture"
+  },
+
+  "gallery": "ගැලරිය",
+  "@gallery": {
+    "description": "Gallery option for profile picture"
+  },
+
+  "profilePictureUpdatedSuccessfully": "පැතිකඩ පින්තූරය සාර්ථකව යාවත්කාලීන කරන ලදී",
+  "@profilePictureUpdatedSuccessfully": {
+    "description": "Success message when profile picture is updated"
+  },
+
+  "failedToUpdateProfilePicture": "පැතිකඩ පින්තූරය යාවත්කාලීන කිරීම අසාර්ථක විය: {error}",
+  "@failedToUpdateProfilePicture": {
+    "description": "Error message when profile picture update fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+
+  "favorites": "ප්‍රියතම",
+  "@favorites": {
+    "description": "Favorites tab label"
+  },
+
+  "myRecipes": "මගේ වට්ටෝරු",
+  "@myRecipes": {
+    "description": "My recipes tab label"
+  },
+
+  "noFavoriteRecipes": "ප්‍රියතම වට්ටෝරු නැත",
+  "@noFavoriteRecipes": {
+    "description": "Empty state title for favorites"
+  },
+
+  "startFavoritingRecipes": "වට්ටෝරු ප්‍රියතමයන්ට එක් කිරීම ආරම්භ කරන්න ඒවා මෙහි දැකීමට",
+  "@startFavoritingRecipes": {
+    "description": "Empty state description for favorites"
+  },
+
+  "errorLoadingFavorites": "ප්‍රියතම පූරණය කිරීමේ දෝෂයකි",
+  "@errorLoadingFavorites": {
+    "description": "Error state title for favorites"
+  },
+
+  "noRecipesYet": "තවම වට්ටෝරු නැත",
+  "@noRecipesYet": {
+    "description": "Empty state title for user recipes"
+  },
+
+  "createYourFirstRecipe": "ආරම්භ කිරීම සඳහා ඔබගේ පළමු වට්ටෝරුව නිර්මාණය කරන්න",
+  "@createYourFirstRecipe": {
+    "description": "Empty state description for user recipes"
+  },
+
+  "createRecipe": "වට්ටෝරුව නිර්මාණය කරන්න",
+  "@createRecipe": {
+    "description": "Create recipe button text"
+  },
+
+  "errorLoadingRecipes": "වට්ටෝරු පූරණය කිරීමේ දෝෂයකි",
+  "@errorLoadingRecipes": {
+    "description": "Error state title for user recipes"
+  },
+
+  "deleteRecipe": "වට්ටෝරුව මකන්න",
+  "@deleteRecipe": {
+    "description": "Delete recipe dialog title"
+  },
+
+  "areYouSureWantToDeleteRecipe": "ඔබට \"{recipeTitle}\" මකා දැමීමට අවශ්‍ය බව ඇත්තද? මෙම ක්‍රියාව ආපසු හැරවිය නොහැකිය.",
+  "@areYouSureWantToDeleteRecipe": {
+    "description": "Delete recipe confirmation message",
+    "placeholders": {
+      "recipeTitle": {
+        "type": "String",
+        "description": "Title of the recipe to delete"
+      }
+    }
+  },
+
+  "recipeDeletedSuccessfully": "වට්ටෝරුව සාර්ථකව මකා ඇත",
+  "@recipeDeletedSuccessfully": {
+    "description": "Success message when recipe is deleted"
+  },
+
+  "settingsAndPreferences": "සැකසුම් සහ මනාපයන්",
+  "@settingsAndPreferences": {
+    "description": "Settings menu item title"
+  },
+
+  "manageYourAccountSettings": "ඔබගේ ගිණුම් සැකසුම් කළමනාකරණය කරන්න",
+  "@manageYourAccountSettings": {
+    "description": "Settings menu item subtitle"
+  },
+
+  "createNewRecipe": "නව වට්ටෝරුවක් නිර්මාණය කරන්න",
+  "@createNewRecipe": {
+    "description": "Create recipe menu item title"
+  },
+
+  "shareYourCulinaryCreation": "ඔබගේ ආහාර නිර්මාණය බෙදා ගන්න",
+  "@shareYourCulinaryCreation": {
+    "description": "Create recipe menu item subtitle"
+  },
+
+  "shareProfile": "පැතිකඩ බෙදා ගන්න",
+  "@shareProfile": {
+    "description": "Share profile menu item title"
+  },
+
+  "letOthersDiscoverYourRecipes": "අන් අයට ඔබේ වට්ටෝරු සොයා ගැනීමට ඉඩ දෙන්න",
+  "@letOthersDiscoverYourRecipes": {
+    "description": "Share profile menu item subtitle"
+  },
+
+  "shareProfileFeatureComingSoon": "පැතිකඩ බෙදා ගැනීමේ විශේෂාංගය ඉක්මනින් පැමිණේ",
+  "@shareProfileFeatureComingSoon": {
+    "description": "Share profile coming soon message"
+  },
+
+  "signOutOfYourAccount": "ඔබගේ ගිණුමෙන් ඉවත් වන්න",
+  "@signOutOfYourAccount": {
+    "description": "Sign out menu item subtitle"
+  },
+
+  "createRecipeTitle": "වට්ටෝරුව නිර්මාණය කරන්න",
+  "@createRecipeTitle": {
+    "description": "Create recipe screen title"
+  },
+
+  "recipeCreatedSuccessfully": "වට්ටෝරුව සාර්ථකව නිර්මාණය කරන ලදී!",
+  "@recipeCreatedSuccessfully": {
+    "description": "Success message when recipe is created"
+  },
+
+  "errorPrefix": "දෝෂය: {error}",
+  "@errorPrefix": {
+    "description": "Error message prefix",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+
+  "basicInformation": "මූලික තොරතුරු",
+  "@basicInformation": {
+    "description": "Basic information section title"
+  },
+
+  "recipeTitle": "වට්ටෝරු මාතෘකාව *",
+  "@recipeTitle": {
+    "description": "Recipe title field label"
+  },
+
+  "pleaseEnterRecipeTitle": "කරුණාකර වට්ටෝරු මාතෘකාවක් ඇතුළත් කරන්න",
+  "@pleaseEnterRecipeTitle": {
+    "description": "Validation message for recipe title"
+  },
+
+  "description": "විස්තරය",
+  "@description": {
+    "description": "Description field label"
+  },
+
+  "time": "කාලය *",
+  "@time": {
+    "description": "Time field label"
+  },
+
+  "timeHintText": "උ.දා., මිනිත්තු 15",
+  "@timeHintText": {
+    "description": "Time field hint text"
+  },
+
+  "required": "අවශ්‍යයි",
+  "@required": {
+    "description": "Required field validation message"
+  },
+
+  "servingsRequired": "සේවා කිරීම් *",
+  "@servingsRequired": {
+    "description": "Servings field label with required indicator"
+  },
+
+  "mustBePositiveNumber": "ධනාත්මක අංකයක් විය යුතුයි",
+  "@mustBePositiveNumber": {
+    "description": "Validation message for positive numbers"
+  },
+
+  "nutritionInformationOptional": "පෝෂණ තොරතුරු (විකල්ප)",
+  "@nutritionInformationOptional": {
+    "description": "Nutrition section title"
+  },
+
+  "addNutritionInfoPerServing": "එක් සේවාවකට පෝෂණ තොරතුරු එක් කරන්න",
+  "@addNutritionInfoPerServing": {
+    "description": "Nutrition section subtitle"
+  },
+
+  "kcalSuffix": "කිලෝකැලරි",
+  "@kcalSuffix": {
+    "description": "Kilocalories unit suffix"
+  },
+
+  "gramSuffix": "ග්‍රැම්",
+  "@gramSuffix": {
+    "description": "Grams unit suffix"
+  },
+
+  "fats": "මේදය",
+  "@fats": {
+    "description": "Fats nutrition label"
+  },
+
+  "recipePhoto": "වට්ටෝරු ඡායාරූපය",
+  "@recipePhoto": {
+    "description": "Recipe photo section title"
+  },
+
+  "addPhotoMakeRecipeAppealing": "ඔබේ වට්ටෝරුව වඩාත් ආකර්ෂණීය කිරීමට ඡායාරූපයක් එක් කරන්න",
+  "@addPhotoMakeRecipeAppealing": {
+    "description": "Recipe photo section subtitle"
+  },
+
+  "changePhoto": "ඡායාරූපය වෙනස් කරන්න",
+  "@changePhoto": {
+    "description": "Change photo button text"
+  },
+
+  "tapToAddPhoto": "ඡායාරූපයක් එක් කිරීමට ක්ලික් කරන්න",
+  "@tapToAddPhoto": {
+    "description": "Photo upload area text"
+  },
+
+  "chooseCameraOrGallery": "කැමරාව හෝ ගැලරිය තෝරන්න",
+  "@chooseCameraOrGallery": {
+    "description": "Photo upload area subtitle"
+  },
+
+  "quantityShort": "ප්‍රමා",
+  "@quantityShort": {
+    "description": "Short form of quantity"
+  },
+
+  "selectUnit": "තෝරන්න",
+  "@selectUnit": {
+    "description": "Unit dropdown placeholder"
+  },
+
+  "ingredientField": "අමුද්‍රව්‍ය",
+  "@ingredientField": {
+    "description": "Ingredient field label"
+  },
+
+  "stepNumber": "පියවර {number}",
+  "@stepNumber": {
+    "description": "Step number label",
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "description": "The step number"
+      }
+    }
+  },
+
+  "pleaseEnterInstructionForStep": "කරුණාකර පියවර {number} සඳහා උපදෙස් ඇතුළත් කරන්න",
+  "@pleaseEnterInstructionForStep": {
+    "description": "Validation message for instruction step",
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "description": "The step number"
+      }
+    }
+  },
+
+  "tagsOptional": "ටැග් (විකල්ප)",
+  "@tagsOptional": {
+    "description": "Tags section title"
+  },
+
+  "addTagsToCategorizeRecipe": "ඔබේ වට්ටෝරුව වර්ගීකරණය කිරීමට උපකාරී වන ටැග් එක් කරන්න",
+  "@addTagsToCategorizeRecipe": {
+    "description": "Tags section subtitle"
+  },
+
+  "addTag": "ටැගය එක් කරන්න",
+  "@addTag": {
+    "description": "Add tag button text"
+  },
+
+  "saveRecipe": "වට්ටෝරුව සුරකින්න",
+  "@saveRecipe": {
+    "description": "Save recipe button text"
+  },
+
+  "selectImageSource": "රූප මූලාශ්‍රය තෝරන්න",
+  "@selectImageSource": {
+    "description": "Image source dialog title"
+  },
+
+  "chooseWhereToGetRecipePhoto": "ඔබේ වට්ටෝරු ඡායාරූපය ලබා ගන්නා තැන තෝරන්න:",
+  "@chooseWhereToGetRecipePhoto": {
+    "description": "Image source dialog description"
+  },
+
+  "addTagDialog": "ටැගය එක් කරන්න",
+  "@addTagDialog": {
+    "description": "Add tag dialog title"
+  },
+
+  "tagName": "ටැග් නාමය",
+  "@tagName": {
+    "description": "Tag name input label"
+  },
+
+  "tagNameHint": "උ.දා., නිර්මාංශිත, කුළුබඩු, ඉක්මන්",
+  "@tagNameHint": {
+    "description": "Tag name input hint"
+  },
+
+  "userNotAuthenticated": "පරිශීලකයා සත්‍යාපිත නොවේ",
+  "@userNotAuthenticated": {
+    "description": "Error message when user is not authenticated"
+  },
+
+  "failedToPickImage": "රූපය තේරීම අසාර්ථක විය: {error}",
+  "@failedToPickImage": {
+    "description": "Error message when image picking fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+
+  "cupsUnit": "කෝප්ප",
+  "@cupsUnit": {
+    "description": "Cups unit display text"
+  },
+
+  "tspUnit": "තේ හැන්ද",
+  "@tspUnit": {
+    "description": "Teaspoons unit display text"
+  },
+
+  "tbspUnit": "මේස හැන්ද",
+  "@tbspUnit": {
+    "description": "Tablespoons unit display text"
+  },
+
+  "mlUnit": "මිලී ලීටර්",
+  "@mlUnit": {
+    "description": "Milliliters unit display text"
+  },
+
+  "lUnit": "ලීටර්",
+  "@lUnit": {
+    "description": "Liters unit display text"
+  },
+
+  "gUnit": "ග්‍රැම්",
+  "@gUnit": {
+    "description": "Grams unit display text"
+  },
+
+  "kgUnit": "කිලෝ ග්‍රැම්",
+  "@kgUnit": {
+    "description": "Kilograms unit display text"
+  },
+
+  "ozUnit": "අවුන්ස්",
+  "@ozUnit": {
+    "description": "Ounces unit display text"
+  },
+
+  "lbsUnit": "පවුම්",
+  "@lbsUnit": {
+    "description": "Pounds unit display text"
+  },
+
+  "cmUnit": "සෙන්ටිමීටර්",
+  "@cmUnit": {
+    "description": "Centimeters unit display text"
+  },
+
+  "pcsUnit": "කොටස්",
+  "@pcsUnit": {
+    "description": "Pieces unit display text"
+  },
+
+  "wholeUnit": "සම්පූර්ණ",
+  "@wholeUnit": {
+    "description": "Whole unit display text"
+  },
+
+  "pinchUnit": "චිට්ටයක්",
+  "@pinchUnit": {
+    "description": "Pinch unit display text"
+  },
+
+  "dashUnit": "ටිකක්",
+  "@dashUnit": {
+    "description": "Dash unit display text"
+  },
+
+  "toTasteUnit": "රස අනුව",
+  "@toTasteUnit": {
+    "description": "To taste unit display text"
   }
 
 }

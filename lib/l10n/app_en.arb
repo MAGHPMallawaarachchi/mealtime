@@ -1928,6 +1928,463 @@
   "tryAddingSuggestion": "Try adding: Rice, Onions, Garlic",
   "@tryAddingSuggestion": {
     "description": "Suggestion for ingredients to add"
+  },
+
+  "user": "User",
+  "@user": {
+    "description": "Default user name"
+  },
+
+  "signOut": "Sign Out",
+  "@signOut": {
+    "description": "Sign out action text"
+  },
+
+  "areYouSureWantToSignOut": "Are you sure you want to sign out?",
+  "@areYouSureWantToSignOut": {
+    "description": "Sign out confirmation message"
+  },
+
+  "errorSigningOut": "Error signing out: {error}",
+  "@errorSigningOut": {
+    "description": "Error message when sign out fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+
+  "updateProfilePicture": "Update Profile Picture",
+  "@updateProfilePicture": {
+    "description": "Update profile picture dialog title"
+  },
+
+  "chooseWhereToGetPhoto": "Choose where to get your profile photo from:",
+  "@chooseWhereToGetPhoto": {
+    "description": "Profile picture source selection description"
+  },
+
+  "camera": "Camera",
+  "@camera": {
+    "description": "Camera option for profile picture"
+  },
+
+  "gallery": "Gallery",
+  "@gallery": {
+    "description": "Gallery option for profile picture"
+  },
+
+  "profilePictureUpdatedSuccessfully": "Profile picture updated successfully",
+  "@profilePictureUpdatedSuccessfully": {
+    "description": "Success message when profile picture is updated"
+  },
+
+  "failedToUpdateProfilePicture": "Failed to update profile picture: {error}",
+  "@failedToUpdateProfilePicture": {
+    "description": "Error message when profile picture update fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+
+  "favorites": "Favorites",
+  "@favorites": {
+    "description": "Favorites tab label"
+  },
+
+  "myRecipes": "My Recipes",
+  "@myRecipes": {
+    "description": "My recipes tab label"
+  },
+
+  "noFavoriteRecipes": "No Favorite Recipes",
+  "@noFavoriteRecipes": {
+    "description": "Empty state title for favorites"
+  },
+
+  "startFavoritingRecipes": "Start favoriting recipes to see them here",
+  "@startFavoritingRecipes": {
+    "description": "Empty state description for favorites"
+  },
+
+  "errorLoadingFavorites": "Error Loading Favorites",
+  "@errorLoadingFavorites": {
+    "description": "Error state title for favorites"
+  },
+
+  "noRecipesYet": "No Recipes Yet",
+  "@noRecipesYet": {
+    "description": "Empty state title for user recipes"
+  },
+
+  "createYourFirstRecipe": "Create your first recipe to get started",
+  "@createYourFirstRecipe": {
+    "description": "Empty state description for user recipes"
+  },
+
+  "createRecipe": "Create Recipe",
+  "@createRecipe": {
+    "description": "Create recipe button text"
+  },
+
+  "errorLoadingRecipes": "Error Loading Recipes",
+  "@errorLoadingRecipes": {
+    "description": "Error state title for user recipes"
+  },
+
+  "deleteRecipe": "Delete Recipe",
+  "@deleteRecipe": {
+    "description": "Delete recipe dialog title"
+  },
+
+  "areYouSureWantToDeleteRecipe": "Are you sure you want to delete \"{recipeTitle}\"? This action cannot be undone.",
+  "@areYouSureWantToDeleteRecipe": {
+    "description": "Delete recipe confirmation message",
+    "placeholders": {
+      "recipeTitle": {
+        "type": "String",
+        "description": "Title of the recipe to delete"
+      }
+    }
+  },
+
+  "recipeDeletedSuccessfully": "Recipe deleted successfully",
+  "@recipeDeletedSuccessfully": {
+    "description": "Success message when recipe is deleted"
+  },
+
+  "settingsAndPreferences": "Settings & Preferences",
+  "@settingsAndPreferences": {
+    "description": "Settings menu item title"
+  },
+
+  "manageYourAccountSettings": "Manage your account settings",
+  "@manageYourAccountSettings": {
+    "description": "Settings menu item subtitle"
+  },
+
+  "createNewRecipe": "Create New Recipe",
+  "@createNewRecipe": {
+    "description": "Create recipe menu item title"
+  },
+
+  "shareYourCulinaryCreation": "Share your culinary creation",
+  "@shareYourCulinaryCreation": {
+    "description": "Create recipe menu item subtitle"
+  },
+
+  "shareProfile": "Share Profile",
+  "@shareProfile": {
+    "description": "Share profile menu item title"
+  },
+
+  "letOthersDiscoverYourRecipes": "Let others discover your recipes",
+  "@letOthersDiscoverYourRecipes": {
+    "description": "Share profile menu item subtitle"
+  },
+
+  "shareProfileFeatureComingSoon": "Share profile feature coming soon",
+  "@shareProfileFeatureComingSoon": {
+    "description": "Share profile coming soon message"
+  },
+
+  "signOutOfYourAccount": "Sign out of your account",
+  "@signOutOfYourAccount": {
+    "description": "Sign out menu item subtitle"
+  },
+
+  "createRecipeTitle": "Create Recipe",
+  "@createRecipeTitle": {
+    "description": "Create recipe screen title"
+  },
+
+  "recipeCreatedSuccessfully": "Recipe created successfully!",
+  "@recipeCreatedSuccessfully": {
+    "description": "Success message when recipe is created"
+  },
+
+  "errorPrefix": "Error: {error}",
+  "@errorPrefix": {
+    "description": "Error message prefix",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+
+  "basicInformation": "Basic Information",
+  "@basicInformation": {
+    "description": "Basic information section title"
+  },
+
+  "recipeTitle": "Recipe Title *",
+  "@recipeTitle": {
+    "description": "Recipe title field label"
+  },
+
+  "pleaseEnterRecipeTitle": "Please enter a recipe title",
+  "@pleaseEnterRecipeTitle": {
+    "description": "Validation message for recipe title"
+  },
+
+  "description": "Description",
+  "@description": {
+    "description": "Description field label"
+  },
+
+  "time": "Time *",
+  "@time": {
+    "description": "Time field label"
+  },
+
+  "timeHintText": "e.g., 15 min",
+  "@timeHintText": {
+    "description": "Time field hint text"
+  },
+
+  "required": "Required",
+  "@required": {
+    "description": "Required field validation message"
+  },
+
+  "servingsRequired": "Servings *",
+  "@servingsRequired": {
+    "description": "Servings field label with required indicator"
+  },
+
+  "mustBePositiveNumber": "Must be a positive number",
+  "@mustBePositiveNumber": {
+    "description": "Validation message for positive numbers"
+  },
+
+  "nutritionInformationOptional": "Nutrition Information (Optional)",
+  "@nutritionInformationOptional": {
+    "description": "Nutrition section title"
+  },
+
+  "addNutritionInfoPerServing": "Add nutrition information per serving",
+  "@addNutritionInfoPerServing": {
+    "description": "Nutrition section subtitle"
+  },
+
+  "kcalSuffix": "kcal",
+  "@kcalSuffix": {
+    "description": "Kilocalories unit suffix"
+  },
+
+  "gramSuffix": "g",
+  "@gramSuffix": {
+    "description": "Grams unit suffix"
+  },
+
+  "fats": "Fats",
+  "@fats": {
+    "description": "Fats nutrition label"
+  },
+
+  "recipePhoto": "Recipe Photo",
+  "@recipePhoto": {
+    "description": "Recipe photo section title"
+  },
+
+  "addPhotoMakeRecipeAppealing": "Add a photo to make your recipe more appealing",
+  "@addPhotoMakeRecipeAppealing": {
+    "description": "Recipe photo section subtitle"
+  },
+
+  "changePhoto": "Change Photo",
+  "@changePhoto": {
+    "description": "Change photo button text"
+  },
+
+  "tapToAddPhoto": "Tap to add a photo",
+  "@tapToAddPhoto": {
+    "description": "Photo upload area text"
+  },
+
+  "chooseCameraOrGallery": "Choose from camera or gallery",
+  "@chooseCameraOrGallery": {
+    "description": "Photo upload area subtitle"
+  },
+
+  "quantityShort": "Qty",
+  "@quantityShort": {
+    "description": "Short form of quantity"
+  },
+
+  "selectUnit": "Select",
+  "@selectUnit": {
+    "description": "Unit dropdown placeholder"
+  },
+
+  "ingredientField": "Ingredient",
+  "@ingredientField": {
+    "description": "Ingredient field label"
+  },
+
+  "stepNumber": "Step {number}",
+  "@stepNumber": {
+    "description": "Step number label",
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "description": "The step number"
+      }
+    }
+  },
+
+  "pleaseEnterInstructionForStep": "Please enter instruction for step {number}",
+  "@pleaseEnterInstructionForStep": {
+    "description": "Validation message for instruction step",
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "description": "The step number"
+      }
+    }
+  },
+
+  "tagsOptional": "Tags (Optional)",
+  "@tagsOptional": {
+    "description": "Tags section title"
+  },
+
+  "addTagsToCategorizeRecipe": "Add tags to help categorize your recipe",
+  "@addTagsToCategorizeRecipe": {
+    "description": "Tags section subtitle"
+  },
+
+  "addTag": "Add Tag",
+  "@addTag": {
+    "description": "Add tag button text"
+  },
+
+  "saveRecipe": "Save Recipe",
+  "@saveRecipe": {
+    "description": "Save recipe button text"
+  },
+
+  "selectImageSource": "Select Image Source",
+  "@selectImageSource": {
+    "description": "Image source dialog title"
+  },
+
+  "chooseWhereToGetRecipePhoto": "Choose where to get your recipe photo from:",
+  "@chooseWhereToGetRecipePhoto": {
+    "description": "Image source dialog description"
+  },
+
+  "addTagDialog": "Add Tag",
+  "@addTagDialog": {
+    "description": "Add tag dialog title"
+  },
+
+  "tagName": "Tag name",
+  "@tagName": {
+    "description": "Tag name input label"
+  },
+
+  "tagNameHint": "e.g., vegetarian, spicy, quick",
+  "@tagNameHint": {
+    "description": "Tag name input hint"
+  },
+
+  "userNotAuthenticated": "User not authenticated",
+  "@userNotAuthenticated": {
+    "description": "Error message when user is not authenticated"
+  },
+
+  "failedToPickImage": "Failed to pick image: {error}",
+  "@failedToPickImage": {
+    "description": "Error message when image picking fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+
+  "cupsUnit": "cups",
+  "@cupsUnit": {
+    "description": "Cups unit display text"
+  },
+
+  "tspUnit": "tsp",
+  "@tspUnit": {
+    "description": "Teaspoons unit display text"
+  },
+
+  "tbspUnit": "tbsp",
+  "@tbspUnit": {
+    "description": "Tablespoons unit display text"
+  },
+
+  "mlUnit": "ml",
+  "@mlUnit": {
+    "description": "Milliliters unit display text"
+  },
+
+  "lUnit": "L",
+  "@lUnit": {
+    "description": "Liters unit display text"
+  },
+
+  "gUnit": "g",
+  "@gUnit": {
+    "description": "Grams unit display text"
+  },
+
+  "kgUnit": "kg",
+  "@kgUnit": {
+    "description": "Kilograms unit display text"
+  },
+
+  "ozUnit": "oz",
+  "@ozUnit": {
+    "description": "Ounces unit display text"
+  },
+
+  "lbsUnit": "lbs",
+  "@lbsUnit": {
+    "description": "Pounds unit display text"
+  },
+
+  "cmUnit": "cm",
+  "@cmUnit": {
+    "description": "Centimeters unit display text"
+  },
+
+  "pcsUnit": "pcs",
+  "@pcsUnit": {
+    "description": "Pieces unit display text"
+  },
+
+  "wholeUnit": "whole",
+  "@wholeUnit": {
+    "description": "Whole unit display text"
+  },
+
+  "pinchUnit": "pinch",
+  "@pinchUnit": {
+    "description": "Pinch unit display text"
+  },
+
+  "dashUnit": "dash",
+  "@dashUnit": {
+    "description": "Dash unit display text"
+  },
+
+  "toTasteUnit": "to taste",
+  "@toTasteUnit": {
+    "description": "To taste unit display text"
   }
 
 }

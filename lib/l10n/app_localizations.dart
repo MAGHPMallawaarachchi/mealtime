@@ -1070,10 +1070,10 @@ abstract class AppLocalizations {
   /// **'Check back later for delicious recipes'**
   String get checkBackLaterForDeliciousRecipes;
 
-  /// Error message for recipe loading failure
+  /// Error state title for user recipes
   ///
   /// In en, this message translates to:
-  /// **'Error loading recipes'**
+  /// **'Error Loading Recipes'**
   String get errorLoadingRecipes;
 
   /// Loading message for initial recipe load
@@ -2089,6 +2089,498 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try adding: Rice, Onions, Garlic'**
   String get tryAddingSuggestion;
+
+  /// Default user name
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get user;
+
+  /// Sign out action text
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get signOut;
+
+  /// Sign out confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to sign out?'**
+  String get areYouSureWantToSignOut;
+
+  /// Error message when sign out fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error signing out: {error}'**
+  String errorSigningOut(String error);
+
+  /// Update profile picture dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Update Profile Picture'**
+  String get updateProfilePicture;
+
+  /// Profile picture source selection description
+  ///
+  /// In en, this message translates to:
+  /// **'Choose where to get your profile photo from:'**
+  String get chooseWhereToGetPhoto;
+
+  /// Camera option for profile picture
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get camera;
+
+  /// Gallery option for profile picture
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get gallery;
+
+  /// Success message when profile picture is updated
+  ///
+  /// In en, this message translates to:
+  /// **'Profile picture updated successfully'**
+  String get profilePictureUpdatedSuccessfully;
+
+  /// Error message when profile picture update fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update profile picture: {error}'**
+  String failedToUpdateProfilePicture(String error);
+
+  /// Favorites tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get favorites;
+
+  /// My recipes tab label
+  ///
+  /// In en, this message translates to:
+  /// **'My Recipes'**
+  String get myRecipes;
+
+  /// Empty state title for favorites
+  ///
+  /// In en, this message translates to:
+  /// **'No Favorite Recipes'**
+  String get noFavoriteRecipes;
+
+  /// Empty state description for favorites
+  ///
+  /// In en, this message translates to:
+  /// **'Start favoriting recipes to see them here'**
+  String get startFavoritingRecipes;
+
+  /// Error state title for favorites
+  ///
+  /// In en, this message translates to:
+  /// **'Error Loading Favorites'**
+  String get errorLoadingFavorites;
+
+  /// Empty state title for user recipes
+  ///
+  /// In en, this message translates to:
+  /// **'No Recipes Yet'**
+  String get noRecipesYet;
+
+  /// Empty state description for user recipes
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first recipe to get started'**
+  String get createYourFirstRecipe;
+
+  /// Create recipe button text
+  ///
+  /// In en, this message translates to:
+  /// **'Create Recipe'**
+  String get createRecipe;
+
+  /// Delete recipe dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Recipe'**
+  String get deleteRecipe;
+
+  /// Delete recipe confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{recipeTitle}\"? This action cannot be undone.'**
+  String areYouSureWantToDeleteRecipe(String recipeTitle);
+
+  /// Success message when recipe is deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe deleted successfully'**
+  String get recipeDeletedSuccessfully;
+
+  /// Settings menu item title
+  ///
+  /// In en, this message translates to:
+  /// **'Settings & Preferences'**
+  String get settingsAndPreferences;
+
+  /// Settings menu item subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your account settings'**
+  String get manageYourAccountSettings;
+
+  /// Create recipe menu item title
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Recipe'**
+  String get createNewRecipe;
+
+  /// Create recipe menu item subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Share your culinary creation'**
+  String get shareYourCulinaryCreation;
+
+  /// Share profile menu item title
+  ///
+  /// In en, this message translates to:
+  /// **'Share Profile'**
+  String get shareProfile;
+
+  /// Share profile menu item subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Let others discover your recipes'**
+  String get letOthersDiscoverYourRecipes;
+
+  /// Share profile coming soon message
+  ///
+  /// In en, this message translates to:
+  /// **'Share profile feature coming soon'**
+  String get shareProfileFeatureComingSoon;
+
+  /// Sign out menu item subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out of your account'**
+  String get signOutOfYourAccount;
+
+  /// Create recipe screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Create Recipe'**
+  String get createRecipeTitle;
+
+  /// Success message when recipe is created
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe created successfully!'**
+  String get recipeCreatedSuccessfully;
+
+  /// Error message prefix
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String errorPrefix(String error);
+
+  /// Basic information section title
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Information'**
+  String get basicInformation;
+
+  /// Recipe title field label
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe Title *'**
+  String get recipeTitle;
+
+  /// Validation message for recipe title
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a recipe title'**
+  String get pleaseEnterRecipeTitle;
+
+  /// Description field label
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// Time field label
+  ///
+  /// In en, this message translates to:
+  /// **'Time *'**
+  String get time;
+
+  /// Time field hint text
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., 15 min'**
+  String get timeHintText;
+
+  /// Required field validation message
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get required;
+
+  /// Servings field label with required indicator
+  ///
+  /// In en, this message translates to:
+  /// **'Servings *'**
+  String get servingsRequired;
+
+  /// Validation message for positive numbers
+  ///
+  /// In en, this message translates to:
+  /// **'Must be a positive number'**
+  String get mustBePositiveNumber;
+
+  /// Nutrition section title
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition Information (Optional)'**
+  String get nutritionInformationOptional;
+
+  /// Nutrition section subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Add nutrition information per serving'**
+  String get addNutritionInfoPerServing;
+
+  /// Kilocalories unit suffix
+  ///
+  /// In en, this message translates to:
+  /// **'kcal'**
+  String get kcalSuffix;
+
+  /// Grams unit suffix
+  ///
+  /// In en, this message translates to:
+  /// **'g'**
+  String get gramSuffix;
+
+  /// Fats nutrition label
+  ///
+  /// In en, this message translates to:
+  /// **'Fats'**
+  String get fats;
+
+  /// Recipe photo section title
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe Photo'**
+  String get recipePhoto;
+
+  /// Recipe photo section subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo to make your recipe more appealing'**
+  String get addPhotoMakeRecipeAppealing;
+
+  /// Change photo button text
+  ///
+  /// In en, this message translates to:
+  /// **'Change Photo'**
+  String get changePhoto;
+
+  /// Photo upload area text
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to add a photo'**
+  String get tapToAddPhoto;
+
+  /// Photo upload area subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from camera or gallery'**
+  String get chooseCameraOrGallery;
+
+  /// Short form of quantity
+  ///
+  /// In en, this message translates to:
+  /// **'Qty'**
+  String get quantityShort;
+
+  /// Unit dropdown placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get selectUnit;
+
+  /// Ingredient field label
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredient'**
+  String get ingredientField;
+
+  /// Step number label
+  ///
+  /// In en, this message translates to:
+  /// **'Step {number}'**
+  String stepNumber(int number);
+
+  /// Validation message for instruction step
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter instruction for step {number}'**
+  String pleaseEnterInstructionForStep(int number);
+
+  /// Tags section title
+  ///
+  /// In en, this message translates to:
+  /// **'Tags (Optional)'**
+  String get tagsOptional;
+
+  /// Tags section subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Add tags to help categorize your recipe'**
+  String get addTagsToCategorizeRecipe;
+
+  /// Add tag button text
+  ///
+  /// In en, this message translates to:
+  /// **'Add Tag'**
+  String get addTag;
+
+  /// Save recipe button text
+  ///
+  /// In en, this message translates to:
+  /// **'Save Recipe'**
+  String get saveRecipe;
+
+  /// Image source dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Select Image Source'**
+  String get selectImageSource;
+
+  /// Image source dialog description
+  ///
+  /// In en, this message translates to:
+  /// **'Choose where to get your recipe photo from:'**
+  String get chooseWhereToGetRecipePhoto;
+
+  /// Add tag dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Add Tag'**
+  String get addTagDialog;
+
+  /// Tag name input label
+  ///
+  /// In en, this message translates to:
+  /// **'Tag name'**
+  String get tagName;
+
+  /// Tag name input hint
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., vegetarian, spicy, quick'**
+  String get tagNameHint;
+
+  /// Error message when user is not authenticated
+  ///
+  /// In en, this message translates to:
+  /// **'User not authenticated'**
+  String get userNotAuthenticated;
+
+  /// Error message when image picking fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to pick image: {error}'**
+  String failedToPickImage(String error);
+
+  /// Cups unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'cups'**
+  String get cupsUnit;
+
+  /// Teaspoons unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'tsp'**
+  String get tspUnit;
+
+  /// Tablespoons unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'tbsp'**
+  String get tbspUnit;
+
+  /// Milliliters unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'ml'**
+  String get mlUnit;
+
+  /// Liters unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'L'**
+  String get lUnit;
+
+  /// Grams unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'g'**
+  String get gUnit;
+
+  /// Kilograms unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'kg'**
+  String get kgUnit;
+
+  /// Ounces unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'oz'**
+  String get ozUnit;
+
+  /// Pounds unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'lbs'**
+  String get lbsUnit;
+
+  /// Centimeters unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'cm'**
+  String get cmUnit;
+
+  /// Pieces unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'pcs'**
+  String get pcsUnit;
+
+  /// Whole unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'whole'**
+  String get wholeUnit;
+
+  /// Pinch unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'pinch'**
+  String get pinchUnit;
+
+  /// Dash unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'dash'**
+  String get dashUnit;
+
+  /// To taste unit display text
+  ///
+  /// In en, this message translates to:
+  /// **'to taste'**
+  String get toTasteUnit;
 }
 
 class _AppLocalizationsDelegate

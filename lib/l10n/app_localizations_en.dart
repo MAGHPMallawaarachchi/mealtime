@@ -551,7 +551,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Check back later for delicious recipes';
 
   @override
-  String get errorLoadingRecipes => 'Error loading recipes';
+  String get errorLoadingRecipes => 'Error Loading Recipes';
 
   @override
   String get loadingRecipes => 'Loading recipes...';
@@ -1154,4 +1154,272 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tryAddingSuggestion => 'Try adding: Rice, Onions, Garlic';
+
+  @override
+  String get user => 'User';
+
+  @override
+  String get signOut => 'Sign Out';
+
+  @override
+  String get areYouSureWantToSignOut => 'Are you sure you want to sign out?';
+
+  @override
+  String errorSigningOut(String error) {
+    return 'Error signing out: $error';
+  }
+
+  @override
+  String get updateProfilePicture => 'Update Profile Picture';
+
+  @override
+  String get chooseWhereToGetPhoto =>
+      'Choose where to get your profile photo from:';
+
+  @override
+  String get camera => 'Camera';
+
+  @override
+  String get gallery => 'Gallery';
+
+  @override
+  String get profilePictureUpdatedSuccessfully =>
+      'Profile picture updated successfully';
+
+  @override
+  String failedToUpdateProfilePicture(String error) {
+    return 'Failed to update profile picture: $error';
+  }
+
+  @override
+  String get favorites => 'Favorites';
+
+  @override
+  String get myRecipes => 'My Recipes';
+
+  @override
+  String get noFavoriteRecipes => 'No Favorite Recipes';
+
+  @override
+  String get startFavoritingRecipes =>
+      'Start favoriting recipes to see them here';
+
+  @override
+  String get errorLoadingFavorites => 'Error Loading Favorites';
+
+  @override
+  String get noRecipesYet => 'No Recipes Yet';
+
+  @override
+  String get createYourFirstRecipe => 'Create your first recipe to get started';
+
+  @override
+  String get createRecipe => 'Create Recipe';
+
+  @override
+  String get deleteRecipe => 'Delete Recipe';
+
+  @override
+  String areYouSureWantToDeleteRecipe(String recipeTitle) {
+    return 'Are you sure you want to delete \"$recipeTitle\"? This action cannot be undone.';
+  }
+
+  @override
+  String get recipeDeletedSuccessfully => 'Recipe deleted successfully';
+
+  @override
+  String get settingsAndPreferences => 'Settings & Preferences';
+
+  @override
+  String get manageYourAccountSettings => 'Manage your account settings';
+
+  @override
+  String get createNewRecipe => 'Create New Recipe';
+
+  @override
+  String get shareYourCulinaryCreation => 'Share your culinary creation';
+
+  @override
+  String get shareProfile => 'Share Profile';
+
+  @override
+  String get letOthersDiscoverYourRecipes => 'Let others discover your recipes';
+
+  @override
+  String get shareProfileFeatureComingSoon =>
+      'Share profile feature coming soon';
+
+  @override
+  String get signOutOfYourAccount => 'Sign out of your account';
+
+  @override
+  String get createRecipeTitle => 'Create Recipe';
+
+  @override
+  String get recipeCreatedSuccessfully => 'Recipe created successfully!';
+
+  @override
+  String errorPrefix(String error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get basicInformation => 'Basic Information';
+
+  @override
+  String get recipeTitle => 'Recipe Title *';
+
+  @override
+  String get pleaseEnterRecipeTitle => 'Please enter a recipe title';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get time => 'Time *';
+
+  @override
+  String get timeHintText => 'e.g., 15 min';
+
+  @override
+  String get required => 'Required';
+
+  @override
+  String get servingsRequired => 'Servings *';
+
+  @override
+  String get mustBePositiveNumber => 'Must be a positive number';
+
+  @override
+  String get nutritionInformationOptional => 'Nutrition Information (Optional)';
+
+  @override
+  String get addNutritionInfoPerServing =>
+      'Add nutrition information per serving';
+
+  @override
+  String get kcalSuffix => 'kcal';
+
+  @override
+  String get gramSuffix => 'g';
+
+  @override
+  String get fats => 'Fats';
+
+  @override
+  String get recipePhoto => 'Recipe Photo';
+
+  @override
+  String get addPhotoMakeRecipeAppealing =>
+      'Add a photo to make your recipe more appealing';
+
+  @override
+  String get changePhoto => 'Change Photo';
+
+  @override
+  String get tapToAddPhoto => 'Tap to add a photo';
+
+  @override
+  String get chooseCameraOrGallery => 'Choose from camera or gallery';
+
+  @override
+  String get quantityShort => 'Qty';
+
+  @override
+  String get selectUnit => 'Select';
+
+  @override
+  String get ingredientField => 'Ingredient';
+
+  @override
+  String stepNumber(int number) {
+    return 'Step $number';
+  }
+
+  @override
+  String pleaseEnterInstructionForStep(int number) {
+    return 'Please enter instruction for step $number';
+  }
+
+  @override
+  String get tagsOptional => 'Tags (Optional)';
+
+  @override
+  String get addTagsToCategorizeRecipe =>
+      'Add tags to help categorize your recipe';
+
+  @override
+  String get addTag => 'Add Tag';
+
+  @override
+  String get saveRecipe => 'Save Recipe';
+
+  @override
+  String get selectImageSource => 'Select Image Source';
+
+  @override
+  String get chooseWhereToGetRecipePhoto =>
+      'Choose where to get your recipe photo from:';
+
+  @override
+  String get addTagDialog => 'Add Tag';
+
+  @override
+  String get tagName => 'Tag name';
+
+  @override
+  String get tagNameHint => 'e.g., vegetarian, spicy, quick';
+
+  @override
+  String get userNotAuthenticated => 'User not authenticated';
+
+  @override
+  String failedToPickImage(String error) {
+    return 'Failed to pick image: $error';
+  }
+
+  @override
+  String get cupsUnit => 'cups';
+
+  @override
+  String get tspUnit => 'tsp';
+
+  @override
+  String get tbspUnit => 'tbsp';
+
+  @override
+  String get mlUnit => 'ml';
+
+  @override
+  String get lUnit => 'L';
+
+  @override
+  String get gUnit => 'g';
+
+  @override
+  String get kgUnit => 'kg';
+
+  @override
+  String get ozUnit => 'oz';
+
+  @override
+  String get lbsUnit => 'lbs';
+
+  @override
+  String get cmUnit => 'cm';
+
+  @override
+  String get pcsUnit => 'pcs';
+
+  @override
+  String get wholeUnit => 'whole';
+
+  @override
+  String get pinchUnit => 'pinch';
+
+  @override
+  String get dashUnit => 'dash';
+
+  @override
+  String get toTasteUnit => 'to taste';
 }

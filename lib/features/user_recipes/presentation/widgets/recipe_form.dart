@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -161,9 +162,9 @@ class _RecipeFormState extends State<RecipeForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Basic Information',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.basicInformation,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
@@ -173,7 +174,7 @@ class _RecipeFormState extends State<RecipeForm> {
             TextFormField(
               controller: _titleController,
               decoration: InputDecoration(
-                labelText: 'Recipe Title *',
+                labelText: AppLocalizations.of(context)!.recipeTitle,
                 prefixIcon: PhosphorIcon(PhosphorIcons.forkKnife()),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -181,7 +182,7 @@ class _RecipeFormState extends State<RecipeForm> {
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Please enter a recipe title';
+                  return AppLocalizations.of(context)!.pleaseEnterRecipeTitle;
                 }
                 return null;
               },
@@ -190,7 +191,7 @@ class _RecipeFormState extends State<RecipeForm> {
             TextFormField(
               controller: _descriptionController,
               decoration: InputDecoration(
-                labelText: 'Description',
+                labelText: AppLocalizations.of(context)!.description,
                 prefixIcon: PhosphorIcon(PhosphorIcons.textT()),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -205,16 +206,16 @@ class _RecipeFormState extends State<RecipeForm> {
                   child: TextFormField(
                     controller: _prepTimeController,
                     decoration: InputDecoration(
-                      labelText: 'Time *',
+                      labelText: AppLocalizations.of(context)!.time,
                       prefixIcon: PhosphorIcon(PhosphorIcons.clock()),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      hintText: 'e.g., 15 min',
+                      hintText: AppLocalizations.of(context)!.timeHintText,
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Required';
+                        return AppLocalizations.of(context)!.required;
                       }
                       return null;
                     },
@@ -225,7 +226,7 @@ class _RecipeFormState extends State<RecipeForm> {
                   child: TextFormField(
                     controller: _servingsController,
                     decoration: InputDecoration(
-                      labelText: 'Servings *',
+                      labelText: AppLocalizations.of(context)!.servingsRequired,
                       prefixIcon: PhosphorIcon(PhosphorIcons.users()),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -235,11 +236,13 @@ class _RecipeFormState extends State<RecipeForm> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Required';
+                        return AppLocalizations.of(context)!.required;
                       }
                       final num = int.tryParse(value);
                       if (num == null || num < 1) {
-                        return 'Must be a positive number';
+                        return AppLocalizations.of(
+                          context,
+                        )!.mustBePositiveNumber;
                       }
                       return null;
                     },
@@ -272,29 +275,32 @@ class _RecipeFormState extends State<RecipeForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Nutrition Information (Optional)',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.nutritionInformationOptional,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Add nutrition information per serving',
-              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            Text(
+              AppLocalizations.of(context)!.addNutritionInfoPerServing,
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _caloriesController,
               decoration: InputDecoration(
-                labelText: 'Calories',
+                labelText: AppLocalizations.of(context)!.calories,
                 prefixIcon: PhosphorIcon(PhosphorIcons.fire()),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                suffixText: 'kcal',
+                suffixText: AppLocalizations.of(context)!.kcalSuffix,
               ),
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
@@ -310,12 +316,12 @@ class _RecipeFormState extends State<RecipeForm> {
                   child: TextFormField(
                     controller: _proteinController,
                     decoration: InputDecoration(
-                      labelText: 'Protein',
+                      labelText: AppLocalizations.of(context)!.protein,
                       prefixIcon: PhosphorIcon(PhosphorIcons.shrimp()),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      suffixText: 'g',
+                      suffixText: AppLocalizations.of(context)!.gramSuffix,
                     ),
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
@@ -330,12 +336,12 @@ class _RecipeFormState extends State<RecipeForm> {
                   child: TextFormField(
                     controller: _carbsController,
                     decoration: InputDecoration(
-                      labelText: 'Carbs',
+                      labelText: AppLocalizations.of(context)!.carbs,
                       prefixIcon: PhosphorIcon(PhosphorIcons.grains()),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      suffixText: 'g',
+                      suffixText: AppLocalizations.of(context)!.gramSuffix,
                     ),
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
@@ -350,12 +356,12 @@ class _RecipeFormState extends State<RecipeForm> {
                   child: TextFormField(
                     controller: _fatsController,
                     decoration: InputDecoration(
-                      labelText: 'Fats',
+                      labelText: AppLocalizations.of(context)!.fats,
                       prefixIcon: PhosphorIcon(PhosphorIcons.avocado()),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      suffixText: 'g',
+                      suffixText: AppLocalizations.of(context)!.gramSuffix,
                     ),
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
@@ -391,18 +397,21 @@ class _RecipeFormState extends State<RecipeForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Recipe Photo',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.recipePhoto,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Add a photo to make your recipe more appealing',
-              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            Text(
+              AppLocalizations.of(context)!.addPhotoMakeRecipeAppealing,
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 16),
             if (_selectedImage != null || _imageUrl != null) ...[
@@ -442,7 +451,7 @@ class _RecipeFormState extends State<RecipeForm> {
                     child: OutlinedButton.icon(
                       onPressed: _pickImage,
                       icon: PhosphorIcon(PhosphorIcons.camera()),
-                      label: const Text('Change Photo'),
+                      label: Text(AppLocalizations.of(context)!.changePhoto),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
@@ -492,7 +501,7 @@ class _RecipeFormState extends State<RecipeForm> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Tap to add a photo',
+                        AppLocalizations.of(context)!.tapToAddPhoto,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey.shade600,
@@ -501,7 +510,7 @@ class _RecipeFormState extends State<RecipeForm> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Choose from camera or gallery',
+                        AppLocalizations.of(context)!.chooseCameraOrGallery,
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey.shade500,
@@ -538,10 +547,10 @@ class _RecipeFormState extends State<RecipeForm> {
           children: [
             Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Ingredients',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.ingredients,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
@@ -580,7 +589,7 @@ class _RecipeFormState extends State<RecipeForm> {
             child: TextFormField(
               initialValue: ingredient.quantity.toString(),
               decoration: InputDecoration(
-                labelText: 'Qty',
+                labelText: AppLocalizations.of(context)!.quantityShort,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -607,7 +616,7 @@ class _RecipeFormState extends State<RecipeForm> {
             child: DropdownButtonFormField<IngredientUnit>(
               value: ingredient.unit,
               decoration: InputDecoration(
-                labelText: 'Unit',
+                labelText: AppLocalizations.of(context)!.unit,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -617,7 +626,10 @@ class _RecipeFormState extends State<RecipeForm> {
                 ),
               ),
               isExpanded: true,
-              hint: const Text('Select', style: TextStyle(fontSize: 12)),
+              hint: Text(
+                AppLocalizations.of(context)!.selectUnit,
+                style: const TextStyle(fontSize: 12),
+              ),
               items: IngredientUnit.values.map((unit) {
                 return DropdownMenuItem<IngredientUnit>(
                   value: unit,
@@ -638,7 +650,7 @@ class _RecipeFormState extends State<RecipeForm> {
             child: TextFormField(
               initialValue: ingredient.name,
               decoration: InputDecoration(
-                labelText: 'Ingredient',
+                labelText: AppLocalizations.of(context)!.ingredientField,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -649,7 +661,7 @@ class _RecipeFormState extends State<RecipeForm> {
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Required';
+                  return AppLocalizations.of(context)!.required;
                 }
                 return null;
               },
@@ -695,10 +707,10 @@ class _RecipeFormState extends State<RecipeForm> {
           children: [
             Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Instructions',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.instructions,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
@@ -757,7 +769,7 @@ class _RecipeFormState extends State<RecipeForm> {
             child: TextFormField(
               initialValue: instruction,
               decoration: InputDecoration(
-                labelText: 'Step ${index + 1}',
+                labelText: AppLocalizations.of(context)!.stepNumber(index + 1),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -765,7 +777,9 @@ class _RecipeFormState extends State<RecipeForm> {
               maxLines: 3,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Please enter instruction for step ${index + 1}';
+                  return AppLocalizations.of(
+                    context,
+                  )!.pleaseEnterInstructionForStep(index + 1);
                 }
                 return null;
               },
@@ -809,18 +823,21 @@ class _RecipeFormState extends State<RecipeForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Tags (Optional)',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.tagsOptional,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Add tags to help categorize your recipe',
-              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            Text(
+              AppLocalizations.of(context)!.addTagsToCategorizeRecipe,
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 16),
             Wrap(
@@ -851,7 +868,7 @@ class _RecipeFormState extends State<RecipeForm> {
 
   Widget _buildAddTagChip() {
     return ActionChip(
-      label: const Text('Add Tag'),
+      label: Text(AppLocalizations.of(context)!.addTag),
       avatar: PhosphorIcon(PhosphorIcons.plus(), size: 16),
       onPressed: _showAddTagDialog,
       backgroundColor: Colors.grey.withOpacity(0.1),
@@ -870,9 +887,9 @@ class _RecipeFormState extends State<RecipeForm> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ),
         ),
@@ -897,9 +914,12 @@ class _RecipeFormState extends State<RecipeForm> {
                       color: Colors.white,
                     ),
                   )
-                : const Text(
-                    'Save Recipe',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                : Text(
+                    AppLocalizations.of(context)!.saveRecipe,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
           ),
         ),
@@ -959,7 +979,9 @@ class _RecipeFormState extends State<RecipeForm> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to pick image: ${e.toString()}'),
+            content: Text(
+              AppLocalizations.of(context)!.failedToPickImage(e.toString()),
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -978,22 +1000,24 @@ class _RecipeFormState extends State<RecipeForm> {
     return await showDialog<ImageSource>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select Image Source'),
-        content: const Text('Choose where to get your recipe photo from:'),
+        title: Text(AppLocalizations.of(context)!.selectImageSource),
+        content: Text(
+          AppLocalizations.of(context)!.chooseWhereToGetRecipePhoto,
+        ),
         actions: [
           TextButton.icon(
             onPressed: () => Navigator.of(context).pop(ImageSource.camera),
             icon: PhosphorIcon(PhosphorIcons.camera()),
-            label: const Text('Camera'),
+            label: Text(AppLocalizations.of(context)!.camera),
           ),
           TextButton.icon(
             onPressed: () => Navigator.of(context).pop(ImageSource.gallery),
             icon: PhosphorIcon(PhosphorIcons.image()),
-            label: const Text('Gallery'),
+            label: Text(AppLocalizations.of(context)!.gallery),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
         ],
       ),
@@ -1005,19 +1029,19 @@ class _RecipeFormState extends State<RecipeForm> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add Tag'),
+        title: Text(AppLocalizations.of(context)!.addTagDialog),
         content: TextField(
           controller: controller,
-          decoration: const InputDecoration(
-            labelText: 'Tag name',
-            hintText: 'e.g., vegetarian, spicy, quick',
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.tagName,
+            hintText: AppLocalizations.of(context)!.tagNameHint,
           ),
           textCapitalization: TextCapitalization.words,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -1027,7 +1051,7 @@ class _RecipeFormState extends State<RecipeForm> {
               }
               Navigator.of(context).pop();
             },
-            child: const Text('Add'),
+            child: Text(AppLocalizations.of(context)!.add),
           ),
         ],
       ),
@@ -1041,9 +1065,11 @@ class _RecipeFormState extends State<RecipeForm> {
 
     final userId = _authService.currentUser?.uid;
     if (userId == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('User not authenticated')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.userNotAuthenticated),
+        ),
+      );
       return;
     }
 
@@ -1133,37 +1159,38 @@ class _RecipeFormState extends State<RecipeForm> {
   }
 
   String _getUnitDisplayText(IngredientUnit unit) {
+    final l10n = AppLocalizations.of(context)!;
     switch (unit) {
       case IngredientUnit.cups:
-        return 'cups';
+        return l10n.cupsUnit;
       case IngredientUnit.teaspoons:
-        return 'tsp';
+        return l10n.tspUnit;
       case IngredientUnit.tablespoons:
-        return 'tbsp';
+        return l10n.tbspUnit;
       case IngredientUnit.milliliters:
-        return 'ml';
+        return l10n.mlUnit;
       case IngredientUnit.liters:
-        return 'L';
+        return l10n.lUnit;
       case IngredientUnit.grams:
-        return 'g';
+        return l10n.gUnit;
       case IngredientUnit.kilograms:
-        return 'kg';
+        return l10n.kgUnit;
       case IngredientUnit.ounces:
-        return 'oz';
+        return l10n.ozUnit;
       case IngredientUnit.pounds:
-        return 'lbs';
+        return l10n.lbsUnit;
       case IngredientUnit.centimeter:
-        return 'cm';
+        return l10n.cmUnit;
       case IngredientUnit.pieces:
-        return 'pcs';
+        return l10n.pcsUnit;
       case IngredientUnit.whole:
-        return 'whole';
+        return l10n.wholeUnit;
       case IngredientUnit.pinch:
-        return 'pinch';
+        return l10n.pinchUnit;
       case IngredientUnit.dash:
-        return 'dash';
+        return l10n.dashUnit;
       case IngredientUnit.toTaste:
-        return 'to taste';
+        return l10n.toTasteUnit;
     }
   }
 }

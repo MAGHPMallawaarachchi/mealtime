@@ -545,7 +545,7 @@ class AppLocalizationsSi extends AppLocalizations {
       'රසවත් වට්ටෝරු සඳහා පසුව නැවත පරීක්ෂා කරන්න';
 
   @override
-  String get errorLoadingRecipes => 'වට්ටෝරු පූරණය කිරීමේ දෝෂය';
+  String get errorLoadingRecipes => 'වට්ටෝරු පූරණය කිරීමේ දෝෂයකි';
 
   @override
   String get loadingRecipes => 'වට්ටෝරු පූරණය වෙමින්...';
@@ -1133,4 +1133,273 @@ class AppLocalizationsSi extends AppLocalizations {
   @override
   String get tryAddingSuggestion =>
       'මේ එක් කිරීමට උත්සාහ කරන්න: බත්, ළූණු, සුදුළූණු';
+
+  @override
+  String get user => 'පරිශීලකයා';
+
+  @override
+  String get signOut => 'ඉවත් වන්න';
+
+  @override
+  String get areYouSureWantToSignOut => 'ඔබට ඉවත් වීමට අවශ්‍ය බව ඇත්තද?';
+
+  @override
+  String errorSigningOut(String error) {
+    return 'ඉවත් වීමේ දෝෂයකි: $error';
+  }
+
+  @override
+  String get updateProfilePicture => 'පැතිකඩ පින්තූරය යාවත්කාලීන කරන්න';
+
+  @override
+  String get chooseWhereToGetPhoto =>
+      'ඔබේ පැතිකඩ පින්තූරය ලබා ගන්නා තැන තෝරන්න:';
+
+  @override
+  String get camera => 'කැමරාව';
+
+  @override
+  String get gallery => 'ගැලරිය';
+
+  @override
+  String get profilePictureUpdatedSuccessfully =>
+      'පැතිකඩ පින්තූරය සාර්ථකව යාවත්කාලීන කරන ලදී';
+
+  @override
+  String failedToUpdateProfilePicture(String error) {
+    return 'පැතිකඩ පින්තූරය යාවත්කාලීන කිරීම අසාර්ථක විය: $error';
+  }
+
+  @override
+  String get favorites => 'ප්‍රියතම';
+
+  @override
+  String get myRecipes => 'මගේ වට්ටෝරු';
+
+  @override
+  String get noFavoriteRecipes => 'ප්‍රියතම වට්ටෝරු නැත';
+
+  @override
+  String get startFavoritingRecipes =>
+      'වට්ටෝරු ප්‍රියතමයන්ට එක් කිරීම ආරම්භ කරන්න ඒවා මෙහි දැකීමට';
+
+  @override
+  String get errorLoadingFavorites => 'ප්‍රියතම පූරණය කිරීමේ දෝෂයකි';
+
+  @override
+  String get noRecipesYet => 'තවම වට්ටෝරු නැත';
+
+  @override
+  String get createYourFirstRecipe =>
+      'ආරම්භ කිරීම සඳහා ඔබගේ පළමු වට්ටෝරුව නිර්මාණය කරන්න';
+
+  @override
+  String get createRecipe => 'වට්ටෝරුව නිර්මාණය කරන්න';
+
+  @override
+  String get deleteRecipe => 'වට්ටෝරුව මකන්න';
+
+  @override
+  String areYouSureWantToDeleteRecipe(String recipeTitle) {
+    return 'ඔබට \"$recipeTitle\" මකා දැමීමට අවශ්‍ය බව ඇත්තද? මෙම ක්‍රියාව ආපසු හැරවිය නොහැකිය.';
+  }
+
+  @override
+  String get recipeDeletedSuccessfully => 'වට්ටෝරුව සාර්ථකව මකා ඇත';
+
+  @override
+  String get settingsAndPreferences => 'සැකසුම් සහ මනාපයන්';
+
+  @override
+  String get manageYourAccountSettings => 'ඔබගේ ගිණුම් සැකසුම් කළමනාකරණය කරන්න';
+
+  @override
+  String get createNewRecipe => 'නව වට්ටෝරුවක් නිර්මාණය කරන්න';
+
+  @override
+  String get shareYourCulinaryCreation => 'ඔබගේ ආහාර නිර්මාණය බෙදා ගන්න';
+
+  @override
+  String get shareProfile => 'පැතිකඩ බෙදා ගන්න';
+
+  @override
+  String get letOthersDiscoverYourRecipes =>
+      'අන් අයට ඔබේ වට්ටෝරු සොයා ගැනීමට ඉඩ දෙන්න';
+
+  @override
+  String get shareProfileFeatureComingSoon =>
+      'පැතිකඩ බෙදා ගැනීමේ විශේෂාංගය ඉක්මනින් පැමිණේ';
+
+  @override
+  String get signOutOfYourAccount => 'ඔබගේ ගිණුමෙන් ඉවත් වන්න';
+
+  @override
+  String get createRecipeTitle => 'වට්ටෝරුව නිර්මාණය කරන්න';
+
+  @override
+  String get recipeCreatedSuccessfully => 'වට්ටෝරුව සාර්ථකව නිර්මාණය කරන ලදී!';
+
+  @override
+  String errorPrefix(String error) {
+    return 'දෝෂය: $error';
+  }
+
+  @override
+  String get basicInformation => 'මූලික තොරතුරු';
+
+  @override
+  String get recipeTitle => 'වට්ටෝරු මාතෘකාව *';
+
+  @override
+  String get pleaseEnterRecipeTitle => 'කරුණාකර වට්ටෝරු මාතෘකාවක් ඇතුළත් කරන්න';
+
+  @override
+  String get description => 'විස්තරය';
+
+  @override
+  String get time => 'කාලය *';
+
+  @override
+  String get timeHintText => 'උ.දා., මිනිත්තු 15';
+
+  @override
+  String get required => 'අවශ්‍යයි';
+
+  @override
+  String get servingsRequired => 'සේවා කිරීම් *';
+
+  @override
+  String get mustBePositiveNumber => 'ධනාත්මක අංකයක් විය යුතුයි';
+
+  @override
+  String get nutritionInformationOptional => 'පෝෂණ තොරතුරු (විකල්ප)';
+
+  @override
+  String get addNutritionInfoPerServing => 'එක් සේවාවකට පෝෂණ තොරතුරු එක් කරන්න';
+
+  @override
+  String get kcalSuffix => 'කිලෝකැලරි';
+
+  @override
+  String get gramSuffix => 'ග්‍රැම්';
+
+  @override
+  String get fats => 'මේදය';
+
+  @override
+  String get recipePhoto => 'වට්ටෝරු ඡායාරූපය';
+
+  @override
+  String get addPhotoMakeRecipeAppealing =>
+      'ඔබේ වට්ටෝරුව වඩාත් ආකර්ෂණීය කිරීමට ඡායාරූපයක් එක් කරන්න';
+
+  @override
+  String get changePhoto => 'ඡායාරූපය වෙනස් කරන්න';
+
+  @override
+  String get tapToAddPhoto => 'ඡායාරූපයක් එක් කිරීමට ක්ලික් කරන්න';
+
+  @override
+  String get chooseCameraOrGallery => 'කැමරාව හෝ ගැලරිය තෝරන්න';
+
+  @override
+  String get quantityShort => 'ප්‍රමා';
+
+  @override
+  String get selectUnit => 'තෝරන්න';
+
+  @override
+  String get ingredientField => 'අමුද්‍රව්‍ය';
+
+  @override
+  String stepNumber(int number) {
+    return 'පියවර $number';
+  }
+
+  @override
+  String pleaseEnterInstructionForStep(int number) {
+    return 'කරුණාකර පියවර $number සඳහා උපදෙස් ඇතුළත් කරන්න';
+  }
+
+  @override
+  String get tagsOptional => 'ටැග් (විකල්ප)';
+
+  @override
+  String get addTagsToCategorizeRecipe =>
+      'ඔබේ වට්ටෝරුව වර්ගීකරණය කිරීමට උපකාරී වන ටැග් එක් කරන්න';
+
+  @override
+  String get addTag => 'ටැගය එක් කරන්න';
+
+  @override
+  String get saveRecipe => 'වට්ටෝරුව සුරකින්න';
+
+  @override
+  String get selectImageSource => 'රූප මූලාශ්‍රය තෝරන්න';
+
+  @override
+  String get chooseWhereToGetRecipePhoto =>
+      'ඔබේ වට්ටෝරු ඡායාරූපය ලබා ගන්නා තැන තෝරන්න:';
+
+  @override
+  String get addTagDialog => 'ටැගය එක් කරන්න';
+
+  @override
+  String get tagName => 'ටැග් නාමය';
+
+  @override
+  String get tagNameHint => 'උ.දා., නිර්මාංශිත, කුළුබඩු, ඉක්මන්';
+
+  @override
+  String get userNotAuthenticated => 'පරිශීලකයා සත්‍යාපිත නොවේ';
+
+  @override
+  String failedToPickImage(String error) {
+    return 'රූපය තේරීම අසාර්ථක විය: $error';
+  }
+
+  @override
+  String get cupsUnit => 'කෝප්ප';
+
+  @override
+  String get tspUnit => 'තේ හැන්ද';
+
+  @override
+  String get tbspUnit => 'මේස හැන්ද';
+
+  @override
+  String get mlUnit => 'මිලී ලීටර්';
+
+  @override
+  String get lUnit => 'ලීටර්';
+
+  @override
+  String get gUnit => 'ග්‍රැම්';
+
+  @override
+  String get kgUnit => 'කිලෝ ග්‍රැම්';
+
+  @override
+  String get ozUnit => 'අවුන්ස්';
+
+  @override
+  String get lbsUnit => 'පවුම්';
+
+  @override
+  String get cmUnit => 'සෙන්ටිමීටර්';
+
+  @override
+  String get pcsUnit => 'කොටස්';
+
+  @override
+  String get wholeUnit => 'සම්පූර්ණ';
+
+  @override
+  String get pinchUnit => 'චිට්ටයක්';
+
+  @override
+  String get dashUnit => 'ටිකක්';
+
+  @override
+  String get toTasteUnit => 'රස අනුව';
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,7 +17,7 @@ import '../widgets/profile_menu_bottom_sheet.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   final int initialTabIndex;
-  
+
   const ProfileScreen({super.key, this.initialTabIndex = 0});
 
   @override
@@ -38,7 +39,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     super.initState();
     _user = _authService.currentUser;
     _tabController = TabController(
-      length: 2, 
+      length: 2,
       vsync: this,
       initialIndex: widget.initialTabIndex.clamp(0, 1),
     );
@@ -65,7 +66,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   }
 
   Widget _buildProfileImage() {
-    
     if (_profilePictureUrl == null || _profilePictureUrl!.isEmpty) {
       return PhosphorIcon(
         PhosphorIcons.user(),
@@ -130,7 +130,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                   value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                      ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
                       : null,
                 ),
               ),
@@ -164,12 +165,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           size: 24,
           color: Colors.red,
         ),
-        title: const Text('Sign Out'),
-        content: const Text('Are you sure you want to sign out?'),
+        title: Text(AppLocalizations.of(context)!.signOut),
+        content: Text(AppLocalizations.of(context)!.areYouSureWantToSignOut),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
@@ -177,7 +178,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
             ),
-            child: const Text('Sign Out'),
+            child: Text(AppLocalizations.of(context)!.signOut),
           ),
         ],
       ),
@@ -197,7 +198,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error signing out: ${e.toString()}'),
+            content: Text(
+              AppLocalizations.of(context)!.errorSigningOut(e.toString()),
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -223,17 +226,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
       if (pickedFile != null && mounted) {
         setState(() => _isUploadingPhoto = true);
-        
+
         final imageFile = File(pickedFile.path);
         await _authService.updateUserProfilePicture(imageFile);
-        
+
         // Refresh profile picture URL from Firestore
         await _loadUserProfilePicture();
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Profile picture updated successfully'),
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context)!.profilePictureUpdatedSuccessfully,
+              ),
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating,
             ),
@@ -244,7 +249,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to update profile picture: ${e.toString()}'),
+            content: Text(
+              AppLocalizations.of(
+                context,
+              )!.failedToUpdateProfilePicture(e.toString()),
+            ),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
           ),
@@ -266,22 +275,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           size: 24,
           color: AppColors.primary,
         ),
-        title: const Text('Update Profile Picture'),
-        content: const Text('Choose where to get your profile photo from:'),
+        title: Text(AppLocalizations.of(context)!.updateProfilePicture),
+        content: Text(AppLocalizations.of(context)!.chooseWhereToGetPhoto),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton.icon(
             onPressed: () => Navigator.of(context).pop(ImageSource.camera),
             icon: PhosphorIcon(PhosphorIcons.camera()),
-            label: const Text('Camera'),
+            label: Text(AppLocalizations.of(context)!.camera),
           ),
           TextButton.icon(
             onPressed: () => Navigator.of(context).pop(ImageSource.gallery),
             icon: PhosphorIcon(PhosphorIcons.image()),
-            label: const Text('Gallery'),
+            label: Text(AppLocalizations.of(context)!.gallery),
           ),
         ],
       ),
@@ -328,11 +337,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           tabs: [
                             Tab(
                               icon: PhosphorIcon(PhosphorIcons.heart()),
-                              text: 'Favorites ($favoritesCount)',
+                              text:
+                                  '${AppLocalizations.of(context)!.favorites} ($favoritesCount)',
                             ),
                             Tab(
                               icon: PhosphorIcon(PhosphorIcons.cookingPot()),
-                              text: 'My Recipes ($userRecipesCount)',
+                              text:
+                                  '${AppLocalizations.of(context)!.myRecipes} ($userRecipesCount)',
                             ),
                           ],
                         ),
@@ -398,7 +409,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                             height: 16,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
                           )
                         : PhosphorIcon(
@@ -417,7 +430,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           ),
           const SizedBox(height: 20),
           Text(
-            _user?.displayName ?? 'User',
+            _user?.displayName ?? AppLocalizations.of(context)!.user,
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w700,
