@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -60,10 +61,10 @@ class RecipeMatchCard extends ConsumerWidget {
                       match.recipe.imageUrl,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        return _buildImagePlaceholder();
+                        return _buildImagePlaceholder(context);
                       },
                     )
-                  : _buildImagePlaceholder(),
+                  : _buildImagePlaceholder(context),
             ),
           ),
 
@@ -134,7 +135,7 @@ class RecipeMatchCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildImagePlaceholder() {
+  Widget _buildImagePlaceholder(BuildContext context) {
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -149,7 +150,7 @@ class RecipeMatchCard extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Recipe Image',
+            AppLocalizations.of(context)!.recipeImage,
             style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
           ),
         ],
@@ -186,7 +187,7 @@ class RecipeMatchCard extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                '${match.availableIngredients}/${match.totalIngredients} ingredients',
+                '${match.availableIngredients}/${match.totalIngredients} ${AppLocalizations.of(context)!.ingredients}',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -200,7 +201,9 @@ class RecipeMatchCard extends ConsumerWidget {
             // Missing Ingredients
             if (match.missingIngredients.isNotEmpty) ...[
               Text(
-                'Missing: ${_formatMissingIngredients()}',
+                AppLocalizations.of(
+                  context,
+                )!.missingIngredients(_formatMissingIngredients()),
                 style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,

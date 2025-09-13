@@ -172,22 +172,11 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: '/seasonal-recipes/:ingredientName',
+        path: '/seasonal-recipes/:ingredientId',
         name: 'seasonal-ingredient-recipes',
         builder: (context, state) {
-          final ingredientName = state.pathParameters['ingredientName']!;
-          final ingredientId = state.uri.queryParameters['id'] ?? '';
-          final ingredientImageUrl = state.uri.queryParameters['imageUrl'] ?? '';
-          final ingredientDescription = state.uri.queryParameters['description'] ?? '';
-          
-          final ingredient = SeasonalIngredient(
-            id: ingredientId,
-            name: Uri.decodeComponent(ingredientName),
-            imageUrl: Uri.decodeComponent(ingredientImageUrl),
-            description: Uri.decodeComponent(ingredientDescription),
-          );
-          
-          return SeasonalIngredientRecipesScreen(ingredient: ingredient);
+          final ingredientId = state.pathParameters['ingredientId']!;
+          return SeasonalIngredientRecipesScreen(ingredientId: ingredientId);
         },
       ),
     ],

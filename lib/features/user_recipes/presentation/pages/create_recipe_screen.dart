@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -55,7 +56,7 @@ class _CreateRecipeScreenState extends ConsumerState<CreateRecipeScreen> {
                       const SizedBox(width: 16),
                       Expanded(
                         child: Text(
-                          'Create Recipe',
+                          AppLocalizations.of(context)!.createRecipeTitle,
                           style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 28,
@@ -99,7 +100,7 @@ class _CreateRecipeScreenState extends ConsumerState<CreateRecipeScreen> {
                   size: 20,
                 ),
                 const SizedBox(width: 8),
-                const Text('Recipe created successfully!'),
+                Text(AppLocalizations.of(context)!.recipeCreatedSuccessfully),
               ],
             ),
             backgroundColor: Colors.green,
@@ -126,7 +127,7 @@ class _CreateRecipeScreenState extends ConsumerState<CreateRecipeScreen> {
                   size: 20,
                 ),
                 const SizedBox(width: 8),
-                Text('Error: ${e.toString()}'),
+                Text(AppLocalizations.of(context)!.errorPrefix(e.toString())),
               ],
             ),
             backgroundColor: Colors.red,

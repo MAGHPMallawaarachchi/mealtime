@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../domain/models/pantry_item.dart';
@@ -98,7 +99,7 @@ class PantryItemCard extends StatelessWidget {
                     itemBuilder: (context) => [
                       if (onEdit != null)
                         PopupMenuItem<String>(
-                          value: 'edit',
+                          value: AppLocalizations.of(context)!.edit,
                           child: Row(
                             children: [
                               PhosphorIcon(
@@ -107,13 +108,13 @@ class PantryItemCard extends StatelessWidget {
                                 color: AppColors.textSecondary,
                               ),
                               const SizedBox(width: 8),
-                              const Text('Edit'),
+                              Text(AppLocalizations.of(context)!.edit),
                             ],
                           ),
                         ),
                       if (onDelete != null)
                         PopupMenuItem<String>(
-                          value: 'delete',
+                          value: AppLocalizations.of(context)!.delete,
                           child: Row(
                             children: [
                               PhosphorIcon(
@@ -123,7 +124,7 @@ class PantryItemCard extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'Delete',
+                                AppLocalizations.of(context)!.delete,
                                 style: TextStyle(color: AppColors.error),
                               ),
                             ],

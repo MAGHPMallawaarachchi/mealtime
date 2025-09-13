@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../recipes/domain/models/recipe.dart';
 import '../../domain/models/pantry_item.dart';
 import '../providers/leftover_recipe_providers.dart';
@@ -121,7 +122,7 @@ class _LeftoverItemWithSuggestionsState extends ConsumerState<LeftoverItemWithSu
                         if (suggestionsState.isLoading) ...[
                           const SizedBox(height: 4),
                           Text(
-                            'Finding recipes...',
+                            AppLocalizations.of(context)!.findingRecipesEllipsis,
                             style: TextStyle(
                               fontSize: 12,
                               color: AppColors.textSecondary,
@@ -130,7 +131,7 @@ class _LeftoverItemWithSuggestionsState extends ConsumerState<LeftoverItemWithSu
                         ] else if (recipes.isNotEmpty) ...[
                           const SizedBox(height: 4),
                           Text(
-                            '${recipes.length} recipe${recipes.length == 1 ? '' : 's'} available',
+                            AppLocalizations.of(context)!.recipesAvailable(recipes.length),
                             style: TextStyle(
                               fontSize: 12,
                               color: AppColors.primary,
@@ -185,7 +186,7 @@ class _LeftoverItemWithSuggestionsState extends ConsumerState<LeftoverItemWithSu
                           children: [
                             PhosphorIcon(PhosphorIcons.pencil(), size: 16),
                             const SizedBox(width: 8),
-                            const Text('Edit'),
+                            Text(AppLocalizations.of(context)!.edit),
                           ],
                         ),
                       ),
@@ -195,7 +196,7 @@ class _LeftoverItemWithSuggestionsState extends ConsumerState<LeftoverItemWithSu
                           children: [
                             PhosphorIcon(PhosphorIcons.trash(), size: 16, color: AppColors.error),
                             const SizedBox(width: 8),
-                            Text('Delete', style: TextStyle(color: AppColors.error)),
+                            Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: AppColors.error)),
                           ],
                         ),
                       ),
@@ -262,7 +263,7 @@ class _LeftoverItemWithSuggestionsState extends ConsumerState<LeftoverItemWithSu
               ),
               const SizedBox(width: 8),
               Text(
-                'Recipe Suggestions',
+                AppLocalizations.of(context)!.recipeSuggestions,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -417,7 +418,7 @@ class _LeftoverItemWithSuggestionsState extends ConsumerState<LeftoverItemWithSu
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              'Failed to load recipe suggestions',
+              AppLocalizations.of(context)!.failedToLoadRecipeSuggestions,
               style: TextStyle(
                 fontSize: 12,
                 color: AppColors.error,
@@ -432,9 +433,9 @@ class _LeftoverItemWithSuggestionsState extends ConsumerState<LeftoverItemWithSu
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               minimumSize: const Size(0, 0),
             ),
-            child: const Text(
-              'Retry',
-              style: TextStyle(fontSize: 12),
+            child: Text(
+              AppLocalizations.of(context)!.retry,
+              style: const TextStyle(fontSize: 12),
             ),
           ),
         ],
@@ -455,7 +456,7 @@ class _LeftoverItemWithSuggestionsState extends ConsumerState<LeftoverItemWithSu
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              'No matching recipes found for this leftover',
+              AppLocalizations.of(context)!.noMatchingRecipesFound,
               style: TextStyle(
                 fontSize: 12,
                 color: AppColors.textSecondary,

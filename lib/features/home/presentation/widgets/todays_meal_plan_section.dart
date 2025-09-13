@@ -34,7 +34,7 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
   @override
   Widget build(BuildContext context) {
     final todaysMealPlanAsync = ref.watch(todaysMealPlanProvider);
-    final String todayDate = DateFormat('EEEE, MMMM d').format(DateTime.now());
+    final String todayDate = DateFormat('EEEE, MMMM d', Localizations.localeOf(context).toString()).format(DateTime.now());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,9 +202,12 @@ class _TodaysMealPlanSectionState extends ConsumerState<TodaysMealPlanSection> {
               ),
             ),
             const SizedBox(height: 4),
-            Text(
-              AppLocalizations.of(context)!.startPlanningMeals,
-              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            Padding(
+              padding: const EdgeInsets.only(left: 24),
+              child: Text(
+                AppLocalizations.of(context)!.startPlanningMeals,
+                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              ),
             ),
           ],
         ),

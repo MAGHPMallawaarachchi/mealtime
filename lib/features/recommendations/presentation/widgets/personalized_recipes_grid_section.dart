@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/models/recommendation_score.dart';
 import '../../../recipes/domain/models/recipe.dart';
@@ -36,26 +37,36 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final recommendationsAsync = ref.watch(recommendationProvider);
-    
+
     if (enablePagination) {
       final paginationState = ref.watch(explorePaginationProvider);
-      
+
       // Show regular loading state if pagination hasn't been initialized yet
-      if (allRecipes.isNotEmpty && paginationState.displayedRecipes.isEmpty && !paginationState.isLoading) {
+      if (allRecipes.isNotEmpty &&
+          paginationState.displayedRecipes.isEmpty &&
+          !paginationState.isLoading) {
         // Initialize pagination when recipes are available but pagination state is empty
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _updatePaginationIfNeeded(ref, recommendationsAsync.value);
         });
         return _buildLoadingGrid(context);
       }
-      
-      return _buildPaginatedContent(context, ref, paginationState, recommendationsAsync.value);
+
+      return _buildPaginatedContent(
+        context,
+        ref,
+        paginationState,
+        recommendationsAsync.value,
+      );
     }
-    
+
     // Fallback to original behavior when pagination is disabled
     return recommendationsAsync.when(
       data: (batch) {
-        final personalizedRecipes = _getPersonalizedOrderedRecipes(batch, allRecipes);
+        final personalizedRecipes = _getPersonalizedOrderedRecipes(
+          batch,
+          allRecipes,
+        );
         final displayedRecipes = personalizedRecipes.take(20).toList();
 
         return Column(
@@ -66,7 +77,7 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
             if (displayedRecipes.isNotEmpty)
               _buildRecipesGrid(context, displayedRecipes, batch)
             else
-              _buildEmptyState(),
+              _buildEmptyState(context),
           ],
         );
       },
@@ -75,7 +86,10 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
     );
   }
 
-  List<Recipe> _getPersonalizedOrderedRecipes(RecommendationBatch? batch, List<Recipe> recipes) {
+  List<Recipe> _getPersonalizedOrderedRecipes(
+    RecommendationBatch? batch,
+    List<Recipe> recipes,
+  ) {
     return PaginationUtils.applyPersonalizedOrdering(recipes, batch);
   }
 
@@ -85,13 +99,19 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
       searchQuery: searchQuery,
       selectedCategory: selectedCategory,
     );
-    
-    final personalizedRecipes = _getPersonalizedOrderedRecipes(batch, filteredRecipes);
-    
+
+    final personalizedRecipes = _getPersonalizedOrderedRecipes(
+      batch,
+      filteredRecipes,
+    );
+
     // Initialize or update pagination with the processed recipes
     final paginationState = ref.read(explorePaginationProvider);
-    if (paginationState.displayedRecipes.isEmpty || personalizedRecipes != paginationState.displayedRecipes) {
-      ref.read(explorePaginationProvider.notifier).loadInitialRecipes(personalizedRecipes);
+    if (paginationState.displayedRecipes.isEmpty ||
+        personalizedRecipes != paginationState.displayedRecipes) {
+      ref
+          .read(explorePaginationProvider.notifier)
+          .loadInitialRecipes(personalizedRecipes);
     }
   }
 
@@ -104,9 +124,9 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
     if (paginationState.isInitialLoading) {
       return _buildLoadingGrid(context);
     }
-    
+
     if (paginationState.hasError && paginationState.displayedRecipes.isEmpty) {
-      return _buildErrorState(paginationState.error!, ref);
+      return _buildErrorState(paginationState.error!, ref, context);
     }
 
     // Fallback: if pagination has no recipes but we have allRecipes, show them directly
@@ -116,18 +136,26 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
         searchQuery: searchQuery,
         selectedCategory: selectedCategory,
       );
-      final personalizedRecipes = _getPersonalizedOrderedRecipes(recommendationBatch, filteredRecipes);
+      final personalizedRecipes = _getPersonalizedOrderedRecipes(
+        recommendationBatch,
+        filteredRecipes,
+      );
       final fallbackRecipes = personalizedRecipes.take(20).toList();
-      
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildPaginatedHeader(context, paginationState, recommendationBatch, ref),
+          _buildPaginatedHeader(
+            context,
+            paginationState,
+            recommendationBatch,
+            ref,
+          ),
           const SizedBox(height: 16),
           if (fallbackRecipes.isNotEmpty)
             _buildRecipesGrid(context, fallbackRecipes, recommendationBatch)
           else
-            _buildEmptyState(),
+            _buildEmptyState(context),
         ],
       );
     }
@@ -135,19 +163,32 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildPaginatedHeader(context, paginationState, recommendationBatch, ref),
+        _buildPaginatedHeader(
+          context,
+          paginationState,
+          recommendationBatch,
+          ref,
+        ),
         const SizedBox(height: 16),
         if (paginationState.displayedRecipes.isNotEmpty)
-          _buildRecipesGrid(context, paginationState.displayedRecipes, recommendationBatch)
+          _buildRecipesGrid(
+            context,
+            paginationState.displayedRecipes,
+            recommendationBatch,
+          )
         else
-          _buildEmptyState(),
+          _buildEmptyState(context),
         if (paginationState.isLoadingMore)
-          _buildLoadMoreIndicator()
-        else if (paginationState.hasError && paginationState.displayedRecipes.isNotEmpty)
+          _buildLoadMoreIndicator(context)
+        else if (paginationState.hasError &&
+            paginationState.displayedRecipes.isNotEmpty)
           LoadMoreErrorWidget(
             errorMessage: paginationState.error!.message,
-            onRetry: () => ref.read(explorePaginationProvider.notifier).retryLastOperation(),
-            onDismiss: () => ref.read(explorePaginationProvider.notifier).clearError(),
+            onRetry: () => ref
+                .read(explorePaginationProvider.notifier)
+                .retryLastOperation(),
+            onDismiss: () =>
+                ref.read(explorePaginationProvider.notifier).clearError(),
           ),
       ],
     );
@@ -159,8 +200,10 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
     RecommendationBatch? batch,
     WidgetRef ref,
   ) {
-    final hasRecommendations = batch != null && batch.recommendations.isNotEmpty;
+    final hasRecommendations =
+        batch != null && batch.recommendations.isNotEmpty;
     final statusText = PaginationUtils.getPaginationStatus(
+      context,
       displayedCount: paginationState.displayedRecipes.length,
       totalCount: _getTotalAvailableCount(),
       isLoading: paginationState.isLoading,
@@ -175,7 +218,9 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
           Row(
             children: [
               Text(
-                selectedCategory == null ? 'All Recipes' : selectedCategory!,
+                selectedCategory == null
+                    ? AppLocalizations.of(context)!.allRecipes
+                    : selectedCategory!,
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
@@ -185,23 +230,26 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
               if (hasRecommendations) ...[
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      PhosphorIcon(
+                      const PhosphorIcon(
                         PhosphorIconsRegular.sparkle,
                         size: 12,
                         color: AppColors.primary,
                       ),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       Text(
-                        'Personalized',
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.personalized,
+                        style: const TextStyle(
                           fontSize: 10,
                           color: AppColors.primary,
                           fontWeight: FontWeight.w500,
@@ -236,14 +284,14 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
     return filteredRecipes.length;
   }
 
-  Widget _buildLoadMoreIndicator() {
+  Widget _buildLoadMoreIndicator(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       alignment: Alignment.center,
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
+          const SizedBox(
             width: 16,
             height: 16,
             child: CircularProgressIndicator(
@@ -251,20 +299,21 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
               valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Text(
-            'Loading more recipes...',
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-            ),
+            AppLocalizations.of(context)!.loadingMoreRecipesEllipsis,
+            style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildErrorState(PaginationError error, WidgetRef ref) {
+  Widget _buildErrorState(
+    PaginationError error,
+    WidgetRef ref,
+    BuildContext context,
+  ) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -286,7 +335,7 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'Failed to load recipes',
+            AppLocalizations.of(context)!.failedToLoadRecipes,
             style: const TextStyle(
               fontSize: 16,
               color: AppColors.textSecondary,
@@ -304,7 +353,9 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           RetryButton(
-            onPressed: () => ref.read(explorePaginationProvider.notifier).retryLastOperation(),
+            onPressed: () => ref
+                .read(explorePaginationProvider.notifier)
+                .retryLastOperation(),
             isLoading: false,
           ),
         ],
@@ -346,7 +397,7 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
                 children: [
                   Text(
                     selectedCategory == null
-                        ? 'All Recipes'
+                        ? AppLocalizations.of(context)!.allRecipes
                         : selectedCategory!,
                     style: const TextStyle(
                       fontSize: 18,
@@ -365,18 +416,18 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
                         color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          PhosphorIcon(
+                          const PhosphorIcon(
                             PhosphorIconsRegular.sparkle,
                             size: 12,
                             color: AppColors.primary,
                           ),
-                          SizedBox(width: 4),
+                          const SizedBox(width: 4),
                           Text(
-                            'Personalized',
-                            style: TextStyle(
+                            AppLocalizations.of(context)!.personalized,
+                            style: const TextStyle(
                               fontSize: 10,
                               color: AppColors.primary,
                               fontWeight: FontWeight.w500,
@@ -390,8 +441,10 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
               ),
               Text(
                 hasRecommendations
-                    ? '$totalCount recipes, sorted by your preferences'
-                    : '$totalCount recipes found',
+                    ? AppLocalizations.of(
+                        context,
+                      )!.recipesSortedByPreferences(totalCount)
+                    : AppLocalizations.of(context)!.recipesFound(totalCount),
                 style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
@@ -583,21 +636,24 @@ class PersonalizedRecipesGridSection extends ConsumerWidget {
             ),
           )
         else
-          _buildEmptyState(),
+          _buildEmptyState(context),
       ],
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     String message;
     String subMessage;
 
     if (selectedCategory != null) {
-      message = 'No ${selectedCategory!.toLowerCase()} recipes yet';
-      subMessage = 'Check back later for new recipes';
+      message = localizations.noCategoryRecipesYet(
+        selectedCategory!.toLowerCase(),
+      );
+      subMessage = localizations.checkBackLaterForNewRecipes;
     } else {
-      message = 'No recipes available yet';
-      subMessage = 'Check back later for delicious recipes';
+      message = localizations.noRecipesAvailableYet;
+      subMessage = localizations.checkBackLaterForDeliciousRecipes;
     }
 
     return Container(

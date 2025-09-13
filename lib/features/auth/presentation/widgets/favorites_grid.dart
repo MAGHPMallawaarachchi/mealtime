@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../favorites/presentation/providers/favorites_providers.dart';
@@ -24,11 +25,11 @@ class FavoritesGrid extends ConsumerWidget {
     }
 
     if (favoritesState.error != null) {
-      return _buildErrorState(favoritesState.error!);
+      return _buildErrorState(favoritesState.error!, context);
     }
 
     if (favoritesState.favoriteRecipeIds.isEmpty) {
-      return _buildEmptyState();
+      return _buildEmptyState(context);
     }
 
     final favoriteRecipes = recipesState.recipes
@@ -36,7 +37,7 @@ class FavoritesGrid extends ConsumerWidget {
         .toList();
 
     if (favoriteRecipes.isEmpty) {
-      return _buildEmptyState();
+      return _buildEmptyState(context);
     }
 
     return Padding(
@@ -57,7 +58,7 @@ class FavoritesGrid extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Column(
@@ -77,7 +78,7 @@ class FavoritesGrid extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'No Favorite Recipes',
+            AppLocalizations.of(context)!.noFavoriteRecipes,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -86,7 +87,7 @@ class FavoritesGrid extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Start favoriting recipes to see them here',
+            AppLocalizations.of(context)!.startFavoritingRecipes,
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary.withOpacity(0.8),
@@ -98,7 +99,7 @@ class FavoritesGrid extends ConsumerWidget {
     );
   }
 
-  Widget _buildErrorState(String error) {
+  Widget _buildErrorState(String error, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Column(
@@ -118,7 +119,7 @@ class FavoritesGrid extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Error Loading Favorites',
+            AppLocalizations.of(context)!.errorLoadingFavorites,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,

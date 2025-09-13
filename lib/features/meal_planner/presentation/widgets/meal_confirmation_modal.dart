@@ -4,6 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../recipes/domain/models/recipe.dart';
 import '../../domain/models/meal_slot.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class MealConfirmationModal extends StatefulWidget {
   final Recipe recipe;
@@ -80,6 +81,28 @@ class _MealConfirmationModalState extends State<MealConfirmationModal> {
     });
   }
 
+  String _getLocalizedCategoryName(String category) {
+    final localizations = AppLocalizations.of(context)!;
+    switch (category) {
+      case MealCategory.breakfast:
+        return localizations.breakfast;
+      case MealCategory.lunch:
+        return localizations.lunch;
+      case MealCategory.dinner:
+        return localizations.dinner;
+      case MealCategory.snack:
+        return localizations.snack;
+      case MealCategory.brunch:
+        return localizations.brunch;
+      case MealCategory.lateNight:
+        return localizations.lateNight;
+      case MealCategory.custom:
+        return localizations.customMeal;
+      default:
+        return category;
+    }
+  }
+
   void _confirmMeal() {
     final scheduledTime = DateTime(
       widget.date.year,
@@ -141,21 +164,21 @@ class _MealConfirmationModalState extends State<MealConfirmationModal> {
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Confirm Meal',
-                  style: TextStyle(
+                  AppLocalizations.of(context)!.confirmMeal,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
                 ),
                 Text(
-                  'Review your meal details',
-                  style: TextStyle(
+                  AppLocalizations.of(context)!.reviewMealDetails,
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary,
                   ),
@@ -259,8 +282,8 @@ class _MealConfirmationModalState extends State<MealConfirmationModal> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Scheduled Time',
+        Text(
+          AppLocalizations.of(context)!.scheduledTime,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -301,7 +324,10 @@ class _MealConfirmationModalState extends State<MealConfirmationModal> {
             const SizedBox(width: 12),
             OutlinedButton(
               onPressed: widget.onTimeChangeRequest != null
-                  ? () => widget.onTimeChangeRequest!(_currentSelectedTime, _onTimeChanged)
+                  ? () => widget.onTimeChangeRequest!(
+                      _currentSelectedTime,
+                      _onTimeChanged,
+                    )
                   : widget.onBackToTime,
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
@@ -314,7 +340,7 @@ class _MealConfirmationModalState extends State<MealConfirmationModal> {
                 side: const BorderSide(color: AppColors.primary),
                 foregroundColor: AppColors.primary,
               ),
-              child: const Text('Change'),
+              child: Text(AppLocalizations.of(context)!.change),
             ),
           ],
         ),
@@ -326,8 +352,8 @@ class _MealConfirmationModalState extends State<MealConfirmationModal> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Number of Servings',
+        Text(
+          AppLocalizations.of(context)!.numberOfServings,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -350,8 +376,8 @@ class _MealConfirmationModalState extends State<MealConfirmationModal> {
                 size: 20,
               ),
               const SizedBox(width: 12),
-              const Text(
-                'Servings:',
+              Text(
+                AppLocalizations.of(context)!.servingsLabel,
                 style: TextStyle(fontSize: 16, color: AppColors.textPrimary),
               ),
               const Spacer(),
@@ -412,8 +438,8 @@ class _MealConfirmationModalState extends State<MealConfirmationModal> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Meal Category',
+        Text(
+          AppLocalizations.of(context)!.mealCategory,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -428,6 +454,7 @@ class _MealConfirmationModalState extends State<MealConfirmationModal> {
             ...MealCategory.predefined.map(
               (category) => _CategoryChip(
                 category: category,
+                displayName: _getLocalizedCategoryName(category),
                 isSelected: _selectedCategory == category,
                 onTap: () => setState(() {
                   _selectedCategory = category;
@@ -437,6 +464,7 @@ class _MealConfirmationModalState extends State<MealConfirmationModal> {
             ),
             _CategoryChip(
               category: MealCategory.custom,
+              displayName: _getLocalizedCategoryName(MealCategory.custom),
               isSelected: _selectedCategory == MealCategory.custom,
               onTap: () => setState(() {
                 _selectedCategory = MealCategory.custom;
@@ -465,7 +493,7 @@ class _MealConfirmationModalState extends State<MealConfirmationModal> {
                   side: const BorderSide(color: AppColors.primary),
                   foregroundColor: AppColors.primary,
                 ),
-                child: const Text('Back to Recipes'),
+                child: Text(AppLocalizations.of(context)!.backToRecipes),
               ),
             ),
             const SizedBox(width: 12),
@@ -481,8 +509,8 @@ class _MealConfirmationModalState extends State<MealConfirmationModal> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  'Add to Meal Plan',
+                child: Text(
+                  AppLocalizations.of(context)!.addToMealPlanAction,
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
               ),
@@ -496,11 +524,13 @@ class _MealConfirmationModalState extends State<MealConfirmationModal> {
 
 class _CategoryChip extends StatelessWidget {
   final String category;
+  final String displayName;
   final bool isSelected;
   final VoidCallback onTap;
 
   const _CategoryChip({
     required this.category,
+    required this.displayName,
     required this.isSelected,
     required this.onTap,
   });
@@ -519,7 +549,7 @@ class _CategoryChip extends StatelessWidget {
               : Border.all(color: const Color(0xFFE0E0E0), width: 1),
         ),
         child: Text(
-          category,
+          displayName,
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,

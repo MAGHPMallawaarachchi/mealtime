@@ -9,9 +9,9 @@ class GetSeasonalIngredientsUseCase {
     SeasonalIngredientsRepository? repository,
   }) : _repository = repository ?? SeasonalIngredientsRepositoryImpl();
 
-  Future<List<SeasonalIngredient>> call({bool forceRefresh = false}) async {
+  Future<List<SeasonalIngredient>> call() async {
     try {
-      final ingredients = await _repository.getSeasonalIngredients(forceRefresh: forceRefresh);
+      final ingredients = await _repository.getSeasonalIngredients();
       
       return ingredients;
     } catch (e) {
@@ -37,6 +37,16 @@ class GetSeasonalIngredientsUseCase {
     } catch (e) {
       throw GetSeasonalIngredientsUseCaseException(
         'Failed to refresh seasonal ingredients: ${e.toString()}',
+      );
+    }
+  }
+
+  Future<SeasonalIngredient?> getById(String id) async {
+    try {
+      return await _repository.getSeasonalIngredientById(id);
+    } catch (e) {
+      throw GetSeasonalIngredientsUseCaseException(
+        'Failed to get seasonal ingredient by id $id: ${e.toString()}',
       );
     }
   }

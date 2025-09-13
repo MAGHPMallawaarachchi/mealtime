@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Read(/D:\\Developments\\mealtime\\lib\\features\\explore\\presentation\\widgets/**)"
+      "Read(/D:\\Developments\\mealtime\\lib\\features\\explore\\presentation\\widgets/**)",
+      "Bash(flutter gen-l10n:*)"
     ],
     "deny": [],
     "ask": []

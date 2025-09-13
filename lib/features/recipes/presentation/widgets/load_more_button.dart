@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mealtime/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 
@@ -19,7 +20,7 @@ class LoadMoreButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!hasMore && !isLoading) {
-      return _buildEndOfResults();
+      return _buildEndOfResults(context);
     }
 
     return Padding(
@@ -30,13 +31,17 @@ class LoadMoreButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: isLoading ? null : onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: isLoading ? AppColors.background : AppColors.primary,
-            foregroundColor: isLoading ? AppColors.textSecondary : AppColors.white,
+            backgroundColor: isLoading
+                ? AppColors.background
+                : AppColors.primary,
+            foregroundColor: isLoading
+                ? AppColors.textSecondary
+                : AppColors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
               side: BorderSide(
-                color: isLoading 
+                color: isLoading
                     ? AppColors.textSecondary.withOpacity(0.3)
                     : AppColors.primary,
                 width: 1,
@@ -58,9 +63,9 @@ class LoadMoreButton extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    const Text(
-                      'Loading more recipes...',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.loadingMoreRecipes,
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -77,7 +82,8 @@ class LoadMoreButton extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      customText ?? 'Load More Recipes',
+                      customText ??
+                          AppLocalizations.of(context)!.loadMoreRecipes,
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -90,7 +96,7 @@ class LoadMoreButton extends StatelessWidget {
     );
   }
 
-  Widget _buildEndOfResults() {
+  Widget _buildEndOfResults(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
@@ -112,8 +118,8 @@ class LoadMoreButton extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'You\'ve seen all recipes',
+          Text(
+            AppLocalizations.of(context)!.youHaveSeenAllRecipes,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -121,8 +127,8 @@ class LoadMoreButton extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'Check back later for new recipes featuring this ingredient',
+          Text(
+            AppLocalizations.of(context)!.checkBackLaterForNewRecipes,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class ExploreCategoriesSection extends StatefulWidget {
   final Function(String?)? onCategorySelected;
@@ -18,7 +19,7 @@ class ExploreCategoriesSection extends StatefulWidget {
 
 class _ExploreCategoriesSectionState extends State<ExploreCategoriesSection> {
   final List<String> categories = [
-    'All',
+    'all',
     'beverages',
     'breakfast',
     'lunch',
@@ -32,11 +33,11 @@ class _ExploreCategoriesSectionState extends State<ExploreCategoriesSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Text(
-            'Categories',
-            style: TextStyle(
+            AppLocalizations.of(context)!.categories,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w500,
               color: AppColors.textPrimary,
@@ -59,17 +60,17 @@ class _ExploreCategoriesSectionState extends State<ExploreCategoriesSection> {
         itemBuilder: (context, index) {
           final category = categories[index];
           final isSelected = widget.selectedCategory == category ||
-              (widget.selectedCategory == null && category == 'All');
+              (widget.selectedCategory == null && category == 'all');
 
           return Padding(
             padding: EdgeInsets.only(
               right: index == categories.length - 1 ? 12 : 8,
             ),
             child: _CategoryButton(
-              category: _formatCategoryName(category),
+              category: _getLocalizedCategoryName(context, category),
               isSelected: isSelected,
               onTap: () {
-                final selectedCategory = category == 'All' ? null : category;
+                final selectedCategory = category == 'all' ? null : category;
                 widget.onCategorySelected?.call(selectedCategory);
               },
             ),
@@ -79,16 +80,25 @@ class _ExploreCategoriesSectionState extends State<ExploreCategoriesSection> {
     );
   }
 
-  String _formatCategoryName(String category) {
-    if (category == 'All') return category;
-    
-    // Capitalize first letter and handle multiple words
-    return category
-        .split(' ')
-        .map((word) => word.isEmpty 
-            ? word 
-            : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}')
-        .join(' ');
+  String _getLocalizedCategoryName(BuildContext context, String category) {
+    switch (category) {
+      case 'all':
+        return AppLocalizations.of(context)!.all;
+      case 'beverages':
+        return AppLocalizations.of(context)!.beverages;
+      case 'breakfast':
+        return AppLocalizations.of(context)!.breakfast;
+      case 'lunch':
+        return AppLocalizations.of(context)!.lunch;
+      case 'dinner':
+        return AppLocalizations.of(context)!.dinner;
+      case 'snacks':
+        return AppLocalizations.of(context)!.snacks;
+      case 'desserts':
+        return AppLocalizations.of(context)!.desserts;
+      default:
+        return category;
+    }
   }
 }
 

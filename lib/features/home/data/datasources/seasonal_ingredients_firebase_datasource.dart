@@ -28,6 +28,22 @@ class SeasonalIngredientsFirebaseDataSource implements SeasonalIngredientsDataSo
     }
   }
 
+  Future<List<SeasonalIngredient>> getSeasonalIngredientsFromServer() async {
+    try {
+      final rawData = await _firestoreService.getCollectionWithQueryFromServer(
+        _collectionPath,
+        orderBy: 'name',
+        descending: false,
+      );
+
+      return rawData.map((data) => SeasonalIngredient.fromJson(data)).toList();
+    } catch (e) {
+      throw SeasonalIngredientsDataSourceException(
+        'Failed to fetch seasonal ingredients from server: ${e.toString()}',
+      );
+    }
+  }
+
   @override
   Stream<List<SeasonalIngredient>> getSeasonalIngredientsStream() {
     try {

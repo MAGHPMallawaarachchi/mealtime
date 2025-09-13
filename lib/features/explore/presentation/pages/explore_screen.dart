@@ -66,7 +66,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       if (mounted) {
         ref.listen(currentUserProvider, (previousUser, currentUser) {
           if (previousUser?.value?.dietaryType !=
-              currentUser?.value?.dietaryType) {
+              currentUser.value?.dietaryType) {
             // User's dietary preference changed, refresh recipes
             _loadRecipes(forceRefresh: true);
           }
@@ -448,7 +448,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    _errorMessage ?? 'Unknown error occurred',
+                    _errorMessage ?? AppLocalizations.of(context)!.unknownErrorOccurred,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 14,

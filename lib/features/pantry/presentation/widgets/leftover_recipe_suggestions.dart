@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../recipes/domain/models/recipe.dart';
 import '../../domain/models/pantry_item.dart';
 import '../providers/leftover_recipe_providers.dart';
@@ -10,16 +11,15 @@ import '../providers/leftover_recipe_providers.dart';
 class LeftoverRecipeSuggestionsSection extends ConsumerStatefulWidget {
   final PantryItem leftover;
 
-  const LeftoverRecipeSuggestionsSection({
-    super.key,
-    required this.leftover,
-  });
+  const LeftoverRecipeSuggestionsSection({super.key, required this.leftover});
 
   @override
-  ConsumerState<LeftoverRecipeSuggestionsSection> createState() => _LeftoverRecipeSuggestionsSectionState();
+  ConsumerState<LeftoverRecipeSuggestionsSection> createState() =>
+      _LeftoverRecipeSuggestionsSectionState();
 }
 
-class _LeftoverRecipeSuggestionsSectionState extends ConsumerState<LeftoverRecipeSuggestionsSection> {
+class _LeftoverRecipeSuggestionsSectionState
+    extends ConsumerState<LeftoverRecipeSuggestionsSection> {
   bool _isExpanded = false;
 
   @override
@@ -82,11 +82,15 @@ class _LeftoverRecipeSuggestionsSectionState extends ConsumerState<LeftoverRecip
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    isLoading 
-                        ? 'Finding recipes...'
-                        : recipeCount > 0 
-                            ? 'Recipe suggestions ($recipeCount)'
-                            : 'No recipes found',
+                    isLoading
+                        ? AppLocalizations.of(
+                            context,
+                          )!.findingRecipesForLeftover
+                        : recipeCount > 0
+                        ? AppLocalizations.of(
+                            context,
+                          )!.recipeSuggestionsCount(recipeCount)
+                        : AppLocalizations.of(context)!.noRecipesFound,
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -96,7 +100,9 @@ class _LeftoverRecipeSuggestionsSectionState extends ConsumerState<LeftoverRecip
                   if (!isLoading && recipeCount > 0) ...[
                     const SizedBox(height: 2),
                     Text(
-                      'Tap to ${_isExpanded ? 'hide' : 'view'} recipes',
+                      _isExpanded
+                          ? AppLocalizations.of(context)!.tapToHideRecipes
+                          : AppLocalizations.of(context)!.tapToViewRecipes,
                       style: TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary,
@@ -117,7 +123,9 @@ class _LeftoverRecipeSuggestionsSectionState extends ConsumerState<LeftoverRecip
               ),
             ] else if (recipeCount > 0) ...[
               PhosphorIcon(
-                _isExpanded ? PhosphorIcons.caretUp() : PhosphorIcons.caretDown(),
+                _isExpanded
+                    ? PhosphorIcons.caretUp()
+                    : PhosphorIcons.caretDown(),
                 size: 16,
                 color: AppColors.textSecondary,
               ),
@@ -128,7 +136,10 @@ class _LeftoverRecipeSuggestionsSectionState extends ConsumerState<LeftoverRecip
     );
   }
 
-  Widget _buildRecipeList(List<Recipe> recipes, LeftoverRecipeSuggestionsState state) {
+  Widget _buildRecipeList(
+    List<Recipe> recipes,
+    LeftoverRecipeSuggestionsState state,
+  ) {
     if (state.error != null) {
       return _buildErrorState(state.error!);
     }
@@ -244,7 +255,8 @@ class _LeftoverRecipeSuggestionsSectionState extends ConsumerState<LeftoverRecip
                 width: 50,
                 height: 50,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => _buildImagePlaceholder(),
+                errorBuilder: (context, error, stackTrace) =>
+                    _buildImagePlaceholder(),
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
                   return _buildImagePlaceholder();
@@ -286,23 +298,22 @@ class _LeftoverRecipeSuggestionsSectionState extends ConsumerState<LeftoverRecip
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              'Failed to load suggestions',
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColors.error,
-              ),
+              AppLocalizations.of(context)!.failedToLoadSuggestions,
+              style: TextStyle(fontSize: 12, color: AppColors.error),
             ),
           ),
           TextButton(
             onPressed: () {
-              ref.read(leftoverRecipeSuggestionsProvider.notifier).updateSuggestions();
+              ref
+                  .read(leftoverRecipeSuggestionsProvider.notifier)
+                  .updateSuggestions();
             },
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               minimumSize: const Size(0, 0),
             ),
-            child: const Text(
-              'Retry',
+            child: Text(
+              AppLocalizations.of(context)!.retry,
               style: TextStyle(fontSize: 12),
             ),
           ),
@@ -324,11 +335,8 @@ class _LeftoverRecipeSuggestionsSectionState extends ConsumerState<LeftoverRecip
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              'No matching recipes found for this leftover',
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
-              ),
+              AppLocalizations.of(context)!.noMatchingRecipesFoundForLeftover,
+              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
             ),
           ),
         ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/models/weekly_meal_plan.dart';
 
 class WeekNavigationHeader extends StatelessWidget {
@@ -26,24 +27,19 @@ class WeekNavigationHeader extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(
-          bottom: BorderSide(
-            color: AppColors.border,
-            width: 0.5,
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
       ),
       child: Column(
         children: [
-          _buildWeekHeader(),
+          _buildWeekHeader(context),
           const SizedBox(height: 16),
-          _buildDayIndicators(),
+          _buildDayIndicators(context),
         ],
       ),
     );
   }
 
-  Widget _buildWeekHeader() {
+  Widget _buildWeekHeader(BuildContext context) {
     final weekEnd = weekPlan.weekStartDate.add(const Duration(days: 6));
     final isCurrentWeek = _isCurrentWeek(weekPlan.weekStartDate);
 
@@ -61,7 +57,7 @@ class WeekNavigationHeader extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                _formatWeekRange(weekPlan.weekStartDate, weekEnd),
+                _formatWeekRange(context, weekPlan.weekStartDate, weekEnd),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -74,14 +70,17 @@ class WeekNavigationHeader extends StatelessWidget {
                 children: [
                   if (isCurrentWeek) ...[
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text(
-                        'This Week',
-                        style: TextStyle(
+                      child: Text(
+                        AppLocalizations.of(context)!.thisWeek,
+                        style: const TextStyle(
                           fontSize: 12,
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
@@ -90,7 +89,7 @@ class WeekNavigationHeader extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                   ],
-                  _buildWeekStats(),
+                  _buildWeekStats(context),
                 ],
               ),
             ],
@@ -107,14 +106,14 @@ class WeekNavigationHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildWeekStats() {
+  Widget _buildWeekStats(BuildContext context) {
     final totalMeals = weekPlan.dailyPlans.fold<int>(
       0,
       (sum, dayPlan) => sum + dayPlan.scheduledMeals.length,
     );
 
     return Text(
-      '$totalMeals meals planned',
+      AppLocalizations.of(context)!.mealsPlanned(totalMeals),
       style: const TextStyle(
         fontSize: 12,
         color: AppColors.textSecondary,
@@ -123,9 +122,8 @@ class WeekNavigationHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildDayIndicators() {
+  Widget _buildDayIndicators(BuildContext context) {
     final today = DateTime.now();
-    const dayNames = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
     return Row(
       children: List.generate(7, (index) {
@@ -141,7 +139,7 @@ class WeekNavigationHeader extends StatelessWidget {
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 2),
               child: _buildDayIndicator(
-                dayName: dayNames[index],
+                dayName: _getLocalizedDayName(context, index),
                 dayNumber: dayDate.day,
                 isToday: isToday,
                 isSelected: isSelected,
@@ -184,10 +182,7 @@ class WeekNavigationHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: borderColor,
-          width: 1,
-        ),
+        border: Border.all(color: borderColor, width: 1),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -221,7 +216,7 @@ class WeekNavigationHeader extends StatelessWidget {
                     width: 4,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: isSelected 
+                      color: isSelected
                           ? Colors.white.withOpacity(0.8)
                           : AppColors.primary,
                       shape: BoxShape.circle,
@@ -233,7 +228,7 @@ class WeekNavigationHeader extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
-                      color: isSelected 
+                      color: isSelected
                           ? Colors.white.withOpacity(0.9)
                           : AppColors.primary,
                     ),
@@ -249,11 +244,35 @@ class WeekNavigationHeader extends StatelessWidget {
     );
   }
 
-  String _formatWeekRange(DateTime start, DateTime end) {
+  String _formatWeekRange(BuildContext context, DateTime start, DateTime end) {
+    final locale = AppLocalizations.of(context)!.localeName;
+    
     if (start.month == end.month) {
-      return '${DateFormat('MMM d').format(start)} - ${DateFormat('d, yyyy').format(end)}';
+      return '${DateFormat('MMM d', locale).format(start)} - ${DateFormat('d, yyyy', locale).format(end)}';
     } else {
-      return '${DateFormat('MMM d').format(start)} - ${DateFormat('MMM d, yyyy').format(end)}';
+      return '${DateFormat('MMM d', locale).format(start)} - ${DateFormat('MMM d, yyyy', locale).format(end)}';
+    }
+  }
+
+  String _getLocalizedDayName(BuildContext context, int dayIndex) {
+    final localizations = AppLocalizations.of(context)!;
+    switch (dayIndex) {
+      case 0:
+        return localizations.mondayShort;
+      case 1:
+        return localizations.tuesdayShort;
+      case 2:
+        return localizations.wednesdayShort;
+      case 3:
+        return localizations.thursdayShort;
+      case 4:
+        return localizations.fridayShort;
+      case 5:
+        return localizations.saturdayShort;
+      case 6:
+        return localizations.sundayShort;
+      default:
+        return '';
     }
   }
 

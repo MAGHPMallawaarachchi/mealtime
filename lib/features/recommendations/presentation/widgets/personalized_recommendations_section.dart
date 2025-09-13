@@ -25,28 +25,28 @@ class _PersonalizedRecommendationsSectionState
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  final List<RecommendationSectionConfig> _sections = [
+  List<RecommendationSectionConfig> _getSections(BuildContext context) => [
     RecommendationSectionConfig(
-      title: "Perfect for Your Pantry",
-      subtitle: "Use up your pantry items",
+      title: AppLocalizations.of(context)!.perfectForYourPantry,
+      subtitle: AppLocalizations.of(context)!.useUpPantryItems,
       icon: PhosphorIconsRegular.forkKnife,
       type: RecommendationSectionType.pantry,
     ),
     RecommendationSectionConfig(
-      title: "Just for You",
-      subtitle: "Based on your preferences",
+      title: AppLocalizations.of(context)!.justForYou,
+      subtitle: AppLocalizations.of(context)!.basedOnPreferences,
       icon: PhosphorIconsRegular.heart,
       type: RecommendationSectionType.personalized,
     ),
     RecommendationSectionConfig(
-      title: "Quick Weeknight Meals",
-      subtitle: "Ready in 30 minutes or less",
+      title: AppLocalizations.of(context)!.quickWeeknightMeals,
+      subtitle: AppLocalizations.of(context)!.readyInMinutes,
       icon: PhosphorIconsRegular.clock,
       type: RecommendationSectionType.quick,
     ),
     RecommendationSectionConfig(
-      title: "Seasonal Favorites",
-      subtitle: "Perfect for this time of year",
+      title: AppLocalizations.of(context)!.seasonalFavorites,
+      subtitle: AppLocalizations.of(context)!.perfectForTimeOfYear,
       icon: PhosphorIconsRegular.leaf,
       type: RecommendationSectionType.seasonal,
     ),
@@ -110,7 +110,8 @@ class _PersonalizedRecommendationsSectionState
 
   Widget _buildRecommendationsContent(RecommendationBatch batch) {
     final currentSectionIndex = ref.watch(selectedRecommendationTabProvider);
-    final currentSection = _sections[currentSectionIndex];
+    final sections = _getSections(context);
+    final currentSection = sections[currentSectionIndex];
     final recommendations = _getRecommendationsForSection(currentSection.type);
 
     return FadeTransition(
@@ -132,7 +133,8 @@ class _PersonalizedRecommendationsSectionState
 
   Widget _buildStaticHeader() {
     final currentSectionIndex = ref.watch(selectedRecommendationTabProvider);
-    final currentSection = _sections[currentSectionIndex];
+    final sections = _getSections(context);
+    final currentSection = sections[currentSectionIndex];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -221,16 +223,17 @@ class _PersonalizedRecommendationsSectionState
               ],
             ),
           ),
-          _buildSectionTabs(currentIndex),
+          _buildSectionTabs(currentIndex, context),
         ],
       ),
     );
   }
 
-  Widget _buildSectionTabs(int currentIndex) {
+  Widget _buildSectionTabs(int currentIndex, BuildContext context) {
+    final sections = _getSections(context);
     return Row(
       children: List.generate(
-        _sections.length,
+        sections.length,
         (index) => _RecommendationTabIndicator(
           isActive: index == currentIndex,
           onTap: () {
@@ -292,9 +295,10 @@ class _PersonalizedRecommendationsSectionState
 
   Widget _buildEmptySection() {
     final currentSectionIndex = ref.watch(selectedRecommendationTabProvider);
-    final currentSection = _sections[currentSectionIndex];
+    final sections = _getSections(context);
+    final currentSection = sections[currentSectionIndex];
 
-    final emptyStateInfo = _getEmptyStateInfo(currentSection.type);
+    final emptyStateInfo = _getEmptyStateInfo(currentSection.type, context);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -363,31 +367,34 @@ class _PersonalizedRecommendationsSectionState
     );
   }
 
-  Map<String, dynamic> _getEmptyStateInfo(RecommendationSectionType type) {
+  Map<String, dynamic> _getEmptyStateInfo(
+    RecommendationSectionType type,
+    BuildContext context,
+  ) {
     switch (type) {
       case RecommendationSectionType.pantry:
         return {
           'icon': PhosphorIconsRegular.forkKnife,
-          'title': 'No pantry matches found',
-          'subtitle': 'Add items to your pantry to get recipe suggestions',
+          'title': AppLocalizations.of(context)!.noPantryMatchesFound,
+          'subtitle': AppLocalizations.of(context)!.addItemsToGetSuggestions,
         };
       case RecommendationSectionType.personalized:
         return {
           'icon': PhosphorIconsRegular.heart,
-          'title': 'Building your preferences',
-          'subtitle': 'Interact with recipes to get personalized suggestions',
+          'title': AppLocalizations.of(context)!.buildingYourPreferences,
+          'subtitle': AppLocalizations.of(context)!.interactToGetSuggestions,
         };
       case RecommendationSectionType.quick:
         return {
           'icon': PhosphorIconsRegular.clock,
-          'title': 'No quick meals available',
-          'subtitle': 'Quick meal suggestions will appear here',
+          'title': AppLocalizations.of(context)!.noQuickMealsAvailable,
+          'subtitle': AppLocalizations.of(context)!.quickMealSuggestions,
         };
       case RecommendationSectionType.seasonal:
         return {
           'icon': PhosphorIconsRegular.leaf,
-          'title': 'No seasonal recipes found',
-          'subtitle': 'Seasonal recommendations based on current time of year',
+          'title': AppLocalizations.of(context)!.noSeasonalRecipesFound,
+          'subtitle': AppLocalizations.of(context)!.seasonalRecommendations,
         };
     }
   }
@@ -395,27 +402,30 @@ class _PersonalizedRecommendationsSectionState
   Widget _buildEmptyState() {
     return Container(
       padding: const EdgeInsets.all(24),
-      child: const Column(
+      child: Column(
         children: [
-          PhosphorIcon(
+          const PhosphorIcon(
             PhosphorIconsRegular.sparkle,
             size: 48,
             color: AppColors.textSecondary,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
-            'Personalized recommendations',
-            style: TextStyle(
+            AppLocalizations.of(context)!.personalizedRecommendations,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
-            'Add items to your pantry and set your preferences to get personalized recipe recommendations.',
+            AppLocalizations.of(context)!.addItemsAndSetPreferences,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            style: const TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+            ),
           ),
         ],
       ),
@@ -534,19 +544,22 @@ class _PersonalizedRecommendationsSectionState
             color: AppColors.textSecondary,
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Unable to load recommendations',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.unableToLoadRecommendations,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Please check your connection and try again.',
+          Text(
+            AppLocalizations.of(context)!.checkConnectionAndRetry,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            style: const TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+            ),
           ),
           const SizedBox(height: 16),
           ElevatedButton(
@@ -555,7 +568,7 @@ class _PersonalizedRecommendationsSectionState
               backgroundColor: AppColors.primary,
               foregroundColor: AppColors.white,
             ),
-            child: const Text('Retry'),
+            child: Text(AppLocalizations.of(context)!.retry),
           ),
         ],
       ),
@@ -586,6 +599,49 @@ class _PersonalizedRecommendationsSectionState
   void _refreshRecommendations() {
     // This will trigger a refresh of recommendations
     // Implementation depends on how you want to trigger refresh
+  }
+
+  String _getLocalizedReason(String originalReason, BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
+    // Handle dynamic reasons with placeholders
+    if (originalReason.startsWith('Perfect for your ')) {
+      final items = originalReason.substring('Perfect for your '.length);
+      return localizations.perfectForYourItems(items);
+    }
+
+    if (originalReason.startsWith('Uses ') &&
+        originalReason.contains(' ingredients from your pantry')) {
+      final regex = RegExp(r'Uses (\d+) ingredients? from your pantry');
+      final match = regex.firstMatch(originalReason);
+      if (match != null) {
+        final count = int.parse(match.group(1)!);
+        return localizations.usesPantryIngredients(count);
+      }
+    }
+
+    // Handle static reasons
+    switch (originalReason) {
+      case 'Uses ingredients from your pantry':
+        return localizations.usesIngredientsFromPantry;
+      case 'Based on your preferences':
+        return localizations.basedOnYourPreferences;
+      case 'Similar to your preferences':
+        return localizations.similarToPreferences;
+      case 'Perfect for this season':
+        return localizations.perfectForThisSeason;
+      case 'Quick and easy':
+        return localizations.quickAndEasy;
+      case 'Similar to recipes you\'ve enjoyed':
+        return localizations.similarToEnjoyedRecipes;
+      case 'Perfect match!':
+        return localizations.perfectMatch;
+      case 'Great match!':
+        return localizations.greatMatch;
+      default:
+        // Return original reason as fallback if not recognized
+        return originalReason;
+    }
   }
 }
 
@@ -693,14 +749,14 @@ class _AnimatedRecommendationCard extends ConsumerWidget {
     }
 
     if (recipesState.error != null) {
-      return _buildRecipeCardError();
+      return _buildRecipeCardError(context);
     }
 
     final recipe = recipesState.recipes.cast<Recipe?>().firstWhere(
       (r) => r?.id == recommendation.recipeId,
       orElse: () => Recipe(
         id: recommendation.recipeId,
-        title: 'Recipe Not Found',
+        title: AppLocalizations.of(context)!.recipeNotFound,
         time: '',
         imageUrl: '',
         ingredients: [],
@@ -751,7 +807,10 @@ class _AnimatedRecommendationCard extends ConsumerWidget {
                       bottom: 12,
                       left: 12,
                       right: 12,
-                      child: _buildRecommendationReason(recommendation),
+                      child: _buildRecommendationReason(
+                        recommendation,
+                        context,
+                      ),
                     ),
                   ],
                 ),
@@ -763,7 +822,10 @@ class _AnimatedRecommendationCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildRecommendationReason(RecommendationScore recommendation) {
+  Widget _buildRecommendationReason(
+    RecommendationScore recommendation,
+    BuildContext context,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
@@ -790,7 +852,7 @@ class _AnimatedRecommendationCard extends ConsumerWidget {
           const SizedBox(width: 4),
           Flexible(
             child: Text(
-              recommendation.reason,
+              _getLocalizedReason(recommendation.reason, context),
               style: TextStyle(
                 fontSize: 11,
                 color: AppColors.primary.withOpacity(0.9),
@@ -891,7 +953,7 @@ class _AnimatedRecommendationCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildRecipeCardError() {
+  Widget _buildRecipeCardError(BuildContext context) {
     return Container(
       width: 200,
       margin: const EdgeInsets.only(right: 12),
@@ -900,23 +962,69 @@ class _AnimatedRecommendationCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
-      child: const Center(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            PhosphorIcon(
+            const PhosphorIcon(
               PhosphorIconsRegular.warning,
               size: 24,
               color: AppColors.textSecondary,
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
-              'Failed to load',
-              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+              AppLocalizations.of(context)!.failedToLoad,
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  String _getLocalizedReason(String originalReason, BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
+    // Handle dynamic reasons with placeholders
+    if (originalReason.startsWith('Perfect for your ')) {
+      final items = originalReason.substring('Perfect for your '.length);
+      return localizations.perfectForYourItems(items);
+    }
+
+    if (originalReason.startsWith('Uses ') &&
+        originalReason.contains(' ingredients from your pantry')) {
+      final regex = RegExp(r'Uses (\d+) ingredients? from your pantry');
+      final match = regex.firstMatch(originalReason);
+      if (match != null) {
+        final count = int.parse(match.group(1)!);
+        return localizations.usesPantryIngredients(count);
+      }
+    }
+
+    // Handle static reasons
+    switch (originalReason) {
+      case 'Uses ingredients from your pantry':
+        return localizations.usesIngredientsFromPantry;
+      case 'Based on your preferences':
+        return localizations.basedOnYourPreferences;
+      case 'Similar to your preferences':
+        return localizations.similarToPreferences;
+      case 'Perfect for this season':
+        return localizations.perfectForThisSeason;
+      case 'Quick and easy':
+        return localizations.quickAndEasy;
+      case 'Similar to recipes you\'ve enjoyed':
+        return localizations.similarToEnjoyedRecipes;
+      case 'Perfect match!':
+        return localizations.perfectMatch;
+      case 'Great match!':
+        return localizations.greatMatch;
+      default:
+        // Return original reason as fallback if not recognized
+        return originalReason;
+    }
   }
 }

@@ -75,7 +75,9 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Failed to load recipes. Please try again.';
+        _errorMessage = AppLocalizations.of(
+          context,
+        )!.failedToLoadRecipesPleaseTryAgain;
         _allRecipes = [];
         _filteredRecipes = [];
       });
@@ -108,7 +110,7 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
       } catch (e) {
         setState(() {
           _isLoading = false;
-          _errorMessage = 'Search failed. Please try again.';
+          _errorMessage = AppLocalizations.of(context)!.searchFailed;
           _filteredRecipes = [];
         });
       }
@@ -160,21 +162,21 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
             ),
           ),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Select Recipe',
-                  style: TextStyle(
+                  AppLocalizations.of(context)!.selectRecipe,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
                 ),
                 Text(
-                  'Choose a recipe for your meal',
-                  style: TextStyle(
+                  AppLocalizations.of(context)!.chooseRecipeForMeal,
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary,
                   ),
@@ -257,17 +259,20 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
   }
 
   Widget _buildLoadingState() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(
+          const CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
-            'Loading recipes...',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+            AppLocalizations.of(context)!.loadingRecipesEllipsis,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 16,
+            ),
           ),
         ],
       ),
@@ -354,7 +359,9 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
           ),
           const SizedBox(height: 16),
           Text(
-            hasSearch ? 'No recipes found' : 'No recipes available',
+            hasSearch
+                ? AppLocalizations.of(context)!.noRecipesFoundEmpty
+                : AppLocalizations.of(context)!.noRecipesAvailable,
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -364,8 +371,10 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
           const SizedBox(height: 8),
           Text(
             hasSearch
-                ? 'Try searching with different keywords'
-                : 'Please check back later',
+                ? AppLocalizations.of(
+                    context,
+                  )!.trySearchingWithDifferentKeywords
+                : AppLocalizations.of(context)!.pleaseCheckBackLater,
             style: const TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary,
@@ -378,7 +387,7 @@ class _RecipeSelectionModalState extends State<RecipeSelectionModal> {
                 _searchController.clear();
               },
               icon: PhosphorIcon(PhosphorIcons.x()),
-              label: const Text('Clear search'),
+              label: Text(AppLocalizations.of(context)!.clearSearch),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primary,
                 side: const BorderSide(color: AppColors.primary),
