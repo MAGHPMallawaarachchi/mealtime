@@ -247,23 +247,45 @@ class RecipeIngredient {
     String baseName;
     Map<String, String>? localizedNameMap;
 
-    if (nameData is Map<String, dynamic>) {
-      // New localized format: "name": {"en": "...", "si": "..."}
-      localizedNameMap = Map<String, String>.from(nameData);
-      // Use English as base name, fallback to first available
-      baseName = localizedNameMap['en'] ?? localizedNameMap.values.first;
-    } else {
-      // Legacy format: "name": "ingredient name"
-      baseName = nameData as String? ?? 'Unknown ingredient';
-      // Check for separate localizedName field
-      final localizedNameData = json['localizedName'];
-      if (localizedNameData is Map<String, dynamic>) {
-        localizedNameMap = Map<String, String>.from(localizedNameData);
+    try {
+      if (nameData is Map<String, dynamic>) {
+        // New localized format: "name": {"en": "...", "si": "..."}
+        localizedNameMap = Map<String, String>.from(nameData);
+        // Use English as base name, fallback to first available
+        baseName = localizedNameMap['en'] ?? localizedNameMap.values.first;
+      } else if (nameData is Map) {
+        // Handle generic Map type (not specifically String, dynamic)
+        localizedNameMap = <String, String>{};
+        nameData.forEach((key, value) {
+          if (key is String && value is String) {
+            localizedNameMap![key] = value;
+          }
+        });
+        baseName = localizedNameMap['en'] ?? localizedNameMap.values.first;
+      } else {
+        // Legacy format: "name": "ingredient name"
+        baseName = nameData ?? 'Unknown ingredient';
+        // Check for separate localizedName field
+        final localizedNameData = json['localizedName'];
+        if (localizedNameData is Map<String, dynamic>) {
+          localizedNameMap = Map<String, String>.from(localizedNameData);
+        } else if (localizedNameData is Map) {
+          localizedNameMap = <String, String>{};
+          localizedNameData.forEach((key, value) {
+            if (key is String && value is String) {
+              localizedNameMap![key] = value;
+            }
+          });
+        }
       }
+    } catch (e) {
+      // Fallback in case of any parsing error
+      baseName = nameData?.toString() ?? 'Unknown ingredient';
+      localizedNameMap = null;
     }
 
     return RecipeIngredient(
-      id: json['id'] as String? ?? '',
+      id: json['id'] ?? '',
       name: baseName,
       localizedName: localizedNameMap,
       quantity: (json['quantity'] as num?)?.toDouble() ?? 1.0,
@@ -400,8 +422,8 @@ class IngredientSection {
 
   factory IngredientSection.fromJson(Map<String, dynamic> json) {
     return IngredientSection(
-      id: json['id'] as String? ?? '',
-      title: json['title'] as String? ?? 'Ingredients',
+      id: json['id'] ?? '',
+      title: json['title'] is String ? json['title'] : 'Ingredients',
       ingredients: json['ingredients'] != null
           ? (json['ingredients'] as List)
                 .where((e) => e is Map<String, dynamic>)
@@ -489,43 +511,76 @@ class InstructionSection {
     List<String> baseSteps = [];
     Map<String, List<String>>? localizedStepsMap;
 
-    if (stepsData is List) {
-      // Check if it's a list of localized objects or simple strings
-      if (stepsData.isNotEmpty && stepsData.first is Map<String, dynamic>) {
-        // New localized format: "steps": [{"en": "...", "si": "..."}, ...]
-        final Map<String, List<String>> tempMap = {};
-        for (final stepObj in stepsData) {
-          if (stepObj is Map<String, dynamic>) {
-            stepObj.forEach((locale, text) {
-              if (text is String) {
-                tempMap.putIfAbsent(locale, () => []).add(text);
-              }
-            });
+    try {
+      if (stepsData is List) {
+        // Check if it's a list of localized objects or simple strings
+        if (stepsData.isNotEmpty && stepsData.first is Map) {
+          // New localized format: "steps": [{"en": "...", "si": "..."}, ...]
+          final Map<String, List<String>> tempMap = {};
+          for (final stepObj in stepsData) {
+            if (stepObj is Map<String, dynamic>) {
+              stepObj.forEach((locale, text) {
+                if (locale is String && text is String) {
+                  tempMap.putIfAbsent(locale, () => []).add(text);
+                }
+              });
+            } else if (stepObj is Map) {
+              // Handle generic Map type
+              stepObj.forEach((locale, text) {
+                if (locale is String && text is String) {
+                  tempMap.putIfAbsent(locale, () => []).add(text);
+                }
+              });
+            }
           }
+          localizedStepsMap = tempMap;
+          // Use English as base steps, fallback to first available
+          if (tempMap.containsKey('en')) {
+            baseSteps = tempMap['en']!;
+          } else if (tempMap.isNotEmpty) {
+            baseSteps = tempMap.values.first;
+          }
+        } else {
+          // Legacy format: "steps": ["step1", "step2", ...]
+          baseSteps = stepsData
+              .where((step) => step is String)
+              .map<String>((step) => step)
+              .toList();
         }
-        localizedStepsMap = tempMap;
-        // Use English as base steps, fallback to first available
-        baseSteps = localizedStepsMap['en'] ?? localizedStepsMap.values.first;
-      } else {
-        // Legacy format: "steps": ["step1", "step2", ...]
-        baseSteps = List<String>.from(stepsData);
       }
-    }
 
-    // Check for separate localizedSteps field
-    final localizedStepsData = json['localizedSteps'];
-    if (localizedStepsData is Map<String, dynamic>) {
-      localizedStepsMap = {};
-      localizedStepsData.forEach((locale, steps) {
-        if (steps is List) {
-          localizedStepsMap![locale] = List<String>.from(steps);
-        }
-      });
+      // Check for separate localizedSteps field (backward compatibility)
+      final localizedStepsData = json['localizedSteps'];
+      if (localizedStepsData is Map<String, dynamic>) {
+        localizedStepsMap ??= {};
+        localizedStepsData.forEach((locale, steps) {
+          if (steps is List) {
+            localizedStepsMap![locale] = steps
+                .where((step) => step is String)
+                .map<String>((step) => step)
+                .toList();
+          }
+        });
+      } else if (localizedStepsData is Map) {
+        localizedStepsMap ??= {};
+        localizedStepsData.forEach((locale, steps) {
+          if (locale is String && steps is List) {
+            localizedStepsMap![locale] = steps
+                .where((step) => step is String)
+                .map<String>((step) => step)
+                .toList();
+          }
+        });
+      }
+    } catch (e) {
+      // Fallback in case of any parsing error
+      baseSteps = [];
+      localizedStepsMap = null;
     }
 
     return InstructionSection(
-      id: json['id'] as String? ?? '',
-      title: json['title'] as String? ?? 'Instructions',
+      id: json['id'] ?? '',
+      title: json['title'] is String ? json['title'] : 'Instructions',
       steps: baseSteps,
       localizedSteps: localizedStepsMap,
     );
@@ -720,13 +775,13 @@ class Recipe {
     final localizedDescriptionMap = json['localizedDescription'];
 
     return Recipe(
-      id: json['id'] as String? ?? '',
-      title: json['title'] as String? ?? 'Untitled Recipe',
+      id: json['id'] ?? '',
+      title: json['title'] is String ? json['title'] : 'Untitled Recipe',
       localizedTitle: localizedTitleMap is Map<String, dynamic>
           ? Map<String, String>.from(localizedTitleMap)
           : null,
-      time: json['time'] as String? ?? '30 min',
-      imageUrl: json['imageUrl'] as String? ?? '',
+      time: json['time'] is String ? json['time'] : '30 min',
+      imageUrl: json['imageUrl'] is String ? json['imageUrl'] : '',
       ingredients: ingredients,
       ingredientSections: ingredientSections,
       instructionSections: instructionSections,
@@ -734,7 +789,7 @@ class Recipe {
       macros: json['macros'] != null
           ? RecipeMacros.fromJson(json['macros'] as Map<String, dynamic>)
           : const RecipeMacros(protein: 0, carbs: 0, fats: 0, fiber: 0),
-      description: json['description'] as String?,
+      description: json['description'] is String ? json['description'] : null,
       localizedDescription: localizedDescriptionMap is Map<String, dynamic>
           ? Map<String, String>.from(localizedDescriptionMap)
           : null,
@@ -747,8 +802,8 @@ class Recipe {
       tags: json['tags'] != null
           ? List<String>.from(json['tags'] as List)
           : const [],
-      source: json['source'] as String?,
-      dietaryType: json['dietaryType'] as String?,
+      source: json['source'] is String ? json['source'] : null,
+      dietaryType: json['dietaryType'] is String ? json['dietaryType'] : null,
     );
   }
 
