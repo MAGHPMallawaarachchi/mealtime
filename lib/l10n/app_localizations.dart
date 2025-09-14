@@ -1694,6 +1694,24 @@ abstract class AppLocalizations {
   /// **'Add to Meal Plan'**
   String get addToMealPlanAction;
 
+  /// Loading text when adding meal to plan
+  ///
+  /// In en, this message translates to:
+  /// **'Adding...'**
+  String get addingToMealPlan;
+
+  /// Success message when meal is added to plan
+  ///
+  /// In en, this message translates to:
+  /// **'Meal added to meal plan successfully!'**
+  String get mealAddedToMealPlan;
+
+  /// Error message when meal addition fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add meal to plan. Please try again.'**
+  String get failedToAddMeal;
+
   /// Add meal category text in empty compact meal card
   ///
   /// In en, this message translates to:

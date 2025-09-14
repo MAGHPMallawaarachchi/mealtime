@@ -1484,6 +1484,21 @@
     "description": "Button text to confirm adding meal to plan"
   },
 
+  "addingToMealPlan": "Adding...",
+  "@addingToMealPlan": {
+    "description": "Loading text when adding meal to plan"
+  },
+
+  "mealAddedToMealPlan": "Meal added to meal plan successfully!",
+  "@mealAddedToMealPlan": {
+    "description": "Success message when meal is added to plan"
+  },
+
+  "failedToAddMeal": "Failed to add meal to plan. Please try again.",
+  "@failedToAddMeal": {
+    "description": "Error message when meal addition fails"
+  },
+
   "addMealCategory": "Add {category}",
   "@addMealCategory": {
     "description": "Add meal category text in empty compact meal card",

@@ -1,7 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repositories/firebase_meal_plan_repository.dart';
+import '../../data/repositories/meal_planner_repository_impl.dart';
 import '../../domain/models/weekly_meal_plan.dart';
+import '../../domain/models/meal_slot.dart';
 import '../../domain/repositories/meal_plan_repository.dart';
+import '../../domain/repositories/meal_planner_repository.dart';
+import '../../domain/usecases/save_meal_slot_usecase.dart';
+import '../../../../core/services/auth_service.dart';
 
 // Repository provider
 final mealPlanRepositoryProvider = Provider<MealPlanRepository>((ref) {
@@ -68,4 +73,44 @@ class MealPlanActions {
 final mealPlanActionsProvider = Provider<MealPlanActions>((ref) {
   final repository = ref.watch(mealPlanRepositoryProvider);
   return MealPlanActions(repository);
+});
+
+// MealPlanner repository provider (for individual meal slot operations)
+final mealPlannerRepositoryProvider = Provider<MealPlannerRepository>((ref) {
+  return MealPlannerRepositoryImpl();
+});
+
+// Auth service provider
+final authServiceProvider = Provider<AuthService>((ref) {
+  return AuthService();
+});
+
+// Save meal slot use case provider
+final saveMealSlotUseCaseProvider = Provider<SaveMealSlotUseCase>((ref) {
+  final repository = ref.watch(mealPlannerRepositoryProvider);
+  return SaveMealSlotUseCase(repository);
+});
+
+// Meal slot actions
+class MealSlotActions {
+  final SaveMealSlotUseCase _saveMealSlotUseCase;
+  final AuthService _authService;
+
+  MealSlotActions(this._saveMealSlotUseCase, this._authService);
+
+  Future<void> saveMealSlot(DateTime date, MealSlot mealSlot) async {
+    final userId = _authService.currentUser?.uid;
+    if (userId == null) {
+      throw Exception('User not authenticated');
+    }
+
+    await _saveMealSlotUseCase.execute(userId, date, mealSlot);
+  }
+}
+
+// Meal slot actions provider
+final mealSlotActionsProvider = Provider<MealSlotActions>((ref) {
+  final saveMealSlotUseCase = ref.watch(saveMealSlotUseCaseProvider);
+  final authService = ref.watch(authServiceProvider);
+  return MealSlotActions(saveMealSlotUseCase, authService);
 });

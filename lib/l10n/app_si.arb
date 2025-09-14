@@ -1479,6 +1479,21 @@
     "description": "Button text to confirm adding meal to plan"
   },
 
+  "addingToMealPlan": "එක් කරමින්...",
+  "@addingToMealPlan": {
+    "description": "Loading text when adding meal to plan"
+  },
+
+  "mealAddedToMealPlan": "ආහාරය ආහාර සැලැස්මට සාර්ථකව එක් කරන ලදී!",
+  "@mealAddedToMealPlan": {
+    "description": "Success message when meal is added to plan"
+  },
+
+  "failedToAddMeal": "ආහාරය සැලැස්මට එක් කිරීම අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න.",
+  "@failedToAddMeal": {
+    "description": "Error message when meal addition fails"
+  },
+
   "addMealCategory": "{category} එක් කරන්න",
   "@addMealCategory": {
     "description": "Add meal category text in empty compact meal card",

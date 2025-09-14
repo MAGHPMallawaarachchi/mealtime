@@ -890,6 +890,16 @@ class AppLocalizationsSi extends AppLocalizations {
   String get addToMealPlanAction => 'ආහාර සැලැස්මට එක් කරන්න';
 
   @override
+  String get addingToMealPlan => 'එක් කරමින්...';
+
+  @override
+  String get mealAddedToMealPlan => 'ආහාරය ආහාර සැලැස්මට සාර්ථකව එක් කරන ලදී!';
+
+  @override
+  String get failedToAddMeal =>
+      'ආහාරය සැලැස්මට එක් කිරීම අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න.';
+
+  @override
   String addMealCategory(String category) {
     return '$category එක් කරන්න';
   }

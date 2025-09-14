@@ -907,6 +907,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addToMealPlanAction => 'Add to Meal Plan';
 
   @override
+  String get addingToMealPlan => 'Adding...';
+
+  @override
+  String get mealAddedToMealPlan => 'Meal added to meal plan successfully!';
+
+  @override
+  String get failedToAddMeal => 'Failed to add meal to plan. Please try again.';
+
+  @override
   String addMealCategory(String category) {
     return 'Add $category';
   }
