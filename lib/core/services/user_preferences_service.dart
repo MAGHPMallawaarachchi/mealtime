@@ -15,10 +15,11 @@ class UserPreferencesService {
     }
 
     try {
-      await _firestore.collection('users').doc(user.uid).update({
+      await _ensureUserDocumentExists(user);
+      await _firestore.collection('users').doc(user.uid).set({
         'dietaryType': dietaryType?.name,
         'updatedAt': FieldValue.serverTimestamp(),
-      });
+      }, SetOptions(merge: true));
     } catch (e) {
       throw Exception('Failed to update dietary preference: ${e.toString()}');
     }
@@ -31,10 +32,11 @@ class UserPreferencesService {
     }
 
     try {
-      await _firestore.collection('users').doc(user.uid).update({
+      await _ensureUserDocumentExists(user);
+      await _firestore.collection('users').doc(user.uid).set({
         'prioritizePantryItems': prioritizePantryItems,
         'updatedAt': FieldValue.serverTimestamp(),
-      });
+      }, SetOptions(merge: true));
     } catch (e) {
       throw Exception('Failed to update pantry prioritization: ${e.toString()}');
     }
@@ -62,9 +64,32 @@ class UserPreferencesService {
         updateData['prioritizePantryItems'] = prioritizePantryItems;
       }
 
-      await _firestore.collection('users').doc(user.uid).update(updateData);
+      // First ensure user document exists
+      await _ensureUserDocumentExists(user);
+
+      // Then update with merge to avoid overwriting existing data
+      await _firestore.collection('users').doc(user.uid).set(updateData, SetOptions(merge: true));
     } catch (e) {
       throw Exception('Failed to update user preferences: ${e.toString()}');
+    }
+  }
+
+  Future<void> _ensureUserDocumentExists(User user) async {
+    final userDoc = _firestore.collection('users').doc(user.uid);
+    final docSnapshot = await userDoc.get();
+
+    if (!docSnapshot.exists) {
+      await userDoc.set({
+        'uid': user.uid,
+        'email': user.email,
+        'displayName': user.displayName,
+        'photoURL': user.photoURL,
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+        'householdId': null,
+        'enableRecommendations': true,
+        'prioritizePantryItems': true,
+      });
     }
   }
 

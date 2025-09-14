@@ -199,12 +199,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ),
                   ),
                 ),
-                Text(
-                  '$_householdSize ${_householdSize == 1 ? 'person' : 'people'}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w500,
+                Flexible(
+                  child: Text(
+                    '$_householdSize ${_householdSize == 1 ? 'person' : 'people'}',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -683,7 +686,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   size: 20,
                 ),
                 const SizedBox(width: 8),
-                Text(AppLocalizations.of(context)!.settingsSavedSuccessfully),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.settingsSavedSuccessfully,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
             backgroundColor: Colors.green,
@@ -712,10 +720,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   size: 20,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  AppLocalizations.of(
-                    context,
-                  )!.failedToSaveSettings(e.toString()),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(
+                      context,
+                    )!.failedToSaveSettings(e.toString()),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
