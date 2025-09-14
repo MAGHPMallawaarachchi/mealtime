@@ -772,7 +772,56 @@ class Recipe {
 
     // Parse localized fields
     final localizedTitleMap = json['localizedTitle'];
-    final localizedDescriptionMap = json['localizedDescription'];
+
+    // Handle description field which might be localized or a plain string
+    String? baseDescription;
+    Map<String, String>? localizedDescriptionMap;
+
+    final descriptionData = json['description'];
+    final separateLocalizedDescriptionMap = json['localizedDescription'];
+
+    if (descriptionData is Map<String, dynamic>) {
+      // Description field contains localized content
+      localizedDescriptionMap = Map<String, String>.from(descriptionData);
+      // Use English as base description, fallback to first available
+      baseDescription = localizedDescriptionMap['en'] ?? localizedDescriptionMap.values.firstOrNull;
+    } else if (descriptionData is Map) {
+      // Handle generic Map type
+      localizedDescriptionMap = <String, String>{};
+      descriptionData.forEach((key, value) {
+        if (key is String && value is String) {
+          localizedDescriptionMap![key] = value;
+        }
+      });
+      baseDescription = localizedDescriptionMap['en'] ?? localizedDescriptionMap.values.firstOrNull;
+    } else if (descriptionData is String) {
+      // Traditional string description
+      baseDescription = descriptionData;
+
+      // Check for separate localizedDescription field
+      if (separateLocalizedDescriptionMap is Map<String, dynamic>) {
+        localizedDescriptionMap = Map<String, String>.from(separateLocalizedDescriptionMap);
+      } else if (separateLocalizedDescriptionMap is Map) {
+        localizedDescriptionMap = <String, String>{};
+        separateLocalizedDescriptionMap.forEach((key, value) {
+          if (key is String && value is String) {
+            localizedDescriptionMap![key] = value;
+          }
+        });
+      }
+    } else {
+      // Check for separate localizedDescription field only
+      if (separateLocalizedDescriptionMap is Map<String, dynamic>) {
+        localizedDescriptionMap = Map<String, String>.from(separateLocalizedDescriptionMap);
+      } else if (separateLocalizedDescriptionMap is Map) {
+        localizedDescriptionMap = <String, String>{};
+        separateLocalizedDescriptionMap.forEach((key, value) {
+          if (key is String && value is String) {
+            localizedDescriptionMap![key] = value;
+          }
+        });
+      }
+    }
 
     return Recipe(
       id: json['id'] ?? '',
@@ -789,10 +838,8 @@ class Recipe {
       macros: json['macros'] != null
           ? RecipeMacros.fromJson(json['macros'] as Map<String, dynamic>)
           : const RecipeMacros(protein: 0, carbs: 0, fats: 0, fiber: 0),
-      description: json['description'] is String ? json['description'] : null,
-      localizedDescription: localizedDescriptionMap is Map<String, dynamic>
-          ? Map<String, String>.from(localizedDescriptionMap)
-          : null,
+      description: baseDescription,
+      localizedDescription: localizedDescriptionMap,
       defaultServings: () {
         final servings = (json['defaultServings'] as num?)?.toInt() ?? 4;
         return servings;

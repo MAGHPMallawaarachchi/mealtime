@@ -391,8 +391,8 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  if (recipe.description != null)
-                    _buildDescription(recipe.description!),
+                  if (localizedDescription != null || recipe.description != null)
+                    _buildDescription(localizedDescription ?? recipe.description ?? ''),
                   const SizedBox(height: 24),
                   _buildNutritionInfo(recipe),
                   const SizedBox(height: 24),
@@ -447,7 +447,9 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
             });
           },
           child: Text(
-            isDescriptionExpanded ? AppLocalizations.of(context)!.viewLess : AppLocalizations.of(context)!.viewMore,
+            isDescriptionExpanded
+                ? AppLocalizations.of(context)!.viewLess
+                : AppLocalizations.of(context)!.viewMore,
             style: const TextStyle(
               fontSize: 14,
               color: AppColors.primary,
@@ -858,7 +860,10 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
           ingredientWidgets.add(
             _buildIngredientItem(
               ingredientId: ingredient.id,
-              displayText: scaledIngredient.getDisplayText(selectedUnitSystem, localeCode),
+              displayText: scaledIngredient.getDisplayText(
+                selectedUnitSystem,
+                localeCode,
+              ),
             ),
           );
         }
@@ -879,7 +884,10 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
         ingredientWidgets.add(
           _buildIngredientItem(
             ingredientId: ingredient.id,
-            displayText: scaledIngredient.getDisplayText(selectedUnitSystem, localeCode),
+            displayText: scaledIngredient.getDisplayText(
+              selectedUnitSystem,
+              localeCode,
+            ),
           ),
         );
       }
@@ -1076,7 +1084,9 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  AppLocalizations.of(context)!.addRecipeToMealPlan(localizedTitle),
+                  AppLocalizations.of(
+                    context,
+                  )!.addRecipeToMealPlan(localizedTitle),
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -1088,7 +1098,9 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
             ListTile(
               leading: PhosphorIcon(PhosphorIcons.calendar()),
               title: Text(AppLocalizations.of(context)!.goToMealPlanner),
-              subtitle: Text(AppLocalizations.of(context)!.chooseSpecificDayAndMeal),
+              subtitle: Text(
+                AppLocalizations.of(context)!.chooseSpecificDayAndMeal,
+              ),
               onTap: () {
                 Navigator.pop(context);
                 context.go('/meal-planner');
@@ -1120,9 +1132,18 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
           children: [
             Text(AppLocalizations.of(context)!.whichMealToAdd(localizedTitle)),
             const SizedBox(height: 16),
-            _buildMealTimeOption(AppLocalizations.of(context)!.breakfast, AppLocalizations.of(context)!.breakfastTime),
-            _buildMealTimeOption(AppLocalizations.of(context)!.lunch, AppLocalizations.of(context)!.lunchTime),
-            _buildMealTimeOption(AppLocalizations.of(context)!.dinner, AppLocalizations.of(context)!.dinnerTime),
+            _buildMealTimeOption(
+              AppLocalizations.of(context)!.breakfast,
+              AppLocalizations.of(context)!.breakfastTime,
+            ),
+            _buildMealTimeOption(
+              AppLocalizations.of(context)!.lunch,
+              AppLocalizations.of(context)!.lunchTime,
+            ),
+            _buildMealTimeOption(
+              AppLocalizations.of(context)!.dinner,
+              AppLocalizations.of(context)!.dinnerTime,
+            ),
           ],
         ),
         actions: [
