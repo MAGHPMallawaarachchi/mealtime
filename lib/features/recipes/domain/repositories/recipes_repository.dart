@@ -39,4 +39,5 @@ abstract class RecipesRepository {
   });
   Future<List<String>> getAvailableCategories({DietaryType? dietaryType});
   Future<void> refreshRecipes();
+  Future<void> clearCache();
 }

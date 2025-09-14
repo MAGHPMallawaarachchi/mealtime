@@ -1070,10 +1070,10 @@ abstract class AppLocalizations {
   /// **'Check back later for delicious recipes'**
   String get checkBackLaterForDeliciousRecipes;
 
-  /// Error state title for user recipes
+  /// Error message for recipe loading failure
   ///
   /// In en, this message translates to:
-  /// **'Error Loading Recipes'**
+  /// **'Error loading recipes'**
   String get errorLoadingRecipes;
 
   /// Loading message for initial recipe load
@@ -1693,6 +1693,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add to Meal Plan'**
   String get addToMealPlanAction;
+
+  /// Loading text when adding meal to plan
+  ///
+  /// In en, this message translates to:
+  /// **'Adding...'**
+  String get addingToMealPlan;
+
+  /// Success message when meal is added to plan
+  ///
+  /// In en, this message translates to:
+  /// **'Meal added to meal plan successfully!'**
+  String get mealAddedToMealPlan;
+
+  /// Error message when meal addition fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add meal to plan. Please try again.'**
+  String get failedToAddMeal;
 
   /// Add meal category text in empty compact meal card
   ///

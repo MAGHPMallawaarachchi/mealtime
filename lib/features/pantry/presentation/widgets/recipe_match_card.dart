@@ -198,19 +198,6 @@ class RecipeMatchCard extends ConsumerWidget {
 
             const SizedBox(height: 8),
 
-            // Missing Ingredients
-            if (match.missingIngredients.isNotEmpty) ...[
-              Text(
-                AppLocalizations.of(
-                  context,
-                )!.missingIngredients(_formatMissingIngredients()),
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 8),
-            ],
-
             const Spacer(),
           ],
         ),
@@ -218,12 +205,12 @@ class RecipeMatchCard extends ConsumerWidget {
     );
   }
 
-  String _formatMissingIngredients() {
-    if (match.missingIngredients.length <= 2) {
-      return match.missingIngredients.join(', ');
-    }
-    return '${match.missingIngredients.take(2).join(', ')} +${match.missingIngredients.length - 2}';
-  }
+  // String _formatMissingIngredients() {
+  //   if (match.missingIngredients.length <= 2) {
+  //     return match.missingIngredients.join(', ');
+  //   }
+  //   return '${match.missingIngredients.take(2).join(', ')} +${match.missingIngredients.length - 2}';
+  // }
 
   Color _getMatchLevelColor() {
     switch (match.matchLevel) {

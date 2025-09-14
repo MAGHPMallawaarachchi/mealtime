@@ -42,31 +42,64 @@ const db = admin.firestore();
 const recipesCollection = db.collection('recipes');
 
 // Validation functions
+function validateLocalizedString(value, fieldName) {
+  if (typeof value === 'string') {
+    // Legacy format - single string (treated as English)
+    return true;
+  }
+
+  if (typeof value === 'object' && value !== null) {
+    // New localized format - object with language keys
+    const keys = Object.keys(value);
+    if (keys.length === 0) {
+      return false;
+    }
+
+    // Check if all values are strings
+    return keys.every(key => typeof value[key] === 'string' && value[key].trim().length > 0);
+  }
+
+  return false;
+}
+
 function validateRecipeIngredient(ingredient) {
   const validUnits = [
     'cups', 'teaspoons', 'tablespoons', 'milliliters', 'liters',
     'grams', 'kilograms', 'ounces', 'pounds', 'pieces', 'whole',
-    'pinch', 'dash', 'toTaste', 'centimeters', null
+    'pinch', 'dash', 'toTaste', 'centimeters',
+    'large', 'medium', 'small', 'cloves', // Common descriptive units
+    null
   ];
 
-  if (!ingredient.id || !ingredient.name) {
+  if (!ingredient.id) {
     return false;
   }
-  
-  // Allow null quantity only for "toTaste" unit
-  if (ingredient.quantity === null && ingredient.unit !== 'toTaste') {
+
+  // Validate localized name (can be string or object)
+  if (!validateLocalizedString(ingredient.name, 'ingredient name')) {
     return false;
   }
-  
+
+  // Allow null quantity for units that don't require precise measurement
+  const unitsAllowingNullQuantity = ['toTaste', 'pinch', 'dash'];
+  if (ingredient.quantity === null && !unitsAllowingNullQuantity.includes(ingredient.unit)) {
+    return false;
+  }
+
   // If quantity is not null, it must be a number
   if (ingredient.quantity !== null && typeof ingredient.quantity !== 'number') {
     return false;
   }
-  
+
+  // Allow null unit when quantity exists (for descriptive items like "3 large eggs")
+  if (ingredient.unit === null && ingredient.quantity === null) {
+    return false;
+  }
+
   if (!validUnits.includes(ingredient.unit)) {
     console.warn(`⚠️  Unknown unit: ${ingredient.unit}`);
   }
-  
+
   return true;
 }
 
@@ -74,27 +107,43 @@ function validateIngredientSection(section) {
   if (!section.id || !Array.isArray(section.ingredients)) {
     return false;
   }
-  
-  // Title can be null (will default to "Ingredients" in Dart model)
-  if (section.title !== null && typeof section.title !== 'string') {
+
+  // Title can be null (will default to "Ingredients" in Dart model) or localized string
+  if (section.title !== null && !validateLocalizedString(section.title, 'section title')) {
     return false;
   }
-  
+
   return section.ingredients.every(ingredient => validateRecipeIngredient(ingredient));
 }
 
 function validateInstructionSection(section) {
-  return section.id && Array.isArray(section.steps) && section.steps.length > 0;
+  if (!section.id || !Array.isArray(section.steps) || section.steps.length === 0) {
+    return false;
+  }
+
+  // Title can be null or localized string
+  if (section.title !== null && !validateLocalizedString(section.title, 'instruction section title')) {
+    return false;
+  }
+
+  // Validate each step (can be string or localized object)
+  return section.steps.every(step => validateLocalizedString(step, 'instruction step'));
 }
 
 function validateRecipe(recipe) {
   const errors = [];
 
   if (!recipe.id) errors.push('Missing required field: id');
-  if (!recipe.title) errors.push('Missing required field: title');
+  if (!validateLocalizedString(recipe.title, 'title')) errors.push('title must be a string or localized object');
   if (!recipe.time) errors.push('Missing required field: time');
   if (!recipe.imageUrl) errors.push('Missing required field: imageUrl');
   if (typeof recipe.calories !== 'number') errors.push('calories must be a number');
+
+  // Validate description (optional but if present, must be localized string)
+  if (recipe.description !== null && recipe.description !== undefined &&
+      !validateLocalizedString(recipe.description, 'description')) {
+    errors.push('description must be a string or localized object');
+  }
   
   if (!recipe.macros || typeof recipe.macros.protein !== 'number' || 
       typeof recipe.macros.carbs !== 'number' || typeof recipe.macros.fats !== 'number' ||
@@ -167,9 +216,17 @@ async function importRecipes(filePath, validateOnly = false) {
     for (let i = 0; i < recipes.length; i++) {
       const recipe = recipes[i];
       const errors = validateRecipe(recipe);
-      
+
+      // Get title for display (handle both string and localized object)
+      let displayTitle = 'Unknown';
+      if (typeof recipe.title === 'string') {
+        displayTitle = recipe.title;
+      } else if (recipe.title && typeof recipe.title === 'object') {
+        displayTitle = recipe.title.en || recipe.title.si || Object.values(recipe.title)[0] || 'Unknown';
+      }
+
       if (errors.length > 0) {
-        console.error(`❌ Recipe "${recipe.title || 'Unknown'}" (index ${i}) has errors:`);
+        console.error(`❌ Recipe "${displayTitle}" (index ${i}) has errors:`);
         errors.forEach(error => console.error(`   - ${error}`));
         errorCount++;
       } else {

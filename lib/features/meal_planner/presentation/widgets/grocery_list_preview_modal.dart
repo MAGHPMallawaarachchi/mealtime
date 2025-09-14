@@ -413,7 +413,7 @@ class _GroceryListPreviewModalState extends State<GroceryListPreviewModal> {
             child: OutlinedButton.icon(
               onPressed: _addCustomItem,
               icon: PhosphorIcon(PhosphorIcons.plus()),
-              label: Text(AppLocalizations.of(context)!.addItem as String),
+              label: Text(AppLocalizations.of(context)!.addItem(AppLocalizations.of(context)!.item)),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 side: const BorderSide(color: AppColors.primary),
@@ -627,7 +627,7 @@ class _EditItemDialogState extends State<_EditItemDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context)!.editItem as String),
+      title: Text(AppLocalizations.of(context)!.editItem(AppLocalizations.of(context)!.item)),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -783,7 +783,7 @@ class _AddItemDialogState extends State<_AddItemDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context)!.addItem as String),
+      title: Text(AppLocalizations.of(context)!.addItem(AppLocalizations.of(context)!.item)),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

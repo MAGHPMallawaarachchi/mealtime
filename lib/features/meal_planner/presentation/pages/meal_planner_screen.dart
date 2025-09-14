@@ -329,13 +329,13 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   color: AppColors.primary,
                 ),
               ),
-              IconButton(
-                onPressed: _showMealPlanOptions,
-                icon: PhosphorIcon(
-                  PhosphorIcons.dotsThreeVertical(),
-                  color: AppColors.textPrimary,
-                ),
-              ),
+              // IconButton(
+              //   onPressed: _showMealPlanOptions,
+              //   icon: PhosphorIcon(
+              //     PhosphorIcons.dotsThreeVertical(),
+              //     color: AppColors.textPrimary,
+              //   ),
+              // ),
             ],
           ),
         ],

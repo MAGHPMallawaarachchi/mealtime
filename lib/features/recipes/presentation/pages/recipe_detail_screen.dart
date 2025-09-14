@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mealtime/features/meal_planner/presentation/widgets/recipe_meal_confirmation_modal.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,9 @@ import '../../domain/usecases/get_recipe_by_id_usecase.dart';
 import '../../data/repositories/recipes_repository_impl.dart';
 import '../../../meal_planner/domain/models/meal_planner_return_context.dart';
 import '../../../favorites/presentation/providers/favorites_providers.dart';
+import '../../../../core/providers/locale_providers.dart';
+import '../../../meal_planner/presentation/widgets/meal_confirmation_modal.dart';
+import '../../../meal_planner/domain/models/meal_slot.dart';
 
 enum RecipeTab { ingredients, instructions }
 
@@ -40,6 +44,15 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
   // Dependencies
   late final RecipesRepositoryImpl _recipesRepository;
   late final GetRecipeByIdUseCase _getRecipeByIdUseCase;
+
+  String get localeCode {
+    final locale = ref.watch(localeProvider);
+    return locale?.languageCode ?? 'en';
+  }
+
+  String get localizedTitle {
+    return _recipe?.getLocalizedTitle(localeCode) ?? '';
+  }
 
   @override
   void initState() {
@@ -244,6 +257,8 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
   }
 
   Widget _buildRecipeContent(Recipe recipe) {
+    final localizedDescription = recipe.getLocalizedDescription(localeCode);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: CustomScrollView(
@@ -350,7 +365,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          recipe.title,
+                          localizedTitle,
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -379,8 +394,11 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  if (recipe.description != null)
-                    _buildDescription(recipe.description!),
+                  if (localizedDescription != null ||
+                      recipe.description != null)
+                    _buildDescription(
+                      localizedDescription ?? recipe.description ?? '',
+                    ),
                   const SizedBox(height: 24),
                   _buildNutritionInfo(recipe),
                   const SizedBox(height: 24),
@@ -435,7 +453,9 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
             });
           },
           child: Text(
-            isDescriptionExpanded ? AppLocalizations.of(context)!.viewLess : AppLocalizations.of(context)!.viewMore,
+            isDescriptionExpanded
+                ? AppLocalizations.of(context)!.viewLess
+                : AppLocalizations.of(context)!.viewMore,
             style: const TextStyle(
               fontSize: 14,
               color: AppColors.primary,
@@ -846,7 +866,10 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
           ingredientWidgets.add(
             _buildIngredientItem(
               ingredientId: ingredient.id,
-              displayText: scaledIngredient.getDisplayText(selectedUnitSystem),
+              displayText: scaledIngredient.getDisplayText(
+                selectedUnitSystem,
+                localeCode,
+              ),
             ),
           );
         }
@@ -867,7 +890,10 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
         ingredientWidgets.add(
           _buildIngredientItem(
             ingredientId: ingredient.id,
-            displayText: scaledIngredient.getDisplayText(selectedUnitSystem),
+            displayText: scaledIngredient.getDisplayText(
+              selectedUnitSystem,
+              localeCode,
+            ),
           ),
         );
       }
@@ -932,7 +958,8 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
         );
 
         // Add section steps
-        for (int i = 0; i < section.steps.length; i++) {
+        final localizedSteps = section.getLocalizedSteps(localeCode);
+        for (int i = 0; i < localizedSteps.length; i++) {
           instructionWidgets.add(
             Padding(
               padding: const EdgeInsets.only(bottom: 16),
@@ -960,7 +987,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                   ),
                   Expanded(
                     child: Text(
-                      section.steps[i],
+                      localizedSteps[i],
                       style: const TextStyle(
                         fontSize: 14,
                         color: AppColors.textPrimary,
@@ -1045,91 +1072,14 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
   }
 
   void _addToMealPlan(Recipe recipe) {
-    showModalBottomSheet(
+    showRecipeMealConfirmationModal(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                PhosphorIcon(
-                  PhosphorIcons.calendar(),
-                  color: AppColors.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  AppLocalizations.of(context)!.addRecipeToMealPlan(recipe.title),
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            ListTile(
-              leading: PhosphorIcon(PhosphorIcons.calendar()),
-              title: Text(AppLocalizations.of(context)!.goToMealPlanner),
-              subtitle: Text(AppLocalizations.of(context)!.chooseSpecificDayAndMeal),
-              onTap: () {
-                Navigator.pop(context);
-                context.go('/meal-planner');
-              },
-            ),
-            ListTile(
-              leading: PhosphorIcon(PhosphorIcons.clockCounterClockwise()),
-              title: Text(AppLocalizations.of(context)!.addToToday),
-              subtitle: Text(AppLocalizations.of(context)!.quickAddToTodayMeal),
-              onTap: () {
-                Navigator.pop(context);
-                _addToTodaysMeals(recipe);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _addToTodaysMeals(Recipe recipe) {
-    // Show a selection dialog for today's meal slots
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.addToToday),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(AppLocalizations.of(context)!.whichMealToAdd(recipe.title)),
-            const SizedBox(height: 16),
-            _buildMealTimeOption(AppLocalizations.of(context)!.breakfast, AppLocalizations.of(context)!.breakfastTime),
-            _buildMealTimeOption(AppLocalizations.of(context)!.lunch, AppLocalizations.of(context)!.lunchTime),
-            _buildMealTimeOption(AppLocalizations.of(context)!.dinner, AppLocalizations.of(context)!.dinnerTime),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.cancel),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMealTimeOption(String mealType, String time) {
-    return ListTile(
-      title: Text(mealType),
-      subtitle: Text(time),
-      onTap: () {
-        Navigator.pop(context);
-
-        // Show success message
+      recipe: recipe,
+      selectedTime: const TimeOfDay(hour: 12, minute: 0), // Default to noon
+      date: DateTime.now(), // Default to today
+      onConfirm: (MealSlot mealSlot) {
+        Navigator.of(context).pop();
+        // TODO: Implement actual meal slot saving logic
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
@@ -1142,7 +1092,9 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    AppLocalizations.of(context)!.addedToTodayMeal(mealType),
+                    AppLocalizations.of(
+                      context,
+                    )!.addedToTodayMeal(mealSlot.category),
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -1161,6 +1113,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
           ),
         );
       },
+      defaultServings: currentServings,
     );
   }
 }

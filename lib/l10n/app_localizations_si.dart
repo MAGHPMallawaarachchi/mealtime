@@ -743,7 +743,7 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String mealsPlanned(int count) {
-    return 'ආහාර $countක් සැලසුම් කර ඇත';
+    return '$countක් සැලසුම් කර ඇත';
   }
 
   @override
@@ -888,6 +888,16 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get addToMealPlanAction => 'ආහාර සැලැස්මට එක් කරන්න';
+
+  @override
+  String get addingToMealPlan => 'එක් කරමින්...';
+
+  @override
+  String get mealAddedToMealPlan => 'ආහාරය ආහාර සැලැස්මට සාර්ථකව එක් කරන ලදී!';
+
+  @override
+  String get failedToAddMeal =>
+      'ආහාරය සැලැස්මට එක් කිරීම අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න.';
 
   @override
   String addMealCategory(String category) {

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import '../../domain/models/recipe.dart';
 import '../../domain/repositories/recipes_repository.dart';
 import '../datasources/recipes_datasource.dart';
@@ -15,8 +14,8 @@ class RecipesRepositoryImpl implements RecipesRepository {
   RecipesRepositoryImpl({
     RecipesDataSource? remoteDataSource,
     RecipesLocalDataSource? localDataSource,
-  })  : _remoteDataSource = remoteDataSource ?? RecipesFirebaseDataSource(),
-        _localDataSource = localDataSource ?? RecipesLocalDataSource();
+  }) : _remoteDataSource = remoteDataSource ?? RecipesFirebaseDataSource(),
+       _localDataSource = localDataSource ?? RecipesLocalDataSource();
 
   @override
   Future<List<Recipe>> getRecipes({
@@ -27,25 +26,33 @@ class RecipesRepositoryImpl implements RecipesRepository {
       if (!forceRefresh && await _localDataSource.isCacheValid()) {
         final cachedRecipes = await _localDataSource.getRecipes();
         if (cachedRecipes.isNotEmpty) {
-          return DietaryFilterService.filterRecipesByDietaryType(cachedRecipes, dietaryType);
+          return DietaryFilterService.filterRecipesByDietaryType(
+            cachedRecipes,
+            dietaryType,
+          );
         }
       }
 
       final remoteRecipes = await _remoteDataSource.getRecipes();
-      
+
       await _localDataSource.cacheRecipes(remoteRecipes);
-      
-      return DietaryFilterService.filterRecipesByDietaryType(remoteRecipes, dietaryType);
+
+      return DietaryFilterService.filterRecipesByDietaryType(
+        remoteRecipes,
+        dietaryType,
+      );
     } catch (e) {
-      
       try {
         final cachedRecipes = await _localDataSource.getRecipes();
         if (cachedRecipes.isNotEmpty) {
-          return DietaryFilterService.filterRecipesByDietaryType(cachedRecipes, dietaryType);
+          return DietaryFilterService.filterRecipesByDietaryType(
+            cachedRecipes,
+            dietaryType,
+          );
         }
-      } catch (cacheError) {
-      }
-      
+        // ignore: empty_catches
+      } catch (cacheError) {}
+
       throw RecipesRepositoryException(
         'Failed to fetch recipes: ${e.toString()}',
       );
@@ -55,13 +62,19 @@ class RecipesRepositoryImpl implements RecipesRepository {
   @override
   Stream<List<Recipe>> getRecipesStream({DietaryType? dietaryType}) {
     try {
-      return _remoteDataSource.getRecipesStream()
-          .map((recipes) => DietaryFilterService.filterRecipesByDietaryType(recipes, dietaryType))
+      return _remoteDataSource
+          .getRecipesStream()
+          .map(
+            (recipes) => DietaryFilterService.filterRecipesByDietaryType(
+              recipes,
+              dietaryType,
+            ),
+          )
           .handleError((error) {
-        throw RecipesRepositoryException(
-          'Failed to stream recipes: ${error.toString()}',
-        );
-      });
+            throw RecipesRepositoryException(
+              'Failed to stream recipes: ${error.toString()}',
+            );
+          });
     } catch (e) {
       throw RecipesRepositoryException(
         'Failed to create recipes stream: ${e.toString()}',
@@ -79,12 +92,10 @@ class RecipesRepositoryImpl implements RecipesRepository {
 
       return await _localDataSource.getRecipe(id);
     } catch (e) {
-      
       try {
         return await _localDataSource.getRecipe(id);
-      } catch (cacheError) {
-      }
-      
+      } catch (cacheError) {}
+
       throw RecipesRepositoryException(
         'Failed to fetch recipe with id $id: ${e.toString()}',
       );
@@ -98,8 +109,11 @@ class RecipesRepositoryImpl implements RecipesRepository {
     DietaryType? dietaryType,
   }) async {
     try {
-      final allRecipes = await getRecipes(forceRefresh: forceRefresh, dietaryType: dietaryType);
-      
+      final allRecipes = await getRecipes(
+        forceRefresh: forceRefresh,
+        dietaryType: dietaryType,
+      );
+
       if (tags.isEmpty) {
         return allRecipes;
       }
@@ -121,8 +135,11 @@ class RecipesRepositoryImpl implements RecipesRepository {
     DietaryType? dietaryType,
   }) async {
     try {
-      final allRecipes = await getRecipes(forceRefresh: forceRefresh, dietaryType: dietaryType);
-      
+      final allRecipes = await getRecipes(
+        forceRefresh: forceRefresh,
+        dietaryType: dietaryType,
+      );
+
       if (query.trim().isEmpty) {
         return allRecipes;
       }
@@ -155,8 +172,9 @@ class RecipesRepositoryImpl implements RecipesRepository {
         }
 
         // Search in legacy ingredients for backward compatibility
-        if (recipe.legacyIngredients.any((ingredient) => 
-            ingredient.toLowerCase().contains(lowerQuery))) {
+        if (recipe.legacyIngredients.any(
+          (ingredient) => ingredient.toLowerCase().contains(lowerQuery),
+        )) {
           return true;
         }
 
@@ -170,7 +188,9 @@ class RecipesRepositoryImpl implements RecipesRepository {
   }
 
   @override
-  Future<List<String>> getAvailableCategories({DietaryType? dietaryType}) async {
+  Future<List<String>> getAvailableCategories({
+    DietaryType? dietaryType,
+  }) async {
     try {
       final allRecipes = await getRecipes(dietaryType: dietaryType);
       final Set<String> categories = {};
@@ -197,8 +217,11 @@ class RecipesRepositoryImpl implements RecipesRepository {
     DietaryType? dietaryType,
   }) async {
     try {
-      final allRecipes = await getRecipes(forceRefresh: forceRefresh, dietaryType: dietaryType);
-      
+      final allRecipes = await getRecipes(
+        forceRefresh: forceRefresh,
+        dietaryType: dietaryType,
+      );
+
       if (ingredientName.trim().isEmpty) {
         return RecipesPagination(
           recipes: const [],
@@ -212,14 +235,18 @@ class RecipesRepositoryImpl implements RecipesRepository {
       // Filter recipes that contain the ingredient
       final matchingRecipes = allRecipes.where((recipe) {
         // Search in structured ingredients
-        final hasMatchingStructuredIngredient = recipe.ingredients.any((ingredient) {
+        final hasMatchingStructuredIngredient = recipe.ingredients.any((
+          ingredient,
+        ) {
           return ingredient.name.toLowerCase().contains(lowerIngredientName);
         });
 
         if (hasMatchingStructuredIngredient) return true;
 
         // Search in ingredient sections
-        final hasMatchingIngredientInSections = recipe.ingredientSections.any((section) {
+        final hasMatchingIngredientInSections = recipe.ingredientSections.any((
+          section,
+        ) {
           return section.ingredients.any((ingredient) {
             return ingredient.name.toLowerCase().contains(lowerIngredientName);
           });
@@ -228,7 +255,9 @@ class RecipesRepositoryImpl implements RecipesRepository {
         if (hasMatchingIngredientInSections) return true;
 
         // Search in legacy ingredients for backward compatibility
-        final hasMatchingLegacyIngredient = recipe.legacyIngredients.any((ingredient) {
+        final hasMatchingLegacyIngredient = recipe.legacyIngredients.any((
+          ingredient,
+        ) {
           return ingredient.toLowerCase().contains(lowerIngredientName);
         });
 
@@ -249,7 +278,10 @@ class RecipesRepositoryImpl implements RecipesRepository {
         );
       }
 
-      final paginatedRecipes = matchingRecipes.skip(startIndex).take(limit).toList();
+      final paginatedRecipes = matchingRecipes
+          .skip(startIndex)
+          .take(limit)
+          .toList();
       final hasMore = endIndex < totalCount;
 
       return RecipesPagination(
@@ -271,6 +303,19 @@ class RecipesRepositoryImpl implements RecipesRepository {
     } catch (e) {
       throw RecipesRepositoryException(
         'Failed to refresh recipes: ${e.toString()}',
+      );
+    }
+  }
+
+  /// Clear the local recipes cache
+  /// This should be called when locale changes to ensure fresh localized data
+  @override
+  Future<void> clearCache() async {
+    try {
+      await _localDataSource.clearCache();
+    } catch (e) {
+      throw RecipesRepositoryException(
+        'Failed to clear cache: ${e.toString()}',
       );
     }
   }

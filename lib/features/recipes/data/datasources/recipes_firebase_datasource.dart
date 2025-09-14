@@ -36,33 +36,82 @@ class RecipesFirebaseDataSource implements RecipesDataSource {
       int successfullyParsed = 0;
       int failedToParse = 0;
       
-      for (final data in rawData) {
+      for (int i = 0; i < rawData.length; i++) {
+        final data = rawData[i];
         try {
           final recipe = Recipe.fromJson(data);
           if (recipe.id.isNotEmpty) {
             recipes.add(recipe);
             successfullyParsed++;
-            
+
             // Log first few recipes and any banana-related recipes for debugging
             if (kDebugMode && (successfullyParsed <= 3 || recipe.title.toLowerCase().contains('banana'))) {
-              final ingredientCount = recipe.ingredients.isNotEmpty 
-                  ? recipe.ingredients.length 
-                  : recipe.legacyIngredients.length;
+              final ingredientCount = recipe.ingredients.isNotEmpty
+                  ? recipe.ingredients.length
+                  : (recipe.ingredientSections.isNotEmpty
+                      ? recipe.ingredientSections.fold<int>(0, (sum, section) => sum + section.ingredients.length)
+                      : recipe.legacyIngredients.length);
               print('🍽️  [Firebase Recipes] Recipe: "${recipe.title}" ($ingredientCount ingredients)');
-              
+
               // Log ingredients for banana-related recipes
               if (recipe.title.toLowerCase().contains('banana')) {
-                final recipeIngredients = recipe.ingredients.isNotEmpty 
-                    ? recipe.ingredients.map((i) => i.name).toList()
-                    : recipe.legacyIngredients;
+                List<String> recipeIngredients = [];
+                if (recipe.ingredients.isNotEmpty) {
+                  recipeIngredients = recipe.ingredients.map((i) => i.name).toList();
+                } else if (recipe.ingredientSections.isNotEmpty) {
+                  recipeIngredients = recipe.ingredientSections
+                      .expand((section) => section.ingredients.map((i) => i.name))
+                      .toList();
+                } else {
+                  recipeIngredients = recipe.legacyIngredients;
+                }
                 print('   └─ Ingredients: ${recipeIngredients.take(8).join(", ")}${recipeIngredients.length > 8 ? "..." : ""}');
               }
             }
+          } else {
+            failedToParse++;
+            if (kDebugMode) {
+              print('⚠️  [Firebase Recipes] Recipe at index $i has empty ID, skipping');
+            }
           }
-        } catch (e) {
+        } catch (e, stackTrace) {
           failedToParse++;
-          if (kDebugMode && failedToParse <= 3) {
-            print('❌ [Firebase Recipes] Failed to parse recipe: $e');
+          if (kDebugMode) {
+            print('❌ [Firebase Recipes] Failed to parse recipe at index $i: $e');
+            print('   📋 Raw data sample: ${data.toString().length > 200 ? data.toString().substring(0, 200) + "..." : data.toString()}');
+
+            // Additional debugging for specific issues
+            if (data is Map<String, dynamic>) {
+              final title = data['title'];
+              final ingredientSections = data['ingredientSections'];
+              final instructionSections = data['instructionSections'];
+
+              print('   🔍 Recipe title: ${title ?? "N/A"}');
+              print('   🔍 Has ingredientSections: ${ingredientSections is List ? "Yes (${ingredientSections.length})" : "No"}');
+              print('   🔍 Has instructionSections: ${instructionSections is List ? "Yes (${instructionSections.length})" : "No"}');
+
+              if (ingredientSections is List && ingredientSections.isNotEmpty) {
+                final firstSection = ingredientSections.first;
+                if (firstSection is Map && firstSection.containsKey('ingredients')) {
+                  final ingredients = firstSection['ingredients'];
+                  if (ingredients is List && ingredients.isNotEmpty) {
+                    final firstIngredient = ingredients.first;
+                    print('   🔍 First ingredient structure: ${firstIngredient.runtimeType}');
+                    if (firstIngredient is Map) {
+                      print('   🔍 First ingredient keys: ${firstIngredient.keys.toList()}');
+                      if (firstIngredient.containsKey('name')) {
+                        print('   🔍 Name field type: ${firstIngredient['name'].runtimeType}');
+                        print('   🔍 Name field value: ${firstIngredient['name']}');
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
+            if (failedToParse <= 3) {
+              print('   📄 Stack trace: ${stackTrace.toString().split('\n').take(3).join('\n')}');
+            }
           }
         }
       }

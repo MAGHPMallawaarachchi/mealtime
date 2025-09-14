@@ -906,11 +906,6 @@
     "description": "Empty state instruction for general recipes"
   },
 
-  "errorLoadingRecipes": "වට්ටෝරු පූරණය කිරීමේ දෝෂය",
-  "@errorLoadingRecipes": {
-    "description": "Error message for recipe loading failure"
-  },
-
   "loadingRecipes": "වට්ටෝරු පූරණය වෙමින්...",
   "@loadingRecipes": {
     "description": "Loading message for initial recipe load"
@@ -1237,7 +1232,7 @@
     "description": "Label for current week in meal planner"
   },
 
-  "mealsPlanned": "ආහාර {count}ක් සැලසුම් කර ඇත",
+  "mealsPlanned": "{count}ක් සැලසුම් කර ඇත",
   "@mealsPlanned": {
     "description": "Number of meals planned in a week",
     "placeholders": {
@@ -1482,6 +1477,21 @@
   "addToMealPlanAction": "ආහාර සැලැස්මට එක් කරන්න",
   "@addToMealPlanAction": {
     "description": "Button text to confirm adding meal to plan"
+  },
+
+  "addingToMealPlan": "එක් කරමින්...",
+  "@addingToMealPlan": {
+    "description": "Loading text when adding meal to plan"
+  },
+
+  "mealAddedToMealPlan": "ආහාරය ආහාර සැලැස්මට සාර්ථකව එක් කරන ලදී!",
+  "@mealAddedToMealPlan": {
+    "description": "Success message when meal is added to plan"
+  },
+
+  "failedToAddMeal": "ආහාරය සැලැස්මට එක් කිරීම අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න.",
+  "@failedToAddMeal": {
+    "description": "Error message when meal addition fails"
   },
 
   "addMealCategory": "{category} එක් කරන්න",

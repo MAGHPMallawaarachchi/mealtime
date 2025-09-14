@@ -104,7 +104,9 @@ class AuthService {
         'photoURL': user.photoURL,
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
-        'householdId': null,
+        'household': 4, // default household size
+        'enableRecommendations': true,
+        'prioritizePantryItems': true,
       });
     }
   }
