@@ -1,7 +1,8 @@
 [
 {
   "id": "R001",
-  "title": {
+  "title":"Aggala (Leftover Rice Balls)",
+  "localizedTitle": {
     "en": "Aggala (Leftover Rice Balls)",
     "si": "අග්ගලා"
   },
@@ -188,7 +189,8 @@
 },
 {
   "id": "R002",
-  "title": {
+  "title":"String Hopper Kottu (Idiyappam Kottu)",
+  "localizedTitle": {
     "en": "String Hopper Kottu (Idiyappam Kottu)",
     "si": "ඉඳි ආප්ප කොත්තු"
   },
@@ -426,7 +428,8 @@
 },
 {
   "id": "R003",
-  "title": {
+  "title":"Bread Kottu",
+  "localizedTitle": {
     "en": "Bread Kottu",
     "si": "පාන් කොත්තු"
   },
@@ -631,7 +634,8 @@
 },
 {
   "id": "R004",
-  "title": {
+  "title":"Bread Pudding",
+  "localizedTitle": {
     "en": "Bread Pudding",
     "si": "පාන් පුඩින්"
   },
@@ -814,7 +818,8 @@
 },
 {
   "id": "R005",
-  "title": {
+  "title":"String Hopper Aasmi (Idiyappam Aasmi)",
+  "localizedTitle": {
     "en": "String Hopper Aasmi",
     "si": "ඉඳි ආප්ප ආස්මී"
   },
@@ -960,7 +965,8 @@
 },
 {
   "id": "R006",
-  "title": {
+  "title":"Fried Rice (Sri Lankan Style)",
+  "localizedTitle": {
     "en": "Fried Rice (Sri Lankan Style)",
     "si": "ෆ්‍රයිඩ් රයිස් (ශ්‍රී ලාංකික ක්‍රමයට)"
   },
@@ -1176,7 +1182,8 @@
 },
 {
   "id": "R007",
-  "title": {
+  "title":"Fish Cutlets",
+  "localizedTitle": {
     "en": "Fish Cutlets",
     "si": "මාළු කට්ලට්"
   },
@@ -1381,7 +1388,8 @@
 },
 {
   "id": "R008",
-  "title": {
+  "title":"Rice Pudding",
+  "localizedTitle": {
     "en": "Rice Pudding",
     "si": "රයිස් පුඩින්"
   },
@@ -1545,7 +1553,8 @@
 },
 {
   "id": "R009",
-  "title": {
+  "title":"Sri Lankan Spiced Banana Bread",
+  "localizedTitle": {
     "en": "Sri Lankan Spiced Banana Bread",
     "si": "කුළුබඩු යෙදූ කෙසෙල් පාන්"
   },
@@ -1739,7 +1748,8 @@
 },
 {
   "id": "R010",
-  "title": {
+  "title":"Spicy Sweet Potato Hummus",
+  "localizedTitle": {
     "en": "Spicy Sweet Potato Hummus",
     "si": "සැර බතල හමස්"
   },
@@ -1913,7 +1923,8 @@
   "source": "ai-generated"
 },{
   "id": "R011",
-  "title": {
+  "title":"Fridge-Raid Vegetable Soup",
+  "localizedTitle": {
     "en": "Fridge-Raid Vegetable Soup",
     "si": "ඉතිරි එළවළු සුප්"
   },
@@ -2099,7 +2110,8 @@
 },
 {
   "id": "R012",
-  "title": {
+  "title":"Creamy Curried Chicken & Rice Soup",
+  "localizedTitle": {
     "en": "Creamy Curried Chicken & Rice Soup",
     "si": "ක්‍රีමි කරි චිකන් සහ බත් සුප්"
   },
@@ -2311,7 +2323,8 @@
 },
 {
   "id": "R014",
-  "title": {
+  "title":"Parippu (Red Lentil Dhal Curry)",
+  "localizedTitle": {
     "en": "Parippu (Red Lentil Dhal Curry)",
     "si": "පරිප්පු (රතු පරිප්පු ව්‍යංජනය)"
   },
@@ -2486,7 +2499,8 @@
 },
 {
   "id": "R015",
-  "title": {
+  "title":"Pol Sambol (Coconut Sambol)",
+  "localizedTitle": {
     "en": "Pol Sambol (Coconut Sambol)",
     "si": "පොල් සම්බෝල"
   },
@@ -2609,7 +2623,8 @@
 },
 {
   "id": "R016",
-  "title": {
+  "title":"Seeni Sambol (Caramelized Onion Relish)",
+  "localizedTitle": {
     "en": "Seeni Sambol (Caramelized Onion Relish)",
     "si": "සීනි සම්බෝල"
   },
@@ -2762,7 +2777,8 @@
 },
 {
   "id": "R017",
-  "title": {
+  "title":"Kiri Hodi (Coconut Gravy)",
+  "localizedTitle": {
     "en": "Kiri Hodi (Coconut Gravy)",
     "si": "කිරි හොදි"
   },
@@ -2926,7 +2942,8 @@
 },
 {
   "id": "R018",
-  "title": {
+  "title":"Plain Hoppers (Appa)",
+  "localizedTitle": {
     "en": "Plain Hoppers (Appa)",
     "si": "ආප්ප"
   },
@@ -3068,7 +3085,8 @@
 },
 {
   "id": "R019",
-  "title": {
+  "title":"Egg Hoppers (Biththara Appa)",
+  "localizedTitle": {
     "en": "Egg Hoppers (Biththara Appa)",
     "si": "බිත්තර ආප්ප"
   },
@@ -3232,7 +3250,8 @@
 },
 {
   "id": "R020",
-  "title": {
+  "title":"String Hoppers (Idiyappam)",
+  "localizedTitle": {
     "en": "String Hoppers (Idiyappam)",
     "si": "ඉඳිආප්ප"
   },
@@ -3341,7 +3360,8 @@
 },
 {
   "id": "R021",
-  "title": {
+  "title":"Chicken Kottu Roti",
+  "localizedTitle": {
     "en": "Chicken Kottu Roti",
     "si": "චිකන් කොත්තු රොටී"
   },
@@ -3546,7 +3566,8 @@
 },
 {
   "id": "R022",
-  "title": {
+  "title":"Vegetable Kottu Roti",
+  "localizedTitle": {
     "en": "Vegetable Kottu Roti",
     "si": "එළවළු කොත්තු රොටී"
   },
@@ -3736,7 +3757,8 @@
 },
 {
   "id": "R023",
-  "title": {
+  "title":"Devilled Chicken",
+  "localizedTitle": {
     "en": "Devilled Chicken",
     "si": "ඩෙවල් චිකන්"
   },
@@ -3911,7 +3933,8 @@
 },
 {
   "id": "R024",
-  "title": {
+  "title":"Devilled Prawns",
+  "localizedTitle": {
     "en": "Devilled Prawns",
     "si": "ඩෙවල් ඉස්සෝ"
   },
@@ -4086,7 +4109,8 @@
 },
 {
   "id": "R025",
-  "title": {
+  "title":"Fish Curry (Thuna Paha)",
+  "localizedTitle": {
     "en": "Fish Curry (Thuna Paha)",
     "si": "මාළු කරිය (තුන පහ)"
   },
@@ -4294,7 +4318,8 @@
 },
 {
   "id": "R026",
-  "title": {
+  "title":"Fish Ambul Thiyal (Sour Fish Curry)",
+  "localizedTitle": {
     "en": "Fish Ambul Thiyal (Sour Fish Curry)",
     "si": "මාළු ඇඹුල් තියල්"
   },
@@ -4469,7 +4494,8 @@
 },
 {
   "id": "R027",
-  "title": {
+  "title":"Polos Curry (Young Jackfruit)",
+  "localizedTitle": {
     "en": "Polos Curry (Young Jackfruit)",
     "si": "පොලොස් කරිය"
   },
@@ -4670,7 +4696,8 @@
 },
 {
   "id": "R028",
-  "title": {
+  "title":"Beetroot Curry",
+  "localizedTitle": {
     "en": "Beetroot Curry",
     "si": "බීට්රූට් කරිය"
   },
@@ -4834,7 +4861,8 @@
 },
 {
   "id": "R029",
-  "title": {
+  "title":"Cashew & Green Pea Curry",
+  "localizedTitle": {
     "en": "Cashew & Green Pea Curry",
     "si": "කජු සහ ග්‍රීන් පීස් කරිය"
   },
@@ -4998,7 +5026,8 @@
 },
 {
   "id": "R030",
-  "title": {
+  "title":"Brinjal Moju (Eggplant Pickle)",
+  "localizedTitle": {
     "en": "Brinjal Moju (Eggplant Pickle)",
     "si": "වම්බටු මෝජු"
   },
@@ -5162,7 +5191,8 @@
 },
 {
   "id": "R031",
-  "title": {
+  "title":"Gotukola Sambol",
+  "localizedTitle": {
     "en": "Gotukola Sambol",
     "si": "ගොටුකොළ සම්බෝල"
   },
@@ -5285,7 +5315,8 @@
 },
 {
   "id": "R032",
-  "title": {
+  "title":"Mukunuwenna Mallung (Leafy Greens Stir-Fry)",
+  "localizedTitle": {
     "en": "Mukunuwenna Mallung (Leafy Greens Stir-Fry)",
     "si": "මුකුණුවැන්න මැල්ලුම්"
   },
@@ -5434,7 +5465,8 @@
 },
 {
   "id": "R033",
-  "title": {
+  "title":"Pol Roti (Coconut Flatbread)",
+  "localizedTitle": {
     "en": "Pol Roti (Coconut Flatbread)",
     "si": "පොල් රොටී"
   },
@@ -5576,7 +5608,8 @@
 },
 {
   "id": "R034",
-  "title": {
+  "title":"Turmeric Rice (Yellow Rice)",
+  "localizedTitle": {
     "en": "Turmeric Rice (Yellow Rice)",
     "si": "කහ බත්"
   },
@@ -5736,7 +5769,8 @@
 },
 {
   "id": "R035",
-  "title": {
+  "title":"Sri Lankan Chicken Biryani",
+  "localizedTitle": {
     "en": "Sri Lankan Chicken Biryani",
     "si": "ශ්‍රී ලාංකික චිකන් බිරියානි"
   },
@@ -5974,7 +6008,8 @@
 },
 {
   "id": "R036",
-  "title": {
+  "title":"Lamprais (Dutch-Burgher Lump Rice)",
+  "localizedTitle": {
     "en": "Lamprais (Dutch-Burgher Lump Rice)",
     "si": "ලම්ප්‍රයිස්"
   },
@@ -6152,7 +6187,8 @@
 },
 {
   "id": "R037",
-  "title": {
+  "title":"Creamy Cashew Curry (Kaju Curry)",
+  "localizedTitle": {
     "en": "Creamy Cashew Curry (Kaju Curry)",
     "si": "කජු කරිය"
   },
@@ -6290,7 +6326,8 @@
 },
 {
   "id": "R038",
-  "title": {
+  "title":"Mango Curry",
+  "localizedTitle": {
     "en": "Mango Curry",
     "si": "අඹ කරිය"
   },
@@ -6524,7 +6561,8 @@
 },
 {
   "id": "R039",
-  "title": {
+  "title":"Mango Achcharu",
+  "localizedTitle": {
     "en": "Mango Achcharu",
     "si": "අඹ අච්චාරු"
   },
@@ -6722,7 +6760,8 @@
 },
 {
   "id": "R040",
-  "title": {
+  "title":"Mango Dessert",
+  "localizedTitle": {
     "en": "Mango Dessert",
     "si": "අඹ අතුරුපස"
   },

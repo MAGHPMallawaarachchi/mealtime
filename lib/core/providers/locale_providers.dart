@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../features/recipes/data/repositories/recipes_repository_impl.dart';
 
 final localeProvider = StateNotifierProvider<LocaleNotifier, Locale?>((ref) {
   return LocaleNotifier();
@@ -25,6 +27,16 @@ class LocaleNotifier extends StateNotifier<Locale?> {
   Future<void> setLocale(Locale locale) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_localeKey, locale.languageCode);
+
+    // Clear recipe cache when locale changes to ensure fresh localized data
+    try {
+      final recipesRepository = RecipesRepositoryImpl();
+      await recipesRepository.clearCache();
+    } catch (e) {
+      // Log the error but don't prevent locale change
+      debugPrint('Failed to clear recipes cache on locale change: $e');
+    }
+
     state = locale;
   }
 

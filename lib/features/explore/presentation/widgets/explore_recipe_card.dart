@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/optimized_cached_image.dart';
 import '../../../favorites/presentation/providers/favorites_providers.dart';
+import '../../../../core/providers/locale_providers.dart';
 
 class ExploreRecipeCard extends ConsumerWidget {
   final Recipe recipe;
@@ -20,6 +21,9 @@ class ExploreRecipeCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isFavorite = ref.watch(isFavoriteProvider(recipe.id));
+    final locale = ref.watch(localeProvider);
+    final localeCode = locale?.languageCode ?? 'en';
+    final localizedTitle = recipe.getLocalizedTitle(localeCode);
     return GestureDetector(
       onTap: () {
         context.push('/recipe/${recipe.id}');
@@ -173,7 +177,7 @@ class ExploreRecipeCard extends ConsumerWidget {
                     const SizedBox(height: 6),
                     Expanded(
                       child: Text(
-                        recipe.title,
+                        localizedTitle,
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
