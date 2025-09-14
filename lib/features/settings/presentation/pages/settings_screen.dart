@@ -44,6 +44,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         if (user != null) {
           _selectedDietaryType ??= user.dietaryType;
           _prioritizePantryItems = user.prioritizePantryItems;
+          _householdSize = user.household;
         }
 
         // Update selected language based on current locale
@@ -673,6 +674,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       await updatePreferences(
         dietaryType: _selectedDietaryType,
         prioritizePantryItems: _prioritizePantryItems,
+        householdSize: _householdSize,
       );
 
       if (mounted) {

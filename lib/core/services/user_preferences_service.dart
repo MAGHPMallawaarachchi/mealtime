@@ -42,9 +42,27 @@ class UserPreferencesService {
     }
   }
 
+  Future<void> updateHouseholdSize(int householdSize) async {
+    final user = currentUser;
+    if (user == null) {
+      throw Exception('No user is currently signed in');
+    }
+
+    try {
+      await _ensureUserDocumentExists(user);
+      await _firestore.collection('users').doc(user.uid).set({
+        'household': householdSize,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      throw Exception('Failed to update household size: ${e.toString()}');
+    }
+  }
+
   Future<void> updateUserPreferences({
     DietaryType? dietaryType,
     bool? prioritizePantryItems,
+    int? householdSize,
   }) async {
     final user = currentUser;
     if (user == null) {
@@ -62,6 +80,10 @@ class UserPreferencesService {
 
       if (prioritizePantryItems != null) {
         updateData['prioritizePantryItems'] = prioritizePantryItems;
+      }
+
+      if (householdSize != null) {
+        updateData['household'] = householdSize;
       }
 
       // First ensure user document exists
@@ -86,7 +108,7 @@ class UserPreferencesService {
         'photoURL': user.photoURL,
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
-        'householdId': null,
+        'household': 4, // default household size
         'enableRecommendations': true,
         'prioritizePantryItems': true,
       });

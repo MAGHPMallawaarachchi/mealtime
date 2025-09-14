@@ -21,12 +21,20 @@ final updatePantryPrioritizationProvider = Provider<Future<void> Function(bool)>
   };
 });
 
-final updateUserPreferencesProvider = Provider<Future<void> Function({DietaryType? dietaryType, bool? prioritizePantryItems})>((ref) {
+final updateHouseholdSizeProvider = Provider<Future<void> Function(int)>((ref) {
   final service = ref.watch(userPreferencesServiceProvider);
-  return ({DietaryType? dietaryType, bool? prioritizePantryItems}) async {
+  return (int householdSize) async {
+    await service.updateHouseholdSize(householdSize);
+  };
+});
+
+final updateUserPreferencesProvider = Provider<Future<void> Function({DietaryType? dietaryType, bool? prioritizePantryItems, int? householdSize})>((ref) {
+  final service = ref.watch(userPreferencesServiceProvider);
+  return ({DietaryType? dietaryType, bool? prioritizePantryItems, int? householdSize}) async {
     await service.updateUserPreferences(
       dietaryType: dietaryType,
       prioritizePantryItems: prioritizePantryItems,
+      householdSize: householdSize,
     );
   };
 });

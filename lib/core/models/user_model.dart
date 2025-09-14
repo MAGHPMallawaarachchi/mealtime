@@ -44,7 +44,7 @@ class UserModel {
   final String? displayName;
   final String? photoURL;
   final String? customProfilePicture; // base64 encoded custom profile picture
-  final String? householdId;
+  final int household; // household size
   final DateTime createdAt;
   final DateTime updatedAt;
   // New fields for recommendations
@@ -62,7 +62,7 @@ class UserModel {
     this.displayName,
     this.photoURL,
     this.customProfilePicture,
-    this.householdId,
+    this.household = 4, // default household size
     required this.createdAt,
     required this.updatedAt,
     this.dietaryType,
@@ -76,14 +76,14 @@ class UserModel {
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    
+
     return UserModel(
       uid: data['uid'] ?? '',
       email: data['email'] ?? '',
       displayName: data['displayName'],
       photoURL: data['photoURL'],
       customProfilePicture: data['customProfilePicture'],
-      householdId: data['householdId'],
+      household: data['household'] ?? 4, // default to 4 if not present
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       dietaryType: DietaryTypeExtension.fromDatabaseValue(data['dietaryType']),
@@ -103,7 +103,7 @@ class UserModel {
       'displayName': displayName,
       'photoURL': photoURL,
       'customProfilePicture': customProfilePicture,
-      'householdId': householdId,
+      'household': household,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
       'dietaryType': dietaryType?.databaseValue,
@@ -122,7 +122,7 @@ class UserModel {
     String? displayName,
     String? photoURL,
     String? customProfilePicture,
-    String? householdId,
+    int? household,
     DateTime? createdAt,
     DateTime? updatedAt,
     DietaryType? dietaryType,
@@ -139,7 +139,7 @@ class UserModel {
       displayName: displayName ?? this.displayName,
       photoURL: photoURL ?? this.photoURL,
       customProfilePicture: customProfilePicture ?? this.customProfilePicture,
-      householdId: householdId ?? this.householdId,
+      household: household ?? this.household,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       dietaryType: dietaryType ?? this.dietaryType,
@@ -155,14 +155,14 @@ class UserModel {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    
+
     return other is UserModel &&
       other.uid == uid &&
       other.email == email &&
       other.displayName == displayName &&
       other.photoURL == photoURL &&
       other.customProfilePicture == customProfilePicture &&
-      other.householdId == householdId &&
+      other.household == household &&
       other.createdAt == createdAt &&
       other.updatedAt == updatedAt &&
       other.dietaryType == dietaryType &&
@@ -182,7 +182,7 @@ class UserModel {
       displayName,
       photoURL,
       customProfilePicture,
-      householdId,
+      household,
       createdAt,
       updatedAt,
       dietaryType,
@@ -197,7 +197,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, email: $email, displayName: $displayName, photoURL: $photoURL, customProfilePicture: ${customProfilePicture != null ? '[base64 data]' : 'null'}, householdId: $householdId, createdAt: $createdAt, updatedAt: $updatedAt, dietaryType: $dietaryType, allergens: $allergens, spicePreference: $spicePreference, preferredRegions: $preferredRegions, specialDiets: $specialDiets)';
+    return 'UserModel(uid: $uid, email: $email, displayName: $displayName, photoURL: $photoURL, customProfilePicture: ${customProfilePicture != null ? '[base64 data]' : 'null'}, household: $household, createdAt: $createdAt, updatedAt: $updatedAt, dietaryType: $dietaryType, allergens: $allergens, spicePreference: $spicePreference, preferredRegions: $preferredRegions, specialDiets: $specialDiets)';
   }
 
 
