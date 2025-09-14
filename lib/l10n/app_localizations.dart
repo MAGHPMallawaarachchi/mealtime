@@ -1070,10 +1070,10 @@ abstract class AppLocalizations {
   /// **'Check back later for delicious recipes'**
   String get checkBackLaterForDeliciousRecipes;
 
-  /// Error state title for user recipes
+  /// Error message for recipe loading failure
   ///
   /// In en, this message translates to:
-  /// **'Error Loading Recipes'**
+  /// **'Error loading recipes'**
   String get errorLoadingRecipes;
 
   /// Loading message for initial recipe load

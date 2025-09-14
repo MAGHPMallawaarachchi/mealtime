@@ -2032,11 +2032,6 @@
     "description": "Create recipe button text"
   },
 
-  "errorLoadingRecipes": "Error Loading Recipes",
-  "@errorLoadingRecipes": {
-    "description": "Error state title for user recipes"
-  },
-
   "deleteRecipe": "Delete Recipe",
   "@deleteRecipe": {
     "description": "Delete recipe dialog title"

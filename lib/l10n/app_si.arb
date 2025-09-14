@@ -906,11 +906,6 @@
     "description": "Empty state instruction for general recipes"
   },
 
-  "errorLoadingRecipes": "වට්ටෝරු පූරණය කිරීමේ දෝෂය",
-  "@errorLoadingRecipes": {
-    "description": "Error message for recipe loading failure"
-  },
-
   "loadingRecipes": "වට්ටෝරු පූරණය වෙමින්...",
   "@loadingRecipes": {
     "description": "Loading message for initial recipe load"
@@ -1237,7 +1232,7 @@
     "description": "Label for current week in meal planner"
   },
 
-  "mealsPlanned": "ආහාර {count}ක් සැලසුම් කර ඇත",
+  "mealsPlanned": "{count}ක් සැලසුම් කර ඇත",
   "@mealsPlanned": {
     "description": "Number of meals planned in a week",
     "placeholders": {

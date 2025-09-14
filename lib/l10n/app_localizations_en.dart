@@ -551,7 +551,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Check back later for delicious recipes';
 
   @override
-  String get errorLoadingRecipes => 'Error Loading Recipes';
+  String get errorLoadingRecipes => 'Error loading recipes';
 
   @override
   String get loadingRecipes => 'Loading recipes...';

@@ -743,7 +743,7 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String mealsPlanned(int count) {
-    return 'ආහාර $countක් සැලසුම් කර ඇත';
+    return '$countක් සැලසුම් කර ඇත';
   }
 
   @override
