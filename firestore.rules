@@ -1,0 +1,91 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection - users can only access their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // User's meal plans subcollection
+      match /meal_plans/{weekId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // User's favorites subcollection
+      match /favorites/{recipeId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // User's custom recipes subcollection
+      match /user_recipes/{recipeId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // User's pantry items subcollection
+      match /pantry_items/{itemId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Households collection - users can access households they're members of
+    match /households/{householdId} {
+      allow read, write: if request.auth != null && 
+        request.auth.uid in resource.data.memberIds;
+    }
+
+    // Legacy meal plans collection (deprecated - moved to users/{userId}/meal_plans/)
+    // Keeping for backward compatibility, remove after migration
+    match /meal_plans/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Subcollection for weeks within meal plans
+      match /weeks/{weekId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Recipes collection - public read access, authenticated write
+    match /recipes/{recipeId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+
+    // Leftovers collection - users can only access their own leftovers
+    match /leftovers/{leftoverId} {
+      allow read, write: if request.auth != null && 
+        request.auth.uid == resource.data.userId;
+    }
+
+    // Shopping lists collection - users can access household shopping lists
+    match /shopping_lists/{householdId} {
+      allow read, write: if request.auth != null;
+      
+      // Individual shopping list documents
+      match /{listId} {
+        allow read, write: if request.auth != null;
+      }
+    }
+
+    // Weekly meal plans collection - users can only access their own plans
+    match /plans/{householdId} {
+      allow read, write: if request.auth != null;
+      
+      // Weekly plans subcollection
+      match /weeks/{weekId} {
+        allow read, write: if request.auth != null;
+      }
+    }
+
+    // Seasonal ingredients - public read access
+    match /seasonal_ingredients/{ingredientId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Default: deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

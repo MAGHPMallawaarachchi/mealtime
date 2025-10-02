@@ -1,0 +1,245 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+
+enum DietaryType { vegetarian, vegan, pescatarian, nonVegetarian }
+
+extension DietaryTypeExtension on DietaryType {
+  String get databaseValue {
+    switch (this) {
+      case DietaryType.vegetarian:
+        return 'vegetarian';
+      case DietaryType.vegan:
+        return 'vegan';
+      case DietaryType.pescatarian:
+        return 'pescatarian';
+      case DietaryType.nonVegetarian:
+        return 'non-vegetarian';
+    }
+  }
+
+  static DietaryType? fromDatabaseValue(String? value) {
+    if (value == null) return null;
+    switch (value) {
+      case 'vegetarian':
+        return DietaryType.vegetarian;
+      case 'vegan':
+        return DietaryType.vegan;
+      case 'pescatarian':
+        return DietaryType.pescatarian;
+      case 'non-vegetarian':
+        return DietaryType.nonVegetarian;
+      default:
+        return null;
+    }
+  }
+}
+enum Allergen { dairy, eggs, fishSeafood, nuts, gluten }
+enum SpicePreference { mild, medium, spicy }
+enum SriLankanRegion { western, southern, central, northern, eastern, uva, northWestern, sabaragamuwa, northCentral }
+enum SpecialDiet { diabeticFriendly, lowSodium, highProtein }
+
+class UserModel {
+  final String uid;
+  final String email;
+  final String? displayName;
+  final String? photoURL;
+  final String? customProfilePicture; // base64 encoded custom profile picture
+  final int household; // household size
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  // New fields for recommendations
+  final DietaryType? dietaryType;
+  final List<Allergen> allergens;
+  final SpicePreference? spicePreference;
+  final List<SriLankanRegion> preferredRegions;
+  final List<SpecialDiet> specialDiets;
+  final bool enableRecommendations;
+  final bool prioritizePantryItems;
+
+  const UserModel({
+    required this.uid,
+    required this.email,
+    this.displayName,
+    this.photoURL,
+    this.customProfilePicture,
+    this.household = 4, // default household size
+    required this.createdAt,
+    required this.updatedAt,
+    this.dietaryType,
+    this.allergens = const [],
+    this.spicePreference,
+    this.preferredRegions = const [],
+    this.specialDiets = const [],
+    this.enableRecommendations = true,
+    this.prioritizePantryItems = true,
+  });
+
+  factory UserModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+
+    return UserModel(
+      uid: data['uid'] ?? '',
+      email: data['email'] ?? '',
+      displayName: data['displayName'],
+      photoURL: data['photoURL'],
+      customProfilePicture: data['customProfilePicture'],
+      household: data['household'] ?? 4, // default to 4 if not present
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      dietaryType: DietaryTypeExtension.fromDatabaseValue(data['dietaryType']),
+      allergens: _parseAllergens(data['allergens']),
+      spicePreference: _parseSpicePreference(data['spicePreference']),
+      preferredRegions: _parseRegions(data['preferredRegions']),
+      specialDiets: _parseSpecialDiets(data['specialDiets']),
+      enableRecommendations: data['enableRecommendations'] ?? true,
+      prioritizePantryItems: data['prioritizePantryItems'] ?? true,
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'uid': uid,
+      'email': email,
+      'displayName': displayName,
+      'photoURL': photoURL,
+      'customProfilePicture': customProfilePicture,
+      'household': household,
+      'createdAt': Timestamp.fromDate(createdAt),
+      'updatedAt': Timestamp.fromDate(updatedAt),
+      'dietaryType': dietaryType?.databaseValue,
+      'allergens': allergens.map((a) => a.name).toList(),
+      'spicePreference': spicePreference?.name,
+      'preferredRegions': preferredRegions.map((r) => r.name).toList(),
+      'specialDiets': specialDiets.map((d) => d.name).toList(),
+      'enableRecommendations': enableRecommendations,
+      'prioritizePantryItems': prioritizePantryItems,
+    };
+  }
+
+  UserModel copyWith({
+    String? uid,
+    String? email,
+    String? displayName,
+    String? photoURL,
+    String? customProfilePicture,
+    int? household,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    DietaryType? dietaryType,
+    List<Allergen>? allergens,
+    SpicePreference? spicePreference,
+    List<SriLankanRegion>? preferredRegions,
+    List<SpecialDiet>? specialDiets,
+    bool? enableRecommendations,
+    bool? prioritizePantryItems,
+  }) {
+    return UserModel(
+      uid: uid ?? this.uid,
+      email: email ?? this.email,
+      displayName: displayName ?? this.displayName,
+      photoURL: photoURL ?? this.photoURL,
+      customProfilePicture: customProfilePicture ?? this.customProfilePicture,
+      household: household ?? this.household,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      dietaryType: dietaryType ?? this.dietaryType,
+      allergens: allergens ?? this.allergens,
+      spicePreference: spicePreference ?? this.spicePreference,
+      preferredRegions: preferredRegions ?? this.preferredRegions,
+      specialDiets: specialDiets ?? this.specialDiets,
+      enableRecommendations: enableRecommendations ?? this.enableRecommendations,
+      prioritizePantryItems: prioritizePantryItems ?? this.prioritizePantryItems,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is UserModel &&
+      other.uid == uid &&
+      other.email == email &&
+      other.displayName == displayName &&
+      other.photoURL == photoURL &&
+      other.customProfilePicture == customProfilePicture &&
+      other.household == household &&
+      other.createdAt == createdAt &&
+      other.updatedAt == updatedAt &&
+      other.dietaryType == dietaryType &&
+      listEquals(other.allergens, allergens) &&
+      other.spicePreference == spicePreference &&
+      listEquals(other.preferredRegions, preferredRegions) &&
+      listEquals(other.specialDiets, specialDiets) &&
+      other.enableRecommendations == enableRecommendations &&
+      other.prioritizePantryItems == prioritizePantryItems;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      uid,
+      email,
+      displayName,
+      photoURL,
+      customProfilePicture,
+      household,
+      createdAt,
+      updatedAt,
+      dietaryType,
+      Object.hashAll(allergens),
+      spicePreference,
+      Object.hashAll(preferredRegions),
+      Object.hashAll(specialDiets),
+      enableRecommendations,
+      prioritizePantryItems,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'UserModel(uid: $uid, email: $email, displayName: $displayName, photoURL: $photoURL, customProfilePicture: ${customProfilePicture != null ? '[base64 data]' : 'null'}, household: $household, createdAt: $createdAt, updatedAt: $updatedAt, dietaryType: $dietaryType, allergens: $allergens, spicePreference: $spicePreference, preferredRegions: $preferredRegions, specialDiets: $specialDiets)';
+  }
+
+
+  static List<Allergen> _parseAllergens(dynamic value) {
+    if (value == null) return [];
+    try {
+      return (value as List).map((e) => 
+        Allergen.values.firstWhere((allergen) => allergen.name == e.toString())
+      ).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static SpicePreference? _parseSpicePreference(dynamic value) {
+    if (value == null) return null;
+    try {
+      return SpicePreference.values.firstWhere((e) => e.name == value.toString());
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static List<SriLankanRegion> _parseRegions(dynamic value) {
+    if (value == null) return [];
+    try {
+      return (value as List).map((e) => 
+        SriLankanRegion.values.firstWhere((region) => region.name == e.toString())
+      ).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static List<SpecialDiet> _parseSpecialDiets(dynamic value) {
+    if (value == null) return [];
+    try {
+      return (value as List).map((e) => 
+        SpecialDiet.values.firstWhere((diet) => diet.name == e.toString())
+      ).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+}

@@ -45,3 +45,10 @@ app.*.map.json
 /android/app/release
 /requirements
 CLAUDE.md
+/macos/Flutter/GeneratedPluginRegistrant.swift
+MEAL_PLAN_INTEGRATION.md
+
+recommendation_algorithm_pseudocode.md
+recommendation_system_workflow.md
+#/data/sample_recipes.json
+/research/

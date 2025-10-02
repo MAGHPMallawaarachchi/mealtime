@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:mealtime/main.dart';
 
@@ -25,7 +26,7 @@ void main() {
     await tester.pump();
 
     // Check for splash screen elements
-    expect(find.byIcon(Icons.restaurant_menu), findsOneWidget);
+    expect(find.byIcon(PhosphorIcons.forkKnife()), findsOneWidget);
     expect(find.text('MealTime'), findsOneWidget);
   });
 }

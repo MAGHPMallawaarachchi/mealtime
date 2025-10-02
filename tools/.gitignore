@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Firebase service account key - NEVER commit this!
+service-account-key.json
+
+# Temporary files
+*.tmp
+*.log
