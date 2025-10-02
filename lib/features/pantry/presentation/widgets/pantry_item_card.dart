@@ -132,13 +132,10 @@ class PantryItemCard extends StatelessWidget {
                         ),
                     ],
                     onSelected: (value) {
-                      switch (value) {
-                        case 'edit':
-                          onEdit?.call();
-                          break;
-                        case 'delete':
-                          onDelete?.call();
-                          break;
+                      if (value == AppLocalizations.of(context)!.edit) {
+                        onEdit?.call();
+                      } else if (value == AppLocalizations.of(context)!.delete) {
+                        onDelete?.call();
                       }
                     },
                   ),

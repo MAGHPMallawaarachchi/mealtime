@@ -435,7 +435,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
           children: [
             PhosphorIcon(
               PhosphorIcons.package(),
-              size: 80,
+              size: 60,
               color: AppColors.textSecondary,
             ),
             const SizedBox(height: 24),
@@ -453,7 +453,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
               style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
 
             ElevatedButton.icon(
               onPressed: () => _showAddIngredientModal(),
@@ -462,7 +462,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 32,
-                  vertical: 16,
+                  vertical: 8,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -502,7 +502,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
-                      vertical: 8,
+                      vertical: 6,
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withOpacity(0.1),
@@ -540,7 +540,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
           children: [
             PhosphorIcon(
               PhosphorIcons.bowlFood(),
-              size: 80,
+              size: 60,
               color: AppColors.leftover.withOpacity(0.7),
             ),
             const SizedBox(height: 24),
@@ -558,7 +558,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
               style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
 
             ElevatedButton.icon(
               onPressed: () => _showAddIngredientModal(),
@@ -567,7 +567,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 32,
-                  vertical: 16,
+                  vertical: 8,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -638,7 +638,6 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
     {'name': 'Onions', 'category': 'vegetables'},
     {'name': 'Garlic', 'category': 'vegetables'},
     {'name': 'Curry Leaves', 'category': 'herbs'},
-    {'name': 'Turmeric', 'category': 'spices'},
     {'name': 'Chili Powder', 'category': 'spices'},
     {'name': 'Coconut Oil', 'category': 'oils'},
   ];
@@ -646,12 +645,9 @@ class _PantryScreenState extends ConsumerState<PantryScreen>
   static const List<String> _leftoverExamples = [
     'Cooked Rice',
     'Bread',
-    'Curry',
-    'Rotis',
     'Overripe Bananas',
     'Cooked Chicken',
     'Cooked Vegetables',
-    'Pasta',
   ];
 
   Future<void> _quickAddIngredient(String name, String categoryName) async {
